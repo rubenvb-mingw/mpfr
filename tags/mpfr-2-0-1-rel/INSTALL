@@ -1,0 +1,87 @@
+			Installing MPFR
+			===============
+
+0. You first need to install GMP. See <http://www.swox.com/gmp/>.
+   MPFR requires GMP version 4.0.1 or later.
+
+   After you have successfully built GMP and installed it using
+   "make install", you'll need to manually install some GMP header
+   files needed by MPFR. In the GMP build directory, type:
+
+     cp config.h gmp-impl.h gmp-mparam.h longlong.h GMPINSTALL/include
+
+   where GMPINSTALL is the directory where you have installed GMP,
+   i.e. you configured GMP with ./configure --prefix=GMPINSTALL.
+
+1. In the MPFR build directory, type "./configure --with-gmp=GMPINSTALL"
+   where GMPINSTALL is the directory where you have installed GMP. If this
+   fails, please check that the C compiler and its options are the same as
+   those for the GMP build. You can see the later with the following:
+
+     grep "^CC\|^CFLAGS" GMPBUILD/Makefile
+
+   where GMPBUILD is the GMP build directory, then type (for example,
+   under a sh-compatible shell):
+
+     CC=<C compiler> CFLAGS=<compiler options> ./configure --with-gmp=GMPINSTALL
+
+   Other options can be seen with "./configure --help". For example, if you
+   want to install MPFR in /local instead of /usr/local (default), type:
+
+     ./configure --prefix=/local
+
+2. Type "make" (produces libmpfr.a). On some architectures, you should
+   provide further options to match those used by GMP, for example, on
+   powerpc-aix:
+
+     make AR="ar -X64"
+
+3. Type "make dvi" to produce the documentation (DVI file mpfr.dvi).
+
+4. Type "make check" (produces and runs the test files).
+
+5. Type "make install" (installs the library in /usr/local or in the
+   directory given in the --prefix option of configure). You'll probably
+   need to be "root" to install MPFR in directories like /usr/local.
+
+./configure options
+===================
+
+--prefix=DIR            installs MPFR headers and library in DIR/include
+                        and DIR/lib respectively
+--with-gmp-include=DIR  assumes that DIR contains gmp-impl.h, longlong.h...
+--with-gmp-lib=DIR      assumes that DIR contains libgmp.a
+--with-gmp=DIR          same as --with-gmp-lib=DIR/lib --with-gmp-include=DIR/include
+
+Known problems.
+===============
+
+See file BUGS for known bugs in MPFR. Some patches may be available on the
+MPFR web page <http://www.mpfr.org/> or <http://www.loria.fr/projets/mpfr/>.
+
+Linux on Alpha is known to have problems with IEEE conformance. Also with
+OSF and gcc 2.8.1, we had problems with the square root functions:
+
+   Testing tsqrt
+   libm.a differs from mpfr_sqrt for a=1.72800271916104480000e+210, rnd_mode=GMP_RNDZ
+   libm.a gives 1.31453517227993750000e+105, mpfr_sqrt gives 1.31453517227993730000e+105 (-1 ulp)
+   maybe you've found a bug in libm.a...
+   ### tsqrt failed ###
+   Testing tsqrt_ui
+   mpfr_sqrt_ui differs from sqrt for a=851401618, rnd_mode=GMP_RNDU
+   sqrt gives 2.91787871235251990000e+04, mpfr_sqrt_ui gives 2.91787871235252020000e+04 (1 ulp)
+   maybe you've found a bug in libm.a
+   ### tsqrt_ui failed ###
+
+(in both cases the mpfr result is the correct one).
+
+In case of problem.
+===================
+
+Please contact us at mpfr@loria.fr, indicating the machine and operating
+system used (uname -a), the compiler and version used (gcc -v if you use
+gcc), the compile options used if any, the version of GMP and MPFR used
+and a description of the problem encountered.
+
+If it is a problem concerning the MPFR compilation or test (i.e. during
+configure, make or make check), please send us a log of the installation.
