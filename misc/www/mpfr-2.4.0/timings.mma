@@ -1,0 +1,56 @@
+$VersionNumber
+$ReleaseNumber
+
+# 100 digits #
+prec=100;
+x=N[Sqrt[3]-1,prec];
+y=N[Sqrt[5],prec];
+
+n=100000;
+1000*(Timing[Do[x*y,{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+(* Divide[x,y] is faster than x/y, which is parsed as Times[x,Power[y,-1]] *)
+1000*(Timing[Do[Divide[x,y],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+1000*(Timing[Do[Sqrt[x],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+n=10000;
+1000*(Timing[Do[Exp[x],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+1000*(Timing[Do[Log[x],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+1000*(Timing[Do[Sin[x],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+1000*(Timing[Do[Cos[x],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+1000*(Timing[Do[ArcCos[x],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+1000*(Timing[Do[ArcTan[x],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+
+# 1000 digits #
+prec=1000;
+x=N[Sqrt[3]-1,prec];
+y=N[Sqrt[5],prec];
+
+n=10000;
+1000*(Timing[Do[x*y,{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+1000*(Timing[Do[Divide[x,y],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+1000*(Timing[Do[Sqrt[x],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+n=1000;
+1000*(Timing[Do[Exp[x],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+1000*(Timing[Do[Log[x],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+1000*(Timing[Do[Sin[x],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+1000*(Timing[Do[Cos[x],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+1000*(Timing[Do[ArcCos[x],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+1000*(Timing[Do[ArcTan[x],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+
+# 10000 digits #
+prec=10000;
+x=N[Sqrt[3]-1,prec];
+y=N[Sqrt[5],prec];
+
+n=1000;
+1000*(Timing[Do[x*y,{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+1000*(Timing[Do[Divide[x,y],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+1000*(Timing[Do[Sqrt[x],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+n=100;
+1000*(Timing[Do[Exp[x],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+1000*(Timing[Do[Log[x],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+1000*(Timing[Do[Sin[x],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+1000*(Timing[Do[Cos[x],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+1000*(Timing[Do[ArcCos[x],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+1000*(Timing[Do[ArcTan[x],{n}]][[1]]-Timing[Do[Null,{n}]][[1]])/n
+
+
