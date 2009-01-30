@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# For the MPFR team. Run this on a machine at Loria to get a diff
+# between the MPFR web server and the pages in this working copy.
+
+diff -x .svn -aurd /local/web-serveurs/mpfr/htdocs "`dirname "$0"`/www"
