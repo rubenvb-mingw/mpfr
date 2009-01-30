@@ -1,0 +1,445 @@
+#!/bin/sh
+# Nightly Build of a program
+# Copyright 2004, 2005 Patrick Pelissier/INRIA
+# Copyright 2005 Vincent Lefevre (LORIA / INRIA Lorraine)
+
+# Do not call this script with any argument other than test ones.
+
+# Do not use the local home on dixsept.
+[ $HOST = dixsept.loria.fr ] && [ $HOME = /home/$USER ] && \
+  HOME=/users/spaces/$USER
+
+# Name of the package to nightly build
+# The script name must be $PACKAGE-nightly-build
+# The directory created after CVS co must be $PACKAGE
+PACKAGE=mpfr
+
+# Options to always pass to the configure script
+BUILD_OPTION="--enable-assert=full --enable-shared --enable-static"
+
+# Command to execute to get a CVS checkout of the package
+#MPFR_NIGHTLY_BRANCH=mpfr-2-2-branch
+CHECKOUT="cvs -d :pserver:cvs@cvs-sop.inria.fr:/CVS/spaces -z3 checkout -P ${MPFR_NIGHTLY_BRANCH:+-r$MPFR_NIGHTLY_BRANCH} $PACKAGE"
+
+# E-mail address where to send the logs to archive them
+ARCHIVE_MAIL_TO="mpfr.archive@gmail.com"
+
+# Directory where everything is (Log, etc)
+# Warning: it must be compatible with cd $BASE_DIR under ftp client
+# so only one level of directory is allowed.
+# $HOME/$BASE_DIR must be created first.
+BASE_DIR=${PACKAGE}_nightly_build
+# Name of the FTP servers (>= 1)
+# This one sometimes works...
+FTP_SERVER="td141.testdrive.hp.com"
+# Where to copy the new package (>= 1) after we have make it.
+COPY_PACKAGE_TO="$HOME/$BASE_DIR/ /local/mpfr/htdocs/$BASE_DIR"
+
+# File containing the addresses where to send the report in case of failure.
+ADDR_FILE=$BASE_DIR/email
+
+# An url where to get an update package (if wget works)
+URL_GET_PACKAGE=http://www.mpfr.org/$BASE_DIR/
+# Use WGET instead of FTP to get an updated version of the package (safier)
+# but it may not work.
+USE_WGET_INSTEAD_OF_FTP=yes
+
+# Where to store dayly the log files
+LOG_DATA_BASE=/local/mpfr/htdocs/$BASE_DIR
+# How to get the dayly LOG files from an URL
+URL_READ_LOG=http://www.mpfr.org/$BASE_DIR
+
+# Default GMP directory
+GMP_DIR=
+# Default name of 'make' program
+MAKE=make
+# Default name of the system (LOG_NAME=${NAME}.log)
+NAME=`echo $HOST | cut -d . -f 1`
+# Default directory for temporary files (MUST NOT contain spaces)
+TMP=/tmp
+# Extra options passed to configure, ususally Host dependent
+EXTRA=
+# Toggle Passive mode when using FTP client
+PASSIVE=passive
+
+# Setup local options according to $HOST
+# We must define what we do according to the host:
+#  DO_MAKE_DIST / DO_GET_DIST / DO_BUILD / DO_SEND_LOG / DO_SEND_REPORT
+# All the targets may be able to build MPFR.
+DO_BUILD=yes
+
+case $HOST in
+# loria (They get the new PACKAGE from 'dixsept')
+    dixsept.loria.fr)
+        GMP_DIR=
+        DO_MAKE_DIST=yes
+        DO_SEND_LOG=yes
+        DO_SEND_REPORT=yes
+        ;;
+    morpork)
+        GMP_DIR=
+        EXTRA="CC=/localdisk/gcc4/bin/gcc"
+        ;;
+    itanium)
+        GMP_DIR=/users/spaces/logiciels/gmp-4.1.2/ia64
+        ;;
+    lamaxe.loria.fr|lepuid.loria.fr)
+        GMP_DIR=/users/spaces/logiciels/gmp-4.1.2/k7
+        ;;
+    foo.loria.fr)
+        GMP_DIR=/users/spaces/logiciels/gmp-4.1.2/p4
+        ;;
+    greux.loria.fr)
+        GMP_DIR=/users/spaces/logiciels/gmp-4.1.2/p3
+        ;;
+    jouy.loria.fr)
+        GMP_DIR=/users/spaces/logiciels/gmp-4.1.2/p2
+        ;;
+    craffe.loria.fr)
+        GMP_DIR=/users/spaces/logiciels/gmp-4.1.2/sparcv8+
+        MAKE=gmake
+        ;;
+    latour.loria.fr)
+        GMP_DIR=/localdisk/icc/opt/intel_cc_80/
+        EXTRA="CC=/global/latour/icc/opt/intel_cc_80/bin/icc -static"
+        ;;
+    ange.loria.fr|demon.loria.fr)
+        GMP_DIR=/users/spaces/logiciels/gmp-4.1.4/irix64/
+        ;;
+    laudomia5.medicis.polytechnique.fr|login.medicis.polytechnique.fr)
+# The login machine is the only allowed to connect to the outside
+# But we don't want to load it with a build.
+        PASSIVE=passive
+        DO_GET_DIST=yes
+        DO_BUILD=
+        DO_SEND_LOG=yes
+        ;;
+    marie.medicis.polytechnique.fr)
+        GMP_DIR=/users/medicis/pphd/marie
+        ;;
+    laurent?.medicis.polytechnique.fr)
+        GMP_DIR=/users/medicis/pphd/laurent
+        NAME=laurent
+        ;;
+    leon?.medicis.polytechnique.fr)
+        GMP_DIR=/users/medicis/pphd/leon
+        # Default temporary directory does not have enough space.
+        TMP=/share/nfs/scratch
+        NAME=leon
+        ;;
+    ginevra.medicis.polytechnique.fr)
+        GMP_DIR=/users/medicis/pphd/ginevra
+        ;;
+# TestDrive: they get the update package since dixsept send it via FTP.
+    spe175) GMP_DIR=/house/PpHd/gmp-spe175 ;;
+    spe149) GMP_DIR=/house/PpHd/gmp-spe149 ;;
+    spe151) GMP_DIR=/house/PpHd/gmp-spe151 ;;
+    spe174) GMP_DIR=/house/PpHd/gmp-spe174 ;;
+    spe177) GMP_DIR=/house/PpHd/gmp-spe177 ;;
+    spe176) GMP_DIR=/house/PpHd/gmp-spe175 ;;
+    spe191) GMP_DIR=/house/PpHd/gmp-spe191 ;;
+    spe186) GMP_DIR=/house/PpHd/gmp-spe186 ;;
+    spe180) GMP_DIR=/house/PpHd/gmp-spe180 ;;
+    spe190) GMP_DIR=/house/PpHd/gmp-spe190 ;;
+esac
+
+# Private directory for temporary files (MUST NOT contain spaces)
+TMP_PRIV=$TMP/${PACKAGE}_nightly_build-$USER
+# Must already exist with the correct permissions,
+# unless the script is run with no arguments.
+
+# Script name and log
+SCRIPT_NAME=${PACKAGE}-nightly-build
+FULL_SCRIPT_NAME=$HOME/$BASE_DIR/$SCRIPT_NAME
+SCRIPT_LOG=$TMP_PRIV/${SCRIPT_NAME}-log
+
+# Name of the temporary directory where we checkout the new version
+TMP_CVS_DIR=$TMP_PRIV/${BASE_DIR}_${NAME}_checkout
+# Name of the temporary directory where we build the new version
+# We need at least 50 Mo
+TMP_BUILD_DIR=$TMP_PRIV/${BASE_DIR}_${NAME}_build
+# Name of autobuild temporary file
+TMP_AUTOBUILD=$TMP_PRIV/autobuild-$$
+
+# Name of lock file.
+LOCKFILE=$HOME/$BASE_DIR/lock-$HOST
+
+#
+# End of the customizable part
+#
+
+# Let's start the fun, folks.
+cd $HOME/$BASE_DIR
+LC_ALL=C ; export LC_ALL
+LANG=C   ; export LANG
+
+# Before exiting, the lock file must be removed.
+pterm()
+{
+  echo "exit" >&2
+  rm -f $LOCKFILE
+}
+
+case "$1" in
+    dodo)  # Sleep during one hour, then rerun the script
+        trap pterm 0
+        trap exit 15
+        sleep 3600
+        exec $0 reexec
+        ;;
+    reexec|firstrun) # Reexecute the script: fall down
+        echo "`date -u` - reexec, pid = $$" >&2
+        trap pterm 0
+        trap exit 15
+        ;;
+    test?) # Test a specific time
+        echo "`date -u` - $1 started" >&2
+        ;;
+    update) # Update the script
+        if [ -x update-script ]; then
+            mv -f update-script $0
+            exec $0 dodo
+        else
+            echo "`date -u` - FATAL: update-script is not executable" >&2
+            exit 1
+        fi
+        ;;
+    *) # Reexecute the script ignoring hangup signals
+        ln -s $SCRIPT_LOG $LOCKFILE 2> /dev/null
+        if [ $? -ne 0 ]; then
+            echo "Can't create lock file, aborting." >&2
+            exit 1
+        fi
+        rm -rf $TMP_PRIV
+        mkdir -m700 $TMP_PRIV || exit 1
+        exec < /dev/null > /dev/null
+        nohup $0 firstrun 2> $SCRIPT_LOG &
+        exit 0
+        ;;
+esac
+
+# Main switch case: according to the TIME UTC, we do the selected work
+#  At 21h, we make a new TARBALL
+#  At 23h, we get this new TARBALL iff we don't already have it
+#  At 01h, we make a build of MPFR, saving the log in $HOME/$BASE_DIR
+#  At 03h, we send the created logs to the FTP server
+#  At 05h, we get the log from the FTP server, we parse them and create report
+# At least 2h of difference is needed.
+current_date=`date -u`
+case "$1" in
+    "test1") current_date="t 21:30" ;;
+    "test2") current_date="t 23:30" ;;
+    "test3") current_date="t 01:30" ;;
+    "test4") current_date="t 03:30" ;;
+    "test5") current_date="t 05:30" ;;
+    *) ;;
+esac
+
+case "$current_date" in
+
+# Make a new TARBALL
+    *" 21:"*)
+        if [ -n "$DO_MAKE_DIST" ]; then
+        # Do a CVS checkout
+            echo "`date -u` - Do a new dist" >> $SCRIPT_LOG
+            mkdir -m700 $TMP_CVS_DIR || exit 1 >> $SCRIPT_LOG
+            cd $TMP_CVS_DIR
+            $CHECKOUT >> $SCRIPT_LOG 2>&1
+            cd $PACKAGE
+            autoreconf --install >> $SCRIPT_LOG 2>&1
+            cd ..
+            rm -f $PACKAGE.tar $PACKAGE.tar.gz
+            tar zcf $PACKAGE.tar.gz $PACKAGE
+            chmod 664 $PACKAGE.tar.gz
+        # Copy this package
+            for directory in $COPY_PACKAGE_TO; do
+                cp -f $FULL_SCRIPT_NAME $directory >> $SCRIPT_LOG 2>&1
+                cp -f $PACKAGE.tar.gz $directory >> $SCRIPT_LOG 2>&1
+            done
+        # Send it to the FTP servers
+            cp -f $FULL_SCRIPT_NAME .
+            echo "`date -u` - Send them to the FTP servers" >> $SCRIPT_LOG
+            for local_ftp_server in $FTP_SERVER; do
+                ftp <<EOF $local_ftp_server >> $SCRIPT_LOG 2>&1
+bin
+$PASSIVE
+cd $BASE_DIR
+send $SCRIPT_NAME
+send $PACKAGE.tar.gz
+EOF
+            done
+        # Remove the temporary directory
+            cd $HOME/$BASE_DIR
+            rm -rf $TMP_CVS_DIR
+            echo "`date -u` - Make dist done" >> $SCRIPT_LOG
+        fi
+        ;;
+
+# Get the new distribution from the FTP or the WEB
+    *" 23:"*)
+        if [ -n "$DO_GET_DIST" ]; then
+            rm -f $PACKAGE.tar.gz update
+            if [ -n "$USE_WGET_INSTEAD_OF_FTP" ]; then
+                wget $URL_GET_PACKAGE/$PACKAGE.tar.gz >> $SCRIPT_LOG 2>&1
+                wget $URL_GET_PACKAGE/$SCRIPT_NAME -O update-script >> $SCRIPT_LOG 2>&1
+                chmod 644 $PACKAGE.tar.gz
+                chmod 755 update-script
+                [ -s update-script ] && exec $0 update
+            else
+                echo "`date -u` - Get the dist from FTP" >> $SCRIPT_LOG
+                for local_ftp_server in $FTP_SERVER; do
+                    ftp <<EOF $local_ftp_server >> $SCRIPT_LOG 2>&1 && break
+bin
+$PASSIVE
+cd $BASE_DIR
+get $PACKAGE.tar.gz
+EOF
+                done
+            fi
+        fi
+        ;;
+
+# Do a Build
+    *" 01:"*)
+        if [ -n "$DO_BUILD" ]; then
+            echo "`date -u` - Build $PACKAGE" >> $SCRIPT_LOG
+            [ -n "$GMP_DIR" ] && GMP_DIR="--with-gmp=$GMP_DIR"
+            LOG_NAME=$HOME/$BASE_DIR/${NAME}.log
+            mkdir -m700 $TMP_BUILD_DIR || exit 1 >> $SCRIPT_LOG 2>&1
+            cd $TMP_BUILD_DIR
+            cp -f $HOME/$BASE_DIR/$PACKAGE.tar.gz . >> $SCRIPT_LOG 2>&1
+        # Now build $PACKAGE in the directory $TMP.
+            date -u > $LOG_NAME 2>&1
+            uname -a >> $LOG_NAME 2>&1
+            ls -l $PACKAGE.tar.gz >> $LOG_NAME 2>&1
+            gunzip -f $PACKAGE.tar.gz >> $SCRIPT_LOG 2>&1
+            tar xf $PACKAGE.tar >> $SCRIPT_LOG 2>&1
+            cd $PACKAGE
+            echo "MPFR version `cat VERSION`" >> $LOG_NAME 2>&1
+            echo "configure $BUILD_OPTION $GMP_DIR $EXTRA" >> $LOG_NAME 2>&1
+        # Now do the build
+            ./configure $BUILD_OPTION $GMP_DIR "$EXTRA" >> $LOG_NAME 2>&1
+            ./config.status -V >> $LOG_NAME 2>&1
+            $MAKE clean >> $LOG_NAME 2>&1
+            touch $PACKAGE.info
+            $MAKE >> $LOG_NAME 2>&1
+            $MAKE check GMP_CHECK_RANDOMIZE=1 >> $LOG_NAME 2>&1
+        # If something was wrong, add the config.log to the log.
+            if grep -q "tests passed" $LOG_NAME; then
+                ok=yes
+            else
+                echo ""             >> $LOG_NAME 2>&1
+                echo "config.log:"  >> $LOG_NAME 2>&1
+                cat config.log      >> $LOG_NAME 2>&1
+            fi
+            cd $HOME/$BASE_DIR
+            rm -rf $TMP_BUILD_DIR >> $SCRIPT_LOG 2>&1
+            gzip -f $LOG_NAME >> $SCRIPT_LOG 2>&1
+            echo "`date -u` - Build done" >> $SCRIPT_LOG
+        fi
+        ;;
+
+# Send the log to the FTP server
+    *" 03:"*)
+        if [ -n "$DO_SEND_LOG" ]; then
+            echo "`date -u` - Send the log files" >> $SCRIPT_LOG
+        # Send the LOG file
+            rm -rf $TMP_AUTOBUILD
+            cat <<EOF > $TMP_AUTOBUILD
+bin
+$PASSIVE
+cd $BASE_DIR
+EOF
+            # Use ls to generate an empty list there are no log files.
+            for f in `ls *.log.gz 2> /dev/null`; do
+                echo "send $f" >> $TMP_AUTOBUILD
+            done
+            for local_ftp_server in $FTP_SERVER; do
+                ftp $local_ftp_server < $TMP_AUTOBUILD >> $SCRIPT_LOG 2>&1
+            done
+            rm -f $TMP_AUTOBUILD
+        fi
+        ;;
+
+# Send the final report
+ *" 05"*)
+        if [ -n "$DO_SEND_REPORT" ]; then
+            echo `date -u` "Send final report" >> $SCRIPT_LOG
+        # Get all the log names from the FTP
+            rm -rf ${TMP_AUTOBUILD}-1 ${TMP_AUTOBUILD}-2
+            for local_ftp_server in $FTP_SERVER; do
+                ftp <<EOF $local_ftp_server 2>&1 | fgrep .log.gz >> ${TMP_AUTOBUILD}-1
+$PASSIVE
+cd $BASE_DIR
+ls
+EOF
+            done
+            awk '{ print $9 }' ${TMP_AUTOBUILD}-1 > ${TMP_AUTOBUILD}-2
+            LIST=`cat ${TMP_AUTOBUILD}-2`
+            echo "List of Log: $LIST" >> $SCRIPT_LOG
+        # Get the LOG files
+            echo "bin"           > ${TMP_AUTOBUILD}-1
+            echo "$PASSIVE"     >> ${TMP_AUTOBUILD}-1
+            echo "cd $BASE_DIR" >> ${TMP_AUTOBUILD}-1
+            for X in $LIST; do
+                echo "get $X" >> ${TMP_AUTOBUILD}-1
+            done
+            for local_ftp_server in $FTP_SERVER; do
+                ftp $local_ftp_server < ${TMP_AUTOBUILD}-1 >> $SCRIPT_LOG 2>&1
+            done
+        # Decompress the log files.
+            for X in $LIST; do
+                gunzip -f $X
+            done
+        # Check the LOG, send mail and move the log to the web server.
+            rm -f ${TMP_AUTOBUILD}-1
+            DATE=`date -u | head -c 10`
+            echo "date=" $DATE >> $SCRIPT_LOG
+            # Use ls to generate an empty list there are no log files.
+            for X in `ls *.log 2> /dev/null`; do
+                [ -n "$ARCHIVE_MAIL_TO" ] && \
+                    mail -s "$PACKAGE $DATE $X" $ARCHIVE_MAIL_TO < $X
+                if grep -q "$DATE" $X; then
+                    if grep -q "tests passed" $X; then
+                        ok=yes
+                    else
+                        cat <<EOF >> ${TMP_AUTOBUILD}-1
+$PACKAGE build failed for $X
+See $URL_READ_LOG/$X
+EOF
+                    fi
+                else
+                    cat <<EOF >> ${TMP_AUTOBUILD}-1
+$PACKAGE build is outdated for $X
+See $URL_READ_LOG/$X
+EOF
+                fi
+                chmod 664 $X
+                mv -f $X $LOG_DATA_BASE
+            done
+        # Send mail if something failed
+            if [ -s ${TMP_AUTOBUILD}-1 ]; then
+                MAIL_TO=`echo \`grep '^[^#]' email\``
+                if [ -n "$MAIL_TO" ]; then
+                    echo "Send report to $MAIL_TO" >> $SCRIPT_LOG
+                    mail -s "$PACKAGE nightly builds" $MAIL_TO < ${TMP_AUTOBUILD}-1
+                fi
+            else
+                echo "Everything is ok" >> $SCRIPT_LOG
+            fi
+        # Clean up things
+            rm -f ${TMP_AUTOBUILD}-1 ${TMP_AUTOBUILD}-2
+        fi
+        ;;
+esac
+
+# Sleep one hour and reexecute the script (or abort if it was a test)
+case "$1" in
+    test?)
+        echo $1 stopped
+        exit 0
+        ;;
+    *)
+        exec  $FULL_SCRIPT_NAME dodo
+        ;;
+esac

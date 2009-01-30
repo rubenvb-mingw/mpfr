@@ -1,0 +1,171 @@
+
+			MPFR Nightly Build
+
+1. Comment ca marche ?
+
+   Le gros probleme est de faire fonctionner un ensemble de machines
+tres disparates avec parfois de grosses limitations : par exemple,
+les machines du testdrives n'autorisent que le ftp de l'exterieur vers
+l'interieur, et une connection telnet. Pas de crontab. Rien. Pourtant
+il serait dommage de ne pas pouvoir s'en servir.
+
+   Du fait de toutes ces limitations, et devant le manque de solutions
+existantes satisfaisantes (elles etaient meilleures mais 
+necessitaient d'avoir plus de controle sur les machines), j'ai mis au point
+un systeme en 5 etapes qui se deroulent chaque nuit. Le script charge
+des builds de nuit s'occupe d'executer ce qu'il faut sur chaque machine
+(on doit le lancer sur chaque machine) en fonction de l'heure UTC:
+
+ A. Recuperation du CVS, preparation de la distribution,
+   construction de l'archive et envoie ces fichiers aux serveurs FTP et WEB.
+ B. Chaque groupe de machines recupere ces fichiers via FTP ou HTTP. 
+   J'appelle groupe de machines, un ensemble de machines partageant le
+   meme systeme de fichier NFS. Par exemple, il y a les machines du LORIA,
+   celles du MEDICIS et enfin celles des TESTDRIVE. Souvent dans un tel
+   groupe de machines, une seule machine est autorisee a se connecter a 
+   l'exterieur (C'est alors elle-seule qui doit faire cette tache pour
+   le groupe).
+ C. Compilation et sauvegarde des logs sur chaque machine.
+ D. Envoie des LOGS aux serveurs FTP.
+ E. On parse les fichiers LOGS et on envoie ou non un mail signalant une 
+   erreur. On stocke egalement les LOGS courants dans une adresse mail.
+
+   L'ensemble des fichiers doivent etre stockees localement dans
+$HOME/$BASE_DIR (Les logs, le script et le tarball).
+
+   Il est necessaire que le serveur FTP soit celui d'une des machines des
+testdrives. Il est egalement necessaire de pouvoir utiliser le FTP
+sans taper le mot de passe (Cf man netrc pour stocker le MDP dans un fichier).
+
+ On peut resumer ce qui se passe par un petit dessin:
+
+La partie A est globale (une seule instance pour toutes les machines) :
+
+ Serveur CVS <--> Construction archive  <--> Serveurs testdrive FTP
+    					<--> Serveur WEB
+La partie D aussi :
+
+   Serveur testdrive FTP <--> Construction rapport <--> Serveur de mail
+
+Les parties B et D sont locales a un groupe de machines partageant le
+meme systeme de fichier NFS:
+ 
+ Serveur Testdrive FTP  <--> Recuperation et mise a jour des fichiers
+ Serveur WEB            <-->
+
+ Envoie des LOGS locaux <--> Serveur testdrive FTP
+
+La partie C est propre a chaque machine. C'est le build lui-memme.
+Il ne fait aucune connection avec le monde exterieur.
+
+   Chaque partie laisse au minimum 1h a la partie precedente le temps de 
+se terminer. A noter que recuperer les mises a jours des fichiers par
+FTP est une faille de securite enorme : comme le MDP est transmis en clair,
+n'importe qui peut le recuperer, et donc corrompre les mises a jour des 
+fichiers. Ca n'a aucune inscidence sur le testdrive (apres tout s'il a le MDP
+il peut deja faire n'importe quoi et ceci de maniere directe), mais si une 
+machine exterieure utilise ces fichiers et pas les fichiers via le WEB,
+le mechant peut faire executer ce qu'il veut sur cette machine (Il suffit
+de corrompre le script ou le Makefile)...
+
+
+2. Mise en place pour MPFR.
+
+   Il faut un compte Medicis (Optionnel).
+   Il faut un compte Loria (si, si).
+   Il faut un compte Testdrive (obbligatoire) et pouvoir se logguer sur
+la machine spe149.testdrive.hp.com (sinon mettre a jour le script).
+
+   Sur chaque filesystem, il faut creer un nouveau repertoire
+dans $HOME : mpfr_nightly_build 
+   Copier dans ce repertoire le script mpfr-nightly-build
+disponible a http://www.mpfr.org/mpfr_nightly_build/mpfr-nightly-build
+   Le rendre executable.
+
+   L'executer sur toutes les machines :
+    mpfr_nightly_build/mpfr-nightly-build
+   L'executable se met automatiquement en tache de fond et se detache
+du shell. Il detecte aussi si une instance precedente des builds existait.
+   "dixsept" est le serveur principal : charge de recuperer les CVS, de
+transmettre les mises a jour, de faire le rapport, et d'envoyer les mails.
+Les autres machines sont optionnelles.
+Sauf la machine "login.medicis.polytechnique.fr" : si le script
+ne fonctionne pas sur elle, les machines "marie", "laurent", etc ne pourront
+pas mettre a jour les fichiers et envoyer les logs.
+
+3. Modifier les options
+
+   On peut changer pas mal d'options dans le script. Les options
+changeables sont documentees dans le script. Il est juste important
+de modifier seulement la version qui tourne sur la machine chargee
+d'envoyer les mises a jour (ici dixsept, ie il faut que ca soit
+modifie sur votre compte du loria), autrement le systeme de mise 
+a jour va annuler vos modifications !
+
+  Pour ajouter quelqu'un dans la cible du mail, il suffit d'editer
+la variable MAIL_TO. Etc.
+
+3. Ajouter une nouvelle machine.
+
+  Lorsqu'on ajoute une nouvelle machine, deux cas se presentent:
+
+  a. La machine fait partie d'un reseau NFS ou le systeme de build fonctionne.
+   Il suffit alors d'editer le script pour ajouter cette machine dans les
+options locales du script. Par exemple, la machine lamaxe du loria:
+
+ lamaxe.loria.fr)   GMP_DIR=/users/spaces/logiciels/gmp-4.1.4/k7/ 
+                  LOG_NAME=lamaxe.log ;;
+
+ Le premier parametre doit etre le nom de la machine (via $HOST).
+ Ensuite, generalement il faut donner le repertoire ou se trouve GMP.
+ On peut aussi donner d'autres options locales (ici le nom du build).
+
+ Avant de le lancer en tache de fond, on peut vouloir tester si le build
+fonctionne. Executer alors sur lamaxe:
+  
+  mpfr_nightly_build/mpfr-nightly-build test3
+ 
+ pour tester la partie C des builds de nuit (le build lui-meme).
+ Si tout se passe bien, 
+   mpfr_nightly_build/lamaxe.log.gz contient le log.
+
+ Dans ce cas, il suffit de le lancer en tache de fond:
+   mpfr_nightly_build/mpfr-nightly-build
+
+ b. La machine ne fait pas partie d'un reseau NFS ou le systeme de build
+ fonctionne. Il suffit alors d'editer le script pour ajouter cette machine
+ dans les options locales du script tout en specifiant qu'elle doit recuperer
+ les mises a jour et envoyer les logs. Par exemple, la machine cochone
+ de laurent:
+
+ cochone.lateralis.org) GMP_DIR=$HOME/cochone/ 
+			DO_GET_DIST=yes
+			DO_SEND_LOG=yes;;
+	                LOG_NAME=cochone.log ;;
+
+  Creer le repertoire mpfr_nightly_build.
+  Y copier le script. Le rendre executable.
+  Mettre a jour le '.netrc' de cette machine.
+
+ Avant de le lancer en tache de fond, on peut vouloir tester si le build
+fonctionne. Executer alors sur lamaxe:
+  
+  mpfr_nightly_build/mpfr-nightly-build test2 # Recupere mise a jour
+  mpfr_nightly_build/mpfr-nightly-build test3 # Build
+  mpfr_nightly_build/mpfr-nightly-build test4 # Envoie le log
+
+ A noter que le test2 ne s'arrete pas : il faut l'arreter quand on pense
+ qu'il a fini, et qu'il est passe en veille. (Limitation).
+
+ Si tout se passe bien, 
+   mpfr_nightly_build/cochonne.log.gz contient le log.
+ Et il est meme stocke sur le serveur FTP.
+
+ Dans ce cas, il suffit de le lancer en tache de fond:
+   mpfr_nightly_build/mpfr-nightly-build
+
+4. Les messages d'erreur.
+
+ Les messages d'erreur sont soit stockees dans le fichier nohup.out
+ ou dans /tmp/mpfr-nightly-build-log (local a chaque machine).
+
