@@ -1,0 +1,46 @@
+diff -Naur mpfr-2.1.1/exp_2.c mpfr-2.1.1-p1/exp_2.c
+--- mpfr-2.1.1/exp_2.c	2004-08-24 14:00:42.000000000 +0000
++++ mpfr-2.1.1-p1/exp_2.c	2005-03-09 07:52:34.226856000 +0000
+@@ -1,7 +1,7 @@
+ /* mpfr_exp_2 -- exponential of a floating-point number
+                 using Brent's algorithms in O(n^(1/2)*M(n)) and O(n^(1/3)*M(n))
+ 
+-Copyright 1999, 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 1999, 2000, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -147,7 +147,7 @@
+       mpfr_sub (r, x, r, GMP_RNDU);
+       /* possible cancellation here: the error on r is at most
+ 	 3*2^(EXP(old_r)-EXP(new_r)) */
+-      if (MPFR_IS_NEG (r))
++      while (MPFR_IS_NEG (r))
+ 	{ /* initial approximation n was too large */
+ 	  n--;
+ 	  mpfr_add (r, r, s, GMP_RNDU);
+diff -Naur mpfr-2.1.1/tests/texp.c mpfr-2.1.1-p1/tests/texp.c
+--- mpfr-2.1.1/tests/texp.c	2005-01-29 11:36:41.000000000 +0000
++++ mpfr-2.1.1-p1/tests/texp.c	2005-03-05 01:25:57.000000000 +0000
+@@ -346,6 +346,21 @@
+       exit (1);
+     }
+ 
++  /* Bug due to wrong approximation of (x)/log2 */
++  mpfr_set_prec (x, 163);
++
++  mpfr_set_str (x, "-4.28ac8fceeadcda06bb56359017b1c81b85b392e7", 16,
++		GMP_RNDN);
++  mpfr_exp (x, x, GMP_RNDN);
++  if (mpfr_cmp_str (x, "3.fffffffffffffffffffffffffffffffffffffffe8@-2",
++		    16, GMP_RNDN))
++    {
++      printf ("Error for x= -4.28ac8fceeadcda06bb56359017b1c81b85b392e7");
++      printf ("expected  3.fffffffffffffffffffffffffffffffffffffffe8@-2");
++      printf ("Got       ");
++      mpfr_out_str (stdout, 16, 0, x, GMP_RNDN); putchar ('\n');
++    }
++
+   mpfr_clear (x);
+   mpfr_clear (y);
+ }

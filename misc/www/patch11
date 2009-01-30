@@ -1,0 +1,57 @@
+*** div_ui.c	2000/12/21 17:08:37	1.18
+--- div_ui.c	2001/08/21 15:02:05	1.20
+***************
+*** 67,72 ****
+--- 67,78 ----
+      }
+  
+    MPFR_CLEAR_INF(y);
++   
++   if (MPFR_IS_ZERO(x))
++     {
++       MPFR_SET_ZERO(y);
++       return 0;
++     }
+  
+    TMP_MARK(marker);
+    xn = (MPFR_PREC(x)-1)/BITS_PER_MP_LIMB + 1;
+***************
+*** 95,104 ****
+      c <<= sh;
+      MPFR_EXP(y) += sh;
+  #endif
+!     c = mpn_divrem_1(tmp, dif, xp, xn, c);
+    }
+    else /* dif < 0 i.e. xn > yn */
+!     c = mpn_divrem_1(tmp, 0, xp-dif, yn, c);
+  
+    if (tmp[yn]==0) { tmp--; sh=0; MPFR_EXP(y) -= BITS_PER_MP_LIMB; }
+    /* shift left to normalize */
+--- 101,110 ----
+      c <<= sh;
+      MPFR_EXP(y) += sh;
+  #endif
+!     c = mpn_divrem_1 (tmp, dif, xp, xn, c);
+    }
+    else /* dif < 0 i.e. xn > yn */
+!     c = mpn_divrem_1 (tmp, 0, xp - dif, yn + 1, c);
+  
+    if (tmp[yn]==0) { tmp--; sh=0; MPFR_EXP(y) -= BITS_PER_MP_LIMB; }
+    /* shift left to normalize */
+***************
+*** 108,114 ****
+      yp[0] += tmp[0] >> (BITS_PER_MP_LIMB-sh);
+      MPFR_EXP(y) -= sh; 
+    }
+!   else MPN_COPY(yp, tmp+1, yn);
+  #ifdef DEBUG
+    printf("y="); mpfr_print_raw(y); putchar('\n');
+  #endif
+--- 114,120 ----
+      yp[0] += tmp[0] >> (BITS_PER_MP_LIMB-sh);
+      MPFR_EXP(y) -= sh; 
+    }
+!   else MPN_COPY(yp, tmp + 1, yn);
+  #ifdef DEBUG
+    printf("y="); mpfr_print_raw(y); putchar('\n');
+  #endif

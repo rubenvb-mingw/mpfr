@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>MPFR version 2.1.2</title>
+<link rel="shortcut icon" href="../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../styles/screen.css" media="screen,tv,projection" />
+<link rel="stylesheet" type="text/css" href="../styles/print.css" media="print" />
+<link rel="top" title="The MPFR Library" href="../index.html" />
+<link rel="up" title="The MPFR Library" href="../index.html" />
+</head>
+
+<body>
+
+<div class="logo"><a href="../index.html"><img src="../mpfr100.png" height="40" width="100" alt="[MPFR]" /></a></div>
+
+<h1><acronym>MPFR</acronym> version 2.1.2 (released on 3 August 2005)</h1>
+
+<div>[<a href="#download">download</a>]
+[<a href="#doc">documentation</a>]
+[<a href="#bugs">bugs</a>]
+[<a href="#changes">changes</a>]</div>
+
+<p><acronym>MPFR</acronym> 2.1.2 requires <acronym>GMP</acronym> 4.1.0
+or higher. This is the latest version of the 2.1 branch, which is no
+longer supported (newly discovered bugs will probably never be fixed
+on this branch). Please upgrade to <acronym>MPFR</acronym> 2.2.0 (or
+higher, when new versions are released).</p>
+
+<h2 id="download">Download</h2>
+
+<p><acronym>MPFR</acronym> 2.1.2 can be downloaded in the following archive
+formats:</p>
+<ul>
+<li><a href="mpfr-2.1.2.tar.bz2">mpfr-2.1.2.tar.bz2</a>
+(tar/bzip2, 486&nbsp;<abbr>KB</abbr>)
+(<a href="mpfr-2.1.2.tar.bz2.asc" title="GnuPG signature for mpfr-2.1.2.tar.bz2">signature</a>),</li>
+<li><a href="mpfr-2.1.2.tar.gz">mpfr-2.1.2.tar.gz</a>
+(tar/gzip, 609&nbsp;<abbr>KB</abbr>)
+(<a href="mpfr-2.1.2.tar.gz.asc" title="GnuPG signature for mpfr-2.1.2.tar.gz">signature</a>),</li>
+<li><a href="mpfr-2.1.2.zip">mpfr-2.1.2.zip</a>
+(zip, 862&nbsp;<abbr>KB</abbr>)
+(<a href="mpfr-2.1.2.zip.asc" title="GnuPG signature for mpfr-2.1.2.zip">signature</a>).</li>
+</ul>
+<p>The signatures can be checked with
+<a href="http://www.komite.net/laurent/A1696D2B.asc">Laurent Fousse's key</a>
+(or grab this key <samp>A1696D2B</samp> from the keyserver
+<samp>keyserver.noreply.org</samp>).</p>
+
+<p><acronym>MPFR</acronym> is also available as the official
+<a href="http://packages.debian.org/unstable/libdevel/libmpfr-dev">Debian
+package libmpfr-dev</a>.</p>
+
+<h2 id="doc">Documentation</h2>
+
+<ul>
+<li>The reference manual:
+[<a href="mpfr.html" title="Reference manual in HTML format">html</a>]
+[<a href="mpfr.dvi.gz" title="Reference manual in DVI format">dvi</a>]
+[<a href="mpfr.ps.gz" title="Reference manual in Postscript format">ps</a>]
+[<a href="mpfr.pdf" title="Reference manual in PDF format">pdf</a>]</li>
+<li>The reference manual of <acronym>MPFR</acronym> 2.1.0
+<a href="http://na-inet.jp/na/mpfr-ja.html">translated into Japanese</a>.</li>
+</ul>
+
+<h2 id="bugs">Bugs</h2>
+
+<p><a name="fixed">Fixed bug:</a> exp(-eps) is somtimes wrong when
+rounding toward zero (the test is also wrong). This is fixed by the
+<a href="patch01"><code>mpfr_exp</code> patch</a> (with updated tests).</p>
+
+<p>In addition to the bugs mentioned in the <samp>BUGS</samp> file:</p>
+
+<ul>
+
+<li>There are possible bugs with huge precisions (greater than
+2<sup>30</sup>) and with exponent ranges that do not allow to
+represent some numbers, such as 1 or 1/2.</li>
+
+<li>In <code>mpfr_get_ld</code>, the rounding direction can be wrong
+if |<var>x</var>| &lt; <code>LDBL_MIN</code>.</li>
+
+</ul>
+
+<p>The following bugs are present in <acronym>MPFR</acronym> 2.1.2,
+but are fixed in the 2.2 branch and above:</p>
+
+<ul>
+
+<li>Memory leak in <code>mpfr_sum</code> (more precisely, in the
+<code>mpfr_count_sort</code> internal function).</li>
+
+<li><code>MPN_COPY</code> may call <code>memcpy</code> with identical
+source and destination pointers; this is incorrect and may lead to an
+incorrect behavior with some (rare?) C implementations.</li>
+
+<li>On some architectures, <code>unsigned long</code> bit-fields are used
+(this is a <acronym>GCC</acronym> extension and may not be supported by
+other compilers).</li>
+
+<li>Small bugs in <code>mpfr_set_str_binary</code> internal function;
+they should not have any consequences with the current code.</li>
+
+</ul>
+
+<h2 id="changes">Changes from version <a href="../mpfr-2.1.1/index.html">2.1.1</a> to version 2.1.2</h2>
+
+<ul>
+
+<li>Bug fixes.</li>
+
+<li>Added <acronym title="Frequently Asked Questions">FAQ</acronym>.</li>
+
+</ul>
+
+<p><a href="../index.html">Back to the <cite><acronym>MPFR</acronym></cite>
+page.</a></p>
+
+<hr />
+
+<div class="footer"><a href="http://validator.w3.org/check/referer"><img
+  src="http://www.w3.org/Icons/valid-xhtml10"
+  alt="Valid XHTML 1.0!" height="31" width="88" /></a></div>
+
+</body>
+
+</html>

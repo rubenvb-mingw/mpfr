@@ -1,0 +1,164 @@
+diff -Naur mpfr-2.1.1-p5/set_ld.c mpfr-2.1.1-p6/set_ld.c
+--- mpfr-2.1.1-p5/set_ld.c	2004-02-16 14:30:43.000000000 +0000
++++ mpfr-2.1.1-p6/set_ld.c	2005-04-21 14:12:23.000000000 +0000
+@@ -1,7 +1,7 @@
+ /* mpfr_set_ld -- convert a machine long double to
+                   a multiple precision floating-point number
+ 
+-Copyright 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -110,21 +110,28 @@
+               d = d / div9; /* exact */
+               shift_exp += 512;
+             }
+-          mpfr_set_ui (u, 0, GMP_RNDZ);
+         }
+       else
+         {
++          long double div9, div10, div11;
++          div9 = (long double) (double) 7.4583407312002067432909653e-155;
++          /* div9 = 2^(-2^9) */
++          div10 = div9  * div9;  /* 2^(-2^10) */
++          div11 = div10 * div10; /* 2^(-2^11) if extended precision */
+           /* since -DBL_MAX <= d <= DBL_MAX, the cast to double should not
+              overflow here */
+ 	  inexact = mpfr_set_d (u, (double) d, GMP_RNDN);
+ 	  MPFR_ASSERTD(inexact == 0);
+-	  if (MPFR_IS_ZERO (u) && (d != (long double) 0.0)) /* underflow */
+-	    {
+-	      long double div10, div11, div12, div13;
+-	      div10 = (long double) (double) 5.5626846462680034577255e-309; /* 2^(-2^10) */
+-	      div11 = div10 * div10; /* 2^(-2^11) */
+-	      div12 = div11 * div11; /* 2^(-2^12) */
+-	      div13 = div12 * div12; /* 2^(-2^13) */
++          if (d != (long double) 0.0 &&
++              ABS(d) < div10 &&
++              div11 != (long double) 0.0 &&
++              div11 / div10 == div10) /* possible underflow */
++            {
++              long double div12, div13;
++              /* After the divisions, any bit of d must be >= div10,
++                 hence the possible division by div9. */
++              div12 = div11 * div11; /* 2^(-2^12) */
++              div13 = div12 * div12; /* 2^(-2^13) */
+ 	      if (ABS(d) <= div13)
+ 		{
+ 		  d = d / div13; /* exact */
+@@ -145,12 +152,20 @@
+ 		  d = d / div10; /* exact */
+ 		  shift_exp -= 1024;
+ 		}
++	      if (ABS(d) <= div9)
++		{
++		  d = d / div9;  /* exact */
++		  shift_exp -= 512;
++		}
+ 	    }
++          else
++            {
++              mpfr_add (t, t, u, GMP_RNDN); /* exact */
++              if (!mpfr_number_p (t))
++                break;
++              d = d - (long double) mpfr_get_d1 (u); /* exact */
++            }
+         }
+-      mpfr_add (t, t, u, GMP_RNDN); /* exact */
+-      if (!mpfr_number_p (t))
+-        break;
+-      d = d - (long double) mpfr_get_d1 (u); /* exact */
+     }
+   /* now t is exactly the input value d */
+   inexact = mpfr_set (r, t, rnd_mode);
+diff -Naur mpfr-2.1.1-p5/tests/tset_ld.c mpfr-2.1.1-p6/tests/tset_ld.c
+--- mpfr-2.1.1-p5/tests/tset_ld.c	2005-04-04 13:58:41.000000000 +0000
++++ mpfr-2.1.1-p6/tests/tset_ld.c	2005-04-21 13:00:38.000000000 +0000
+@@ -23,6 +23,9 @@
+ #include <stdlib.h>
+ #include <float.h>
+ #include <time.h>
++#if WITH_FPU_CONTROL
++#include <fpu_control.h>
++#endif
+ 
+ #include "mpfr-test.h"
+ 
+@@ -90,27 +93,42 @@
+ static void
+ test_small (void)
+ {
+-  mpfr_t x, y;
++  mpfr_t x, y, z;
+   long double d;
+ 
+   mpfr_init2 (x, 64);
+   mpfr_init2 (y, 64);
++  mpfr_init2 (z, 64);
+ 
+   mpfr_set_str (x, "0.1010010100111100110000001110101101000111010110000001111101110011E-16381", 2, GMP_RNDN);
+-  mpfr_get_ld (x, GMP_RNDN);  /* infinite loop? */
++  d = mpfr_get_ld (x, GMP_RNDN);  /* infinite loop? */
+   mpfr_set_ld (y, d, GMP_RNDN);
+-  mpfr_sub (y, x, y, GMP_RNDN);
+-  mpfr_abs (y, y, GMP_RNDN);
+-  if (mpfr_cmp_str (y, "1E-16434", 2, GMP_RNDN) > 0)
++  mpfr_sub (z, x, y, GMP_RNDN);
++  mpfr_abs (z, z, GMP_RNDN);
++  mpfr_clear_erangeflag ();
++  /* If long double = double, d should be equal to 0;
++     in this case, everything is OK. */
++  if (d != 0 && (mpfr_cmp_str (z, "1E-16434", 2, GMP_RNDN) > 0 ||
++                 mpfr_erangeflag_p ()))
+     {
+-      printf ("Error with ");
++      printf ("Error with x = ");
++      mpfr_out_str (NULL, 10, 20, x, GMP_RNDN);
++      printf (" = ");
+       mpfr_out_str (NULL, 16, 0, x, GMP_RNDN);
++      printf ("\n        -> d = %.20Lg", d);
++      printf ("\n        -> y = ");
++      mpfr_out_str (NULL, 10, 20, y, GMP_RNDN);
++      printf (" = ");
++      mpfr_out_str (NULL, 16, 0, y, GMP_RNDN);
++      printf ("\n        -> |x-y| = ");
++      mpfr_out_str (NULL, 16, 0, z, GMP_RNDN);
+       printf ("\n");
+       exit (1);
+     }
+ 
+   mpfr_clear (x);
+   mpfr_clear (y);
++  mpfr_clear (z);
+ }
+ 
+ int
+@@ -120,6 +138,16 @@
+   mpfr_t x;
+   int i;
+   mp_exp_t emax;
++#if WITH_FPU_CONTROL
++  fpu_control_t cw;
++
++  if (argc > 1)
++    {
++      cw = strtol(argv[1], NULL, 0);
++      printf ("FPU control word: 0x%x\n", (unsigned int) cw);
++      _FPU_SETCW (cw);
++    }
++#endif
+ 
+   check_gcc33_bug ();
+ 
+@@ -170,7 +198,9 @@
+   check_set_get (-d, x);
+ 
+   /* checks the smallest power of two */
+-  d = 1.0; while ((e = d / 2.0) != (long double) 0.0) d = e;
++  d = 1.0;
++  while ((e = d / 2.0) != (long double) 0.0 && e != d)
++    d = e;
+   check_set_get (d, x);
+   check_set_get (-d, x);
+ 

@@ -1,0 +1,5 @@
+/* Global stylesheet for print media */
+
+@import "visual.css";
+
+img { border: 0 }

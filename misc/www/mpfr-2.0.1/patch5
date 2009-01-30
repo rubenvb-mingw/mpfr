@@ -1,0 +1,15 @@
+*** mpfr-impl.h.orig	Wed Jun 26 17:00:23 2002
+--- mpfr-impl.h	Wed Jun 26 17:02:25 2002
+***************
+*** 42,47 ****
+--- 42,51 ----
+  #error "BITS_PER_MP_LIMB must be a power of 2"
+  #endif
+  
++ #ifdef GMP_LIMB_HIGHBIT
++ #define MP_LIMB_T_HIGHBIT GMP_LIMB_HIGHBIT
++ #endif
++ 
+  #define MPFR_INTPREC_MAX (ULONG_MAX & ~(unsigned long) (BITS_PER_MP_LIMB - 1))
+  
+  /* Assertions */

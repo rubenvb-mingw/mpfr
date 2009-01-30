@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<title>Documentation on MPFR-2.0.1 and known bugs</title>
+<h1>Documentation on MPFR-2.0.1</h1>
+
+<li> <a href="http://www.mpfr.org/sheet.ps.gz">MPFR in two pages</a>
+
+<li> The reference manual [<a href="mpfr.dvi.gz">dvi</a>,
+<a href="mpfr.ps.gz">ps</a>, <a href="mpfr.pdf.gz">pdf</a>]
+
+<li> A <a href="http://www.mpfr.org/arith15.ps.gz">presentation</a> at the 
+<a href="http://arith15.polito.it/">Arith'15</a>
+workshop organized by David Hough
+
+<h1>Known bugs</h1>
+
+<li> The function <tt>mpfr_cmp_si(b,i)</tt> returns an incorrect result
+     when b=0 and i is negative.
+     Apply the following <a href="patch1a">patch</a> to fix that.
+<p>
+<li> On some machines, the <tt>tget_d</tt> test fails:<br>
+<center>
+<tt>Wrong result for -17 * 2^(-1079), rnd_mode 0</tt><br>
+<tt>got -0.00000000000000000000e+00 instead of -4.94065645841246540000e-324</tt><br>
+</center>
+This is a bug in gcc, which makes the <tt>mpfr_get_d</tt> function fail for
+subnormal numbers. Apply the following <a href="patch2">patch</a> to fix that.
+<p>
+<li> The function <tt>mpfr_pow</tt> loops for exact results like 4.0 power
+0.5, or does not deal correctly with overflows.
+Apply the following <a href="patch3a">patch</a> to fix that
+<p>
+<li> The function <tt>mpfr_set_q</tt> produces an error when the numerator or
+     denominator is one. Apply the following <a href="patch4">patch</a>.
+<p>
+<li> If you want to compile mpfr-2.0.1 with gmp-4.1, you will have a problem
+     since the GMP developers changed the name of the macro 
+     <tt>MP_LIMB_T_HIGHBIT</tt>. Apply the following <a href="patch5">patch</a>
+     to the file <tt>mpfr-impl.h</tt>.
+<p>
+<li> The function <tt>mpfr_set_str</tt> doesn't accept uppercase letters as
+     <tt>mpf_set_str</tt> does. Apply the following <a href="patch6a">patch</a>
+     to the file <tt>set_str.c</tt>.
+<p>
+<li> The function <tt>mpfr_sub</tt> sometimes return a wrong inexact flag
+     for arguments of opposite sign. The computed result is correct: this
+     only affect the inexact flag. <a href="patch7">Patch</a>.
+<p>
+<li> The function <tt>mpfr_urandomb</tt> sometimes produces a Segmentation
+     fault. <a href="patch8">Patch</a>.
+<p>
+<li> The function <tt>mpfr_exp</tt> may return a wrong result for large 
+     argument. <a href="patch9">Patch</a>.
+
+<p>
+<li> The function <tt>mpfr_agm</tt> produces a division by zero exception
+     when its arguments are too close. <a href="patch10a">Patch</a>.
+
+<p>
+<li> The function <tt>mpfr_out</tt> fails when its first argument is NULL.
+     <a href="patch11">Patch</a>.

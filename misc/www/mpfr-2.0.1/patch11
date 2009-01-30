@@ -1,0 +1,13 @@
+--- out_str.c	Mon Apr 15 14:51:05 2002
++++ out_str.c.new	Fri Oct 10 09:57:12 2003
+@@ -35,6 +35,10 @@
+   size_t l;
+   mp_exp_t e;
+ 
++  /* when stream=NULL, output to stdout */
++  if (stream == NULL)
++    stream = stdout;
++
+   if (MPFR_IS_NAN(op))
+     {
+       fprintf (stream, "NaN");

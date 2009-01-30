@@ -1,0 +1,32 @@
+<title>Frequently Asked Questions about MPFR 2.0.1</title>
+<center><h1>Frequently Asked Questions about MPFR 2.0.1</h1></center>
+<p>
+
+<li> <b>What are the differences between MPF from GMP and MPFR?</b> <br>
+Unlike MPF, the precision of a MPFR variable is the <i>exact</i> number
+of bits used for its mantissa. This implies that MPFR results do not depend
+on the number of bits (32 or 64 or more) of the underlying architecture.
+Also, MPFR provides an additional rounding mode argument to its functions;
+furthermore, it is guaranteed that the result of any operation is the nearest
+possible floating-point value from the exact result (considering the input
+variables as exact values), taking into account the precision of the 
+destination variable.
+<p>
+<li> <b>How to convert my program written using MPF to MPFR?</b> <br>
+You need to add 'r' to the function names, and to specify the rounding mode
+(GMP_RNDD for rounding towards -infinity, GMP_RNDZ for rounding towards zero,
+GMP_RNDU for rounding towards +infinity, and GMP_RNDN for rounding to nearest).
+You can also define macros as follows: <br>
+<ul><tt>#define mpf_add(a, b, c) mpfr_add(a, b, c, GMP_RNDN)</tt></ul>
+The header file <tt>mpf2mpfr.h</tt> from the MPFR distribution automatically
+redefines all MPF functions in this way, using the default MPFR rounding
+mode <tt>__gmp_default_rounding_mode</tt>. Thus you simply need to add in
+all your files using MPF functions the following line:
+<ul><tt>#include "mpf2mpfr.h"</tt></ul>
+just after the <tt>gmp.h</tt> and <tt>mpfr.h</tt> header files.
+<p>
+<li> <b>Are there bugs in MPFR?</b> <br>
+Yes there are surely several bugs.
+Here is a <a href="bugs.html">list</a> of known bugs.
+Please send new bugs to us.
+<p>

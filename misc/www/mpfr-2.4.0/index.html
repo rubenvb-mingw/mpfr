@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>GNU MPFR version 2.4.0</title>
+<link rel="shortcut icon" href="../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../styles/screen.css" media="screen,tv,projection" />
+<link rel="stylesheet" type="text/css" href="../styles/print.css" media="print" />
+<link rel="top" title="The MPFR Library" href="../index.html" />
+<link rel="up" title="The MPFR Library" href="../index.html" />
+</head>
+
+<body>
+
+<div class="logo"><a href="../index.html"><img src="../mpfr100.png" height="40" width="100" alt="[MPFR]" /></a></div>
+
+<h1><acronym>GNU</acronym> <acronym>MPFR</acronym> version 2.4.0
+(released on 26 January 2009)</h1>
+
+<div>[<a href="#download">download</a>]
+[<a href="#doc">documentation</a>]
+[<a href="#bugs">bugs</a>]
+[<a href="#changes">changes</a>]
+[<a href="#platforms">platforms</a>]</div>
+
+<p>The <em lang="fr" xml:lang="fr">andouillette sauce moutarde</em> release.</p>
+
+<p><acronym>MPFR</acronym> 2.4.0 requires <acronym>GMP</acronym> 4.1.0
+or higher (<acronym>GMP</acronym> 4.2.3 or higher is recommended).</p>
+
+<h2 id="download">Download</h2>
+
+<p>The <acronym>MPFR</acronym> 2.4.0 source can be downloaded in the
+following archive formats:</p>
+<ul>
+<li><a href="mpfr-2.4.0.tar.lzma">mpfr-2.4.0.tar.lzma</a>
+(tar/lzma, 882&nbsp;<abbr>KB</abbr>,
+<a href="mpfr-2.4.0.tar.lzma.asc" title="PGP signature for mpfr-2.4.0.tar.lzma">signature</a>),</li>
+<li><a href="mpfr-2.4.0.tar.bz2">mpfr-2.4.0.tar.bz2</a>
+(tar/bzip2, 1.1&nbsp;<abbr>MB</abbr>,
+<a href="mpfr-2.4.0.tar.bz2.asc" title="PGP signature for mpfr-2.4.0.tar.bz2">signature</a>),</li>
+<li><a href="mpfr-2.4.0.tar.gz">mpfr-2.4.0.tar.gz</a>
+(tar/gzip, 1.4&nbsp;<abbr>MB</abbr>,
+<a href="mpfr-2.4.0.tar.gz.asc" title="PGP signature for mpfr-2.4.0.tar.gz">signature</a>),</li>
+<li><a href="mpfr-2.4.0.zip">mpfr-2.4.0.zip</a>
+(zip, 1.7&nbsp;<abbr>MB</abbr>,
+<a href="mpfr-2.4.0.zip.asc" title="PGP signature for mpfr-2.4.0.zip">signature</a>).</li>
+</ul>
+
+<p><acronym>MPFR</acronym> is also available via
+<a href="../ports.html">third-party packages and ports</a>.</p>
+
+<h2 id="doc">Documentation</h2>
+
+<ul>
+
+<li>The reference manual:
+[<a href="mpfr.html" title="Reference manual in HTML format">html</a>]
+[<a href="mpfr.dvi.gz" title="Reference manual in DVI format">dvi</a>]
+[<a href="mpfr.ps.gz" title="Reference manual in Postscript format">ps</a>]
+[<a href="mpfr.pdf" title="Reference manual in PDF format">pdf</a>]</li>
+
+<li>The <a href="../faq.html"><acronym>MPFR</acronym>
+<acronym title="Frequently Asked Questions">FAQ</acronym></a>
+(common to all <acronym>MPFR</acronym> versions).</li>
+
+</ul>
+
+<h2 id="bugs">Bugs</h2>
+
+<p>See the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php/tags/2.4.0/BUGS?rev=5892&amp;root=mpfr&amp;view=markup"><samp>BUGS</samp></a> file.</p>
+
+<h2 id="changes">Changes from versions 2.3.* to version 2.4.0</h2>
+
+<ul>
+
+<li><acronym>MPFR</acronym> is now a <acronym>GNU</acronym> package.</li>
+
+<li>Changes in the behavior of <code>mpfr_strtofr</code> and in
+its documentation concerning particular cases where the code and
+the documentation did not match; this change is also present in
+<acronym>MPFR</acronym> 2.3.1.</li>
+
+<li>Behavior of <code>mpfr_check_range</code> changed: if the value is an
+inexact infinity, the <em>overflow</em> flag is set (in case it was lost);
+this change is also present in <acronym>MPFR</acronym> 2.3.2.</li>
+
+<li>Function <code>mpfr_init_gmp_rand</code> (only defined when building
+<acronym>MPFR</acronym> without the <samp>--with-gmp-build</samp> configure
+option) is no longer defined at all. This function was private and not
+documented, and was used only in the <acronym>MPFR</acronym> test suite.
+User code that calls it is regarded as broken and may fail as a consequence.
+Running the old test suite against <acronym>MPFR</acronym> 2.4.0 may also
+fail.</li>
+
+<li>New functions:
+<ul>
+<li>between a <acronym>MPFR</acronym> number and a double:
+<code>mpfr_add_d</code>, <code>mpfr_sub_d</code>, <code>mpfr_d_sub</code>,
+<code>mpfr_mul_d</code>, <code>mpfr_div_d</code>, <code>mpfr_d_div</code>;</li>
+<li>formatted input/output:
+<code>mpfr_printf</code>, <code>mpfr_fprintf</code>,
+<code>mpfr_vprintf</code>, <code>mpfr_vfprintf</code>,
+<code>mpfr_sprintf</code>, <code>mpfr_snprintf</code>,
+<code>mpfr_vsprintf</code>, <code>mpfr_vsnprintf</code>,
+<code>mpfr_asprintf</code>, <code>mpfr_vasprintf</code>;</li>
+<li><code>mpfr_sinh_cosh</code>, <code>mpfr_li2</code>,
+<code>mpfr_modf</code>, <code>mpfr_fmod</code>,
+<code>mpfr_rec_sqrt</code>.</li>
+</ul>
+</li>
+
+<li>Configure test for <acronym title="Thread Local Storage">TLS</acronym>
+support.</li>
+
+<li>Get default <samp>$CC</samp> and <samp>$CFLAGS</samp> from
+<samp>gmp.h</samp> (<code>__GMP_CC</code> / <code>__GMP_CFLAGS</code>,
+which are available as of <acronym>GMP</acronym> 4.2.3).</li>
+
+<li>Documented the fact that <code>mpfr_random</code> and
+<code>mpfr_random2</code> will be suppressed in the next release,
+and that the specification of <code>mpfr_eq</code> may change in
+the next release (for compatibility with the <acronym>mpf</acronym>
+layer of <acronym>GMP</acronym>).</li>
+
+<li>Bug fixes.</li>
+
+</ul>
+
+<h2 id="platforms">Platforms Known to Support <cite><acronym>MPFR</acronym></cite></h2>
+
+<p><cite><acronym>MPFR</acronym></cite> 2.4.0 has been successfully
+compiled and checked on the following platforms:</p>
+
+<ul>
+<li><samp>armv5tel-unknown-linux-gnueabi</samp> (<acronym>ARM</acronym>, <acronym>gcc</acronym> 4.3.2),</li>
+<li><samp>armv6l-unknown-linux-gnu</samp> (OMAP 2420 ARMv6-compatible processor rev 2, <acronym>gcc</acronym> 3.4.4),</li>
+<li><samp>i386-apple-darwin9.6.0</samp> (<acronym>gcc</acronym> 4.0.1),</li>
+<li><samp>i386-pc-solaris2.8</samp> (Generic i86pc, Sun Studio 11, Sun C 5.8 Patch 121016-07 2007/10/03, 32 bits),</li>
+<li><samp>i386-pc-solaris2.10</samp> (<acronym>AMD</acronym> Opteron, Sun Studio 12, Sun C 5.9 SunOS_i386 Patch 124868-08 2008/11/25, 64 bits),</li>
+<li><samp>i386-pc-solaris2.11</samp> (<acronym>gcc</acronym> 3.4.3),</li>
+<li><samp>i686-pc-cygwin</samp> (<acronym>gcc</acronym> 3.4.4),</li>
+<li><samp>i686-pc-linux-gnu</samp> (<acronym>gcc</acronym> 4.0.2),</li>
+<li><samp>i686-pc-linux-gnu</samp> (Xeon, <acronym>gcc</acronym> 3.3.3, 3.4.6, 4.1.3, 4.2.4 and 4.3.2, and Sun C 5.9),</li>
+<li><samp>i686-pc-mingw32</samp> (<acronym>gcc</acronym> 3.4.5),</li>
+<li><samp>ia64-unknown-linux-gnu</samp> (Itanium, <acronym>gcc</acronym> 4.1.2 and 4.3.0),</li>
+<li><samp>ia64-unknown-linux-gnu</samp> (Itanium, <acronym>icc</acronym> 10.1 and 11.0),</li>
+<li><samp>mips64el-unknown-linux-gnu</samp> (<acronym>gcc</acronym> 4.2.3),</li>
+<li><samp>powerpc-apple-darwin8.11.0</samp> (PowerPC G5, <acronym>gcc</acronym> 4.0.1, 32 and 64 bits),</li>
+<li><samp>powerpc-unknown-linux-gnu</samp> (PowerPC G4, <acronym>gcc</acronym> 4.1.2 prerelease and 4.3.2),</li>
+<li><samp>powerpc64-unknown-linux-gnu</samp> (POWER5, <acronym>gcc</acronym> 4.1.2 prerelease),</li>
+<li><samp>sparc-sun-solaris2.8</samp> (SPARCstation-20, Sun Studio 8, Sun C 5.5 Patch 112760-19 2007/08/02, 32 bits),</li>
+<li><samp>sparc-sun-solaris2.8</samp> (Sun-Fire-V210, Sun Studio 11, Sun C 5.8 Patch 121015-06 2007/10/03, 64 bits),</li>
+<li><samp>x86_64-unknown-linux-gnu</samp> (<acronym>AMD</acronym> Opteron, <acronym>gcc</acronym> 4.1.2 prerelease),</li>
+<li><samp>x86_64-unknown-linux-gnu</samp> (Intel Pentium D, <acronym>gcc</acronym> 4.3.3),</li>
+<li><samp>x86_64-unknown-linux-gnu</samp> (Xeon, <acronym>gcc</acronym> 3.4.6, 4.1.2, 4.2.4 and 4.3.2, and <acronym>icc</acronym> 11.0),</li>
+<li><samp>x86_64-unknown-linux-gnu</samp> (<acronym>AMD</acronym> Opteron, Open64 4.1 with <acronym>gcc</acronym> 3.3.1 driver),</li>
+<li>Microsoft Windows (Vista Ultimate x64), with Microsoft Visual Studio 2008 (32 and 64 bits).</li>
+</ul>
+
+<p>Note: the test coverage of <samp>make check</samp> is about 96.7% lines
+of code.</p>
+
+<p><a href="../index.html">Back to the <cite><acronym>MPFR</acronym></cite>
+page.</a></p>
+
+<hr />
+
+<div class="footer"><a href="http://validator.w3.org/check/referer"><img
+  src="http://www.w3.org/Icons/valid-xhtml10"
+  alt="Valid XHTML 1.0!" height="31" width="88" /></a></div>
+
+</body>
+
+</html>

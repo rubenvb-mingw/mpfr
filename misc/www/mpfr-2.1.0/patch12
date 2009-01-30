@@ -1,0 +1,43 @@
+diff -Naur mpfr-2.1.0-p11/exp.c mpfr-2.1.0-p12/exp.c
+--- mpfr-2.1.0-p11/exp.c	2004-05-06 09:56:48.000000000 +0000
++++ mpfr-2.1.0-p12/exp.c	2005-01-29 11:39:51.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* mpfr_exp -- exponential of a floating-point number
+ 
+-Copyright 1999, 2000, 2001, 2002, 2003, 2004 Free Software Foundation.
++Copyright 1999, 2000, 2001, 2002, 2003, 2004, 2005 Free Software Foundation.
+ Contributed by the Spaces project.
+ 
+ This file is part of the MPFR Library.
+@@ -82,9 +82,9 @@
+     {
+       int signx = MPFR_SIGN(x);
+ 
++      MPFR_SET_POS(y);
+       if (MPFR_IS_NEG_SIGN(signx) && (rnd_mode == GMP_RNDD))
+         {
+-          MPFR_SET_POS(y);
+           mpfr_setmax (y, 0);  /* y = 1 - epsilon */
+           return -1;
+         }
+diff -Naur mpfr-2.1.0-p11/tests/texp.c mpfr-2.1.0-p12/tests/texp.c
+--- mpfr-2.1.0-p11/tests/texp.c	2005-01-27 17:24:50.000000000 +0000
++++ mpfr-2.1.0-p12/tests/texp.c	2005-01-29 11:36:41.000000000 +0000
+@@ -31,6 +31,8 @@
+   mpfr_t x, y;
+ 
+   mpfr_inits2 (53, x, y, NULL);
++  /* y negative. If we forget to set the sign in mpfr_exp, we'll see it. */
++  mpfr_set_si (y, -1, GMP_RNDN);
+   mpfr_set_str1 (x, op);
+   mpfr_exp (y, x, rnd);
+   if (mpfr_cmp_str1 (y, res) )
+@@ -385,6 +387,8 @@
+   compare_exp2_exp3(500);
+   check_worst_cases();
+   check3("0.0", GMP_RNDU, "1.0");
++  check3("-1e-170", GMP_RNDU, "1.0");
++  check3("-1e-170", GMP_RNDN, "1.0");
+   check3("-8.88024741073346941839e-17", GMP_RNDU, "1.0");
+   check3("8.70772839244701057915e-01", GMP_RNDN, "2.38875626491680437269");
+   check3("1.0", GMP_RNDN, "2.71828182845904509080");

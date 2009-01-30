@@ -1,0 +1,121 @@
+<title>Using MPFR together with MPSolve</title>
+
+<h1>Using MPFR together with MPSolve</h1>
+
+MPSolve is a program to evaluate numerically all complex roots of a
+univariate polynomial. It was developed by Dario Bini and Giuseppe
+Fiorentino during the PoSSo and Frisco european projects. The latest
+version is <a href="http://www.dm.unipi.it/pages/bini/public_html/software/mps2.tar.gz">MPSolve v. 2.0</a>.
+<p>
+To install MPSolve, you first need to download 
+<a href="http://www.swox.se/gmp/">GMP</a>.
+If you use GMP 3.0 or later, you'll need to apply 
+the following <a href="patch1">patch1</a> to MPSolve, otherwise some tests
+will fail:<br>
+<ul><tt>
+% ./unisolve < DATA/mand127.pol<br>
+Segmentation fault<br>
+</tt></ul>
+<p>
+To use MPSolve with MPFR, you need to apply <a href="patch2">patch2</a>
+to MPSolve (requires patch1 first).
+You'll also need to add -DMPFR in the compiler options in the Makefile,
+and to add <tt>-Idir</tt> where <tt>dir</tt> is the directory where the files
+<tt>mpfr.h</tt> and <tt>mpf2mpfr.h</tt> are.
+The option <tt>-w</tt> will avoid the multiple warnings.
+In the loader options, you'll need to add <tt>-Idir</tt> and <tt>-lmpfr</tt>
+where <tt>dir</tt> is the directory where the <tt>libmpfr.a</tt> file is.
+<p>
+<center>
+Timings on leibniz.loria.fr (PIII-500 under Linux).
+<table border=1>
+<tr><td>polynomial</td><td>MPSolve</td><td>MPSolve+MPFR</td></tr>
+<tr><td>curtz100.pol</td><td>3.36</td><td>6.9</td></tr>
+<tr><td>exp50.pol</td><td>0.15</td><td>0.30</td></tr>
+<tr><td>exp100.pol</td><td>1.79</td><td>3.6</td></tr>
+<tr><td>exp200.pol</td><td>20.37</td><td>Error1</td></tr>
+<tr><td>geom_10</td><td>0.00</td><td>0.00</td></tr>
+<tr><td>geom_20.pol</td><td>0.01 (2)</td><td>0.02</td></tr>
+<tr><td>kam1.pol</td><td>0.000</td><td>0.000</td></tr>
+<tr><td>kam1_1.pol</td><td>0.000</td><td>0.000</td></tr>
+<tr><td>kam1_2.pol</td><td>0.000</td><td>0.000</td></tr>
+<tr><td>kam2.pol</td><td>0.000</td><td>0.000</td></tr>
+<tr><td>kam2_1.pol</td><td>0.000</td><td>0.000</td></tr>
+<tr><td>kam2_2.pol</td><td>0.000</td><td>0.010</td></tr>
+<tr><td>kam3.pol</td><td>0.000</td><td>0.000</td></tr>
+<tr><td>kam3_1.pol</td><td>0.000</td><td>0.000</td></tr>
+<tr><td>kam3_2.pol</td><td>0.000</td><td>0.010</td></tr>
+<tr><td>kam4.pol</td><td>0.01</td><td>0.030</td></tr>
+<tr><td>kats8.pol</td><td>941.08</td><td>>1000</td></tr>
+<tr><td>kir1_10.pol</td><td>2.39</td><td>Error1</td></tr>
+<tr><td>kir1_10_mod.pol</td><td>0.83</td><td>1.68</td></tr>
+<tr><td>kir1_20.pol</td><td>12.68</td><td>21.78</td></tr>
+<tr><td>kir1_20_mod.pol</td><td>3.29</td><td>6.03</td></tr>
+<tr><td>kir1_40.pol</td><td>>1000</td><td>Error1</td></tr>
+<tr><td>kir1_40_mod.pol</td><td>27.26</td><td>49.05</td></tr>
+<tr><td>kir1_symb.pol</td><td>0.000</td><td>0.000</td></tr>
+<tr><td>lar1.pol</td><td>0.000</td><td>0.010</td></tr>
+<tr><td>lar1_200.pol</td><td>0.13</td><td>0.13</td></tr>
+<tr><td>lar2.pol</td><td>0.000</td><td>0.010</td></tr>
+<tr><td>lar3.pol</td><td>0.000 (2)</td><td>0.010</td></tr>
+<tr><td>lar4.pol</td><td>0.02</td><td>0.02</td></tr>
+<tr><td>lar5.pol</td><td>0.01 (2)</td><td>0.01</td></tr>
+<tr><td>lsr1.pol</td><td>3.98</td><td>6.27</td></tr>
+<tr><td>lsr2.pol</td><td>3.64</td><td>5.75</td></tr>
+<tr><td>lsr3.pol</td><td>0.95</td><td>0.89</td></tr>
+<tr><td>lsr_200.pol</td><td>1.16</td><td>2.39</td></tr>
+<tr><td>lsr_24.pol</td><td>0.03</td><td>0.2</td></tr>
+<tr><td>mand31.pol</td><td>0.05</td><td>0.09</td></tr>
+<tr><td>mand63.pol</td><td>0.44</td><td>0.86</td></tr>
+<tr><td>mand127.pol</td><td>5.9</td><td>11.78</td></tr>
+<tr><td>mand255.pol</td><td>66.26</td><td>119.</td></tr>
+<tr><td>mand511.pol</td><td>912.7</td><td>Error1</td></tr>
+<tr><td>mand1023.pol</td><td>>1000</td><td></td></tr>
+<tr><td>mig1.pol</td><td>0.010</td><td>0.020</td></tr>
+<tr><td>mig1_100.pol</td><td>0.04</td><td>0.03</td></tr>
+<tr><td>mig1_200.pol</td><td>0.19</td><td>0.20</td></tr>
+<tr><td>mig1_500.pol</td><td>3.69</td><td>5.84</td></tr>
+<tr><td>mig1_500_1.pol</td><td>19.78</td><td>34.52</td></tr>
+<tr><td>mig2.pol</td><td>0.02</td><td>0.03</td></tr>
+<tr><td>multiple.pol</td><td>0.02</td><td>0.04</td></tr>
+<tr><td>multiple1.pol</td><td>0.39</td><td>0.74</td></tr>
+<tr><td>nektarios.pol</td><td>57.88</td><td>115.98</td></tr>
+<tr><td>nrooti50.pol</td><td>0.01</td><td>0.01</td></tr>
+<tr><td>nrooti100.pol</td><td>0.03</td><td>0.04</td></tr>
+<tr><td>nrooti200.pol</td><td>0.13</td><td>0.11</td></tr>
+<tr><td>nrooti400.pol</td><td>0.59</td><td>0.57</td></tr>
+<tr><td>nrooti800.pol</td><td>2.03</td><td>1.82</td></tr>
+<tr><td>nrooti1600.pol</td><td>6.10</td><td>5.57</td></tr>
+<tr><td>nrooti3200.pol</td><td>31.86</td><td>28.47</td></tr>
+<tr><td>nrooti6400.pol</td><td>127.97</td><td>130.95</td></tr>
+<tr><td>nrooti12800.pol</td><td>547.12</td><td>500.88</td></tr>
+<tr><td>nroots50.pol</td><td>0.01</td><td>0.01</td></tr>
+<tr><td>nroots100.pol</td><td>0.04</td><td>0.04</td></tr>
+<tr><td>nroots200.pol</td><td>0.14</td><td>0.17</td></tr>
+<tr><td>nroots400.pol</td><td>0.58</td><td>0.63</td></tr>
+<tr><td>nroots800.pol</td><td>1.91</td><td>2.1</td></tr>
+<tr><td>nroots1600.pol</td><td>9.21</td><td>9.90</td></tr>
+<tr><td>nroots3200.pol</td><td>48.89</td><td>52.43</td></tr>
+<tr><td>nroots6400.pol</td><td>99.56</td><td>102.23</td></tr>
+<tr><td>nroots12800.pol</td><td>411.11</td><td>381.61</td></tr>
+<tr><td>spiral.pol</td><td>0.11</td><td>0.18</td></tr>
+<tr><td>trv_m.pol</td><td>0.02</td><td>0.04</td></tr>
+<tr><td>umand31.pol</td><td>0.03</td><td>0.04</td></tr>
+<tr><td>umand63.pol</td><td>0.18</td><td>0.19</td></tr>
+<tr><td>umand127.pol</td><td>1.01</td><td>1.02</td></tr>
+<tr><td>umand255.pol</td><td>6.91</td><td>6.93</td></tr>
+<tr><td>umand511.pol</td><td>48.55</td><td>48.45</td></tr>
+<tr><td>umand1023.pol</td><td>368.49</td><td>367.29</td></tr>
+<tr><td>umand2047.pol</td><td>2874.75</td><td>Error3</td></tr>
+<tr><td>wilk.pol</td><td>0.05</td><td>0.08</td></tr>
+<tr><td>wilk1.pol</td><td>0.13</td><td>0.16</td></tr>
+<tr><td>wilk2.pol</td><td>0.07</td><td>0.14</td></tr>
+<tr><td>wilk_40.pol</td><td>0.56</td><td>1.11</td></tr>
+</table>
+Error1: !MP: reached the maximum number of packet iteration<br>
+(2): this test fails with GMP 3.0.1 with an error
+<tt>GNU MP assertion failed: ! (digits_computed_so_far == 0 && cy == 0)</tt>,
+but works with a new version of <a href="mul_2exp.c">mpf_mul_2exp</a><br>
+Error3: Segmentation fault
+</center>
+

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>MPFR version 2.0.3</title>
+<link rel="shortcut icon" href="../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../styles/screen.css" media="screen,tv,projection" />
+<link rel="stylesheet" type="text/css" href="../styles/print.css" media="print" />
+<link rel="top" title="The MPFR Library" href="../index.html" />
+<link rel="up" title="The MPFR Library" href="../index.html" />
+</head>
+
+<body>
+
+<div class="logo"><a href="../index.html"><img src="../mpfr100.png" height="40" width="100" alt="[MPFR]" /></a></div>
+
+<h1>MPFR version 2.0.3 (released 23 February 2004)</h1>
+
+<div>[<a href="mpfr-2.0.3.tar.gz">download</a>]
+[<a href="#doc">documentation</a>]
+[<a href="#bugs">bugs</a>]
+[<a href="#changes">changes</a>]</div>
+
+<h2><a name="doc">Documentation</a></h2>
+
+<ul>
+<li>The reference manual:
+[<a href="mpfr.html" title="Reference manual in HTML format">html</a>]
+[<a href="mpfr.dvi.gz" title="Reference manual in DVI format">dvi</a>]
+[<a href="mpfr.ps.gz" title="Reference manual in Postscript format">ps</a>]
+[<a href="mpfr.pdf" title="Reference manual in PDF format">pdf</a>]</li>
+</ul>
+
+<h2><a name="bugs">Bugs</a></h2>
+
+<p>On some rare cases, the <code>mpfr_sqrt</code> function does not
+return an exactly rounded result. This bug is fixed in this new
+<a href="sqrt.c"><samp>sqrt.c</samp></a> file.</p>
+
+<p>Functions <code>mpfr_add_z</code>, <code>mpfr_sub_z</code>,
+<code>mpfr_mul_z</code>, <code>mpfr_div_z</code> fail when an
+<code>mpz_t</code> number is 0. Please apply the
+<a href="patch-gmpop"><samp>gmp_op.c</samp> patch</a> to fix that.</p>
+
+<p>No other bugs than those mentioned in the <samp>BUGS</samp> file.</p>
+
+<h2><a name="changes">Changes from version 2.0.2 to version 2.0.3</a></h2>
+
+<ul>
+
+<li>Bug fixes (<code>mpfr_add_q</code>, <code>mpfr_add_z</code>,
+<code>mpfr_agm</code>, <code>mpfr_div_q</code>, <code>mpfr_div_z</code>,
+<code>mpfr_exp</code>, <code>mpfr_fac_ui</code>, <code>mpfr_frac</code>,
+<code>mpfr_gamma</code>, <code>mpfr_get_str</code>, <code>mpfr_hypot</code>,
+<code>mpfr_mul_q</code>, <code>mpfr_mul_z</code>, <code>mpfr_neg</code>,
+<code>mpfr_set_f</code>, <code>mpfr_sqrt</code>, <code>mpfr_sub1</code>,
+<code>mpfr_sub_q</code>, <code>mpfr_sub_z</code>, <code>mpfr_zeta</code>,
+<code>mpf_dump</code> from <samp>mpf2mpfr.h</samp>).</li>
+
+<li>Support <cite><acronym>GMP</acronym></cite> as a shared library
+(not fully tested).</li>
+
+</ul>
+
+<p><a href="../index.html">Back to the <cite><acronym>MPFR</acronym></cite>
+page.</a></p>
+
+<hr />
+
+<div class="footer"><a href="http://validator.w3.org/check/referer"><img
+  src="http://www.w3.org/Icons/valid-xhtml10"
+  alt="Valid XHTML 1.0!" height="31" width="88" /></a></div>
+
+</body>
+
+</html>

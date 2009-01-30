@@ -1,0 +1,105 @@
+diff -Naur mpfr-2.1.1-p1/add1sp.c mpfr-2.1.1-p2/add1sp.c
+--- mpfr-2.1.1-p1/add1sp.c	2004-05-04 09:05:00.000000000 +0000
++++ mpfr-2.1.1-p2/add1sp.c	2005-03-09 15:11:14.181932000 +0000
+@@ -1,7 +1,7 @@
+ /* mpfr_add1sp -- internal function to perform a "real" addition
+    All the op must have the same precision
+ 
+-Copyright 2004 Free Software Foundation.
++Copyright 2004, 2005 Free Software Foundation.
+ Contributed by the Spaces project, INRIA Lorraine.
+ 
+ This file is part of the MPFR Library.
+@@ -101,29 +101,34 @@
+       else
+ 	goto add_one_ulp;
+     }
+-  else if (MPFR_UNLIKELY(d >= p))
++  else if (MPFR_UNLIKELY (d >= p))
+     {
+-      if (MPFR_LIKELY(d > p))
++      if (MPFR_LIKELY (d > p))
+ 	{
+ 	  /* d > p : Copy B in A */
+-	  ap = MPFR_MANT(a);
+-	  MPN_COPY (ap, MPFR_MANT(b), n);
+ 	  /* Away:    Add 1
+ 	     Nearest: Trunc
+ 	     Zero:    Trunc */
+-	  if (MPFR_LIKELY(rnd_mode==GMP_RNDN))
+-	    { inexact = -1; goto set_exponent; }
+-	  MPFR_UPDATE_RND_MODE(rnd_mode, MPFR_IS_NEG(b));
+-	  if (rnd_mode==GMP_RNDZ)
+-	    { inexact = -1; goto set_exponent; }
++	  if (MPFR_LIKELY (rnd_mode==GMP_RNDN
++			   || MPFR_IS_LIKE_RNDZ (rnd_mode, MPFR_IS_NEG (b))))
++	    {
++	    copy_set_exponent:
++	      ap = MPFR_MANT (a);
++	      MPN_COPY (ap, MPFR_MANT(b), n);
++	      inexact = -1; 
++	      goto set_exponent; 
++	    }
+ 	  else
+-	    goto add_one_ulp;
++	    {
++	    copy_add_one_ulp:
++	      ap = MPFR_MANT(a);
++	      MPN_COPY (ap, MPFR_MANT(b), n);
++	      goto add_one_ulp;
++	    }
+ 	}
+       else
+ 	{
+ 	  /* d==p : Copy B in A */
+-	  ap = MPFR_MANT(a);
+-          MPN_COPY (ap, MPFR_MANT(b), n);
+           /* Away:    Add 1
+              Nearest: Even Rule if C is a power of 2, else Add 1 
+              Zero:    Trunc */
+@@ -139,17 +144,16 @@
+ 		  } while (k>=0 && cp[k]==0);
+ 		  if (MPFR_UNLIKELY(k<0))
+ 		    /* Power of 2: Even rule */
+-		    if ((ap[0]&(MPFR_LIMB_ONE<<sh))==0)
+-		      { inexact = -1; goto set_exponent; }
++		    if ((MPFR_MANT (b)[0]&(MPFR_LIMB_ONE<<sh))==0)
++		      goto copy_set_exponent;
+ 		}
+ 	      /* Not a Power of 2 */
+-	      goto add_one_ulp;
++	      goto copy_add_one_ulp;
+ 	    }
+-          MPFR_UPDATE_RND_MODE(rnd_mode, MPFR_IS_NEG(b));
+-	  if (rnd_mode==GMP_RNDZ)
+-	    { inexact = -1; goto set_exponent; }
++	  else if (MPFR_IS_LIKE_RNDZ (rnd_mode, MPFR_IS_NEG (b)))
++	    goto copy_set_exponent;
+ 	  else
+-            goto add_one_ulp;
++            goto copy_add_one_ulp;
+ 	}
+     }
+   else
+diff -Naur mpfr-2.1.1-p1/tests/tadd1sp.c mpfr-2.1.1-p2/tests/tadd1sp.c
+--- mpfr-2.1.1-p1/tests/tadd1sp.c	2005-01-27 17:10:11.000000000 +0000
++++ mpfr-2.1.1-p2/tests/tadd1sp.c	2005-03-09 15:07:23.769198000 +0000
+@@ -158,5 +158,18 @@
+         STD_ERROR2;
+     }
+ 
++  mpfr_set_prec (c, 2);
++  mpfr_set_prec (a1, 2);
++  mpfr_set_prec (a2, 2);
++  mpfr_set_str_binary (c, "1.0e1");
++  mpfr_set_str_binary (a2, "1.1e-1");
++  mpfr_set_str_binary (a1, "0.11E2");
++  mpfr_add1sp (a2, c, a2, GMP_RNDN);
++  if (mpfr_cmp (a1, a2))
++    {
++      printf ("Regression reuse test failed!\n");
++      exit (1);
++    }
++
+   mpfr_clears(a1,a2,b,c,NULL);
+ }

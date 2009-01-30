@@ -1,0 +1,95 @@
+diff -Naur mpfr-2.1.0/mpfr.info mpfr-2.1.0-p1/mpfr.info
+--- mpfr-2.1.0/mpfr.info	2004-11-03 15:27:10.000000000 +0000
++++ mpfr-2.1.0-p1/mpfr.info	2005-01-23 23:07:31.834786184 +0000
+@@ -42,7 +42,7 @@
+ 
+ * Menu:
+ 
+-* Copying::                     GMP Copying Conditions (LGPL).
++* Copying::                     MPFR Copying Conditions (LGPL).
+ * Introduction to MPFR::        Brief introduction to MPFR.
+ * Installing MPFR::             How to configure and compile the MPFR library.
+ * Reporting Bugs::              How to usefully report bugs.
+@@ -2429,31 +2429,31 @@
+ 
+ Tag Table:
+ Node: Top937
+-Node: Copying2235
+-Node: Introduction to MPFR3952
+-Node: Installing MPFR5630
+-Node: Reporting Bugs8303
+-Node: MPFR Basics9799
+-Node: MPFR Interface15389
+-Node: Initialization Functions17421
+-Node: Assignment Functions20814
+-Node: Combined Initialization and Assignment Functions26697
+-Node: Conversion Functions27979
+-Node: Basic Arithmetic Functions32952
+-Node: Comparison Functions39862
+-Node: Special Functions42887
+-Node: Input and Output Functions47984
+-Node: Integer Related Functions49906
+-Node: Miscellaneous Functions52900
+-Node: Rounding Modes56769
+-Node: Exceptions58118
+-Node: Advanced Functions61763
+-Node: Compatibility with MPF64368
+-Node: Internals66628
+-Node: Contributors68652
+-Node: References70361
+-Node: GNU Free Documentation License71106
+-Node: Concept Index91018
+-Node: Function Index94807
++Node: Copying2236
++Node: Introduction to MPFR3953
++Node: Installing MPFR5631
++Node: Reporting Bugs8304
++Node: MPFR Basics9800
++Node: MPFR Interface15390
++Node: Initialization Functions17422
++Node: Assignment Functions20815
++Node: Combined Initialization and Assignment Functions26698
++Node: Conversion Functions27980
++Node: Basic Arithmetic Functions32953
++Node: Comparison Functions39863
++Node: Special Functions42888
++Node: Input and Output Functions47985
++Node: Integer Related Functions49907
++Node: Miscellaneous Functions52901
++Node: Rounding Modes56770
++Node: Exceptions58119
++Node: Advanced Functions61764
++Node: Compatibility with MPF64369
++Node: Internals66629
++Node: Contributors68653
++Node: References70362
++Node: GNU Free Documentation License71107
++Node: Concept Index91019
++Node: Function Index94808
+ 
+ End Tag Table
+diff -Naur mpfr-2.1.0/mpfr.texi mpfr-2.1.0-p1/mpfr.texi
+--- mpfr-2.1.0/mpfr.texi	2004-11-03 15:15:47.000000000 +0000
++++ mpfr-2.1.0-p1/mpfr.texi	2005-01-23 23:06:16.898178280 +0000
+@@ -96,7 +96,7 @@
+ @end ifnothtml
+ 
+ @menu
+-* Copying::                     GMP Copying Conditions (LGPL).
++* Copying::                     MPFR Copying Conditions (LGPL).
+ * Introduction to MPFR::        Brief introduction to MPFR.
+ * Installing MPFR::             How to configure and compile the MPFR library.
+ * Reporting Bugs::              How to usefully report bugs.
+@@ -944,7 +944,12 @@
+ function (preliminary interface).
+ The block is assumed to be @code{strlen(@var{str})+1} bytes.
+ For more information about how it is done:
++@ifnothtml
+ @pxref{Custom Allocation,,, gmp,GNU MP}.
++@end ifnothtml
++@ifhtml
++see Custom Allocation (GNU MP).
++@end ifhtml
+ @end deftypefun
+ 
+ @deftypefun int mpfr_fits_ulong_p (mpfr_t @var{op}, mp_rnd_t @var{rnd})

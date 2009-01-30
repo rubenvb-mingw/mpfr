@@ -1,0 +1,87 @@
+diff -Naur mpfr-2.1.1-p2/atanh.c mpfr-2.1.1-p3/atanh.c
+--- mpfr-2.1.1-p2/atanh.c	2004-02-13 09:33:55.000000000 +0000
++++ mpfr-2.1.1-p3/atanh.c	2005-03-17 00:24:50.801314000 +0000
+@@ -1,6 +1,6 @@
+ /* mpfr_atanh -- Inverse Hyperbolic Tangente of Unsigned Integer Number
+ 
+-Copyright 2001, 2002, 2003, 2004 Free Software Foundation.
++Copyright 2001, 2002, 2003, 2004, 2005 Free Software Foundation.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -58,14 +58,11 @@
+   /* atanh(x) = NaN as soon as |x| > 1, and arctanh(+/-1) = +/-Inf */
+   if (MPFR_EXP(xt) > 0)
+     {
+-      if (MPFR_EXP(xt) == 1)
++      if (MPFR_EXP(xt) == 1 && mpfr_powerof2_raw (xt))
+         {
+-          if (mpfr_cmp_ui (xt, 1) || mpfr_cmp_si (xt, -1))
+-            {
+-              MPFR_SET_INF(y);
+-              MPFR_SET_SAME_SIGN(y, xt);
+-              MPFR_RET(0);
+-            }
++          MPFR_SET_INF(y);
++          MPFR_SET_SAME_SIGN(y, xt);
++          MPFR_RET(0);
+         }
+       MPFR_SET_NAN(y);
+       MPFR_RET_NAN;
+diff -Naur mpfr-2.1.1-p2/tests/tatanh.c mpfr-2.1.1-p3/tests/tatanh.c
+--- mpfr-2.1.1-p2/tests/tatanh.c	2004-02-13 09:33:55.000000000 +0000
++++ mpfr-2.1.1-p3/tests/tatanh.c	2005-03-17 00:21:40.347287000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_atanh.
+ 
+-Copyright 2001, 2002, 2003, 2004 Free Software Foundation.
++Copyright 2001, 2002, 2003, 2004, 2005 Free Software Foundation.
+ Adapted from tatan.c.
+ 
+ This file is part of the MPFR Library.
+@@ -32,6 +32,7 @@
+ special (void)
+ {
+   mpfr_t x, y, z;
++  int i;
+ 
+   mpfr_init (x);
+   mpfr_init (y);
+@@ -53,20 +54,24 @@
+       exit (1);
+     }
+ 
+-  /* atanh(+/-2) = NaN */
+-  mpfr_set_ui (x, 2, GMP_RNDN);
+-  mpfr_atanh (y, x, GMP_RNDN);
+-  if (!mpfr_nan_p (y))
++  /* atanh(+/-x) = NaN if x > 1 */
++  for (i = 3; i <= 6; i++)
+     {
+-      printf ("Error: mpfr_atanh(2) <> NaN\n");
+-      exit (1);
+-    }
+-  mpfr_neg (x, x, GMP_RNDN);
+-  mpfr_atanh (y, x, GMP_RNDN);
+-  if (!mpfr_nan_p (y))
+-    {
+-      printf ("Error: mpfr_atanh(-2) <> NaN\n");
+-      exit (1);
++      mpfr_set_si (x, i, GMP_RNDN);
++      mpfr_div_2ui (x, x, 1, GMP_RNDN);
++      mpfr_atanh (y, x, GMP_RNDN);
++      if (!mpfr_nan_p (y))
++        {
++          printf ("Error: mpfr_atanh(%d/2) <> NaN\n", i);
++          exit (1);
++        }
++      mpfr_neg (x, x, GMP_RNDN);
++      mpfr_atanh (y, x, GMP_RNDN);
++      if (!mpfr_nan_p (y))
++        {
++          printf ("Error: mpfr_atanh(-%d/2) <> NaN\n", i);
++          exit (1);
++        }
+     }
+ 
+   /* atanh(+0) = +0, atanh(-0) = -0 */

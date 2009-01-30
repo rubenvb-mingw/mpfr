@@ -1,0 +1,55 @@
+*** agm.c	2000/12/22 16:16:54	1.24
+--- agm.c	2001/01/05 16:23:34	1.25
+***************
+*** 52,62 ****
+  {
+    long exp;
+    union ieee_double_extract x;
+!   
+    exp = (long) d;
+    if (d != (double) exp) exp++;
+    /* now exp = ceil(d) */
+    x.d = 1.0;
+    x.s.exp = 1023 + exp;
+    return x.d;
+  }
+--- 52,63 ----
+  {
+    long exp;
+    union ieee_double_extract x;
+! 
+    exp = (long) d;
+    if (d != (double) exp) exp++;
+    /* now exp = ceil(d) */
+    x.d = 1.0;
++   if (exp < -1022) exp = -1022;
+    x.s.exp = 1023 + exp;
+    return x.d;
+  }
+***************
+*** 144,155 ****
+      
+      eq=0;
+      
+!     err=1 + (int) ((3.0/2.0*_mpfr_ceil_log2(p)+1.0)*_mpfr_ceil_exp2(-(double)p)
+  	     +3.0*_mpfr_ceil_exp2(-2.0*(double)p*uo/(vo-uo)));
+      if(p-err-3<=q) {
+        p=q+err+4;
+        err= 1 + 
+! 	(int) ((3.0/2.0*_mpfr_ceil_log2(p)+1.0)*_mpfr_ceil_exp2(-(double)p)
+  	       +3.0*_mpfr_ceil_exp2(-2.0*(double)p*uo/(vo-uo)));
+      }
+  
+--- 145,156 ----
+      
+      eq=0;
+      
+!     err=1 + (int) ((3.0/2.0*(double)_mpfr_ceil_log2((double)p)+1.0)*_mpfr_ceil_exp2(-(double)p)
+  	     +3.0*_mpfr_ceil_exp2(-2.0*(double)p*uo/(vo-uo)));
+      if(p-err-3<=q) {
+        p=q+err+4;
+        err= 1 + 
+! 	(int) ((3.0/2.0*_mpfr_ceil_log2((double)p)+1.0)*_mpfr_ceil_exp2(-(double)p)
+  	       +3.0*_mpfr_ceil_exp2(-2.0*(double)p*uo/(vo-uo)));
+      }
+  

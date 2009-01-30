@@ -1,0 +1,60 @@
+diff -Naur mpfr-2.1.1-p9/atan.c mpfr-2.1.1-p10/atan.c
+--- mpfr-2.1.1-p9/atan.c	2004-06-16 12:08:30.000000000 +0000
++++ mpfr-2.1.1-p10/atan.c	2005-07-05 13:00:43.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* mpfr_atan -- arc-tangent of a floating-point number
+ 
+-Copyright 2001, 2002, 2003, 2004 Free Software Foundation.
++Copyright 2001, 2002, 2003, 2004, 2005 Free Software Foundation.
+ 
+ This file is part of the MPFR Library, and was contributed by Mathieu Dutour.
+ 
+@@ -107,7 +107,8 @@
+       else /* x is necessarily 0 */
+ 	{
+           MPFR_ASSERTD(MPFR_IS_ZERO(x));
+-	  mpfr_set_ui (arctangent, 0, GMP_RNDN);
++          MPFR_SET_ZERO (arctangent);
++          MPFR_SET_SAME_SIGN (arctangent, x);
+ 	  return 0; /* exact result */
+ 	}
+     }
+diff -Naur mpfr-2.1.1-p9/tests/tatan.c mpfr-2.1.1-p10/tests/tatan.c
+--- mpfr-2.1.1-p9/tests/tatan.c	2005-02-04 12:28:53.000000000 +0000
++++ mpfr-2.1.1-p10/tests/tatan.c	2005-07-05 12:57:44.000000000 +0000
+@@ -93,19 +93,33 @@
+ 
+   /* atan(+/-0) = +/-0 */
+   mpfr_set_ui (x, 0, GMP_RNDN);
++  MPFR_SET_NEG (y);
+   mpfr_atan (y, x, GMP_RNDN);
+-  if (mpfr_cmp_ui (y, 0) || mpfr_sgn (y) < 0)
++  if (mpfr_cmp_ui (y, 0) || MPFR_IS_NEG (y))
+     {
+       printf ("Error: mpfr_atan (+0) <> +0\n");
+       exit (1);
+     }
++  mpfr_atan (x, x, GMP_RNDN);
++  if (mpfr_cmp_ui (x, 0) || MPFR_IS_NEG (x))
++    {
++      printf ("Error: mpfr_atan (+0) <> +0 (in place)\n");
++      exit (1);
++    }
+   mpfr_neg (x, x, GMP_RNDN);
++  MPFR_SET_POS (y);
+   mpfr_atan (y, x, GMP_RNDN);
+-  if (mpfr_cmp_ui (y, 0) || mpfr_sgn (y) > 0)
++  if (mpfr_cmp_ui (y, 0) || MPFR_IS_POS (y))
+     {
+       printf ("Error: mpfr_atan (-0) <> -0\n");
+       exit (1);
+     }
++  mpfr_atan (x, x, GMP_RNDN);
++  if (mpfr_cmp_ui (x, 0) || MPFR_IS_POS (x))
++    {
++      printf ("Error: mpfr_atan (-0) <> -0 (in place)\n");
++      exit (1);
++    }
+ 
+   mpfr_set_prec (x, 32);
+   mpfr_set_prec (y, 32);

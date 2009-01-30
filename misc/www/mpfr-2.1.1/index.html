@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>MPFR version 2.1.1</title>
+<link rel="shortcut icon" href="../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../styles/screen.css" media="screen,tv,projection" />
+<link rel="stylesheet" type="text/css" href="../styles/print.css" media="print" />
+<link rel="top" title="The MPFR Library" href="../index.html" />
+<link rel="up" title="The MPFR Library" href="../index.html" />
+</head>
+
+<body>
+
+<div class="logo"><a href="../index.html"><img src="../mpfr100.png" height="40" width="100" alt="[MPFR]" /></a></div>
+
+<h1><acronym>MPFR</acronym> version 2.1.1 (released on 23 February 2005)</h1>
+
+<div>[<a href="#download">download</a>]
+[<a href="#doc">documentation</a>]
+[<a href="#bugs">bugs</a>]
+[<a href="#changes">changes</a>]</div>
+
+<p><acronym>MPFR</acronym> 2.1.1 requires <acronym>GMP</acronym> 4.1.0
+or higher.</p>
+
+<h2 id="download">Download</h2>
+
+<p><acronym>MPFR</acronym> 2.1.1 can be downloaded in the following archive
+formats:</p>
+<ul>
+<li><a href="mpfr-2.1.1.tar.bz2">mpfr-2.1.1.tar.bz2</a>
+(tar/bzip2, 485&nbsp;<abbr>KB</abbr>)
+(<a href="mpfr-2.1.1.tar.bz2.asc" title="GnuPG signature for mpfr-2.1.1.tar.bz2">signature</a>),</li>
+<li><a href="mpfr-2.1.1.tar.gz">mpfr-2.1.1.tar.gz</a>
+(tar/gzip, 605&nbsp;<abbr>KB</abbr>)
+(<a href="mpfr-2.1.1.tar.gz.asc" title="GnuPG signature for mpfr-2.1.1.tar.gz">signature</a>),</li>
+<li><a href="mpfr-2.1.1.zip">mpfr-2.1.1.zip</a>
+(zip, 857&nbsp;<abbr>KB</abbr>)
+(<a href="mpfr-2.1.1.zip.asc" title="GnuPG signature for mpfr-2.1.1.zip">signature</a>).</li>
+</ul>
+<p>The signatures can be checked with
+<a href="http://www.komite.net/laurent/A1696D2B.asc">Laurent Fousse's key</a>
+(or grab this key <samp>A1696D2B</samp> from the keyserver
+<samp>keyserver.noreply.org</samp>).</p>
+
+<p>Note that the patches below have not been applied.</p>
+
+<p><acronym>MPFR</acronym> is also available as the official
+<a href="http://packages.debian.org/unstable/libdevel/libmpfr-dev">Debian
+package libmpfr-dev</a>. Patches 1 to 6 have been applied in libmpfr-dev
+2.1.1-5 (<cite>Sarge</cite> version). Patches 7 and 8 have been applied in
+libmpfr-dev 2.1.1-7. Patches 9, 10 and 11 have been applied in libmpfr-dev
+2.1.1-9, 2.1.1-10 and 2.1.1-11 respectively.</p>
+
+<h2 id="doc">Documentation</h2>
+
+<ul>
+<li>The reference manual:
+[<a href="mpfr.html" title="Reference manual in HTML format">html</a>]
+[<a href="mpfr.dvi.gz" title="Reference manual in DVI format">dvi</a>]
+[<a href="mpfr.ps.gz" title="Reference manual in Postscript format">ps</a>]
+[<a href="mpfr.pdf" title="Reference manual in PDF format">pdf</a>]</li>
+<li>The reference manual <a href="http://na-inet.jp/na/mpfr-ja.html">translated into Japanese</a>.</li>
+</ul>
+
+<h2 id="bugs">Bugs</h2>
+
+<p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
+update: 2005-08-02). The following instructions are for Linux and may
+be similar for other operating systems. You can apply the patches in
+several ways:</p>
+
+<ul>
+
+<li>Apply the <a href="patches">cumulative patch</a> on the 2.1.1 release
+or a partially patched version with the command
+<pre>patch -N -Z -p1 &lt; <var>path_to_patches_file</var></pre>
+from the build directory. The <samp>-N</samp> option allows the
+<samp>patch</samp> command to ignore patches already applied. The
+<samp>-Z</samp> option sets the modification time of the patched files
+from time stamps given in the patch file, thus avoiding the need of
+some development utilities (such as <cite>autoconf</cite>).</li>
+
+<li>Or apply the individual patches below.</li>
+
+<li>Or checkout the <acronym>CVS</acronym> branch <samp>mpfr-2-1-branch</samp>
+thanks to the option <samp>-rmpfr-2-1-branch</samp>. In this case, please
+see the <a href="../cvs.html"><acronym>MPFR</acronym> <acronym>CVS</acronym>
+page</a> for more information.</li>
+
+</ul>
+
+<p>Note: These patches are in unified diff format and some vendors'
+<samp>patch</samp> commands cannot deal with them; in this case, please
+use <a href="http://directory.fsf.org/patch.html"><acronym>GNU</acronym>
+patch</a> (it <em>may</em> already be installed on your system, e.g. as
+<samp>/usr/local/bin/patch</samp> or <samp>gpatch</samp>).</p>
+
+<p><a name="fixed">Fixed bugs:</a></p>
+
+<ol>
+
+<li>The following patch fixes a bug in the exponential function
+due to a wrong approximation to x/log(2):
+<a href="patch01"><code>mpfr_exp_2</code> patch</a> (with testcase).</li>
+
+<li>The low-level addition of the form
+(<var>a</var>,<var>b</var>,<var>a</var>) is buggy when the exponent of
+<var>b</var> is equal to the exponent of <var>a</var> plus the precision
+of <var>b</var>; the following patch fixes that:
+<a href="patch02"><code>mpfr_add1sp</code> patch</a> (with testcase).</li>
+
+<li>The <code>mpfr_atanh</code> function returns an infinity instead of
+<abbr title="Not a Number">NaN</abbr> for input values <var>x</var> such
+that 1&nbsp;&lt;&nbsp;|<var>x</var>|&nbsp;&lt;&nbsp;2. This bug is fixed by
+the <a href="patch03"><code>mpfr_atanh</code> patch</a> (with testcase).</li>
+
+<li>The <code>mpfr_pow_ui</code> function to evaluate
+<var>x</var><sup><var>n</var></sup> (<var>n</var> being a nonnegative
+integer) has two bugs. First, if <var>x</var>&nbsp;=&nbsp;0 and
+<var>n</var>&nbsp;&gt;&nbsp;0, the result 0 may have a wrong sign.
+The second bug occurs in some cases that are <em>difficult to round</em>
+and yields values that are not correctly rounded. These two bugs are
+fixed by the <a href="patch04"><code>mpfr_pow_ui</code> patch</a>, which
+also provides a testcase for the second bug.</li>
+
+<li>A possible infinite loop in <code>mpfr_get_ld</code> with very small
+numbers. This bug is fixed by the <a href="patch05"><code>mpfr_get_ld</code>
+patch</a> (with testcase).</li>
+
+<li>The testcase in the <code>mpfr_get_ld</code> patch was buggy, and
+there is a bug in <code>mpfr_set_ld</code> too, still with very small
+numbers. This is fixed by the <a href="patch06"><code>mpfr_set_ld</code>
+patch</a>.</li>
+
+<li>The <code>mpfr_div_ui</code> function is buggy. It is fixed in the
+<a href="patch07"><code>mpfr_div_ui</code> patch</a> (with testcase).</li>
+
+<li>An infinite loop in <code>mpfr_hypot</code> if one of the inputs
+is <em>much</em> larger than the other one <em>and</em> its precision
+is larger than the precision of the result. The cause is an overflow
+in the internal computations. This bug is fixed by the
+<a href="patch08"><code>mpfr_hypot</code> patch</a> (with testcase).</li>
+
+<li>A bug was indirectly introduced in the addition when the internal
+format of <acronym>MPFR</acronym> numbers changed: overflows in the
+final rounding are no longer handled correctly. This bug is fixed by
+the <a href="patch09"><code>mpfr_add1</code> patch</a>.</li>
+
+<li>The <code>mpfr_atan</code> function on -0 returns +0 instead of -0.
+This bug is fixed by the <a href="patch10"><code>mpfr_atan</code> patch</a>
+(with testcase).</li>
+
+<li>The <code>mpfr_strtofr</code> function may fail under some locales
+due to the use of the <code>strncasecmp</code> function, as shown by
+the following program. This program uses the Turkish locale
+<samp>tr_TR.ISO8859-9</samp> where the <acronym
+title="American Standard Code for Information Interchange">ASCII</acronym>
+characters <q>I</q> and <q>i</q> do not match (you need to have this
+locale installed on your system if you want to test this program). This
+bug is fixed by the <a href="patch11"><code>parse_string</code> patch</a>.
+<pre>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;locale.h&gt;
+#include &lt;gmp.h&gt;
+#include &lt;mpfr.h&gt;
+
+int main (void)
+{
+  mpfr_t x;
+  char *endptr;
+
+  if (setlocale (LC_CTYPE, "tr_TR.ISO8859-9") == NULL)
+    {
+      fprintf (stderr, "can't set LC_CTYPE to tr_TR.ISO8859-9\n");
+      exit (EXIT_FAILURE);
+    }
+
+  mpfr_init (x);
+  mpfr_strtofr (x, "INFINITY", &amp;endptr, 8, GMP_RNDN);
+  mpfr_clear (x);
+  printf (*endptr == '\0' ? "OK\n" : "Failed\n");
+  return 0;
+}</pre></li>
+
+<li><p>On implementations with <code>long double</code> numbers having more
+precision than the one declared by the <code>LDBL_MANT_DIG</code> macro,
+like on <cite>Mac OS X</cite> (where the <code>long double</code> arithmetic
+is implemented by
+<a href="http://developer.apple.com/documentation/mac/PPCNumerics/PPCNumerics-18.html#HEADING18-19">double-double
+floating-point expansions</a>), the rounded
+result returned by <code>mpfr_set_ld</code> can be incorrect. Moreover,
+one of the tests is slightly incorrect too on such implementations. The
+<a href="patch12">second <code>mpfr_set_ld</code> patch</a> fixes these
+problems.</p>
+<p>The current semantic of <code>mpfr_get_ld</code> is to <em>round the
+result on <code>LDBL_MANT_DIG</code> binary digits</em>, thus returning
+a normalized floating-point result (as defined by the
+<acronym title="International Organization for Standardization">ISO</acronym>
+C standard) if it can fit in the exponent range. This possibly unnecessary
+rounding is a feature, not a bug!</p>
+<p>Note that only C <em>binary</em> floating-point arithmetics are
+currently supported for the conversions between <acronym>MPFR</acronym>
+numbers and C floating types. On other platforms (<abbr>e.g.</abbr> the
+<acronym title="Texas Instruments">TI</acronym>-92, which has a decimal
+arithmetic), the results may be inaccurate.</p></li>
+
+</ol>
+
+<p>In addition to the bugs mentioned in the <samp>BUGS</samp> file:</p>
+
+<ul>
+
+<li>There are possible bugs with huge precisions (greater than
+2<sup>30</sup>) and with exponent ranges that do not allow to
+represent some numbers, such as 1 or 1/2.</li>
+
+<li>In <code>mpfr_get_ld</code>, the rounding direction can be wrong
+if |<var>x</var>| &lt; <code>LDBL_MIN</code>.</li>
+
+<li>The <code>mpfr_hypot</code> function is not described in the manual.
+It computes the Euclidean norm of the two input numbers <var>x</var> and
+<var>y</var>, i.e. &radic;(<var>x</var>²+<var>y</var>²).</li>
+
+</ul>
+
+<h2 id="changes">Changes from version <a href="../mpfr-2.1.0/index.html">2.1.0</a> to version 2.1.1</h2>
+
+<ul>
+
+<li>Better way to detect the <acronym>GMP</acronym> library.</li>
+
+<li>Bug fixes.</li>
+
+</ul>
+
+<p><a href="../index.html">Back to the <cite><acronym>MPFR</acronym></cite>
+page.</a></p>
+
+<hr />
+
+<div class="footer"><a href="http://validator.w3.org/check/referer"><img
+  src="http://www.w3.org/Icons/valid-xhtml10"
+  alt="Valid XHTML 1.0!" height="31" width="88" /></a></div>
+
+</body>
+
+</html>

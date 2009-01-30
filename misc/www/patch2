@@ -1,0 +1,239 @@
+diff -c -r MPSolve2.0/gmptools.c MPSolve2.0a/gmptools.c
+*** MPSolve2.0/gmptools.c	Tue Jun 16 12:17:06 1998
+--- MPSolve2.0a/gmptools.c	Fri Jun 23 11:57:40 2000
+***************
+*** 14,19 ****
+--- 14,23 ----
+  #include <math.h>
+  #include "gmptools.h"
+  #include "mptemp.h"
++ #ifdef MPFR
++ #include "mpfr.h"
++ #include "mpf2mpfr.h"
++ #endif
+  
+  /**********************************************
+  *                  MPZ_T                      *
+diff -c -r MPSolve2.0/link.c MPSolve2.0a/link.c
+*** MPSolve2.0/link.c	Tue Jun 16 12:17:06 1998
+--- MPSolve2.0a/link.c	Fri Jun 23 11:57:40 2000
+***************
+*** 11,16 ****
+--- 11,20 ----
+  #endif /* lint */
+  
+  #include "link.h"
++ #ifdef MPFR
++ #include "mpfr.h"
++ #include "mpf2mpfr.h"
++ #endif
+  
+  /***********************************************************
+  **              link functions                            **
+***************
+*** 33,39 ****
+--- 37,48 ----
+  
+    esp = f->_mp_exp;
+    f->_mp_exp = 0;
++   /* warning: MPFR stores the true exp. but MPF stores exp/mp_bits_per_limb */
++ #ifdef MPFR
++   rdpe_set_2dl(e, mpf_get_d(f), esp);
++ #else
+    rdpe_set_2dl(e, mpf_get_d(f), esp * mp_bits_per_limb);
++ #endif
+    f->_mp_exp = esp;
+  }
+  
+diff -c -r MPSolve2.0/mpc.c MPSolve2.0a/mpc.c
+*** MPSolve2.0/mpc.c	Fri Jun 23 12:33:24 2000
+--- MPSolve2.0a/mpc.c	Fri Jun 23 12:38:18 2000
+***************
+*** 11,17 ****
+  #endif /* lint */
+  
+  #include <stdlib.h>
+! #include <gmp.h>
+  #include "mpc.h"
+  #include "mptemp.h"
+  #include "gmptools.h"
+--- 11,21 ----
+  #endif /* lint */
+  
+  #include <stdlib.h>
+! #include "gmp.h"
+! #ifdef MPFR
+! #include "mpfr.h"
+! #include "mpf2mpfr.h"
+! #endif
+  #include "mpc.h"
+  #include "mptemp.h"
+  #include "gmptools.h"
+***************
+*** 31,36 ****
+--- 35,43 ----
+  void
+  mpc_init2(mpc_t c, unsigned long int prec)
+  {
++ #ifdef MPFR
++   if (prec==0) prec=1;
++ #endif
+    mpf_init2(mpc_Re(c), prec);
+    mpf_init2(mpc_Im(c), prec);
+  }
+diff -c -r MPSolve2.0/mps.h MPSolve2.0a/mps.h
+*** MPSolve2.0/mps.h	Tue Jun 16 12:17:06 1998
+--- MPSolve2.0a/mps.h	Fri Jun 23 11:57:40 2000
+***************
+*** 21,26 ****
+--- 21,30 ----
+  
+  /* gmp library */
+  #include <gmp.h>
++ #ifdef MPFR
++ #include "mpfr.h"
++ #include "mpf2mpfr.h"
++ #endif
+  
+  /* local include files */
+  #include "tools.h"
+diff -c -r MPSolve2.0/mps_main.c MPSolve2.0a/mps_main.c
+*** MPSolve2.0/mps_main.c	Tue Jun 16 12:17:06 1998
+--- MPSolve2.0a/mps_main.c	Fri Jun 23 11:57:40 2000
+***************
+*** 246,255 ****
+--- 246,257 ----
+        case 'q':		/* Real - Rational Coefs */
+  	mpf_set_q(mptemp, mqp_r[i]);
+  	mpf_get_rdpe(dpr[i], mptemp);
++ #ifdef GMP2
+  	/*#G GMP bug begin */
+  	if (rdpe_sgn(dpr[i]) != mpq_sgn(mqp_r[i]))
+  	  rdpe_neg_eq(dpr[i]);
+  	/*#G GMP bug end */
++ #endif
+  	break;
+  
+        case 'f':		/* Real - Big/Float Coefs */
+***************
+*** 282,293 ****
+--- 284,297 ----
+        case 'q':		/* Complex - Rational Coefs */
+  	mpc_set_q(mptempc, mqp_r[i], mqp_i[i]);
+  	mpc_get_cdpe(dpc[i], mptempc);
++ #ifdef GMP2
+  	/*#G GMP bug begin */
+  	if (rdpe_sgn(cdpe_Re(dpc[i])) != mpq_sgn(mqp_r[i]))
+  	  rdpe_neg_eq(cdpe_Re(dpc[i]));
+  	if (rdpe_sgn(cdpe_Im(dpc[i])) != mpq_sgn(mqp_i[i]))
+  	  rdpe_neg_eq(cdpe_Im(dpc[i]));
+  	/*#G GMP bug end */
++ #endif
+  	break;
+  
+        case 'f':		/* Complex - Big/Float Coefs */
+***************
+*** 530,539 ****
+--- 534,545 ----
+  	  case 'q':		/* rational */
+  	    mpf_set_q(mpc_Re(mfpc[i]), mqp_r[i]);
+  	    mpf_set_ui(mpc_Im(mfpc[i]), 0);
++ #ifdef GMP2
+  	    /*#G GMP bug begin */
+  	    if (mpf_sgn(mpc_Re(mfpc[i])) != mpq_sgn(mqp_r[i]))
+  	      mpf_neg(mpc_Re(mfpc[i]), mpc_Re(mfpc[i]));
+  	    /*#G GMP bug end */
++ #endif
+  	    break;
+  	  case 'b':		/* big float */
+  	    break;		/* nothing to do */
+***************
+*** 554,565 ****
+--- 560,573 ----
+  	    break;
+  	  case 'q':		/* rational */
+  	    mpc_set_q(mfpc[i], mqp_r[i], mqp_i[i]);
++ #ifdef GMP2
+  	    /*#G GMP bug begin */
+  	    if (mpf_sgn(mpc_Re(mfpc[i])) != mpq_sgn(mqp_r[i]))
+  	      mpf_neg(mpc_Re(mfpc[i]), mpc_Re(mfpc[i]));
+  	    if (mpf_sgn(mpc_Im(mfpc[i])) != mpq_sgn(mqp_i[i]))
+  	      mpf_neg(mpc_Im(mfpc[i]), mpc_Im(mfpc[i]));
+  	    /*#G GMP bug end */
++ #endif
+  	    break;
+  	  case 'b':		/* big float */
+  	    break;		/* nothing to do */
+diff -c -r MPSolve2.0/mps_poly.c MPSolve2.0a/mps_poly.c
+*** MPSolve2.0/mps_poly.c	Mon Jul 27 23:28:36 1998
+--- MPSolve2.0a/mps_poly.c	Fri Jun 23 11:57:40 2000
+***************
+*** 14,19 ****
+--- 14,20 ----
+  /***********************************************************
+  *       SUBROUTINE READ_POLY                               *
+  ***********************************************************/
++ extern int __gmp_default_fp_limb_precision;
+  void
+  read_poly(FILE *instr, mpspoly_t p)
+  {
+***************
+*** 301,310 ****
+--- 302,319 ----
+  
+    p->mfpr = mpf_valloc(p->deg + 1);
+    for (i = 0; i <= p->deg; i++)
++ #ifdef MPFR
++     mpf_init2(p->mfpr[i], (p->prec_in==0) ? 1 : p->prec_in);
++ #else
+      mpf_init2(p->mfpr[i], p->prec_in);
++ #endif
+    p->mfpc = mpc_valloc(p->deg + 1);
+    for (i = 0; i <= p->deg; i++)
++ #ifdef MPFR
++     mpc_init2(p->mfpc[i], (p->prec_in==0) ? 1 : p->prec_in);
++ #else
+      mpc_init2(p->mfpc[i], p->prec_in);
++ #endif
+  }
+  
+  /********************************************************
+diff -c -r MPSolve2.0/mptemp.c MPSolve2.0a/mptemp.c
+*** MPSolve2.0/mptemp.c	Fri Jun 23 12:33:24 2000
+--- MPSolve2.0a/mptemp.c	Fri Jun 23 12:39:21 2000
+***************
+*** 12,17 ****
+--- 12,21 ----
+  #endif /* lint */
+  
+  #include "mptemp.h"
++ #ifdef MPFR
++ #include "mpfr.h"
++ #include "mpf2mpfr.h"
++ #endif
+  #if __MPTEMP_ENABLED__
+  
+  /* build options */
+diff -c -r MPSolve2.0/uni_solv.c MPSolve2.0a/uni_solv.c
+*** MPSolve2.0/uni_solv.c	Mon Jul 27 23:28:43 1998
+--- MPSolve2.0a/uni_solv.c	Fri Jun 23 11:57:41 2000
+***************
+*** 20,26 ****
+  main(int argc, char *argv[])
+  {
+    mpspoly_t p;
+!   
+    /* set flags */
+    DOLOG = false;
+    DOWARN = true;
+--- 20,29 ----
+  main(int argc, char *argv[])
+  {
+    mpspoly_t p;
+! 
+! #ifdef MPFR
+!   printf("Using MPFR\n");
+! #endif
+    /* set flags */
+    DOLOG = false;
+    DOWARN = true;

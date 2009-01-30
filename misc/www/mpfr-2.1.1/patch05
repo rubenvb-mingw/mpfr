@@ -1,0 +1,87 @@
+diff -Naur mpfr-2.1.1-p4/get_ld.c mpfr-2.1.1-p5/get_ld.c
+--- mpfr-2.1.1-p4/get_ld.c	2004-02-06 13:27:01.000000000 +0000
++++ mpfr-2.1.1-p5/get_ld.c	2005-04-04 14:47:03.000000000 +0000
+@@ -1,7 +1,7 @@
+ /* mpfr_get_ld -- convert a multiple precision floating-point number
+                   to a machine long double
+ 
+-Copyright 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -22,9 +22,14 @@
+ 
+ #include <float.h>
+ 
+-
+ #include "mpfr-impl.h"
+ 
++/* The MPFR number rounded to the size MPFR_LDBL_MANT_DIG of a long double
++   will be scaled so that all its bits are representable in a double.
++   Therefore the exponent of its LSB must be >= -1074, and the exponent
++   of the MPFR number must be >= -1074 + MPFR_LDBL_MANT_DIG. */
++#define EMIN (-1074 + MPFR_LDBL_MANT_DIG)
++
+ long double
+ mpfr_get_ld (mpfr_srcptr x, mp_rnd_t rnd_mode)
+ {
+@@ -57,10 +62,10 @@
+           sh = e - 1023;
+           MPFR_SET_EXP (y, 1023);
+         }
+-      else if (e < -1021)
++      else if (e < EMIN)
+         {
+-          sh = e + 1021;
+-          MPFR_SET_EXP (y, -1021);
++          sh = e - EMIN;
++          MPFR_SET_EXP (y, EMIN);
+         }
+       else
+         {
+diff -Naur mpfr-2.1.1-p4/tests/tset_ld.c mpfr-2.1.1-p5/tests/tset_ld.c
+--- mpfr-2.1.1-p4/tests/tset_ld.c	2005-01-27 17:40:41.000000000 +0000
++++ mpfr-2.1.1-p5/tests/tset_ld.c	2005-04-04 13:58:41.000000000 +0000
+@@ -87,6 +87,32 @@
+     }
+ }
+ 
++static void
++test_small (void)
++{
++  mpfr_t x, y;
++  long double d;
++
++  mpfr_init2 (x, 64);
++  mpfr_init2 (y, 64);
++
++  mpfr_set_str (x, "0.1010010100111100110000001110101101000111010110000001111101110011E-16381", 2, GMP_RNDN);
++  mpfr_get_ld (x, GMP_RNDN);  /* infinite loop? */
++  mpfr_set_ld (y, d, GMP_RNDN);
++  mpfr_sub (y, x, y, GMP_RNDN);
++  mpfr_abs (y, y, GMP_RNDN);
++  if (mpfr_cmp_str (y, "1E-16434", 2, GMP_RNDN) > 0)
++    {
++      printf ("Error with ");
++      mpfr_out_str (NULL, 16, 0, x, GMP_RNDN);
++      printf ("\n");
++      exit (1);
++    }
++
++  mpfr_clear (x);
++  mpfr_clear (y);
++}
++
+ int
+ main (int argc, char *argv[])
+ {
+@@ -183,6 +209,8 @@
+ 
+   mpfr_clear (x);
+ 
++  test_small ();
++
+   tests_end_mpfr ();
+ 
+   return 0;

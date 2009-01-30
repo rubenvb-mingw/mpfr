@@ -1,0 +1,44 @@
+Index: gmp_op.c
+===================================================================
+RCS file: /CVS/spaces/mpfr/gmp_op.c,v
+retrieving revision 1.7.2.4
+retrieving revision 1.7.2.5
+diff -d -u -r1.7.2.4 -r1.7.2.5
+--- gmp_op.c	20 Feb 2004 01:04:09 -0000	1.7.2.4
++++ gmp_op.c	30 Apr 2004 12:10:21 -0000	1.7.2.5
+@@ -30,7 +30,7 @@
+ {
+   mpfr_t t;
+   int res;
+-  mpfr_init2(t, mpz_sizeinbase(z, 2) );
++  mpfr_init2(t, mpz_sizeinbase(z, 2) + MPFR_PREC_MIN);
+   res = mpfr_set_z(t, z, rnd_mode);
+   MPFR_ASSERTD(res == 0);
+   res = mpfr_mul(y, x, t, rnd_mode);
+@@ -43,7 +43,7 @@
+ {
+   mpfr_t t;
+   int res;
+-  mpfr_init2(t, mpz_sizeinbase(z, 2) );
++  mpfr_init2(t, mpz_sizeinbase(z, 2) + MPFR_PREC_MIN);
+   res = mpfr_set_z(t, z, rnd_mode);
+   MPFR_ASSERTD(res == 0);
+   res = mpfr_div(y, x, t, rnd_mode);
+@@ -56,7 +56,7 @@
+ {
+   mpfr_t t;
+   int res;
+-  mpfr_init2(t, mpz_sizeinbase(z, 2) );
++  mpfr_init2(t, mpz_sizeinbase(z, 2) + MPFR_PREC_MIN);
+   res = mpfr_set_z(t, z, rnd_mode);
+   MPFR_ASSERTD(res == 0);
+   res = mpfr_add(y, x, t, rnd_mode);
+@@ -69,7 +69,7 @@
+ {
+   mpfr_t t;
+   int res;
+-  mpfr_init2(t, mpz_sizeinbase(z, 2) );
++  mpfr_init2(t, mpz_sizeinbase(z, 2) + MPFR_PREC_MIN);
+   res = mpfr_set_z(t, z, rnd_mode);
+   MPFR_ASSERTD(res == 0);
+   res=mpfr_sub(y, x, t, rnd_mode);

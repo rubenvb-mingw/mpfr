@@ -1,0 +1,2548 @@
+diff -Naur mpfr-2.1.0-p9/tests/tabs.c mpfr-2.1.0-p10/tests/tabs.c
+--- mpfr-2.1.0-p9/tests/tabs.c	2004-02-23 16:47:46.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tabs.c	2005-01-27 17:07:15.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_abs.
+ 
+-Copyright 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 2000, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -30,7 +30,7 @@
+ {
+   mp_prec_t p, q;
+   mpfr_t x, y, absx;
+-  mp_rnd_t rnd;
++  int rnd;
+   int inexact, cmp;
+ 
+   mpfr_init (x);
+@@ -54,7 +54,7 @@
+           mpfr_set_prec (y, q);
+           for (rnd = 0; rnd < GMP_RND_MAX; rnd++)
+             {
+-              inexact = mpfr_abs (y, x, rnd);
++              inexact = mpfr_abs (y, x, (mp_rnd_t) rnd);
+               cmp = mpfr_cmp (y, absx);
+               if (((inexact == 0) && (cmp != 0)) ||
+                   ((inexact > 0) && (cmp <= 0)) ||
+@@ -138,7 +138,7 @@
+       mpfr_random(x);
+       MPFR_SET_SIGN(x, sign);
+       rnd = RND_RAND();
+-      mpfr_abs(y, x, rnd);
++      mpfr_abs(y, x, (mp_rnd_t) rnd);
+       MPFR_SET_POS(x);
+       if (mpfr_cmp(x,y))
+         {
+diff -Naur mpfr-2.1.0-p9/tests/tacos.c mpfr-2.1.0-p10/tests/tacos.c
+--- mpfr-2.1.0-p9/tests/tacos.c	2004-10-27 13:16:12.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tacos.c	2005-01-27 17:07:33.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_acos.
+ 
+-Copyright 2001, 2002, 2003, 2004 Free Software Foundation.
++Copyright 2001, 2002, 2003, 2004, 2005 Free Software Foundation.
+ Contributed by Mathieu Dutour.
+ 
+ This file is part of the MPFR Library.
+@@ -98,7 +98,7 @@
+ main (void)
+ {
+   mpfr_t x, y;
+-  mp_rnd_t r;
++  int r;
+ 
+   tests_start_mpfr ();
+ 
+@@ -145,13 +145,13 @@
+   for (r = 0; r < GMP_RND_MAX; r++)
+     {
+       mpfr_set_ui (x, 0, GMP_RNDN); /* exact */
+-      mpfr_acos (y, x, r);
+-      mpfr_const_pi (x, r);
++      mpfr_acos (y, x, (mp_rnd_t) r);
++      mpfr_const_pi (x, (mp_rnd_t) r);
+       mpfr_div_2exp (x, x, 1, GMP_RNDN); /* exact */
+       if (mpfr_cmp (x, y))
+         {
+           printf ("Error: acos(0) != Pi/2 for rnd=%s\n",
+-                  mpfr_print_rnd_mode (r));
++                  mpfr_print_rnd_mode ((mp_rnd_t) r));
+           exit (1);
+         }
+     }
+@@ -160,12 +160,12 @@
+   for (r = 0; r < GMP_RND_MAX; r++)
+     {
+       mpfr_set_si (x, -1, GMP_RNDN); /* exact */
+-      mpfr_acos (y, x, r);
+-      mpfr_const_pi (x, r);
++      mpfr_acos (y, x, (mp_rnd_t) r);
++      mpfr_const_pi (x, (mp_rnd_t) r);
+       if (mpfr_cmp (x, y))
+         {
+           printf ("Error: acos(1) != Pi for rnd=%s\n",
+-                  mpfr_print_rnd_mode (r));
++                  mpfr_print_rnd_mode ((mp_rnd_t) r));
+           exit (1);
+         }
+     }
+diff -Naur mpfr-2.1.0-p9/tests/tadd.c mpfr-2.1.0-p10/tests/tadd.c
+--- mpfr-2.1.0-p9/tests/tadd.c	2004-02-26 09:56:02.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tadd.c	2005-01-27 17:08:39.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_add and mpfr_sub.
+ 
+-Copyright 1999, 2000, 2001, 2002, 2003, 2004 Free Software Foundation.
++Copyright 1999, 2000, 2001, 2002, 2003, 2004, 2005 Free Software Foundation.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -509,7 +509,7 @@
+ 		 abs(EXP(x)-EXP(u)) + max(prec(x), prec(u)) + 1 */
+ 	      pz = pz + MAX(MPFR_PREC(x), MPFR_PREC(u)) + 1;
+ 	      mpfr_set_prec (z, pz);
+-	      rnd = RND_RAND();
++	      rnd = (mp_rnd_t) RND_RAND();
+ 	      if (test_add (z, x, u, rnd))
+ 		{
+ 		  printf ("z <- x + u should be exact\n");
+@@ -519,7 +519,7 @@
+ 		  exit (1);
+ 		}
+ 		{
+-                  rnd = RND_RAND();
++                  rnd = (mp_rnd_t) RND_RAND();
+ 		  inexact = test_add (y, x, u, rnd);
+ 		  cmp = mpfr_cmp (y, z);
+ 		  if (((inexact == 0) && (cmp != 0)) ||
+@@ -614,7 +614,7 @@
+ {
+   mpfr_t a, b, c;
+   mp_prec_t prec_a;
+-  mp_rnd_t r;
++  int r;
+ 
+   mpfr_init2 (a, 256);
+   mpfr_init2 (b, 256);
+@@ -629,7 +629,7 @@
+       {
+         mpfr_set_prec (a, prec_a);
+         mpfr_clear_overflow ();
+-        test_add (a, b, c, r);
++        test_add (a, b, c, (mp_rnd_t) r);
+         if (!mpfr_overflow_p ())
+           {
+             printf ("No overflow in check_overflow\n");
+@@ -695,7 +695,7 @@
+       mpfr_add (c, c, one, GMP_RNDN);
+       diff = (randlimb () % (2*m)) - m;
+       mpfr_mul_2si (c, c, diff, GMP_RNDN);
+-      rnd_mode = RND_RAND ();
++      rnd_mode = (mp_rnd_t) RND_RAND ();
+       inex_a = test_add (a, b, c, rnd_mode);
+       mpfr_init2 (s, MPFR_PREC_MIN + 2*m);
+       inex_s = mpfr_add (s, b, c, GMP_RNDN); /* exact */
+@@ -740,15 +740,15 @@
+     0, 1, 2, 3, 4, 29, 30, 31, 32, 33, 34, 35, 61, 62, 63, 64, 65, 66, 67
+   };
+   mpfr_t a, b, c;
+-  int ia, ib, ic;
++  unsigned int ia, ib, ic;
+ 
+   mpfr_init2 (c, MPFR_PREC_MIN);
+ 
+-  for (ia = 0; ia < numberof(prec_a); ia++)
++  for (ia = 0; ia < numberof (prec_a); ia++)
+     for (ib = 0; ib < numberof(supp_b); ib++)
+       {
+         mp_prec_t prec_b;
+-        mp_rnd_t rnd_mode;
++        int rnd_mode;
+ 
+         prec_b = prec_a[ia] + supp_b[ib];
+ 
+@@ -767,23 +767,23 @@
+ 
+               mpfr_set_ui (c, 1, GMP_RNDN);
+               mpfr_div_ui (c, c, prec_a[ia] + supp_b[ic], GMP_RNDN);
+-              inex_a = test_add (a, b, c, rnd_mode);
++              inex_a = test_add (a, b, c, (mp_rnd_t) rnd_mode);
+               mpfr_init2 (s, 256);
+               inex_s = mpfr_add (s, b, c, GMP_RNDN); /* exact */
+               if (inex_s)
+                 {
+                   printf ("check_1minuseps: result should have been exact "
+-                          "(ia = %d, ib = %d, ic = %d)\n", ia, ib, ic);
++                          "(ia = %u, ib = %u, ic = %u)\n", ia, ib, ic);
+                   exit (1);
+                 }
+-              inex_s = mpfr_prec_round (s, prec_a[ia], rnd_mode);
++              inex_s = mpfr_prec_round (s, prec_a[ia], (mp_rnd_t) rnd_mode);
+               if ((inex_a < 0 && inex_s >= 0) ||
+                   (inex_a == 0 && inex_s != 0) ||
+                   (inex_a > 0 && inex_s <= 0) ||
+                   !mpfr_equal_p (a, s))
+                 {
+                   printf ("check_1minuseps: results are different.\n");
+-                  printf ("ia = %d, ib = %d, ic = %d\n", ia, ib, ic);
++                  printf ("ia = %u, ib = %u, ic = %u\n", ia, ib, ic);
+                   exit (1);
+                 }
+               mpfr_clear (s);
+diff -Naur mpfr-2.1.0-p9/tests/tadd1sp.c mpfr-2.1.0-p10/tests/tadd1sp.c
+--- mpfr-2.1.0-p9/tests/tadd1sp.c	2004-10-27 13:16:12.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tadd1sp.c	2005-01-27 17:10:11.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_add1sp.
+ 
+-Copyright 2004 Free Software Foundation.
++Copyright 2004, 2005 Free Software Foundation.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -67,7 +67,7 @@
+ #define STD_ERROR \
+   {\
+     printf("ERROR: for %s and p=%lu and i=%d:\nB=",\
+-           mpfr_print_rnd_mode(r), p, i);\
++           mpfr_print_rnd_mode ((mp_rnd_t) r), p, i);\
+     mpfr_print_binary(b);\
+     printf("\nC="); mpfr_print_binary(c);\
+     printf("\nadd1  : "); mpfr_print_binary(a1);\
+@@ -79,7 +79,7 @@
+ #define STD_ERROR2 \
+   {\
+     printf("ERROR: Wrong inexact flag for %s and p=%lu and i=%d:\nB=",\
+-           mpfr_print_rnd_mode(r), p, i);\
++           mpfr_print_rnd_mode ((mp_rnd_t) r), p, i);\
+     mpfr_print_binary(b);\
+     printf("\nC="); mpfr_print_binary(c);\
+     printf("\nA="); mpfr_print_binary(a1);\
+@@ -99,7 +99,7 @@
+ void check_random(mp_prec_t p)
+ {
+   mpfr_t a1,b,c,a2;
+-  mp_rnd_t r;
++  int r;
+   int i, inexact1, inexact2;
+ 
+   mpfr_inits2(p, a1,b,c,a2, NULL);
+@@ -115,8 +115,8 @@
+           if (MPFR_IS_PURE_FP(b) && MPFR_IS_PURE_FP(c))
+             for (r = 0 ; r < GMP_RND_MAX ; r++)
+               {
+-                inexact1 = mpfr_add1(a1, b, c, r);
+-                inexact2 = mpfr_add1sp(a2, b, c, r);
++                inexact1 = mpfr_add1(a1, b, c, (mp_rnd_t) r);
++                inexact2 = mpfr_add1sp(a2, b, c, (mp_rnd_t) r);
+                 if (mpfr_cmp(a1, a2))
+                   STD_ERROR;
+                 if (inexact1 != inexact2)
+@@ -131,7 +131,7 @@
+ void check_special(void)
+ {
+   mpfr_t a1,a2,b,c;
+-  mp_rnd_t r;
++  int r;
+   mpfr_prec_t p;
+   int i = -1, inexact1, inexact2;
+ 
+@@ -142,16 +142,16 @@
+       SET_PREC(53);
+       mpfr_set_str1 (b, "1@100");
+       mpfr_set_str1 (c, "1@1");
+-      inexact1 = mpfr_add1(a1, b, c, r);
+-      inexact2 = mpfr_add1sp(a2, b, c, r);
++      inexact1 = mpfr_add1(a1, b, c, (mp_rnd_t) r);
++      inexact2 = mpfr_add1sp(a2, b, c, (mp_rnd_t) r);
+       if (mpfr_cmp(a1, a2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+         STD_ERROR2;
+       mpfr_set_str_binary (b, "1E53");
+       mpfr_set_str_binary (c, "1E0");
+-      inexact1 = mpfr_add1(a1, b, c, r);
+-      inexact2 = mpfr_add1sp(a2, b, c, r);
++      inexact1 = mpfr_add1(a1, b, c, (mp_rnd_t) r);
++      inexact2 = mpfr_add1sp(a2, b, c, (mp_rnd_t) r);
+       if (mpfr_cmp(a1, a2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+diff -Naur mpfr-2.1.0-p9/tests/tadd_ui.c mpfr-2.1.0-p10/tests/tadd_ui.c
+--- mpfr-2.1.0-p9/tests/tadd_ui.c	2004-01-28 14:22:04.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tadd_ui.c	2005-01-27 17:11:06.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_add_ui
+ 
+-Copyright 2000, 2001, 2002, 2003, 2004 Free Software Foundation.
++Copyright 2000, 2001, 2002, 2003, 2004, 2005 Free Software Foundation.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -27,7 +27,7 @@
+ 
+ /* checks that x+y gives the right results with 53 bits of precision */
+ static void
+-check3 (const char *xs, unsigned long y, unsigned int rnd_mode, const char *zs)
++check3 (const char *xs, unsigned long y, mp_rnd_t rnd_mode, const char *zs)
+ {
+   mpfr_t xx, zz;
+ 
+diff -Naur mpfr-2.1.0-p9/tests/tasin.c mpfr-2.1.0-p10/tests/tasin.c
+--- mpfr-2.1.0-p9/tests/tasin.c	2004-10-27 13:16:12.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tasin.c	2005-01-27 17:11:29.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_asin.
+ 
+-Copyright 2001, 2002, 2003, 2004 Free Software Foundation.
++Copyright 2001, 2002, 2003, 2004, 2005 Free Software Foundation.
+ Original version by Mathieu Dutour.
+ 
+ This file is part of the MPFR Library.
+@@ -32,7 +32,7 @@
+ special (void)
+ {
+   mpfr_t x, y;
+-  mp_rnd_t r;
++  int r;
+ 
+   mpfr_init (x);
+   mpfr_init (y);
+@@ -98,13 +98,13 @@
+   for (r = 0; r < GMP_RND_MAX; r++)
+     {
+       mpfr_set_ui (x, 1, GMP_RNDN); /* exact */
+-      mpfr_asin (y, x, r);
+-      mpfr_const_pi (x, r);
++      mpfr_asin (y, x, (mp_rnd_t) r);
++      mpfr_const_pi (x, (mp_rnd_t) r);
+       mpfr_div_2exp (x, x, 1, GMP_RNDN); /* exact */
+       if (mpfr_cmp (x, y))
+         {
+           printf ("Error: asin(1) != Pi/2 for rnd=%s\n",
+-                  mpfr_print_rnd_mode (r));
++                  mpfr_print_rnd_mode ((mp_rnd_t) r));
+           exit (1);
+         }
+     }
+@@ -113,14 +113,14 @@
+   for (r = 0; r < GMP_RND_MAX; r++)
+     {
+       mpfr_set_si (x, -1, GMP_RNDN); /* exact */
+-      mpfr_asin (y, x, r);
+-      mpfr_const_pi (x, MPFR_INVERT_RND(r));
++      mpfr_asin (y, x, (mp_rnd_t) r);
++      mpfr_const_pi (x, MPFR_INVERT_RND((mp_rnd_t) r));
+       mpfr_neg (x, x, GMP_RNDN); /* exact */
+       mpfr_div_2exp (x, x, 1, GMP_RNDN); /* exact */
+       if (mpfr_cmp (x, y))
+         {
+           printf ("Error: asin(-1) != -Pi/2 for rnd=%s\n",
+-                  mpfr_print_rnd_mode (r));
++                  mpfr_print_rnd_mode ((mp_rnd_t) r));
+           exit (1);
+         }
+     }
+diff -Naur mpfr-2.1.0-p9/tests/tatan.c mpfr-2.1.0-p10/tests/tatan.c
+--- mpfr-2.1.0-p9/tests/tatan.c	2004-10-27 13:16:13.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tatan.c	2005-01-27 17:03:39.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_atan.
+ 
+-Copyright 2001, 2002, 2003, 2004 Free Software Foundation.
++Copyright 2001, 2002, 2003, 2004, 2005 Free Software Foundation.
+ Written by Paul Zimmermann, INRIA Lorraine.
+ 
+ This file is part of the MPFR Library.
+@@ -29,7 +29,7 @@
+ special (void)
+ {
+   mpfr_t x, y, z;
+-  mp_rnd_t r;
++  int r;
+ 
+   mpfr_init2 (x, 53);
+   mpfr_init2 (y, 53);
+@@ -55,12 +55,13 @@
+   for (r = 0; r < GMP_RND_MAX ; r++)
+     {
+       mpfr_set_inf (x, 1);
+-      mpfr_atan (y, x, r);
+-      mpfr_const_pi (x, r);
+-      mpfr_div_2exp (x, x, 1, r);
++      mpfr_atan (y, x, (mp_rnd_t) r);
++      mpfr_const_pi (x, (mp_rnd_t) r);
++      mpfr_div_2exp (x, x, 1, (mp_rnd_t) r);
+       if (mpfr_cmp (x, y))
+         {
+-          printf ("Error: mpfr_atan(+Inf), rnd=%s\n", mpfr_print_rnd_mode (r));
++          printf ("Error: mpfr_atan(+Inf), rnd=%s\n",
++                  mpfr_print_rnd_mode ((mp_rnd_t) r));
+           exit (1);
+         }
+     }
+@@ -69,13 +70,14 @@
+   for (r = 0; r < GMP_RND_MAX ; r++)
+     {
+       mpfr_set_inf (x, -1);
+-      mpfr_atan (y, x, r);
+-      mpfr_const_pi (x, MPFR_INVERT_RND(r));
+-      mpfr_neg (x, x, r);
+-      mpfr_div_2exp (x, x, 1, r);
++      mpfr_atan (y, x, (mp_rnd_t) r);
++      mpfr_const_pi (x, MPFR_INVERT_RND((mp_rnd_t) r));
++      mpfr_neg (x, x, (mp_rnd_t) r);
++      mpfr_div_2exp (x, x, 1, (mp_rnd_t) r);
+       if (mpfr_cmp (x, y))
+         {
+-          printf ("Error: mpfr_atan(-Inf), rnd=%s\n", mpfr_print_rnd_mode (r));
++          printf ("Error: mpfr_atan(-Inf), rnd=%s\n",
++                  mpfr_print_rnd_mode ((mp_rnd_t) r));
+           exit (1);
+         }
+     }
+diff -Naur mpfr-2.1.0-p9/tests/tcan_round.c mpfr-2.1.0-p10/tests/tcan_round.c
+--- mpfr-2.1.0-p9/tests/tcan_round.c	2004-02-06 13:27:04.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tcan_round.c	2005-01-27 17:15:57.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_can_round.
+ 
+-Copyright 1999, 2001, 2002, 2003 Free Software Foundation, Inc.
++Copyright 1999, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -62,10 +62,10 @@
+   for (i = 30; i < 99; i++)
+     for (j = 30; j < 99; j++)
+       {
+-        mp_rnd_t r1, r2;
++        int r1, r2;
+         for (r1 = 0; r1 < GMP_RND_MAX ; r1++)
+           for (r2 = 0; r2 < GMP_RND_MAX ; r2++)
+-            mpfr_can_round (x, i, r1, r2, j); /* test for assertions */
++            mpfr_can_round (x, i, (mp_rnd_t) r1, (mp_rnd_t) r2, j); /* test for assertions */
+       }
+ 
+   mpfr_clear (x);
+diff -Naur mpfr-2.1.0-p9/tests/tcbrt.c mpfr-2.1.0-p10/tests/tcbrt.c
+--- mpfr-2.1.0-p9/tests/tcbrt.c	2004-02-23 16:47:46.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tcbrt.c	2005-01-27 17:14:39.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_cbrt.
+ 
+-Copyright 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -136,7 +136,7 @@
+ main (void)
+ {
+   mpfr_t x;
+-  mp_rnd_t r;
++  int r;
+   mp_prec_t p;
+ 
+   tests_start_mpfr ();
+@@ -151,21 +151,21 @@
+       for (r = 0; r < GMP_RND_MAX; r++)
+         {
+           mpfr_set_ui (x, 1, GMP_RNDN);
+-          mpfr_cbrt (x, x, r);
++          mpfr_cbrt (x, x, (mp_rnd_t) r);
+           if (mpfr_cmp_ui (x, 1))
+             {
+               printf ("Error in mpfr_cbrt for x=1, rnd=%s\ngot ",
+-                      mpfr_print_rnd_mode (r));
++                      mpfr_print_rnd_mode ((mp_rnd_t) r));
+               mpfr_out_str (stdout, 2, 0, x, GMP_RNDN);
+               printf ("\n");
+               exit (1);
+             }
+           mpfr_set_si (x, -1, GMP_RNDN);
+-          mpfr_cbrt (x, x, r);
++          mpfr_cbrt (x, x, (mp_rnd_t) r);
+           if (mpfr_cmp_si (x, -1))
+             {
+               printf ("Error in mpfr_cbrt for x=-1, rnd=%s\ngot ",
+-                      mpfr_print_rnd_mode (r));
++                      mpfr_print_rnd_mode ((mp_rnd_t) r));
+               mpfr_out_str (stdout, 2, 0, x, GMP_RNDN);
+               printf ("\n");
+               exit (1);
+@@ -183,7 +183,7 @@
+                     {
+                       printf ("Error in mpfr_cbrt for "
+                               "x = 27.0 * 2^(%d), rnd=%s\ngot ",
+-                              3*i, mpfr_print_rnd_mode (r));
++                              3*i, mpfr_print_rnd_mode ((mp_rnd_t) r));
+                       mpfr_out_str (stdout, 2, 0, x, GMP_RNDN);
+                       printf ("\ninstead of 3 * 2^(%d)\n", i);
+                       exit (1);
+diff -Naur mpfr-2.1.0-p9/tests/tcmp.c mpfr-2.1.0-p10/tests/tcmp.c
+--- mpfr-2.1.0-p9/tests/tcmp.c	2004-09-29 13:58:06.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tcmp.c	2005-01-27 17:18:01.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_cmp.
+ 
+-Copyright 1999, 2001, 2002, 2003 Free Software Foundation, Inc.
++Copyright 1999, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -76,23 +76,24 @@
+       exit (1);
+     }
+ 
+-  mpfr_set_prec(xx, 53); mpfr_set_prec(yy, 200);
+-  mpfr_set_ui(xx, 1, 0);
+-  mpfr_set_ui(yy, 1, 0);
+-  if (mpfr_cmp(xx, yy) != 0)
++  mpfr_set_prec (xx, 53);
++  mpfr_set_prec (yy, 200);
++  mpfr_set_ui (xx, 1, (mp_rnd_t) 0);
++  mpfr_set_ui (yy, 1, (mp_rnd_t) 0);
++  if (mpfr_cmp (xx, yy) != 0)
+     {
+       printf ("Error in mpfr_cmp: 1.0 != 1.0\n");
+       exit (1);
+     }
+-  mpfr_set_prec(yy, 31);
+-  mpfr_set_str(xx, "1.0000000002", 10, 0);
+-  mpfr_set_ui(yy, 1, 0);
+-  if (!(mpfr_cmp(xx,yy)>0))
++  mpfr_set_prec (yy, 31);
++  mpfr_set_str (xx, "1.0000000002", 10, (mp_rnd_t) 0);
++  mpfr_set_ui (yy, 1, (mp_rnd_t) 0);
++  if (!(mpfr_cmp (xx,yy)>0))
+     {
+       printf ("Error in mpfr_cmp: not 1.0000000002 > 1.0\n");
+       exit (1);
+     }
+-  mpfr_set_prec(yy, 53);
++  mpfr_set_prec (yy, 53);
+ 
+   /* bug found by Gerardo Ballabio */
+   mpfr_set_ui(xx, 0, GMP_RNDN);
+diff -Naur mpfr-2.1.0-p9/tests/tcmpabs.c mpfr-2.1.0-p10/tests/tcmpabs.c
+--- mpfr-2.1.0-p9/tests/tcmpabs.c	2004-09-29 13:58:06.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tcmpabs.c	2005-01-27 17:18:28.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_cmpabs.
+ 
+-Copyright 2004 Free Software Foundation, Inc.
++Copyright 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -65,14 +65,14 @@
+ 
+   mpfr_set_prec(xx, 53); 
+   mpfr_set_prec(yy, 200);
+-  mpfr_set_ui(xx, 1, 0);
+-  mpfr_set_ui(yy, 1, 0);
++  mpfr_set_ui (xx, 1, (mp_rnd_t) 0);
++  mpfr_set_ui (yy, 1, (mp_rnd_t) 0);
+   if (mpfr_cmpabs(xx, yy) != 0)
+     ERROR ("Error in mpfr_cmpabs: 1.0 != 1.0\n");
+     
+-  mpfr_set_prec(yy, 31);
+-  mpfr_set_str(xx, "-1.0000000002", 10, 0);
+-  mpfr_set_ui(yy, 1, 0);
++  mpfr_set_prec (yy, 31);
++  mpfr_set_str (xx, "-1.0000000002", 10, (mp_rnd_t) 0);
++  mpfr_set_ui (yy, 1, (mp_rnd_t) 0);
+   if (!(mpfr_cmpabs(xx,yy)>0))
+     ERROR ("Error in mpfr_cmpabs: not 1.0000000002 > 1.0\n");
+   mpfr_set_prec(yy, 53);
+diff -Naur mpfr-2.1.0-p9/tests/tconst_euler.c mpfr-2.1.0-p10/tests/tconst_euler.c
+--- mpfr-2.1.0-p9/tests/tconst_euler.c	2004-02-23 16:47:46.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tconst_euler.c	2005-01-27 17:20:14.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_const_euler.
+ 
+-Copyright 2001, 2004 Free Software Foundation.
++Copyright 2001, 2002, 2003, 2004, 2005 Free Software Foundation.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -29,7 +29,7 @@
+ {
+   mpfr_t gamma, y, z, t;
+   unsigned int err, prec, yprec, p0 = 2, p1 = 200;
+-  mp_rnd_t rnd;
++  int rnd;
+ 
+   tests_start_mpfr ();
+ 
+@@ -68,16 +68,16 @@
+       for (rnd = 0; rnd < GMP_RND_MAX; rnd++)
+ 	{
+ 	  mpfr_set_prec (y, yprec);
+-	  mpfr_const_euler (y, rnd);
++	  mpfr_const_euler (y, (mp_rnd_t) rnd);
+ 	  err = (rnd == GMP_RNDN) ? yprec + 1 : yprec;
+-	  if (mpfr_can_round (y, err, rnd, rnd, prec))
++	  if (mpfr_can_round (y, err, (mp_rnd_t) rnd, (mp_rnd_t) rnd, prec))
+ 	    {
+-	      mpfr_set (t, y, rnd);
+-	      mpfr_const_euler (z, rnd);
++	      mpfr_set (t, y, (mp_rnd_t) rnd);
++	      mpfr_const_euler (z, (mp_rnd_t) rnd);
+ 	      if (mpfr_cmp (t, z))
+ 		{
+ 		  printf ("results differ for prec=%u rnd_mode=%s\n", prec,
+-			  mpfr_print_rnd_mode (rnd));
++			  mpfr_print_rnd_mode ((mp_rnd_t) rnd));
+ 		  printf ("   got      ");
+ 		  mpfr_out_str (stdout, 2, prec, z, GMP_RNDN);
+ 		  puts ("");
+diff -Naur mpfr-2.1.0-p9/tests/tconst_log2.c mpfr-2.1.0-p10/tests/tconst_log2.c
+--- mpfr-2.1.0-p9/tests/tconst_log2.c	2004-04-21 12:36:30.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tconst_log2.c	2005-01-27 17:20:59.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_const_log2.
+ 
+-Copyright 1999, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 1999, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -43,7 +43,7 @@
+       mpfr_set_prec (x, p0);
+       mpfr_set_prec (y, p0);
+         {
+-          rnd = RND_RAND ();
++          rnd = (mp_rnd_t) RND_RAND ();
+           mpfr_const_log2 (x, rnd);
+           mpfr_set (y, z, rnd);
+           if (mpfr_cmp (x, y) && mpfr_can_round (z, mpfr_get_prec(z), GMP_RNDN,
+@@ -135,7 +135,7 @@
+   tests_start_mpfr ();
+ 
+   p = (argc>1) ? atoi(argv[1]) : 53;
+-  rnd = (argc>2) ? atoi(argv[2]) : GMP_RNDZ;
++  rnd = (argc>2) ? (mp_rnd_t) atoi(argv[2]) : GMP_RNDZ;
+ 
+   mpfr_init (x);
+ 
+diff -Naur mpfr-2.1.0-p9/tests/tconst_pi.c mpfr-2.1.0-p10/tests/tconst_pi.c
+--- mpfr-2.1.0-p9/tests/tconst_pi.c	2004-04-21 12:36:30.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tconst_pi.c	2005-01-27 17:21:49.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_const_pi.
+ 
+-Copyright 1999, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 1999, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -55,7 +55,7 @@
+ {
+   mpfr_t x;
+   int p;
+-  unsigned char rnd;
++  mp_rnd_t rnd;
+ 
+   tests_start_mpfr ();
+ 
+@@ -67,7 +67,7 @@
+         p = a;
+     }
+ 
+-  rnd = (argc > 2) ? atoi(argv[2]) : GMP_RNDZ;
++  rnd = (argc > 2) ? (mp_rnd_t) atoi(argv[2]) : GMP_RNDZ;
+ 
+   mpfr_init2 (x, p);
+   mpfr_const_pi (x, rnd);
+diff -Naur mpfr-2.1.0-p9/tests/tdiv.c mpfr-2.1.0-p10/tests/tdiv.c
+--- mpfr-2.1.0-p9/tests/tdiv.c	2004-10-27 13:16:13.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tdiv.c	2005-01-27 17:22:14.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_div.
+ 
+-Copyright 1999, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 1999, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -211,11 +211,11 @@
+       for (j = 0;j < GMP_RND_MAX; j++)
+         {
+           mpfr_set_ui (y, 1, GMP_RNDN);
+-          mpfr_div (y, x, y, j);
++          mpfr_div (y, x, y, (mp_rnd_t) j);
+           if (mpfr_cmp_ui (y, 1))
+             {
+               printf ("mpfr_div failed for x=1.0, y=1.0, prec=%d rnd=%s\n",
+-                      i, mpfr_print_rnd_mode(j));
++                      i, mpfr_print_rnd_mode ((mp_rnd_t) j));
+               printf ("got "); mpfr_print_binary(y); puts ("");
+               exit (1);
+             }
+@@ -428,7 +428,7 @@
+ 	      mpfr_set_prec (y, py);
+ 	      mpfr_set_prec (z, py + pu);
+ 		{
+-                  rnd = RND_RAND ();
++                  rnd = (mp_rnd_t) RND_RAND ();
+ 		  inexact = mpfr_div (y, x, u, rnd);
+ 		  if (mpfr_mul (z, y, u, rnd))
+ 		    {
+diff -Naur mpfr-2.1.0-p9/tests/tdiv_ui.c mpfr-2.1.0-p10/tests/tdiv_ui.c
+--- mpfr-2.1.0-p9/tests/tdiv_ui.c	2004-02-23 16:47:46.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tdiv_ui.c	2005-01-27 17:22:35.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_div_ui.
+ 
+-Copyright 1999, 2000, 2001, 2002, 2003, 2004 Free Software Foundation.
++Copyright 1999, 2000, 2001, 2002, 2003, 2004, 2005 Free Software Foundation.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -140,7 +140,7 @@
+   mp_prec_t px, py;
+   int inexact, cmp;
+   unsigned long int u;
+-  mp_rnd_t rnd;
++  int rnd;
+ 
+   mpfr_init (x);
+   mpfr_init (y);
+@@ -161,8 +161,8 @@
+           mpfr_set_prec (z, py + mp_bits_per_limb);
+           for (rnd = 0; rnd < GMP_RND_MAX; rnd++)
+             {
+-              inexact = mpfr_div_ui (y, x, u, rnd);
+-              if (mpfr_mul_ui (z, y, u, rnd))
++              inexact = mpfr_div_ui (y, x, u, (mp_rnd_t) rnd);
++              if (mpfr_mul_ui (z, y, u, (mp_rnd_t) rnd))
+                 {
+                   printf ("z <- y * u should be exact for u=%lu\n", u);
+                   printf ("y="); mpfr_print_binary (y); puts ("");
+@@ -175,7 +175,7 @@
+                   ((inexact < 0) && (cmp >= 0)))
+                 {
+                   printf ("Wrong inexact flag for u=%lu, rnd=%s\n", u,
+-                          mpfr_print_rnd_mode(rnd));
++                          mpfr_print_rnd_mode ((mp_rnd_t) rnd));
+                   printf ("x="); mpfr_print_binary (x); puts ("");
+                   printf ("y="); mpfr_print_binary (y); puts ("");
+                   exit (1);
+diff -Naur mpfr-2.1.0-p9/tests/teq.c mpfr-2.1.0-p10/tests/teq.c
+--- mpfr-2.1.0-p9/tests/teq.c	2004-02-13 13:57:24.000000000 +0000
++++ mpfr-2.1.0-p10/tests/teq.c	2005-01-27 17:23:23.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_eq.
+ 
+-Copyright 1999, 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 1999, 2000, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -75,8 +75,8 @@
+   mpfr_init2 (y, 53);
+   mpfr_init2 (z, 53);
+ 
+-  mpfr_set_str (x, "1", 10, 0);
+-  mpfr_set_str (y, "1e-10000", 10, 0);
++  mpfr_set_str (x, "1", 10, (mp_rnd_t) 0);
++  mpfr_set_str (y, "1e-10000", 10, (mp_rnd_t) 0);
+   mpfr_add (z, x, y, GMP_RNDU);
+ 
+   for (i = 1; i <= 52; i++)
+diff -Naur mpfr-2.1.0-p9/tests/tests.c mpfr-2.1.0-p10/tests/tests.c
+--- mpfr-2.1.0-p9/tests/tests.c	2005-01-23 23:20:09.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tests.c	2005-01-27 17:23:51.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Miscellaneous support for test programs.
+ 
+-Copyright 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -302,7 +302,7 @@
+ 
+   if (srcdir == NULL)
+     return fopen (filename, mode);
+-  buffer = malloc (strlen (filename) + strlen (srcdir) + 1);
++  buffer = (char*) malloc (strlen (filename) + strlen (srcdir) + 1);
+   if (buffer == NULL)
+     {
+       printf ("src_fopen: failed to alloc memory)\n");
+diff -Naur mpfr-2.1.0-p9/tests/texceptions.c mpfr-2.1.0-p10/tests/texceptions.c
+--- mpfr-2.1.0-p9/tests/texceptions.c	2004-10-27 13:16:13.000000000 +0000
++++ mpfr-2.1.0-p10/tests/texceptions.c	2005-01-27 17:03:06.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for exceptions.
+ 
+-Copyright 2001, 2002, 2003, 2004 Free Software Foundation.
++Copyright 2001, 2002, 2003, 2004, 2005 Free Software Foundation.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -30,18 +30,19 @@
+ static void
+ check_default_rnd (void)
+ {
+-  mp_rnd_t r, t;
++  int r;
++  mp_rnd_t t;
+   for(r = 0 ; r < GMP_RND_MAX ; r++)
+     {
+-      mpfr_set_default_rounding_mode (r);
++      mpfr_set_default_rounding_mode ((mp_rnd_t) r);
+       t = mpfr_get_default_rounding_mode();
+-      if (r !=t)
++      if ((mp_rnd_t) r != t)
+ 	ERROR("ERROR in setting / getting default rounding mode (1)\n");
+     }
+-  mpfr_set_default_rounding_mode(4);
++  mpfr_set_default_rounding_mode ((mp_rnd_t) 4);
+   if (mpfr_get_default_rounding_mode() != GMP_RNDD)
+     ERROR("ERROR in setting / getting default rounding mode (2)\n");
+-  mpfr_set_default_rounding_mode(-1);
++  mpfr_set_default_rounding_mode ((mp_rnd_t) -1);
+   if (mpfr_get_default_rounding_mode() != GMP_RNDD)
+     ERROR("ERROR in setting / getting default rounding mode (3)\n");
+ }
+@@ -137,7 +138,7 @@
+   mpfr_t x, zero, min;
+   mpfr_ptr r[4];
+   int t[4] = { 1, -1, 1, -1 };
+-  mp_rnd_t i;
++  int i;
+   int s;
+ 
+   mpfr_inits (x, zero, min, (mpfr_ptr) 0);
+@@ -154,11 +155,11 @@
+           int inex;
+ 
+           j = s < 0 && i > 1 ? 5 - i : i;
+-          inex = mpfr_set_underflow (x, i, s);
++          inex = mpfr_set_underflow (x, (mp_rnd_t) i, s);
+           if (mpfr_cmp (x, r[j]) || inex * t[j] <= 0)
+             {
+               printf ("Error in test_set_underflow, sign = %d,"
+-                      " rnd_mode = %s\n", s, mpfr_print_rnd_mode (i));
++                      " rnd_mode = %s\n", s, mpfr_print_rnd_mode ((mp_rnd_t) i));
+               printf ("Got\n");
+               mpfr_out_str (stdout, 2, 0, x, GMP_RNDN);
+               printf (", inex = %d\ninstead of\n", inex);
+@@ -180,7 +181,7 @@
+   mpfr_t x, inf, max;
+   mpfr_ptr r[4];
+   int t[4] = { 1, -1, 1, -1 };
+-  mp_rnd_t i;
++  int i;
+   int s;
+ 
+   mpfr_inits2 (32, x, inf, max, (mpfr_ptr) 0);
+@@ -197,11 +198,11 @@
+           int inex;
+ 
+           j = s < 0 && i > 1 ? 5 - i : i;
+-          inex = mpfr_set_overflow (x, i, s);
++          inex = mpfr_set_overflow (x, (mp_rnd_t) i, s);
+           if (mpfr_cmp (x, r[j]) || inex * t[j] <= 0)
+             {
+               printf ("Error in test_set_overflow, sign = %d,"
+-                      " rnd_mode = %s\n", s, mpfr_print_rnd_mode (i));
++                      " rnd_mode = %s\n", s, mpfr_print_rnd_mode ((mp_rnd_t) i));
+               printf ("Got\n");
+               mpfr_out_str (stdout, 2, 0, x, GMP_RNDN);
+               printf (", inex = %d\ninstead of\n", inex);
+diff -Naur mpfr-2.1.0-p9/tests/texp.c mpfr-2.1.0-p10/tests/texp.c
+--- mpfr-2.1.0-p9/tests/texp.c	2004-10-27 13:16:14.000000000 +0000
++++ mpfr-2.1.0-p10/tests/texp.c	2005-01-27 17:24:50.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_exp.
+ 
+-Copyright 1999, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 1999, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -142,7 +142,7 @@
+       mpfr_set_prec (y, prec);
+       mpfr_set_prec (z, prec);
+       mpfr_random (x);
+-      rnd = RND_RAND() ;
++      rnd = (mp_rnd_t) RND_RAND();
+       mpfr_exp_2 (y, x, rnd);
+       mpfr_exp_3 (z, x, rnd);
+       if (mpfr_cmp (y,z))
+diff -Naur mpfr-2.1.0-p9/tests/tfactorial.c mpfr-2.1.0-p10/tests/tfactorial.c
+--- mpfr-2.1.0-p9/tests/tfactorial.c	2004-02-23 16:47:46.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tfactorial.c	2005-01-27 17:25:11.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_factorial.
+ 
+-Copyright 2001, 2002, 2003, 2004 Free Software Foundation.
++Copyright 2001, 2002, 2003, 2004, 2005 Free Software Foundation.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -74,7 +74,7 @@
+   mpz_t f;
+   mpfr_t x, y;
+   mp_prec_t prec_f, p;
+-  mp_rnd_t r;
++  int r;
+   int inex1, inex2;
+ 
+   mpz_init (f);
+@@ -92,19 +92,19 @@
+           mpfr_set_prec (y, p);
+           for (r = 0; r < GMP_RND_MAX; r++)
+             {
+-              inex1 = mpfr_fac_ui (x, n, r);
+-              inex2 = mpfr_set_z (y, f, r);
++              inex1 = mpfr_fac_ui (x, n, (mp_rnd_t) r);
++              inex2 = mpfr_set_z (y, f, (mp_rnd_t) r);
+               if (mpfr_cmp (x, y))
+                 {
+                   printf ("Error for n=%lu prec=%lu rnd=%s\n",
+-                          n, (unsigned long) p, mpfr_print_rnd_mode (r));
++                          n, (unsigned long) p, mpfr_print_rnd_mode ((mp_rnd_t) r));
+                   exit (1);
+                 }
+               if ((inex1 < 0 && inex2 >= 0) || (inex1 == 0 && inex2 != 0)
+                   || (inex1 > 0 && inex2 <= 0))
+                 {
+                   printf ("Wrong inexact flag for n=%lu prec=%lu rnd=%s\n",
+-                          n, (unsigned long) p, mpfr_print_rnd_mode (r));
++                          n, (unsigned long) p, mpfr_print_rnd_mode ((mp_rnd_t) r));
+                   exit (1);
+                 }
+             }
+@@ -120,7 +120,7 @@
+ main (int argc, char *argv[])
+ {
+   unsigned int prec, err, yprec, n, k, zeros;
+-  mp_rnd_t rnd;
++  int rnd;
+   mpfr_t x, y, z, t;
+   int inexact;
+ 
+@@ -154,12 +154,12 @@
+       for (n = 0; n < 50; n++)
+ 	for (rnd = 0; rnd < GMP_RND_MAX; rnd++)
+ 	  {
+-	    inexact = mpfr_fac_ui (y, n, rnd);
++	    inexact = mpfr_fac_ui (y, n, (mp_rnd_t) rnd);
+ 	    err = (rnd == GMP_RNDN) ? yprec + 1 : yprec;
+-	    if (mpfr_can_round (y, err, rnd, rnd, prec))
++	    if (mpfr_can_round (y, err, (mp_rnd_t) rnd, (mp_rnd_t) rnd, prec))
+ 	      {
+-		mpfr_set (t, y, rnd);
+-		inexact = mpfr_fac_ui (z, n, rnd);
++		mpfr_set (t, y, (mp_rnd_t) rnd);
++		inexact = mpfr_fac_ui (z, n, (mp_rnd_t) rnd);
+ 		/* fact(n) ends with floor(n/2)+floor(n/4)+... zeros */
+ 		for (k=n/2, zeros=0; k; k >>= 1)
+ 		  zeros += k;
+@@ -187,7 +187,7 @@
+ 		    printf ("results differ for x=");
+ 		    mpfr_out_str (stdout, 2, prec, x, GMP_RNDN);
+ 		    printf (" prec=%u rnd_mode=%s\n", prec,
+-			    mpfr_print_rnd_mode (rnd));
++			    mpfr_print_rnd_mode ((mp_rnd_t) rnd));
+ 		    printf ("   got ");
+ 		    mpfr_out_str (stdout, 2, prec, z, GMP_RNDN);
+ 		    puts ("");
+diff -Naur mpfr-2.1.0-p9/tests/tfma.c mpfr-2.1.0-p10/tests/tfma.c
+--- mpfr-2.1.0-p9/tests/tfma.c	2004-02-12 16:01:26.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tfma.c	2005-01-27 17:25:41.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_fma.
+ 
+-Copyright 2001, 2002, 2003, 2004 Free Software Foundation.
++Copyright 2001, 2002, 2003, 2004, 2005 Free Software Foundation.
+ Adapted from tarctan.c.
+ 
+ This file is part of the MPFR Library.
+@@ -260,7 +260,7 @@
+           if (randlimb () % 2)
+             mpfr_neg (z, z, GMP_RNDN);
+ 
+-          rnd = RND_RAND ();
++          rnd = (mp_rnd_t) RND_RAND ();
+           mpfr_set_prec (slong, 2 * prec);
+           if (mpfr_mul (slong, x, y, rnd))
+             {
+diff -Naur mpfr-2.1.0-p9/tests/tfrac.c mpfr-2.1.0-p10/tests/tfrac.c
+--- mpfr-2.1.0-p9/tests/tfrac.c	2004-02-12 16:08:00.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tfrac.c	2005-01-27 17:26:27.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_frac.
+ 
+-Copyright 2002, 2003, 2004 Free Software Foundation.
++Copyright 2002, 2003, 2004, 2005 Free Software Foundation.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -113,16 +113,16 @@
+ static void
+ check1 (mpfr_ptr ip, mpfr_ptr fp)
+ {
+-  mp_rnd_t rnd;
++  int rnd;
+ 
+   for (rnd = 0; rnd < GMP_RND_MAX ; rnd++)
+     {
+-      check0 (ip, fp, PMAX, rnd);
+-      check0 (ip, fp, 70, rnd);
++      check0 (ip, fp, PMAX, (mp_rnd_t) rnd);
++      check0 (ip, fp, 70, (mp_rnd_t) rnd);
+       mpfr_neg (fp, fp, GMP_RNDN);
+       mpfr_neg (ip, ip, GMP_RNDN);
+-      check0 (ip, fp, PMAX, rnd);
+-      check0 (ip, fp, 70, rnd);
++      check0 (ip, fp, PMAX, (mp_rnd_t) rnd);
++      check0 (ip, fp, 70, (mp_rnd_t) rnd);
+       mpfr_neg (fp, fp, GMP_RNDN);
+       mpfr_neg (ip, ip, GMP_RNDN);
+     }
+diff -Naur mpfr-2.1.0-p9/tests/tgeneric.c mpfr-2.1.0-p10/tests/tgeneric.c
+--- mpfr-2.1.0-p9/tests/tgeneric.c	2004-02-06 13:27:05.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tgeneric.c	2005-01-27 17:27:49.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Generic test file for functions with one mpfr_t argument.
+ 
+-Copyright 2001, 2002, 2003 Free Software Foundation.
++Copyright 2001, 2002, 2003, 2004, 2005 Free Software Foundation.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -48,7 +48,7 @@
+ #else
+           mpfr_random (x);
+ #endif
+-          rnd = RND_RAND ();
++          rnd = (mp_rnd_t) RND_RAND ();
+           mpfr_set_prec (y, yprec);
+           compare = TEST_FUNCTION (y, x, rnd);
+           if (mpfr_can_round (y, yprec, rnd, rnd, prec))
+diff -Naur mpfr-2.1.0-p9/tests/tget_d_2exp.c mpfr-2.1.0-p10/tests/tget_d_2exp.c
+--- mpfr-2.1.0-p9/tests/tget_d_2exp.c	2004-03-12 17:45:07.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tget_d_2exp.c	2005-01-27 17:29:05.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test mpfr_get_d_2exp.
+ 
+-Copyright 1999, 2000, 2001, 2002, 2003 Free Software Foundation.
++Copyright 1999, 2000, 2001, 2002, 2003, 2004, 2005 Free Software Foundation.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -49,7 +49,7 @@
+ 
+           for (neg = 0; neg <= 1; neg++)
+             {
+-              got = mpfr_get_d_2exp (&got_exp, f, rnd_mode);
++              got = mpfr_get_d_2exp (&got_exp, f, (mp_rnd_t) rnd_mode);
+ 
+               if (neg == 0
+                   ? (got < 0.5 || got >= 1.0)
+diff -Naur mpfr-2.1.0-p9/tests/tget_sj.c mpfr-2.1.0-p10/tests/tget_sj.c
+--- mpfr-2.1.0-p9/tests/tget_sj.c	2004-09-29 12:27:33.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tget_sj.c	2005-01-27 17:30:01.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_get_sj and mpfr_get_uj.
+ 
+-Copyright 2004 Free Software Foundation, Inc.
++Copyright 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -62,7 +62,7 @@
+ 
+   for (i = -1; i <= 1; i++)
+     {
+-      mpfr_rnd_t rnd;
++      int rnd;
+ 
+       mpfr_set_si_2exp (y, i, -2, GMP_RNDN);
+       mpfr_add (y, y, x, GMP_RNDN);
+@@ -79,12 +79,12 @@
+           if (rnd == GMP_RNDU && i > 0)
+             continue;
+           /* rint (y) == x == s */
+-          r = mpfr_get_sj (y, rnd);
++          r = mpfr_get_sj (y, (mp_rnd_t) rnd);
+           if (r != s)
+             {
+               printf ("Error in check_sj for y = ");
+               mpfr_out_str (stdout, 2, 0, y, GMP_RNDN);
+-              printf (" in %s\n", mpfr_print_rnd_mode (rnd));
++              printf (" in %s\n", mpfr_print_rnd_mode ((mp_rnd_t) rnd));
+               printf ("Got %jd instead of %jd.\n", r, s);
+               exit (1);
+             }
+@@ -104,7 +104,7 @@
+ 
+   for (i = -1; i <= 1; i++)
+     {
+-      mpfr_rnd_t rnd;
++      int rnd;
+ 
+       mpfr_set_si_2exp (y, i, -2, GMP_RNDN);
+       mpfr_add (y, y, x, GMP_RNDN);
+@@ -119,12 +119,12 @@
+           if (rnd == GMP_RNDU && i > 0)
+             continue;
+           /* rint (y) == x == u */
+-          r = mpfr_get_uj (y, rnd);
++          r = mpfr_get_uj (y, (mp_rnd_t) rnd);
+           if (r != u)
+             {
+               printf ("Error in check_uj for y = ");
+               mpfr_out_str (stdout, 2, 0, y, GMP_RNDN);
+-              printf (" in %s\n", mpfr_print_rnd_mode (rnd));
++              printf (" in %s\n", mpfr_print_rnd_mode ((mp_rnd_t) rnd));
+               printf ("Got %ju instead of %ju.\n", r, u);
+               exit (1);
+             }
+diff -Naur mpfr-2.1.0-p9/tests/tget_str.c mpfr-2.1.0-p10/tests/tget_str.c
+--- mpfr-2.1.0-p9/tests/tget_str.c	2004-10-07 11:53:27.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tget_str.c	2005-01-27 17:30:50.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_get_str.
+ 
+-Copyright 1999, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 1999, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -963,7 +963,7 @@
+   int i, j;
+   char s[MAX_DIGITS + 2], s2[MAX_DIGITS + 2], c;
+   mp_exp_t e;
+-  mp_rnd_t r;
++  int r;
+   size_t m;
+ 
+   /* check for invalid base */
+@@ -982,7 +982,7 @@
+       for (r = 0; r < GMP_RND_MAX; r++)
+         for (m= (i<3)? 2 : i-1 ; (int) m <= i+1 ; m++)
+           {
+-            mpfr_get_str (s, &e, b, m, x, r);
++            mpfr_get_str (s, &e, b, m, x, (mp_rnd_t) r);
+             /* s should be 1 followed by (m-1) zeros, and e should be i+1 */
+             if ((e != i+1) || strncmp (s, s2, m) != 0)
+               {
+@@ -996,7 +996,7 @@
+       for (r = 0; r < GMP_RND_MAX; r++)
+         if (i >= 2)
+           {
+-            mpfr_get_str (s, &e, b, i, x, r);
++            mpfr_get_str (s, &e, b, i, x, (mp_rnd_t) r);
+             /* should be i times (b-1) */
+             c = (b <= 10) ? '0' + b - 1 : 'a' + (b - 11);
+             for (j=0; (j < i) && (s[j] == c); j++);
+@@ -1087,7 +1087,7 @@
+       mpfr_set_exp (x, (e == -10) ? mpfr_get_emin () :
+                     ((e == 10) ? mpfr_get_emax () : e));
+       b = 2 + (randlimb () % 35);
+-      r = RND_RAND();
++      r = (mp_rnd_t) RND_RAND();
+       mpfr_get_str (s, &f, b, m, x, r);
+     }
+   mpfr_clear (x);
+diff -Naur mpfr-2.1.0-p9/tests/tgmpop.c mpfr-2.1.0-p10/tests/tgmpop.c
+--- mpfr-2.1.0-p9/tests/tgmpop.c	2004-04-07 14:42:32.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tgmpop.c	2005-01-27 17:31:30.000000000 +0000
+@@ -1,7 +1,7 @@
+ /* Test file for mpfr_add_[q,z], mpfr_sub_[q,z], mpfr_div_[q,z], mpfr_mul_[q,z]
+    and mpfr_cmp_[q,z]
+ 
+-Copyright 2004 Free Software Foundation.
++Copyright 2004, 2005 Free Software Foundation.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -118,7 +118,7 @@
+   mpq_t q;
+   mpz_t z;
+   mpfr_t x;
+-  mp_rnd_t r;
++  int r;
+   mpfr_sign_t i;
+ 
+   mpfr_init (x);
+@@ -135,43 +135,43 @@
+ 	   i+=MPFR_SIGN_POS-MPFR_SIGN_NEG)
+ 	{
+ 	  MPFR_SET_SIGN(x, i);
+-	  mpfr_add_z (x, x, z, r);
++	  mpfr_add_z (x, x, z, (mp_rnd_t) r);
+ 	  if (!MPFR_IS_ZERO(x) || MPFR_SIGN(x)!=i)
+ 	    {
+ 	      printf("GMP Zero errors for add_z & rnd=%s & s=%d\n", 
+-		     mpfr_print_rnd_mode(r), i);
++		     mpfr_print_rnd_mode ((mp_rnd_t) r), i);
+ 	      mpfr_dump (x);
+ 	      exit (1);
+ 	    }
+-	  mpfr_sub_z (x, x, z, r);
++	  mpfr_sub_z (x, x, z, (mp_rnd_t) r);
+ 	  if (!MPFR_IS_ZERO(x) || MPFR_SIGN(x)!=i)
+ 	    {
+ 	      printf("GMP Zero errors for sub_z & rnd=%s & s=%d\n",
+-		     mpfr_print_rnd_mode(r), i);
++		     mpfr_print_rnd_mode ((mp_rnd_t) r), i);
+ 	      mpfr_dump (x);
+ 	      exit (1);
+ 	    }
+-	  mpfr_mul_z (x, x, z, r);
++	  mpfr_mul_z (x, x, z, (mp_rnd_t) r);
+           if (!MPFR_IS_ZERO(x) || MPFR_SIGN(x)!=i)
+             {
+               printf("GMP Zero errors for mul_z & rnd=%s & s=%d\n",
+-                     mpfr_print_rnd_mode(r), i);
++                     mpfr_print_rnd_mode ((mp_rnd_t) r), i);
+               mpfr_dump (x);
+ 	      exit (1);
+             }
+-          mpfr_add_q (x, x, q, r);
++          mpfr_add_q (x, x, q, (mp_rnd_t) r);
+           if (!MPFR_IS_ZERO(x) || MPFR_SIGN(x)!=i)
+             {
+               printf("GMP Zero errors for add_q & rnd=%s & s=%d\n",
+-                     mpfr_print_rnd_mode(r), i);
++                     mpfr_print_rnd_mode ((mp_rnd_t) r), i);
+               mpfr_dump (x);
+               exit (1);
+             }
+-          mpfr_sub_q (x, x, q, r);
++          mpfr_sub_q (x, x, q, (mp_rnd_t) r);
+           if (!MPFR_IS_ZERO(x) || MPFR_SIGN(x)!=i)
+             {
+               printf("GMP Zero errors for sub_q & rnd=%s & s=%d\n",
+-                     mpfr_print_rnd_mode(r), i);
++                     mpfr_print_rnd_mode ((mp_rnd_t) r), i);
+               mpfr_dump (x);
+               exit (1);
+              }
+@@ -389,7 +389,7 @@
+         {
+           mpfr_urandomb (arg1, RANDS);
+ 	  mpz_urandomb (arg2, RANDS, 1024);
+-          rnd = RND_RAND ();
++          rnd = (mp_rnd_t) RND_RAND ();
+           mpfr_set_prec (dst_big, 2*prec);
+           compare = func(dst_big, arg1, arg2, rnd);
+           if (mpfr_can_round (dst_big, 2*prec, rnd, rnd, prec))
+@@ -467,7 +467,7 @@
+           mpfr_urandomb (arg1, RANDS);
+           mpq_set_ui (arg2, randlimb (), randlimb() );
+ 	  mpq_canonicalize (arg2);
+-          rnd = RND_RAND ();
++          rnd = (mp_rnd_t) RND_RAND ();
+           mpfr_set_prec (dst_big, prec+10);
+           compare = func(dst_big, arg1, arg2, rnd);
+           if (mpfr_can_round (dst_big, prec+10, rnd, rnd, prec))
+diff -Naur mpfr-2.1.0-p9/tests/thypot.c mpfr-2.1.0-p10/tests/thypot.c
+--- mpfr-2.1.0-p9/tests/thypot.c	2004-02-14 11:11:31.000000000 +0000
++++ mpfr-2.1.0-p10/tests/thypot.c	2005-01-27 17:32:18.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_hypot.
+ 
+-Copyright 2001, 2002, 2003, 2004 Free Software Foundation.
++Copyright 2001, 2002, 2003, 2004, 2005 Free Software Foundation.
+ Adapted from tarctan.c.
+ 
+ This file is part of the MPFR Library.
+@@ -147,7 +147,7 @@
+             mpfr_neg (x1, x1, GMP_RNDN);
+           if (randlimb () % 2)
+             mpfr_neg (x2, x2, GMP_RNDN);
+-          rnd = RND_RAND ();
++          rnd = (mp_rnd_t) RND_RAND ();
+           mpfr_set_prec (y, yprec);
+ 
+           compare =TEST_FUNCTION (y, x1,x2, rnd);
+diff -Naur mpfr-2.1.0-p9/tests/tlog.c mpfr-2.1.0-p10/tests/tlog.c
+--- mpfr-2.1.0-p9/tests/tlog.c	2004-10-27 13:16:14.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tlog.c	2005-01-27 17:32:33.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_log.
+ 
+-Copyright 1999, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 1999, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -204,7 +204,7 @@
+ 
+   if (argc==4)
+     {   /* tlog x prec rnd */
+-      check3 (atof(argv[1]), atoi(argv[2]), atoi(argv[3]));
++      check3 (atof(argv[1]), atoi(argv[2]), (mp_rnd_t) atoi(argv[3]));
+       goto done;
+     }
+ 
+diff -Naur mpfr-2.1.0-p9/tests/tmul.c mpfr-2.1.0-p10/tests/tmul.c
+--- mpfr-2.1.0-p9/tests/tmul.c	2004-10-27 13:16:14.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tmul.c	2005-01-27 17:32:52.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_mul.
+ 
+-Copyright 1999, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 1999, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -217,7 +217,7 @@
+         {
+           mpfr_random (a);
+           mpfr_random (b);
+-          rnd = RND_RAND ();
++          rnd = (mp_rnd_t) RND_RAND ();
+           inexact = mpfr_mul (c, a, b, rnd);
+           if (mpfr_mul (d, a, b, rnd)) /* should be always exact */
+             {
+diff -Naur mpfr-2.1.0-p9/tests/tmul_ui.c mpfr-2.1.0-p10/tests/tmul_ui.c
+--- mpfr-2.1.0-p9/tests/tmul_ui.c	2004-10-27 13:16:14.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tmul_ui.c	2005-01-27 17:33:32.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_mul_ui.
+ 
+-Copyright 1999, 2000, 2001, 2002, 2003, 2004 Free Software Foundation.
++Copyright 1999, 2000, 2001, 2002, 2003, 2004, 2005 Free Software Foundation.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -31,7 +31,7 @@
+   unsigned long u;
+   mp_prec_t q;
+   int inexact, cmp;
+-  mp_rnd_t rnd;
++  int rnd;
+ 
+   mpfr_init2 (x, p);
+   mpfr_init (y);
+@@ -48,7 +48,7 @@
+     for (rnd = 0; rnd < GMP_RND_MAX; rnd++)
+       {
+         mpfr_set_prec (y, q);
+-        inexact = mpfr_mul_ui (y, x, u, rnd);
++        inexact = mpfr_mul_ui (y, x, u, (mp_rnd_t) rnd);
+         cmp = mpfr_cmp (y, z);
+         if (((inexact == 0) && (cmp != 0)) ||
+             ((inexact < 0) && (cmp >= 0)) ||
+@@ -56,7 +56,7 @@
+           {
+             printf ("Wrong inexact flag for p=%u, q=%u, rnd=%s\n",
+                     (unsigned int) p, (unsigned int) q,
+-                    mpfr_print_rnd_mode (rnd));
++                    mpfr_print_rnd_mode ((mp_rnd_t) rnd));
+             exit (1);
+           }
+       }
+diff -Naur mpfr-2.1.0-p9/tests/tout_str.c mpfr-2.1.0-p10/tests/tout_str.c
+--- mpfr-2.1.0-p9/tests/tout_str.c	2004-10-22 13:16:27.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tout_str.c	2005-01-27 17:33:58.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_out_str.
+ 
+-Copyright 1999, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 1999, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -188,7 +188,7 @@
+ #endif
+       r = RND_RAND ();
+       p = 2 + randlimb () % 35;
+-      check (d, r, p);
++      check (d, (mp_rnd_t) r, p);
+     }
+ 
+   fclose (fout);
+diff -Naur mpfr-2.1.0-p9/tests/toutimpl.c mpfr-2.1.0-p10/tests/toutimpl.c
+--- mpfr-2.1.0-p9/tests/toutimpl.c	2004-02-13 11:30:05.000000000 +0000
++++ mpfr-2.1.0-p10/tests/toutimpl.c	2005-01-27 17:34:29.000000000 +0000
+@@ -1,7 +1,7 @@
+ /* Test file for internal debugging-out functions:
+    mpfr_dump, mpfr_print_binary, mpfr_print_rnd_mode.
+ 
+-Copyright 2004 Free Software Foundation, Inc.
++Copyright 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -65,7 +65,7 @@
+       printf ("Error for printing GMP_RNDZ\n");
+       exit (1);
+     }
+-  if (mpfr_print_rnd_mode (-1) != NULL ||
++  if (mpfr_print_rnd_mode ((mp_rnd_t) -1) != NULL ||
+       mpfr_print_rnd_mode (GMP_RND_MAX) != NULL)
+     {
+       printf ("Error for illegal rounding mode values.\n");
+diff -Naur mpfr-2.1.0-p9/tests/tpow.c mpfr-2.1.0-p10/tests/tpow.c
+--- mpfr-2.1.0-p9/tests/tpow.c	2004-08-19 15:02:18.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tpow.c	2005-01-27 17:34:39.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_pow, mpfr_pow_ui and mpfr_pow_si.
+ 
+-Copyright 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 2000, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -155,7 +155,7 @@
+   unsigned long u;
+   mp_prec_t q;
+   int inexact, cmp;
+-  mp_rnd_t rnd;
++  int rnd;
+ 
+   mpfr_init2 (x, p);
+   mpfr_init (y);
+@@ -169,15 +169,15 @@
+         mpfr_set_prec (y, q);
+         mpfr_set_prec (z, q + 10);
+         mpfr_set_prec (t, q);
+-        inexact = mpfr_pow_ui (y, x, u, rnd);
+-        cmp = mpfr_pow_ui (z, x, u, rnd);
+-        if (mpfr_can_round (z, q + 10, rnd, rnd, q))
++        inexact = mpfr_pow_ui (y, x, u, (mp_rnd_t) rnd);
++        cmp = mpfr_pow_ui (z, x, u, (mp_rnd_t) rnd);
++        if (mpfr_can_round (z, q + 10, (mp_rnd_t) rnd, (mp_rnd_t) rnd, q))
+           {
+-            cmp = mpfr_set (t, z, rnd) || cmp;
++            cmp = mpfr_set (t, z, (mp_rnd_t) rnd) || cmp;
+             if (mpfr_cmp (y, t))
+               {
+                 printf ("results differ for u=%lu rnd=%s\n",
+-                        u, mpfr_print_rnd_mode(rnd));
++                        u, mpfr_print_rnd_mode ((mp_rnd_t) rnd));
+                 printf ("x="); mpfr_print_binary (x); puts ("");
+                 printf ("y="); mpfr_print_binary (y); puts ("");
+                 printf ("t="); mpfr_print_binary (t); puts ("");
+@@ -189,7 +189,7 @@
+               {
+                 printf ("Wrong inexact flag for p=%u, q=%u, rnd=%s\n",
+                         (unsigned int) p, (unsigned int) q,
+-                        mpfr_print_rnd_mode (rnd));
++                        mpfr_print_rnd_mode ((mp_rnd_t) rnd));
+                 printf ("expected %d, got %d\n", cmp, inexact);
+                 printf ("u=%lu x=", u); mpfr_print_binary (x); puts ("");
+                 printf ("y="); mpfr_print_binary (y); puts ("");
+diff -Naur mpfr-2.1.0-p9/tests/tpow3.c mpfr-2.1.0-p10/tests/tpow3.c
+--- mpfr-2.1.0-p9/tests/tpow3.c	2004-02-06 13:27:05.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tpow3.c	2005-01-27 17:35:11.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_pow.
+ 
+-Copyright 2001, 2002, 2003 Free Software Foundation.
++Copyright 2001, 2002, 2003, 2005 Free Software Foundation.
+ Adapted from tarctan.c.
+ 
+ This file is part of the MPFR Library.
+@@ -65,7 +65,7 @@
+           mpfr_random (s);
+           if (randlimb () % 2)
+             mpfr_neg (s, s, GMP_RNDN);
+-          rnd = RND_RAND ();
++          rnd = (mp_rnd_t) RND_RAND ();
+           mpfr_set_prec (y, yprec);
+           compare = mpfr_pow (y, x, s, rnd);
+           err = (rnd == GMP_RNDN) ? yprec + 1 : yprec;
+diff -Naur mpfr-2.1.0-p9/tests/trint.c mpfr-2.1.0-p10/tests/trint.c
+--- mpfr-2.1.0-p9/tests/trint.c	2005-01-23 23:20:09.000000000 +0000
++++ mpfr-2.1.0-p10/tests/trint.c	2005-01-27 17:38:45.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_rint, mpfr_trunc, mpfr_floor, mpfr_ceil, mpfr_round.
+ 
+-Copyright 2002, 2003, 2004 Free Software Foundation.
++Copyright 2002, 2003, 2004, 2005 Free Software Foundation.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -209,7 +209,7 @@
+   mpz_t z;
+   mp_prec_t p;
+   mpfr_t x, y, t, u, v;
+-  mp_rnd_t r;
++  int r;
+   int inexact, sign_t;
+ 
+   tests_start_mpfr ();
+@@ -250,7 +250,7 @@
+             for (trint = 0; trint < 3; trint++)
+               {
+                 if (trint == 2)
+-                  inexact = mpfr_rint (y, x, r);
++                  inexact = mpfr_rint (y, x, (mp_rnd_t) r);
+                 else if (r == GMP_RNDN)
+                   inexact = mpfr_round (y, x);
+                 else if (r == GMP_RNDZ)
+@@ -264,13 +264,14 @@
+                              mpfr_rint_floor (y, x, GMP_RNDD));
+                 if (mpfr_sub (t, y, x, GMP_RNDN))
+                   err ("subtraction 1 should be exact",
+-                       s, x, y, p, r, trint, inexact);
++                       s, x, y, p, (mp_rnd_t) r, trint, inexact);
+                 sign_t = mpfr_cmp_ui (t, 0);
+                 if (trint != 0 &&
+                     (((inexact == 0) && (sign_t != 0)) ||
+                      ((inexact < 0) && (sign_t >= 0)) ||
+                      ((inexact > 0) && (sign_t <= 0))))
+-                  err ("wrong inexact flag", s, x, y, p, r, trint, inexact);
++                  err ("wrong inexact flag",
++                       s, x, y, p, (mp_rnd_t) r, trint, inexact);
+                 if (inexact == 0)
+                   continue; /* end of the test for exact results */
+ 
+@@ -279,31 +280,33 @@
+                     ((r == GMP_RNDU || (r == GMP_RNDZ && MPFR_SIGN (x) < 0))
+                      && inexact < 0))
+                   err ("wrong rounding direction",
+-                       s, x, y, p, r, trint, inexact);
++                       s, x, y, p, (mp_rnd_t) r, trint, inexact);
+                 if (inexact < 0)
+                   {
+                     mpfr_add_ui (v, y, 1, GMP_RNDU);
+                     if (mpfr_cmp (v, x) <= 0)
+                       err ("representable integer between x and its "
+-                           "rounded value", s, x, y, p, r, trint, inexact);
++                           "rounded value",
++                           s, x, y, p, (mp_rnd_t) r, trint, inexact);
+                   }
+                 else
+                   {
+                     mpfr_sub_ui (v, y, 1, GMP_RNDD);
+                     if (mpfr_cmp (v, x) >= 0)
+                       err ("representable integer between x and its "
+-                           "rounded value", s, x, y, p, r, trint, inexact);
++                           "rounded value",
++                           s, x, y, p, (mp_rnd_t) r, trint, inexact);
+                   }
+                 if (r == GMP_RNDN)
+                   {
+                     int cmp;
+                     if (mpfr_sub (u, v, x, GMP_RNDN))
+                       err ("subtraction 2 should be exact",
+-                           s, x, y, p, r, trint, inexact);
++                           s, x, y, p, (mp_rnd_t) r, trint, inexact);
+                     cmp = mpfr_cmp_abs (t, u);
+                     if (cmp > 0)
+                       err ("faithful rounding, but not the nearest integer",
+-                           s, x, y, p, r, trint, inexact);
++                           s, x, y, p, (mp_rnd_t) r, trint, inexact);
+                     if (cmp < 0)
+                       continue;
+                     /* |t| = |u|: x is the middle of two consecutive
+@@ -315,7 +318,8 @@
+                         mpfr_div_2ui (y, y, 1, GMP_RNDZ);
+                         if (!mpfr_integer_p (y))
+                           err ("halfway case for mpfr_rint, result isn't an"
+-                               " even integer", s, x, y, p, r, trint, inexact);
++                               " even integer",
++                               s, x, y, p, (mp_rnd_t) r, trint, inexact);
+                         /* If floor(x) and ceil(x) aren't both representable
+                            integers, the mantissa must be even. */
+                         mpfr_sub (v, v, y, GMP_RNDN);
+@@ -326,7 +330,8 @@
+                                           + 1, GMP_RNDN);
+                             if (!mpfr_integer_p (y))
+                               err ("halfway case for mpfr_rint, mantissa isn't"
+-                                   " even", s, x, y, p, r, trint, inexact);
++                                   " even", s, x, y, p, (mp_rnd_t) r, trint,
++                                   inexact);
+                           }
+                       }
+                     else
+@@ -335,7 +340,8 @@
+                         if ((MPFR_SIGN (x) > 0 && inexact < 0) ||
+                             (MPFR_SIGN (x) < 0 && inexact > 0))
+                           err ("halfway case for mpfr_round, bad rounding"
+-                               " direction", s, x, y, p, r, trint, inexact);
++                               " direction",
++                               s, x, y, p, (mp_rnd_t) r, trint, inexact);
+                       }
+                   }
+               }
+diff -Naur mpfr-2.1.0-p9/tests/tset.c mpfr-2.1.0-p10/tests/tset.c
+--- mpfr-2.1.0-p9/tests/tset.c	2004-10-27 13:16:14.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tset.c	2005-01-27 17:39:19.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_set.
+ 
+-Copyright 2001, 2002, 2003, 2004 Free Software Foundation.
++Copyright 2001, 2002, 2003, 2004, 2005 Free Software Foundation.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -46,7 +46,7 @@
+ {
+   mp_prec_t p, q;
+   mpfr_t x, y, z, u;
+-  mp_rnd_t rnd;
++  int rnd;
+   int inexact, cmp;
+   mp_exp_t emax;
+ 
+@@ -110,7 +110,7 @@
+           mpfr_set_prec (y, q);
+           for (rnd = 0; rnd < GMP_RND_MAX; rnd++)
+             {
+-              inexact = mpfr_set (y, x, rnd);
++              inexact = mpfr_set (y, x, (mp_rnd_t) rnd);
+               cmp = mpfr_cmp (y, x);
+               if (((inexact == 0) && (cmp != 0)) ||
+                   ((inexact > 0) && (cmp <= 0)) ||
+diff -Naur mpfr-2.1.0-p9/tests/tset_d.c mpfr-2.1.0-p10/tests/tset_d.c
+--- mpfr-2.1.0-p9/tests/tset_d.c	2004-09-20 14:45:32.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tset_d.c	2005-01-27 17:39:32.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_set_d and mpfr_get_d.
+ 
+-Copyright 1999, 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 1999, 2000, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -108,16 +108,17 @@
+        exit (1);
+      }
+ 
+-  mpfr_init2(z, 32);
+-  mpfr_set_d(z, 1.0, 0);
++  mpfr_init2 (z, 32);
++  mpfr_set_d (z, 1.0, (mp_rnd_t) 0);
+   if (mpfr_cmp_ui (z, 1))
+     {
+       mpfr_print_binary (z); puts ("");
+       printf ("Error: 1.0 != 1.0\n");
+       exit (1);
+     }
+-  mpfr_set_prec(x, 53); mpfr_init2(y, 53);
+-  mpfr_set_d(x, d=-1.08007920352320089721e+150, 0);
++  mpfr_set_prec (x, 53);
++  mpfr_init2 (y, 53);
++  mpfr_set_d (x, d=-1.08007920352320089721e+150, (mp_rnd_t) 0);
+   if (mpfr_get_d1 (x) != d)
+     {
+       mpfr_print_binary (x); puts ("");
+@@ -126,9 +127,9 @@
+       exit (1);
+     }
+ 
+-  mpfr_set_d(x, 8.06294740693074521573e-310, 0);
++  mpfr_set_d (x, 8.06294740693074521573e-310, (mp_rnd_t) 0);
+   d = -6.72658901114033715233e-165;
+-  mpfr_set_d(x, d, 0);
++  mpfr_set_d (x, d, (mp_rnd_t) 0);
+   if (d != mpfr_get_d1 (x))
+     {
+       mpfr_print_binary (x);
+@@ -149,7 +150,7 @@
+ #else
+       while (ABS(d) < DBL_MIN);
+ #endif
+-      mpfr_set_d (x, d, 0);
++      mpfr_set_d (x, d, (mp_rnd_t) 0);
+       dd = mpfr_get_d1 (x);
+       if (d != dd && !(Isnan(d) && Isnan(dd)))
+         {
+diff -Naur mpfr-2.1.0-p9/tests/tset_f.c mpfr-2.1.0-p10/tests/tset_f.c
+--- mpfr-2.1.0-p9/tests/tset_f.c	2004-04-08 09:07:10.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tset_f.c	2005-01-27 17:40:15.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_set_f.
+ 
+-Copyright 1999, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 1999, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -47,7 +47,7 @@
+   mpfr_set_f (x, y, GMP_RNDN);
+ 
+   mpf_random2 (y, 10, 0);
+-  mpfr_set_f (x, y, RND_RAND() );
++  mpfr_set_f (x, y, (mp_rnd_t) RND_RAND());
+ 
+   /* bug found by Jean-Pierre Merlet */
+   mpfr_set_prec (x, 256);
+@@ -93,25 +93,25 @@
+       mpf_set_prec (z, pr);
+       mpf_random2 (z, z->_mp_prec, 0);
+       mpfr_set_prec (x, pr);
+-      mpfr_set_f (x, z, 0);
++      mpfr_set_f (x, z, (mp_rnd_t) 0);
+     }
+ 
+   /* Check for +0 */
+   mpfr_set_prec (x, 53);
+   mpf_set_prec (y, 53);
+   mpf_set_ui (y, 0);
+-  for(r = 0 ; r < GMP_RND_MAX ; r++)
++  for (r = 0 ; r < GMP_RND_MAX ; r++)
+     {
+       int i;
+       for (i = -1; i <= 1; i++)
+         {
+           if (i)
+             mpfr_set_si (x, i, GMP_RNDN);
+-          inexact = mpfr_set_f (x, y, r);
++          inexact = mpfr_set_f (x, y, (mp_rnd_t) r);
+           if (!MPFR_IS_ZERO(x) || !MPFR_IS_POS(x) || inexact)
+             {
+               printf ("mpfr_set_f(x,0) failed for %s, i = %d\n",
+-                      mpfr_print_rnd_mode (r), i);
++                      mpfr_print_rnd_mode ((mp_rnd_t) r), i);
+               exit (1);
+             }
+         }
+diff -Naur mpfr-2.1.0-p9/tests/tset_ld.c mpfr-2.1.0-p10/tests/tset_ld.c
+--- mpfr-2.1.0-p9/tests/tset_ld.c	2004-10-27 13:16:14.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tset_ld.c	2005-01-27 17:40:41.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_set_ld and mpfr_get_ld.
+ 
+-Copyright 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -57,13 +57,13 @@
+ static void
+ check_set_get (long double d, mpfr_t x)
+ {
+-  mp_rnd_t r;
++  int r;
+   long double e;
+   int inex;
+ 
+   for (r = 0; r < GMP_RND_MAX; r++)
+     {
+-      inex = mpfr_set_ld (x, d, r);
++      inex = mpfr_set_ld (x, d, (mp_rnd_t) r);
+       if (inex != 0)
+         {
+           printf ("Error: mpfr_set_ld should be exact\n");
+@@ -72,7 +72,7 @@
+           mpfr_dump (x);
+           exit (1);
+         }
+-      e = mpfr_get_ld (x, r);
++      e = mpfr_get_ld (x, (mp_rnd_t) r);
+       if (e != d && !(Isnan_ld(e) && Isnan_ld(d)))
+         {
+           printf ("Error: mpfr_get_ld o mpfr_set_ld <> Id\n");
+diff -Naur mpfr-2.1.0-p9/tests/tset_q.c mpfr-2.1.0-p10/tests/tset_q.c
+--- mpfr-2.1.0-p9/tests/tset_q.c	2004-09-20 14:45:32.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tset_q.c	2005-01-27 17:40:57.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_set_q.
+ 
+-Copyright 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 2000, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -75,24 +75,24 @@
+   mpq_t y;
+   mpfr_t x;
+   int inexact;
+-  mp_rnd_t r;
++  int r;
+ 
+   /* Check for +0 */
+-  mpfr_init(x);
+-  mpq_init(y);
+-  mpq_set_si(y, 0, 1);
+-  for(r = 0 ; r < GMP_RND_MAX ; r++)
++  mpfr_init (x);
++  mpq_init (y);
++  mpq_set_si (y, 0, 1);
++  for (r = 0; r < GMP_RND_MAX; r++)
+     {
+-      inexact = mpfr_set_q(x, y, r);
++      inexact = mpfr_set_q(x, y, (mp_rnd_t) r);
+       if (!MPFR_IS_ZERO(x) || !MPFR_IS_POS(x) || inexact)
+         {
+           printf("mpfr_set_q(x,0) failed for %s\n",
+-                 mpfr_print_rnd_mode(r));
++                 mpfr_print_rnd_mode ((mp_rnd_t) r));
+           exit(1);
+         }
+     }
+-  mpfr_clear(x);
+-  mpq_clear(y);
++  mpfr_clear (x);
++  mpq_clear (y);
+ }
+ 
+ int
+diff -Naur mpfr-2.1.0-p9/tests/tset_si.c mpfr-2.1.0-p10/tests/tset_si.c
+--- mpfr-2.1.0-p9/tests/tset_si.c	2004-10-27 13:16:14.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tset_si.c	2005-01-27 17:41:29.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_set_si and mpfr_set_ui.
+ 
+-Copyright 1999, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 1999, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -72,7 +72,7 @@
+   long k, z, d, N;
+   unsigned long zl, dl;
+   int inex;
+-  mp_rnd_t r;
++  int r;
+   mp_exp_t emax;
+ 
+   tests_start_mpfr ();
+@@ -167,23 +167,23 @@
+       exit (1);
+     }
+ 
+-  for(r = 0 ; r < GMP_RND_MAX ; r++)
++  for (r = 0 ; r < GMP_RND_MAX ; r++)
+     {
+-      mpfr_set_si (x, -1, r);
+-      mpfr_set_ui (x, 0, r);
++      mpfr_set_si (x, -1, (mp_rnd_t) r);
++      mpfr_set_ui (x, 0, (mp_rnd_t) r);
+       if (MPFR_IS_NEG (x) )
+ 	{
+ 	  printf ("mpfr_set_ui (x, 0) gives -0 for %s\n", 
+-		  mpfr_print_rnd_mode(r));
++		  mpfr_print_rnd_mode ((mp_rnd_t) r));
+ 	  exit (1);
+ 	}
+ 
+-      mpfr_set_si (x, -1, r);
+-      mpfr_set_si (x, 0, r);
+-      if (MPFR_IS_NEG (x) )
++      mpfr_set_si (x, -1, (mp_rnd_t) r);
++      mpfr_set_si (x, 0, (mp_rnd_t) r);
++      if (MPFR_IS_NEG (x))
+ 	{
+ 	  printf ("mpfr_set_si (x, 0) gives -0 for %s\n",
+-		  mpfr_print_rnd_mode(r) );
++		  mpfr_print_rnd_mode ((mp_rnd_t) r));
+ 	  exit (1);
+ 	}
+     }
+diff -Naur mpfr-2.1.0-p9/tests/tset_str.c mpfr-2.1.0-p10/tests/tset_str.c
+--- mpfr-2.1.0-p9/tests/tset_str.c	2004-10-27 13:16:14.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tset_str.c	2005-01-27 17:42:18.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_set_str.
+ 
+-Copyright 1999, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 1999, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -111,7 +111,7 @@
+ 
+   bd = randlimb () & 8;
+ 
+-  str2 = str = (*__gmp_allocate_func) (nc * sizeof(char));
++  str2 = str = (char*) (*__gmp_allocate_func) (nc * sizeof(char));
+ 
+   if (bd)
+     {
+@@ -211,13 +211,13 @@
+ 	baseprec = prec;
+       else
+ 	baseprec = 1 + (prec - 2 + logbase) / logbase;
+-      str = mpfr_get_str (NULL, &e, base, baseprec, x, k);
+-      mpfr_set_str (y, str, base, k);
++      str = mpfr_get_str (NULL, &e, base, baseprec, x, (mp_rnd_t) k);
++      mpfr_set_str (y, str, base, (mp_rnd_t) k);
+       MPFR_EXP(y) += logbase * (e - strlen (str));
+       if (mpfr_cmp (x, y))
+         {
+           printf ("mpfr_set_str o mpfr_get_str <> id for rnd_mode=%s\n",
+-                  mpfr_print_rnd_mode (k));
++                  mpfr_print_rnd_mode ((mp_rnd_t) k));
+           printf ("x=");
+           mpfr_print_binary (x);
+           puts ("");
+@@ -743,7 +743,7 @@
+     mpfr_set_prec (x, mp_bits_per_limb); /* x and y have only one limb */
+     mpfr_set_prec (y, mp_bits_per_limb);
+ 
+-    str = (*__gmp_allocate_func) (N + 20);
++    str = (char*) (*__gmp_allocate_func) (N + 20);
+ 
+     mpfr_set_ui (x, 1, GMP_RNDN); /* ensures that x is not NaN or Inf */
+     for (; nb_digit < N; nb_digit *= 10)
+diff -Naur mpfr-2.1.0-p9/tests/tset_z.c mpfr-2.1.0-p10/tests/tset_z.c
+--- mpfr-2.1.0-p9/tests/tset_z.c	2004-10-27 13:16:14.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tset_z.c	2005-01-27 17:43:31.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_set_z.
+ 
+-Copyright 1999, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 1999, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -31,17 +31,18 @@
+   mpz_t y;
+   mpfr_t x;
+   int inexact, r;
++
+   /* Check for +0 */
+-  mpfr_init(x);
+-  mpz_init(y);
+-  mpz_set_si(y, 0);
+-  for(r = 0 ; r < GMP_RND_MAX ; r++)
++  mpfr_init (x);
++  mpz_init (y);
++  mpz_set_si (y, 0);
++  for(r = 0; r < GMP_RND_MAX; r++)
+     {
+-      inexact = mpfr_set_z(x, y, r);
++      inexact = mpfr_set_z (x, y, (mp_rnd_t) r);
+       if (!MPFR_IS_ZERO(x) || !MPFR_IS_POS(x) || inexact)
+         {
+           printf("mpfr_set_z(x,0) failed for %s\n",
+-                 mpfr_print_rnd_mode(r));
++                 mpfr_print_rnd_mode ((mp_rnd_t) r));
+           exit(1);
+         }
+     }
+@@ -129,11 +130,12 @@
+   tests_start_mpfr ();
+ 
+   check_large ();
+-  check (0, 0);
++  check (0, (mp_rnd_t) 0);
+   for (j = 0; j < 200000; j++)
+-    check (randlimb () & LONG_MAX, RND_RAND () );
+-  check0();
++    check (randlimb () & LONG_MAX, (mp_rnd_t) RND_RAND ());
++  check0 ();
+ 
+   tests_end_mpfr ();
++
+   return 0;
+ }
+diff -Naur mpfr-2.1.0-p9/tests/tsqr.c mpfr-2.1.0-p10/tests/tsqr.c
+--- mpfr-2.1.0-p9/tests/tsqr.c	2004-07-20 09:09:34.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tsqr.c	2005-01-27 17:05:52.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_sqr.
+ 
+-Copyright 2004 Free Software Foundation.
++Copyright 2004, 2005 Free Software Foundation.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -66,7 +66,7 @@
+ void check_random(mpfr_prec_t p)
+ {
+   mpfr_t x,y,z;
+-  mp_rnd_t r;
++  int r;
+   int i, inexact1, inexact2;
+ 
+   mpfr_inits2(p, x, y, z, NULL);
+@@ -74,14 +74,14 @@
+     {
+       mpfr_random (x);
+       if (MPFR_IS_PURE_FP(x))
+-        for(r = 0 ; r < GMP_RND_MAX ; r++)
++        for (r = 0 ; r < GMP_RND_MAX ; r++)
+           {
+-            inexact1 = mpfr_mul (y, x, x, r);
+-            inexact2 = mpfr_sqr (z, x, r);
+-            if (mpfr_cmp(y, z))
+-              error1 (r,p,x,y,z);
++            inexact1 = mpfr_mul (y, x, x, (mp_rnd_t) r);
++            inexact2 = mpfr_sqr (z, x, (mp_rnd_t) r);
++            if (mpfr_cmp (y, z))
++              error1 ((mp_rnd_t) r,p,x,y,z);
+             if (inexact1 != inexact2)
+-              error2 (r,p,x,y,inexact1,inexact2);
++              error2 ((mp_rnd_t) r,p,x,y,inexact1,inexact2);
+           }
+     }
+   mpfr_clears(x,y,z,NULL);
+diff -Naur mpfr-2.1.0-p9/tests/tsqrt.c mpfr-2.1.0-p10/tests/tsqrt.c
+--- mpfr-2.1.0-p9/tests/tsqrt.c	2004-02-16 18:23:49.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tsqrt.c	2005-01-27 17:44:44.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_sqrt.
+ 
+-Copyright 1999, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 1999, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -304,7 +304,7 @@
+   mpfr_init2 (y, p);
+   mpfr_init2 (z, 2*p);
+   mpfr_random (x);
+-  rnd = RND_RAND();
++  rnd = (mp_rnd_t) RND_RAND();
+   inexact = mpfr_sqrt (y, x, rnd);
+   if (mpfr_mul (z, y, y, rnd)) /* exact since prec(z) = 2*prec(y) */
+     {
+diff -Naur mpfr-2.1.0-p9/tests/tsub.c mpfr-2.1.0-p10/tests/tsub.c
+--- mpfr-2.1.0-p9/tests/tsub.c	2004-02-12 12:38:17.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tsub.c	2005-01-27 17:44:55.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_sub.
+ 
+-Copyright 2001, 2002, 2003, 2004 Free Software Foundation.
++Copyright 2001, 2002, 2003, 2004, 2005 Free Software Foundation.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -411,14 +411,14 @@
+                 : MPFR_EXP(u) - MPFR_EXP(x);
+               pz = pz + MAX(MPFR_PREC(x), MPFR_PREC(u));
+               mpfr_set_prec (z, pz);
+-              rnd = RND_RAND();
++              rnd = (mp_rnd_t) RND_RAND();
+               if (mpfr_sub (z, x, u, rnd))
+                 {
+                   printf ("z <- x - u should be exact\n");
+                   exit (1);
+                 }
+                 {
+-                  rnd = RND_RAND ();
++                  rnd = (mp_rnd_t) RND_RAND ();
+                   inexact = mpfr_sub (y, x, u, rnd);
+                   cmp = mpfr_cmp (y, z);
+                   if (((inexact == 0) && (cmp != 0)) ||
+diff -Naur mpfr-2.1.0-p9/tests/tsub1sp.c mpfr-2.1.0-p10/tests/tsub1sp.c
+--- mpfr-2.1.0-p9/tests/tsub1sp.c	2004-10-27 13:16:15.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tsub1sp.c	2005-01-27 17:45:10.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_sub1sp.
+ 
+-Copyright 2003, 2004 Free Software Foundation.
++Copyright 2003, 2004, 2005 Free Software Foundation.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -44,7 +44,7 @@
+ #define STD_ERROR \
+             {\
+               printf("ERROR: for %s and p=%lu and i=%d:\nY=",\
+-                     mpfr_print_rnd_mode(r), p, i);\
++                     mpfr_print_rnd_mode ((mp_rnd_t) r), p, i);\
+                mpfr_print_binary(y);\
+                printf("\nZ="); mpfr_print_binary(z);\
+                printf("\nReal: "); mpfr_print_binary(x2);\
+@@ -56,7 +56,7 @@
+ #define STD_ERROR2 \
+             {\
+               printf("ERROR: for %s and p=%lu and i=%d:\nY=",\
+-                      mpfr_print_rnd_mode(r), p, i);\
++                      mpfr_print_rnd_mode ((mp_rnd_t) r), p, i);\
+                mpfr_print_binary(y);\
+                printf("\nZ="); mpfr_print_binary(z);\
+                printf("\nR="); mpfr_print_binary(x);\
+@@ -68,7 +68,7 @@
+ void check_random(mpfr_prec_t p)
+ {
+   mpfr_t x,y,z,x2;
+-  mp_rnd_t r;
++  int r;
+   int i, inexact1, inexact2;
+ 
+   mpfr_inits2(p, x,y,z,x2,NULL);
+@@ -80,8 +80,8 @@
+       if (MPFR_IS_PURE_FP(y) && MPFR_IS_PURE_FP(z))
+         for(r = 0 ; r < GMP_RND_MAX ; r++)
+           {
+-            inexact1 = mpfr_sub1(x2, y, z, r);
+-            inexact2 = mpfr_sub1sp(x, y, z, r);
++            inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++            inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+             if (mpfr_cmp(x, x2))
+               STD_ERROR;
+             if (inexact1 != inexact2)
+@@ -95,7 +95,7 @@
+ void check_special(void)
+ {
+   mpfr_t x,y,z,x2;
+-  mp_rnd_t r;
++  int r;
+   mpfr_prec_t p;
+   int i = -1, inexact1, inexact2;
+   mp_exp_t es;
+@@ -113,7 +113,7 @@
+       mpfr_set_str_binary (y,
+        "0.10110111101101110010010010011011000001101101011011001E31");
+ 
+-      mpfr_sub1sp(x, y, y, r);
++      mpfr_sub1sp (x, y, y, (mp_rnd_t) r);
+       if (mpfr_cmp_ui(x, 0))
+         {
+           printf("Error for x-x with p=%lu. Expected 0. Got:", p);
+@@ -121,8 +121,8 @@
+           exit(1);
+         }
+ 
+-      mpfr_set(z, y, r);
+-      mpfr_sub1sp(x, y, z, r);
++      mpfr_set(z, y, (mp_rnd_t) r);
++      mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp_ui(x, 0))
+         {
+           printf("Error for x-y with y=x and p=%lu. Expected 0. Got:", p);
+@@ -132,8 +132,8 @@
+       /* diff = 0 */
+       mpfr_set_str_binary (y,
+        "0.10110111101101110010010010011011001001101101011011001E31");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -142,8 +142,8 @@
+       /* Diff = 1 */
+       mpfr_set_str_binary (y,
+        "0.10110111101101110010010010011011000001101101011011001E30");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -152,8 +152,8 @@
+       /* Diff = 2 */
+       mpfr_set_str_binary (y,
+        "0.10110111101101110010010010011011000101101101011011001E32");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -162,8 +162,8 @@
+       /* Diff = 32 */
+       mpfr_set_str_binary (y,
+        "0.10110111101101110010010010011011000001101101011011001E63");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -172,8 +172,8 @@
+       /* Diff = 52 */
+       mpfr_set_str_binary (y,
+        "0.10110111101101110010010010011011010001101101011011001E83");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -182,8 +182,8 @@
+       /* Diff = 53 */
+       mpfr_set_str_binary (y,
+        "0.10110111101101110010010010011111000001101101011011001E31");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -192,8 +192,8 @@
+       /* Diff > 200 */
+       mpfr_set_str_binary (y,
+        "0.10110111101101110010010010011011000001101101011011001E331");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -203,8 +203,8 @@
+        "0.10000000000000000000000000000000000000000000000000000E31");
+       mpfr_set_str_binary (z,
+        "0.11111111111111111111111111111111111111111111111111111E30");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -214,8 +214,8 @@
+        "0.10000000000000000000000000000000000000000000000000000E31");
+       mpfr_set_str_binary (z,
+        "0.11111111111111111111111111111111111111111111111111111E29");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -225,8 +225,8 @@
+        "0.10000000000000000000000000000000000000000000000000000E52");
+       mpfr_set_str_binary (z,
+        "0.10000000000010000000000000000000000000000000000000000E00");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -236,9 +236,9 @@
+         "0.11100000000000000000000000000000000000000000000000000E53");
+       mpfr_set_str_binary (z,
+         "0.10000000000000000000000000000000000000000000000000000E00");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(z, y, z, r);
+-      mpfr_set(x, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(z, y, z, (mp_rnd_t) r);
++      mpfr_set(x, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -248,8 +248,8 @@
+        "0.10000000000000000000000000000000000000000000000000000E53");
+       mpfr_set_str_binary (z,
+        "0.10100000000000000000000000000000000000000000000000000E00");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -259,8 +259,8 @@
+         "0.10000000000000000000000000000000000000000000000000000E54");
+       mpfr_set_str_binary (z,
+         "0.10100000000000000000000000000000000000000000000000000E00");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -275,8 +275,8 @@
+       "0.100000000000000000000000000000000000000000000000000000000000000E62");
+       mpfr_set_str_binary (z,
+       "0.110000000000000000000000000000000000000000000000000000000000000E00");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -292,8 +292,8 @@
+       "0.1100000000000000000000000000000000000000000000000000000000000000E31");
+       mpfr_set_str_binary (z,
+       "0.1111111111111111111111111110000000000000000000000000011111111111E29");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -303,8 +303,8 @@
+       "0.1000000000000000000000000000000000000000000000000000000000000000E63");
+       mpfr_set_str_binary (z,
+       "0.1011000000000000000000000000000000000000000000000000000000000000E00");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -314,8 +314,8 @@
+       "0.1000000000000000000000000000000000000000000000000000000000000000E63");
+       mpfr_set_str_binary (z,
+       "0.1110000000000000000000000000000000000000000000000000000000000000E00");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -325,8 +325,8 @@
+         "0.10000000000000000000000000000000000000000000000000000000000000E63");
+       mpfr_set_str_binary (z,
+         "0.10000000000000000000000000000000000000000000000000000000000000E00");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -336,8 +336,8 @@
+       "0.1000000000000000000000000000000000000000000000000000000000000000E64");
+       mpfr_set_str_binary (z,
+       "0.1010000000000000000000000000000000000000000000000000000000000000E00");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -351,8 +351,8 @@
+       mpfr_set_str_binary (z,
+       "0.1100000000000000000000000000000000000000000000000000000000000000"
+                           "E-1073741823");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -366,8 +366,8 @@
+ 
+       mpfr_set_str_binary (y, "0.100000000E1");
+       mpfr_set_str_binary (z, "0.100000000E-8");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -381,8 +381,8 @@
+ 
+       mpfr_set_str_binary (y, "-0.1011110000111100010111011100110100E-18");
+       mpfr_set_str_binary (z, "0.1000101010110011010101011110000000E-14");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -398,8 +398,8 @@
+ "0.1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000E1");
+       mpfr_set_str_binary (z,
+ "0.1011111000100111000011001000011101010101101100101010101001000001110100001101110110001110111010000011101001100010111110001100E-31");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -415,8 +415,8 @@
+      "0.111000110011000001000111101010111011110011101001101111111110000011100101000001001010110010101010011001010100000001110011110001010101101010001011101110100100001011110100110000101101100011010001001011011010101010000010001101001000110010010111111011110001111101001000101101001100101100101000E80");
+       mpfr_set_str_binary (z,
+      "-0.100001111111101001011010001100110010100111001110000110011101001011010100001000000100111011010110110010000000000010101101011000010000110001110010100001100101011100100100001011000100011110000001010101000100011101001000010111100000111000111011001000100100011000100000010010111000000100100111E-258");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -432,8 +432,8 @@
+ "0.1111101110100110110110100010101011101001100010100011110110110010010011101100101111100E-4");
+       mpfr_set_str_binary (z,
+ "0.1111101110100110110110100010101001001000011000111000011101100101110100001110101010110E-4");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -449,8 +449,8 @@
+       mpfr_set_str_binary (z,
+                           "0.10000000000000000000000000000000"
+                           "00000000000000000000000000000001E0");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -462,8 +462,8 @@
+       mpfr_set_str_binary (z,
+                           "0.10000000000000000000000000000000"
+                           "00000000000000000000000000000001E0");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -478,8 +478,8 @@
+       mpfr_set_str_binary (z,
+                           "0.10000000000000000000000000000000"
+                           "00000000000000000000000000000001E-1023");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+@@ -491,8 +491,8 @@
+       mpfr_set_str_binary (z,
+                            "0.1000000000000000000000000000000"
+                            "000000000000000000000000000000E-1023");
+-      inexact1 = mpfr_sub1(x2, y, z, r);
+-      inexact2 = mpfr_sub1sp(x, y, z, r);
++      inexact1 = mpfr_sub1(x2, y, z, (mp_rnd_t) r);
++      inexact2 = mpfr_sub1sp(x, y, z, (mp_rnd_t) r);
+       if (mpfr_cmp(x, x2))
+         STD_ERROR;
+       if (inexact1 != inexact2)
+diff -Naur mpfr-2.1.0-p9/tests/tsum.c mpfr-2.1.0-p10/tests/tsum.c
+--- mpfr-2.1.0-p9/tests/tsum.c	2004-02-20 13:15:44.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tsum.c	2005-01-27 17:47:10.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* tsum -- test file for the list summation function
+ 
+-Copyright 2004 Free Software Foundation.
++Copyright 2004, 2005 Free Software Foundation.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -100,7 +100,7 @@
+   mpfr_ptr *tabtmp;
+   unsigned long i, n;
+   mp_prec_t f;
+-  mp_rnd_t rnd_mode;
++  int rnd_mode;
+   mpfr_srcptr *perm;
+   mpfr_t sum, real_sum, real_non_rounded;
+ 
+@@ -118,8 +118,8 @@
+   algo_exact (real_non_rounded, tab, n, f);
+   for (rnd_mode = 0; rnd_mode < GMP_RND_MAX; rnd_mode++)
+   {
+-      mpfr_list_sum (sum, tab, n, rnd_mode);
+-      mpfr_set (real_sum, real_non_rounded, rnd_mode);
++      mpfr_list_sum (sum, tab, n, (mp_rnd_t) rnd_mode);
++      mpfr_set (real_sum, real_non_rounded, (mp_rnd_t) rnd_mode);
+       if (mpfr_cmp (real_sum, sum) != 0)
+       {
+           printf ("mpfr_list_sum incorrect.\n");
+@@ -142,8 +142,8 @@
+   
+   for (rnd_mode = 0; rnd_mode < GMP_RND_MAX; rnd_mode++)
+   {
+-      mpfr_list_sum (sum, tab, n, rnd_mode);
+-      mpfr_set (real_sum, real_non_rounded, rnd_mode);
++      mpfr_list_sum (sum, tab, n, (mp_rnd_t) rnd_mode);
++      mpfr_set (real_sum, real_non_rounded, (mp_rnd_t) rnd_mode);
+       if (mpfr_cmp (real_sum, sum) != 0)
+       {
+           printf ("mpfr_list_sum incorrect.\n");
+diff -Naur mpfr-2.1.0-p9/tests/tui_div.c mpfr-2.1.0-p10/tests/tui_div.c
+--- mpfr-2.1.0-p9/tests/tui_div.c	2004-02-23 16:47:46.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tui_div.c	2005-01-27 17:47:39.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_ui_div.
+ 
+-Copyright 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 2000, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -51,7 +51,7 @@
+   mp_prec_t px, py;
+   int inexact, cmp;
+   unsigned long int u;
+-  mp_rnd_t rnd;
++  int rnd;
+ 
+   mpfr_init (x);
+   mpfr_init (y);
+@@ -72,8 +72,8 @@
+           mpfr_set_prec (z, py + px);
+           for (rnd = 0; rnd < GMP_RND_MAX; rnd++)
+             {
+-              inexact = mpfr_ui_div (y, u, x, rnd);
+-              if (mpfr_mul (z, y, x, rnd))
++              inexact = mpfr_ui_div (y, u, x, (mp_rnd_t) rnd);
++              if (mpfr_mul (z, y, x, (mp_rnd_t) rnd))
+                 {
+                   printf ("z <- y * x should be exact\n");
+                   exit (1);
+@@ -84,7 +84,7 @@
+                   ((inexact < 0) && (cmp >= 0)))
+                 {
+                   printf ("Wrong inexact flag for u=%lu, rnd=%s\n",
+-                          u, mpfr_print_rnd_mode (rnd));
++                          u, mpfr_print_rnd_mode ((mp_rnd_t) rnd));
+                   printf ("expected %d, got %d\n", cmp, inexact);
+                   printf ("x="); mpfr_print_binary (x); puts ("");
+                   printf ("y="); mpfr_print_binary (y); puts ("");
+diff -Naur mpfr-2.1.0-p9/tests/tui_pow.c mpfr-2.1.0-p10/tests/tui_pow.c
+--- mpfr-2.1.0-p9/tests/tui_pow.c	2004-02-14 23:05:51.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tui_pow.c	2005-01-27 17:48:02.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* Test file for mpfr_ui_pow and mpfr_ui_pow_ui.
+ 
+-Copyright 2001, 2002, 2003, 2004 Free Software Foundation.
++Copyright 2001, 2002, 2003, 2004, 2005 Free Software Foundation.
+ Adapted from tarctan.c.
+ 
+ This file is part of the MPFR Library.
+@@ -221,7 +221,7 @@
+           int nt;
+           nt = randlimb () & INT_MAX;
+ 	  mpfr_random (x);
+-	  rnd = RND_RAND ();
++	  rnd = (mp_rnd_t) RND_RAND ();
+           check1 (x, prec, nt, rnd);
+ 	}
+     }
+diff -Naur mpfr-2.1.0-p9/tests/tzeta.c mpfr-2.1.0-p10/tests/tzeta.c
+--- mpfr-2.1.0-p9/tests/tzeta.c	2004-02-24 09:12:03.000000000 +0000
++++ mpfr-2.1.0-p10/tests/tzeta.c	2005-01-27 17:48:11.000000000 +0000
+@@ -1,6 +1,6 @@
+ /* tzeta -- test file for the Riemann Zeta function
+ 
+-Copyright 2003, 2004 Free Software Foundation.
++Copyright 2003, 2004, 2005 Free Software Foundation.
+ Contributed by Jean-Luc Re'my and the Spaces project, INRIA Lorraine.
+ 
+ This file is part of the MPFR Library.
+@@ -215,7 +215,7 @@
+       mpfr_init2 (s, prec);
+       mpfr_init2 (z, prec);
+       mpfr_set_str (s, argv[1], 10, GMP_RNDN);
+-      rnd_mode = atoi(argv[3]);
++      rnd_mode = (mp_rnd_t) atoi(argv[3]);
+ 
+       mpfr_zeta (z, s, rnd_mode);
+       mpfr_out_str (stdout, 10, 0, z, GMP_RNDN);

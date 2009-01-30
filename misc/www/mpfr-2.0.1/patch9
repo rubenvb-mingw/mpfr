@@ -1,0 +1,50 @@
+--- exp_2.c.orig	Tue Apr  1 11:26:01 2003
++++ exp_2.c	Tue Apr  1 12:17:47 2003
+@@ -23,6 +23,7 @@
+ #include <stdio.h>
+ #include "gmp.h"
+ #include "gmp-impl.h"
++#include "longlong.h"
+ #include "mpfr.h"
+ #include "mpfr-impl.h"
+ 
+@@ -109,12 +110,20 @@
+ {
+   int n, K, precy, q, k, l, err, exps, inexact;
+   mpfr_t r, s, t; mpz_t ss;
++  int error_r;
+   TMP_DECL(marker);
+ 
+   precy = MPFR_PREC(y);
+ 
+   n = (int) (mpfr_get_d1 (x) / LOG2);
+ 
++  /* error bounds the cancelled bits in x - n*log(2) */
++  if (n == 0)
++    error_r = 0;
++  else
++    count_leading_zeros (error_r, (mp_limb_t) (n < 0) ? -n : n);
++  error_r = BITS_PER_MP_LIMB - error_r + 2;
++
+   /* for the O(n^(1/2)*M(n)) method, the Taylor series computation of
+      n/K terms costs about n/(2K) multiplications when computed in fixed
+      point */
+@@ -123,8 +132,8 @@
+   err = K + (int) _mpfr_ceil_log2 (2.0 * (double) l + 18.0);
+   /* add K extra bits, i.e. failure probability <= 1/2^K = O(1/precy) */
+   q = precy + err + K + 3;
+-  mpfr_init2 (r, q);
+-  mpfr_init2 (s, q);
++  mpfr_init2 (r, q + error_r);
++  mpfr_init2 (s, q + error_r);
+   mpfr_init2 (t, q);
+   /* the algorithm consists in computing an upper bound of exp(x) using
+      a precision of q bits, and see if we can round to MPFR_PREC(y) taking
+@@ -157,6 +166,7 @@
+     if (n<0) mpfr_neg(r, r, GMP_RNDD);
+     mpfr_sub(r, x, r, GMP_RNDU);
+   }
++  mpfr_round_prec (r, GMP_RNDU, q);
+ #ifdef DEBUG
+   printf("x-r=%1.20e\n", mpfr_get_d1 (r));
+   printf(" ="); mpfr_print_binary(r); putchar('\n');

@@ -1,0 +1,39 @@
+*** get_str.c   2000/05/12 08:07:02     1.18
+--- get_str.c   2000/09/29 13:02:47     1.20
+***************
+*** 62,70 ****
+    neg = (MPFR_SIGN(op)<0) ? 1 : 0;
+  
+    if (!NOTZERO(op)) {
+!     if (str==NULL) str0=str=(*_mp_allocate_func)(neg + n + 2);
+      if (MPFR_SIGN(op)<0) *str++ = '-';
+      for (f=0;f<n;f++) *str++ = '0';
+      *expptr = 1;
+      return str0;
+    }
+--- 62,72 ----
+    neg = (MPFR_SIGN(op)<0) ? 1 : 0;
+  
+    if (!NOTZERO(op)) {
+!     if (str==NULL) str = (*_mp_allocate_func)(neg + n + 1);
+!     str0 = str;
+      if (MPFR_SIGN(op)<0) *str++ = '-';
+      for (f=0;f<n;f++) *str++ = '0';
++     *str++ = '\0';
+      *expptr = 1;
+      return str0;
+    }
+***************
+*** 182,187 ****
+--- 184,194 ----
+    if (strlen(str)==n+1) {
+      f++; /* possible due to rounding */
+      str[n]='\0'; /* ensures we get only n digits of output */
++   }
++   else if (strlen(str)==n-1) {
++     f--;
++     str[n-1]='0';
++     str[n]='\0';
+    }
+    *expptr = f;
+    mpfr_clear(a); mpfr_clear(b); mpz_clear(bz);

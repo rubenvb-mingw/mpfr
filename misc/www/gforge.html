@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>MPFR - Using the Anonymous Access to the Subversion Repository</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="stylesheet" type="text/css" href="styles/screen.css" media="screen,tv,projection" />
+<link rel="stylesheet" type="text/css" href="styles/print.css" media="print" />
+<link rel="top" title="The MPFR Library" href="index.html" />
+<link rel="up" title="The MPFR Library" href="index.html" />
+</head>
+
+<body>
+
+<div class="logo"><a href="index.html"><img src="mpfr100.png" height="40" width="100" alt="[MPFR]" /></a></div>
+
+<h1><cite><acronym>MPFR</acronym></cite> - Using the Anonymous Access to the Subversion Repository</h1>
+
+<p>The <cite><acronym>MPFR</acronym></cite> repository is now hosted on <a href="http://gforge.inria.fr/">InriaGforge</a>:</p>
+<ul>
+<li><a href="http://gforge.inria.fr/projects/mpfr/"><cite><acronym>MPFR</acronym></cite> page</a> on InriaGforge (<a href="https://gforge.inria.fr/projects/mpfr/">secure version</a>).</li>
+<li>Browse the <a href="http://gforge.inria.fr/plugins/scmsvn/viewcvs.php/?root=mpfr">Subversion repository</a> (<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php/?root=mpfr">secure version</a>).</li>
+</ul>
+
+<p>You can get the latest development version by using the anonymous
+Subversion access. Type the following lines (or something equivalent)
+in a shell:</p>
+
+<pre>svn checkout svn://scm.gforge.inria.fr/svn/mpfr/trunk <var>dirname</var></pre>
+
+<p>This will create a directory <samp><var>dirname</var></samp> with
+the latest version of the source (trunk). <strong>Please, read the
+<samp>README.dev</samp> file.</strong> In particular, the Subversion
+tree does not have a <samp>configure</samp> script; you need some
+development tools to generate it (more information is given in the
+<samp>README.dev</samp> file).</p>
+
+<p>This version allows you to benefit from the correction of bugs and
+various other improvements since the latest release. But as usual with
+development code, it may temporarily be unstable or have bugs preventing
+from compiling it (please report any problem so that it is fixed as soon
+as possible). Please use the latest release with the published patches
+if you do not want such problems.</p>
+
+<p>You can get a branch with:</p>
+
+<pre>svn co svn://scm.gforge.inria.fr/svn/mpfr/branches/<var>branchname</var> <var>dirname</var></pre>
+
+<p>And you can get the list of the branch names with:</p>
+
+<pre>svn ls svn://scm.gforge.inria.fr/svn/mpfr/branches</pre>
+
+<p>Similarly, the tags (releases, in general) can be found in
+<samp>svn://scm.gforge.inria.fr/svn/mpfr/tags</samp>.</p>
+
+<p>Users registered on InriaGforge can access the Subversion tree via
+<acronym>SSH</acronym>; for the <cite><acronym>MPFR</acronym></cite>
+developers, this is necessary to perform commits. In the above lines,
+replace <samp>svn://</samp> by <samp>svn+ssh://<var>user</var>@</samp>.</p>
+
+<p>Documentation on
+<a href="http://subversion.tigris.org/"><cite>Subversion</cite></a>:</p>
+<ul>
+<li>The <a href="http://svnbook.red-bean.com/">official
+<cite>Subversion</cite> book</a>.</li>
+<li><a href="http://gcc.gnu.org/wiki/SvnHelp">Documentation written for
+<acronym title="GNU Compiler Collection">GCC</acronym> developers</a>
+(contains interesting general information about <cite>Subversion</cite>).</li>
+<li>The <a href="http://subversion.tigris.org/faq.html"><cite>Subversion</cite>
+<acronym title="Frequently Asked Questions">FAQ</acronym></a>.</li>
+</ul>
+
+<p><a href="index.html">Back to the <cite><acronym>MPFR</acronym></cite>
+page.</a></p>
+
+<hr />
+
+<div class="footer"><a href="http://validator.w3.org/check/referer"><img
+  src="http://www.w3.org/Icons/valid-xhtml10"
+  alt="Valid XHTML 1.0!" height="31" width="88" /></a></div>
+
+</body>
+
+</html>

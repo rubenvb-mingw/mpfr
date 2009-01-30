@@ -1,0 +1,31 @@
+<title>Changes from version 0.4 to version 1.0</title>
+
+<center><h1>Changes from version 0.4 to version 1.0</h1></center>
+
+<p>
+
+<li> Version 1.0 now uses a standard <tt>configure/make</tt>
+     installation.
+
+<li> Version 1.0 implements all functions that are available in
+     the MPF class from GMP 3.1 (except <tt>mpf_swap</tt>)
+     and a header file <tt>mpf2mpfr.h</tt> is included in the
+     distribution for easy change from MPF to MPFR.
+
+<li> Version 1.0 implements new elementary functions: <tt>mpfr_sincos</tt>
+
+<li> Some functions and macros have been renamed: <tt>mpfr_log2</tt> is now
+     <tt>mpfr_const_log2</tt>, <tt>mpfr_pi</tt> is now
+     <tt>mpfr_const_pi</tt>, <tt>SIGN</tt> is now <tt>MPFR_SIGN</tt>.
+
+<li> Version 1.0 uses faster algorithms for <tt>mpfr_exp</tt>,
+     <tt>mpfr_const_pi</tt>, <tt>mpfr_const_log2</tt>.
+     Compare the timings from <a href="timings-mpfr1.0-gmp3.1.html">version
+     1.0</a> and <a href="timings-mpfr0.4-gmp3.html">version 0.4</a>.
+
+<li> Version 1.0 corrects some <a href="bugs-0.4.html">bugs
+     of version 0.4</a>.
+
+<li> The precision of MPFR variables is now named <tt>mpfr_prec</tt>,
+     which makes it easier to change it, to say <tt>unsigned long long</tt>.
+     Same for the rounding mode which is called <tt>mp_rnd_t</tt>.

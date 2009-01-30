@@ -1,0 +1,12 @@
+diff -Naur mpfr-2.1.0-p15/sub1.c mpfr-2.1.0-p16/sub1.c
+--- mpfr-2.1.0-p15/sub1.c	2005-02-02 14:13:48.000000000 +0000
++++ mpfr-2.1.0-p16/sub1.c	2005-02-16 10:40:00.808198000 +0000
+@@ -127,7 +127,7 @@
+ 	     which means we get a wrong rounded result if x==1, 
+ 	     i.e. inexact= MPFR_EVEN_INEX */
+ 	  if (MPFR_UNLIKELY (inexact == MPFR_EVEN_INEX*MPFR_INT_SIGN (a))) {
+-	    mpfr_nexttoward (a, c);
++	    (MPFR_IS_POS (a) ? mpfr_nextbelow : mpfr_nextabove) (a);
+ 	    inexact = -MPFR_INT_SIGN (a);
+ 	  }
+ 	  return inexact;

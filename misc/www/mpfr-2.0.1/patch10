@@ -1,0 +1,31 @@
+Index: agm.c
+===================================================================
+RCS file: /CVS/spaces/mpfr/agm.c,v
+retrieving revision 1.45
+retrieving revision 1.46
+diff -u -r1.45 -r1.46
+--- agm.c	16 Dec 2002 00:55:57 -0000	1.45
++++ agm.c	4 Aug 2003 11:13:04 -0000	1.46
+@@ -117,14 +117,19 @@
+   while (go_on) {
+     int err, can_round;
+     mp_prec_t eq;
++    double erraux;
+     
+-    err=1 + (int) ((3.0/2.0*(double)__gmpfr_ceil_log2((double)p)+1.0)*__gmpfr_ceil_exp2(-(double)p)
+-	     +3.0*__gmpfr_ceil_exp2(-2.0*(double)p*uo/(vo-uo)));
++    erraux = (vo == uo) ? 0.0 : __gmpfr_ceil_exp2 (-2.0 * (double) p * uo 
++                                                   / (vo - uo));
++    err = 1 + (int) ((3.0 / 2.0 * (double) __gmpfr_ceil_log2 ((double) p) 
++                      + 1.0) * __gmpfr_ceil_exp2 (- (double) p)
++                     + 3.0 * erraux);
++
+     if(p-err-3<=q) {
+       p=q+err+4;
+       err= 1 + 
+ 	(int) ((3.0/2.0*__gmpfr_ceil_log2((double)p)+1.0)*__gmpfr_ceil_exp2(-(double)p)
+-	       +3.0*__gmpfr_ceil_exp2(-2.0*(double)p*uo/(vo-uo)));
++	       +3.0 * erraux);
+     }
+ 
+     /* Calculus of un and vn */

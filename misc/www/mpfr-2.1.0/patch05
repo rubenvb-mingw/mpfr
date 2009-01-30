@@ -1,0 +1,12 @@
+diff -Naur mpfr-2.1.0-p4/mpfr.h mpfr-2.1.0-p5/mpfr.h
+--- mpfr-2.1.0-p4/mpfr.h	2004-10-22 13:16:25.000000000 +0000
++++ mpfr-2.1.0-p5/mpfr.h	2005-01-23 23:17:50.566724632 +0000
+@@ -435,7 +435,7 @@
+ 
+ int mpfr_fma _MPFR_PROTO ((mpfr_ptr, mpfr_srcptr, mpfr_srcptr, mpfr_srcptr,
+                            mpfr_rnd_t));
+-int mpfr_sum _MPFR_PROTO ((mpfr_ptr, mpfr_ptr __gmp_const tab[], unsigned long,
++int mpfr_sum _MPFR_PROTO ((mpfr_ptr, mpfr_ptr __gmp_const [], unsigned long,
+ 			   mpfr_rnd_t));
+ 
+ void mpfr_init_cache _MPFR_PROTO ((mpfr_cache_t,int(*)(mpfr_ptr,mpfr_rnd_t)));

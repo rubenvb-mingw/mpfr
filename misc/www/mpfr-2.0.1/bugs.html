@@ -1,0 +1,18 @@
+<title>Known bugs in mpfr-2.0.1</title>
+<center><h1>Known bugs in mpfr-2.0.1</h1></center>
+
+<li> The function <tt>mpfr_cmp_si(b,i)</tt> returns an incorrect result
+     when b=0 and i is negative.
+     Replace the code of <tt>mpfr_cmp_si_2exp</tt> in file cmp_ui.c
+     by the <a href="patch1">following</a>.
+
+<li> On some machines, the <tt>tget_d</tt> test fails:<br>
+<center>
+<tt>Wrong result for -17 * 2^(-1079), rnd_mode 0</tt><br>
+<tt>got -0.00000000000000000000e+00 instead of -4.94065645841246540000e-324</tt><br>
+</center>
+This is a bug in gcc, which makes the <tt>mpfr_get_d</tt> function fail for
+subnormal numbers. Apply the following <a href="patch2">patch</a> to fix that.
+
+     
+     

@@ -1,0 +1,78 @@
+/* Global stylesheet for visual media */
+
+html, body
+{
+  background: white;
+  color: black;
+}
+
+div.logo { float: right }
+div.logo img { border: 0 }
+
+div.footer img { border: 0 }
+
+dt
+{
+  margin-top: 2ex;
+  margin-bottom: 1ex;
+  font-weight: bolder;
+}
+
+/* For testing: dd { background: #ddddff } */
+
+table { margin: 0.5ex auto }
+
+li { margin-top: 0.5ex; margin-bottom: 0.5ex }
+
+dd + dd
+{
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 0.5ex;
+  padding-bottom: 0;
+}
+
+li > p, dd > p
+{
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 0.5ex;
+  padding-bottom: 0.5ex;
+}
+
+.block-code code, code.block-code,
+.block-code samp, samp.block-code
+{
+  display: block;
+  padding: 0.5ex 0;
+  margin-left: 2em;
+}
+
+.nowrap { white-space: nowrap }
+
+/*
+dl.faq { counter-reset: faq }
+
+dl.faq dt:before
+{
+  counter-increment: faq;
+  content: counter(faq) ". ";
+}
+*/
+
+dl.faq dt { background: #dddddd }
+
+dl.faq dd
+{
+  border-left: 4px solid;
+  border-color: transparent;
+  margin-left: 0em;
+  padding-left: 1.5em;
+}
+
+dl.faq dt:target + dd
+{
+  border-left-color: #aaaaaa;
+}
+
+var.env { font-style: normal }

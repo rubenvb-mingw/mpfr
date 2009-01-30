@@ -1,0 +1,29 @@
+*** ui_div.c    2000/12/01 13:59:20     1.3
+--- ui_div.c    2000/12/12 13:31:34
+***************
+*** 44,49 ****
+--- 44,50 ----
+    TMP_DECL(marker);
+  
+    if (u) {
++     TMP_MARK(marker);
+      MON_INIT(up, uu, BITS_PER_MP_LIMB, 1);
+      count_leading_zeros(cnt, (mp_limb_t) u);
+      *up = (mp_limb_t) u << cnt;
+Index: ui_sub.c
+===================================================================
+RCS file: /users/polka/logiciels/mpfr/cvs/msb/ui_sub.c,v
+retrieving revision 1.3
+diff -c -r1.3 ui_sub.c
+*** ui_sub.c    2000/12/01 13:59:20     1.3
+--- ui_sub.c    2000/12/12 13:31:58
+***************
+*** 44,49 ****
+--- 44,50 ----
+    TMP_DECL(marker);
+  
+    if (u) {
++     TMP_MARK(marker);
+      MON_INIT(up, uu, BITS_PER_MP_LIMB, 1);
+      count_leading_zeros(cnt, (mp_limb_t) u);
+      *up = (mp_limb_t) u << cnt;

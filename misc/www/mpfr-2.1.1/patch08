@@ -1,0 +1,107 @@
+diff -Naur mpfr-2.1.1-p7/hypot.c mpfr-2.1.1-p8/hypot.c
+--- mpfr-2.1.1-p7/hypot.c	2004-02-14 11:11:31.000000000 +0000
++++ mpfr-2.1.1-p8/hypot.c	2005-05-12 16:06:13.525321000 +0000
+@@ -1,6 +1,6 @@
+ /* mpfr_hypot -- Euclidean distance
+ 
+-Copyright 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -84,19 +84,33 @@
+      or 2^(2*Ey) <= 2^(2*Ex-1-Nz), i.e. 2*diff_exp > Nz.
+      Warning: this is true only for Nx <= Nz, otherwise the trailing bits
+      of x may be already very close to 1/2*ulp(x,Nz)!
++     If Nx > Nz, then we can notice that it is possible to round on Nx bits
++     if 2*diff_exp > Nx (see above as if Nz = Nx), therefore on Nz bits.
++     Hence the condition: 2*diff_exp > MAX(Nz,Nx).
+   */
+-  if (MPFR_PREC(x) <= Nz && diff_exp > Nz / 2) /* result is |x| or |x|+ulp(|x|,Nz) */
++  if (diff_exp > MAX (Nz, MPFR_PREC (x)) / 2)
++    /* result is |x| or |x|+ulp(|x|,Nz) */
+     {
+       if (rnd_mode == GMP_RNDU)
+         {
+-          /* if z > abs(x), then it was already rounded up */
+-          if (mpfr_abs (z, x, rnd_mode) <= 0)
++          /* If z > abs(x), then it was already rounded up; otherwise
++             z = abs(x), and we need to add one ulp due to y. */
++          if (mpfr_abs (z, x, rnd_mode) == 0)
+             mpfr_add_one_ulp (z, rnd_mode);
+           return 1;
+         }
+       else /* GMP_RNDZ, GMP_RNDD, GMP_RNDN */
+         {
+           inexact = mpfr_abs (z, x, rnd_mode);
++          if (inexact == -MPFR_EVEN_INEX)
++            {
++              /* In case of tie in GMP_RNDN, one must round away from 0.
++                 Note: One could do better, by using GMP_RNDNA or similar,
++                 but I want to keep the change minimal. Anyway this case
++                 should be quite rare in practice. */
++              mpfr_add_one_ulp (z, rnd_mode);
++              return 1;
++            }
+           return (inexact) ? inexact : -1;
+         }
+     }
+diff -Naur mpfr-2.1.1-p7/tests/thypot.c mpfr-2.1.1-p8/tests/thypot.c
+--- mpfr-2.1.1-p7/tests/thypot.c	2005-01-27 17:32:18.000000000 +0000
++++ mpfr-2.1.1-p8/tests/thypot.c	2005-05-12 13:58:44.034394000 +0000
+@@ -106,6 +106,47 @@
+   mpfr_clear (t);
+ }
+ 
++static void
++test_large_small (void)
++{
++  mpfr_t x, y, z;
++  int inexact;
++
++  mpfr_init2 (x, 3);
++  mpfr_init2 (y, 2);
++  mpfr_init2 (z, 2);
++
++  mpfr_set_ui_2exp (x, 1, mpfr_get_emax () / 2, GMP_RNDN);
++  mpfr_set_ui_2exp (y, 1, -1, GMP_RNDN);
++  inexact = mpfr_hypot (z, x, y, GMP_RNDN);
++  if (inexact >= 0 || mpfr_cmp (x, z))
++    {
++      printf ("Error 1 in test_large_small\n");
++      exit (1);
++    }
++
++  mpfr_mul_ui (x, x, 5, GMP_RNDN);
++  inexact = mpfr_hypot (z, x, y, GMP_RNDN);
++  if (mpfr_cmp (x, z) >= 0)
++    {
++      printf ("Error 2 in test_large_small\n");
++      printf ("x = ");
++      mpfr_out_str (stdout, 2, 0, x, GMP_RNDN);
++      printf ("\n");
++      printf ("y = ");
++      mpfr_out_str (stdout, 2, 0, y, GMP_RNDN);
++      printf ("\n");
++      printf ("z = ");
++      mpfr_out_str (stdout, 2, 0, z, GMP_RNDN);
++      printf (" (in precision 2)\n");
++      exit (1);
++    }
++
++  mpfr_clear (x);
++  mpfr_clear (y);
++  mpfr_clear (z);
++}
++
+ int
+ main (int argc, char *argv[])
+ {
+@@ -204,6 +245,7 @@
+   mpfr_clear (t);
+ 
+   test_large ();
++  test_large_small ();
+ 
+   tests_end_mpfr ();
+   return 0;

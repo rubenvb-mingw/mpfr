@@ -1,0 +1,59 @@
+diff -Naur mpfr-2.1.1-p3/pow_ui.c mpfr-2.1.1-p4/pow_ui.c
+--- mpfr-2.1.1-p3/pow_ui.c	2004-02-23 09:43:29.000000000 +0000
++++ mpfr-2.1.1-p4/pow_ui.c	2005-03-30 14:09:16.299081000 +0000
+@@ -1,7 +1,8 @@
+ /* mpfr_pow_ui-- compute the power of a floating-point
+                                   by a machine integer
+ 
+-Copyright 1999, 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
++Copyright 1999, 2000, 2001, 2002, 2003, 2004, 2005
++ Free Software Foundation, Inc.
+ 
+ This file is part of the MPFR Library.
+ 
+@@ -61,6 +62,10 @@
+           MPFR_ASSERTD(MPFR_IS_ZERO(y));
+           /* 0^n = 0 for any n */
+ 	  MPFR_SET_ZERO(x);
++          if (MPFR_IS_POS (y) || ((n & 1) == 0))
++            MPFR_SET_POS (x);
++          else
++            MPFR_SET_NEG (x);
+ 	  MPFR_RET(0);
+ 	}
+     }
+@@ -91,7 +96,7 @@
+         ;
+       mpfr_set_prec (res, prec);
+       inexact = mpfr_set (res, y, rnd1);
+-      err = prec <= (mpfr_prec_t) i ? 0 : prec - (mpfr_prec_t) i;
++      err = prec <= (mpfr_prec_t) i ? 0 : prec - 1 - (mpfr_prec_t) i;
+       MPFR_ASSERTD (i >= 1);
+       /* now 2^(i-1) <= n < 2^i */
+       for (i -= 2; i >= 0; i--)
+diff -Naur mpfr-2.1.1-p3/tests/tpow.c mpfr-2.1.1-p4/tests/tpow.c
+--- mpfr-2.1.1-p3/tests/tpow.c	2005-01-27 17:34:39.000000000 +0000
++++ mpfr-2.1.1-p4/tests/tpow.c	2005-03-30 14:08:33.308980000 +0000
+@@ -84,6 +84,22 @@
+       exit (1);
+     }
+ 
++  mpfr_set_prec (a, 29);
++  mpfr_set_prec (b, 29);
++  mpfr_set_str_binary (a, "1.0000000000000000000000001111");
++  mpfr_set_str_binary (b, "1.1001101111001100111001010111e165");
++  mpfr_pow_ui (a, a, 2055225053, GMP_RNDZ);
++  if (mpfr_cmp (a, b) != 0)
++    {
++      printf ("Error for x^2055225053\n");
++      printf ("Expected ");
++      mpfr_out_str (stdout, 2, 0, b, GMP_RNDN);
++      printf ("\nGot      ");
++      mpfr_out_str (stdout, 2, 0, a, GMP_RNDN);
++      printf ("\n");
++      exit (1);
++    }
++
+   mpfr_clear (a);
+   mpfr_clear (b);
+ }

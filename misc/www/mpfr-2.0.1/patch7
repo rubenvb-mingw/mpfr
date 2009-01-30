@@ -1,0 +1,11 @@
+--- sub.c.orig	Tue Dec 17 12:59:12 2002
++++ sub.c	Tue Dec 17 12:59:19 2002
+@@ -100,7 +100,7 @@
+           inexact = mpfr_add1(a, c, b, rnd_mode,
+                               (mp_exp_unsigned_t) MPFR_EXP(c) - MPFR_EXP(b));
+           MPFR_CHANGE_SIGN(a);
+-          return inexact;
++          return -inexact;
+         }
+       else
+         {

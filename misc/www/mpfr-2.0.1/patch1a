@@ -1,0 +1,83 @@
+--- cmp_ui.c.orig	Mon Aug 25 11:40:43 2003
++++ cmp_ui.c	Mon Aug 25 11:41:23 2003
+@@ -85,43 +85,60 @@
+ */
+ 
+ int 
+-mpfr_cmp_si_2exp (mpfr_srcptr b, long int i, int f)
++mpfr_cmp_si_2exp (mpfr_srcptr b, long int i, int f)
+ {
+-  int e, k, bn, si;
+-  mp_limb_t c, *bp;
++  int si;
+ 
+   MPFR_ASSERTN(!MPFR_IS_NAN(b));
+ 
+   si = i < 0 ? -1 : 1; /* sign of i */
+   if (MPFR_IS_INF(b) || (MPFR_NOTZERO(b) && MPFR_SIGN(b) != si))
+     return MPFR_SIGN(b);
+-  /* both signs differ */
+-  else if (MPFR_IS_ZERO(b) || i == 0)
+-    return i == 0 ? (MPFR_IS_ZERO(b) ? 0 : MPFR_SIGN(b)) : si;
+-  else
+-    { /* b and i are of same sign */
++  /* both signs differ or b = 0 */
++  else if (MPFR_IS_ZERO(b))
++    return i != 0 ? -si : 0;
++  else if (i == 0)
++    return MPFR_SIGN(b);
++  else /* b and i are of same sign si */
++    {
++      mp_exp_t e;
++      unsigned long ai;
++      int k;
++      mp_size_t bn;
++      mp_limb_t c, *bp;
++
++      ai = SAFE_ABS(long, i);
++
++      /* ai must be representable in a mp_limb_t */
++      MPFR_ASSERTN(ai == (mp_limb_t) ai);
++
+       e = MPFR_EXP(b); /* 2^(e-1) <= b < 2^e */
+-      if (e > f + BITS_PER_MP_LIMB)
++      if (e <= f)
++        return -si;
++      if (f < MPFR_EMAX_MAX - BITS_PER_MP_LIMB &&
++          e > f + BITS_PER_MP_LIMB)
+         return si;
+ 
+-      c = i < 0 ? - (mp_limb_t) i : (mp_limb_t) i;
++      /* now f < e <= f + BITS_PER_MP_LIMB */
++      c = (mp_limb_t) ai;
+       count_leading_zeros(k, c);
+-      k = f + BITS_PER_MP_LIMB - k; /* 2^(k-1) <= i*2^f < 2^k */
+-      if (k != e)
+-        return si * (e - k);
++      if ((int) (e - f) > BITS_PER_MP_LIMB - k)
++        return si;
++      if ((int) (e - f) < BITS_PER_MP_LIMB - k)
++        return -si;
+ 
+-      /* now k = e */
+-      c <<= f + BITS_PER_MP_LIMB - k;
++      /* now b and i*2^f have the same exponent */
++      c <<= k;
+       bn = (MPFR_PREC(b) - 1) / BITS_PER_MP_LIMB;
+-      bp = MPFR_MANT(b) + bn;
+-      if (*bp > c)
++      bp = MPFR_MANT(b);
++      if (bp[bn] > c)
+         return si;
+-      if (*bp < c)
++      if (bp[bn] < c)
+         return -si;
+ 
+       /* most significant limbs agree, check remaining limbs from b */
+-      while (--bn >= 0)
+-        if (*--bp)
++      while (bn > 0)
++        if (bp[--bn])
+           return si;
+       return 0;
+     }

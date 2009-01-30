@@ -1,0 +1,42 @@
+diff -Naur mpfr-2.1.0-p2/get_str.c mpfr-2.1.0-p3/get_str.c
+--- mpfr-2.1.0-p2/get_str.c	2004-09-30 16:11:13.000000000 +0000
++++ mpfr-2.1.0-p3/get_str.c	2005-01-23 23:16:07.255430336 +0000
+@@ -376,14 +376,22 @@
+ static mp_exp_t
+ mpfr_get_str_compute_g (int beta, mp_exp_t e)
+ {
+-  double g0, g1;
++  double g0, g1, de;
+   mp_exp_t g;
+ 
+-  g0 = (double) e * log_b2[beta - 2];
+-  g1 = (double) e * log_b2_low[beta - 2];
++  de = (double) e;
++  g0 = de * log_b2[beta - 2];
++  g1 = de * log_b2_low[beta - 2];
++  if (de > 9007199254740992.0 || de < -9007199254740992.0)
++    /* can happen on 64-bit machines */
++    {
++      mp_exp_t low_e = e - (mp_exp_t) de;
++      g1 += (double) low_e * log_b2[beta - 2];
++    }
+   g = (mp_exp_t) mpfr_ceil_double (g0);
+   g0 -= (double) g;
+-  return g + (mp_exp_t) mpfr_ceil_double (g0 + g1);
++  g += (mp_exp_t) mpfr_ceil_double (g0 + g1);
++  return g;
+ }
+ 
+ /* prints the mantissa of x in the string s, and writes the corresponding
+diff -Naur mpfr-2.1.0-p2/mpn_exp.c mpfr-2.1.0-p3/mpn_exp.c
+--- mpfr-2.1.0-p2/mpn_exp.c	2004-09-28 09:26:34.000000000 +0000
++++ mpfr-2.1.0-p3/mpn_exp.c	2005-01-23 23:16:07.265428816 +0000
+@@ -123,7 +123,7 @@
+           (mpn_scan1 (c + 2 * n1, 0) < (n - 2 * n1) * BITS_PER_MP_LIMB))
+         error = i;
+ 
+-      if (e & (1 << i))
++      if (e & ((mp_exp_t) 1 << i))
+         {
+           /* multiply A by B */
+           c[2 * n - 1] = mpn_mul_1 (c + n - 1, a, n, B);

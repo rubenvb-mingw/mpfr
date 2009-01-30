@@ -1,0 +1,55 @@
+*** sub.c       2000/09/14 12:35:16     1.29
+--- sub.c       2000/09/28 14:03:44     1.32
+***************
+*** 247,270 ****
+          if (k>an) ap[an-1] += cp[cn-k+an]<<(BITS_PER_MP_LIMB-dif);
+        }
+        else if (dif<0) {
+!       cc = mpn_lshift(ap, cp+(cn-k), k, -dif);
+        if (k<an) ap[k]=cc;
+        /* put the non-significant bits in low limb for further rounding */
+        if (cn >= k+1)
+          ap[0] += cp[cn-k-1]>>(BITS_PER_MP_LIMB+dif);
+        }
+!       else MPN_COPY(ap, cp+(cn-k), k);
+        overlap=1;
+      }
+      else { /* c is not truncated, but we have to fill low limbs with 0 */
+!       MPN_ZERO(ap, k-cn);
+        overlap = cancel-diff_exp;
+  #ifdef DEBUG
+        printf("0:a="); mpfr_print_raw(a); putchar('\n');
+        printf("overlap=%d\n",overlap);
+  #endif
+        if (overlap>=0) {
+!       cn -= overlap/BITS_PER_MP_LIMB;
+        overlap %= BITS_PER_MP_LIMB;
+        /* warning: a shift of zero with mpn_lshift is not allowed */
+        if (overlap) {
+--- 247,272 ----
+          if (k>an) ap[an-1] += cp[cn-k+an]<<(BITS_PER_MP_LIMB-dif);
+        }
+        else if (dif<0) {
+!       cc = mpn_lshift(ap, cp+(cn-k), (k<=an) ? k : an, -dif);
+        if (k<an) ap[k]=cc;
+        /* put the non-significant bits in low limb for further rounding */
+        if (cn >= k+1)
+          ap[0] += cp[cn-k-1]>>(BITS_PER_MP_LIMB+dif);
+        }
+!       else MPN_COPY(ap, cp+(cn-k), (k<=an) ? k : an);
+        overlap=1;
+      }
+      else { /* c is not truncated, but we have to fill low limbs with 0 */
+!       MPN_ZERO(ap, (k-cn<an) ? k-cn : an);
+        overlap = cancel-diff_exp;
+  #ifdef DEBUG
+        printf("0:a="); mpfr_print_raw(a); putchar('\n');
+        printf("overlap=%d\n",overlap);
+  #endif
+        if (overlap>=0) {
+!         if (overlap/BITS_PER_MP_LIMB <= cn) 
+!         cn -= overlap/BITS_PER_MP_LIMB;
+!       else cn=0;
+        overlap %= BITS_PER_MP_LIMB;
+        /* warning: a shift of zero with mpn_lshift is not allowed */
+        if (overlap) {

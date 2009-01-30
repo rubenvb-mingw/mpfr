@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>MPFR version 2.3.0</title>
+<link rel="shortcut icon" href="../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../styles/screen.css" media="screen,tv,projection" />
+<link rel="stylesheet" type="text/css" href="../styles/print.css" media="print" />
+<link rel="top" title="The MPFR Library" href="../index.html" />
+<link rel="up" title="The MPFR Library" href="../index.html" />
+</head>
+
+<body>
+
+<div class="logo"><a href="../index.html"><img src="../mpfr100.png" height="40" width="100" alt="[MPFR]" /></a></div>
+
+<h1><acronym>MPFR</acronym> version 2.3.0 (released on 29 August 2007)</h1>
+
+<div>[<a href="#download">download</a>]
+[<a href="#doc">documentation</a>]
+[<a href="#bugs">bugs</a>]
+[<a href="#changes">changes</a>]
+[<a href="#platforms">platforms</a>]
+[<a href="timings.html" title="Comparison of other software to MPFR 2.3.0">timings</a>]</div>
+
+<p><acronym>MPFR</acronym> 2.3.0 requires <acronym>GMP</acronym> 4.1.0
+or higher.</p>
+
+<h2 id="download">Download</h2>
+
+<p>The <acronym>MPFR</acronym> 2.3.0 source can be downloaded in the
+following archive formats:</p>
+<ul>
+<li><a href="mpfr-2.3.0.tar.bz2">mpfr-2.3.0.tar.bz2</a> (tar/bzip2,
+853&nbsp;<abbr>KB</abbr>),</li>
+<li><a href="mpfr-2.3.0.tar.gz">mpfr-2.3.0.tar.gz</a> (tar/gzip,
+1.2&nbsp;<abbr>MB</abbr>),</li>
+<li><a href="mpfr-2.3.0.zip">mpfr-2.3.0.zip</a> (zip,
+1.5&nbsp;<abbr>MB</abbr>).</li>
+</ul>
+
+<p><strong>Important note: If the <acronym>MPFR</acronym> build fails, please
+read the section <cite>In case of problem</cite> of the <samp>INSTALL</samp>
+file.</strong> In particular, <acronym>GMP</acronym> is known for using a
+different <acronym title="Application Binary Interface">ABI</acronym> from
+the default one on some 64-bit platforms, and in such a case, if you do not
+provide the same compiler flags as those automatically selected by
+<acronym>GMP</acronym>, things will probably go wrong, <abbr>e.g.</abbr>
+<samp>libgmp not found</samp> error message at configure time (this error
+message will be improved in future <acronym>MPFR</acronym> versions).</p>
+
+<p><acronym>MPFR</acronym> is also available via
+<a href="../ports.html">third-party packages and ports</a>.</p>
+
+<h2 id="doc">Documentation</h2>
+
+<ul>
+
+<li>The reference manual:
+[<a href="mpfr.html" title="Reference manual in HTML format">html</a>]
+[<a href="mpfr.dvi.gz" title="Reference manual in DVI format">dvi</a>]
+[<a href="mpfr.ps.gz" title="Reference manual in Postscript format">ps</a>]
+[<a href="mpfr.pdf" title="Reference manual in PDF format">pdf</a>]</li>
+
+<li>The <a href="../faq.html"><acronym>MPFR</acronym>
+<acronym title="Frequently Asked Questions">FAQ</acronym></a>
+(common to all <acronym>MPFR</acronym> versions).</li>
+
+</ul>
+
+<h2 id="bugs">Bugs</h2>
+
+<p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
+update: 2008-01-22). The following instructions are for Linux and may
+be similar for other operating systems. You can apply the patches in
+several ways:</p>
+
+<ul>
+
+<li>Apply the <a href="patches">cumulative patch</a> on the 2.3.0 release
+or a partially patched version with the command
+<pre>patch -N -Z -p1 &lt; <var>path_to_patches_file</var></pre>
+from the source directory. The <samp>-N</samp> option allows the
+<samp>patch</samp> command to ignore patches already applied. The
+<samp>-Z</samp> option sets the modification time of the patched files
+from time stamps given in the patch file, thus avoiding the need of some
+development utilities (such as <cite>autoconf</cite>); this may generate
+a <q>Not setting time</q> warning for the <samp>PATCHES</samp> file, but
+you can safely ignore it. Under Microsoft Windows, in addition to the
+above options, you may need the <samp>--binary</samp> option (this depends
+whether the end-of-lines have been converted when you downloaded the patch
+file). Also note that the <samp>--dry-run</samp> option does not work with
+this cumulative patch.</li>
+
+<li>Or apply the individual patches below.</li>
+
+<li>Or checkout the 2.3 branch from the Subversion repository,
+<abbr>e.g.</abbr> with the command
+<pre>svn co svn://scm.gforge.inria.fr/svn/mpfr/branches/2.3 mpfr-2.3</pre>
+In this case, as said on the <a href="../gforge.html">Gforge page</a>, you
+should read the <samp>README.dev</samp> file for details on how to build
+<acronym>MPFR</acronym>. Also note that the branch may contain additional
+minor fixes.</li>
+
+</ul>
+
+<p>With the first two ways, the <samp>PATCHES</samp> file is modified,
+so that one can know what patches have been applied, using the new
+<samp>mpfr_get_patches</samp> function. Moreover a suffix is added to
+the version string, but note that for practical reasons, not all the
+files where the version appears are patched; thus one can also track
+applied patches with the <code>MPFR_VERSION_STRING</code> macro (header)
+and the <code>mpfr_get_version</code> function (library). However, if
+some patches are not applied or if patches are applied in a different
+order, then the patch command will fail to update some chunks, so that
+the suffix is not always reliable for patches.</p>
+
+<p>Note: These patches are in unified diff format and some vendors'
+<samp>patch</samp> commands cannot deal with them; in this case, please
+use <a href="http://directory.fsf.org/patch.html"><acronym>GNU</acronym>
+patch</a> (it <em>may</em> already be installed on your system, e.g. as
+<samp>/usr/local/bin/patch</samp> or <samp>gpatch</samp>).</p>
+
+<p id="fixed">Fixed bugs:</p>
+
+<ol>
+
+<li id="p1">The rule to rebuild the <samp>get_patches.c</samp> file is not
+correct when the build directory is different from the source directory. This
+is fixed by the <a href="patch01"><samp>get_patches</samp> patch</a>.</li>
+
+<li id="p2">Assertion failure in <code>mpfr_acosh</code> on arguments that
+are slightly larger than 1. This bug can occur only if the precision of the
+destination is strictly smaller than the precision of the input argument.
+This is fixed by the <a href="patch02"><samp>mpfr_acosh</samp> patch</a>
+(with testcase).</li>
+
+<li id="p3">If the underflow flag is set before calling
+<code>mpfr_atan2</code> and the second input argument is positive,
+then <code>mpfr_atan2</code> generally returns an incorrect result
+(as if the result were an underflow). This is fixed by the
+<a href="patch03"><samp>mpfr_atan2</samp> patch</a> (with testcase).</li>
+
+<li id="p4">The <code>mpfr_subnormalize</code> function sometimes returns
+an incorrect result and assumes that <var>emax</var> - <var>emin</var> is
+greater or equal to the precision of the <acronym>MPFR</acronym> number.
+The <a href="patch04"><samp>mpfr_subnormalize</samp></a> patch fixes these
+bugs, adds corresponding testcases and updates the <acronym>MPFR</acronym>
+manual; the condition on the exponent range is replaced by: <q>If the
+result cannot be represented in the current exponent range (due to a too
+small <var>emax</var>), the behavior is undefined.</q></li>
+
+</ol>
+
+<p>Some other bugs have been found and fixed both in the trunk and in
+the 2.3 branch. The ones that may affect the user are listed below.
+The corresponding patches are not published (these bugs will be fixed
+in the future 2.3.1 release), but the changeset numbers (in the 2.3
+branch) are given for the reference.</p>
+
+<ul>
+
+<!--
+  Update with:
+    perl -pi -e '/\[Changesets?:/ && s! (\d+)!\n<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=\1&amp;root=mpfr&amp;view=rev">\1</a>!g' index.html
+-->
+
+<li>The <code>mpfr_acosh</code> function can fail with very large inputs
+(due to an internal overflow). The above patch for inputs slightly larger
+than 1 is probably incorrect (a small term was missing in the error
+analysis); it has been rewritten, using a much simpler formula, which
+also makes this case much faster.<br />
+[Changesets:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4958&amp;root=mpfr&amp;view=rev">4958</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4976&amp;root=mpfr&amp;view=rev">4976</a>]</li>
+
+<li>The <code>mpfr_sin_cos</code> function can return an incorrect result
+if the input pointer and the pointer for the cosine are equal. Moreover,
+it can be very slow on very small inputs.<br />
+[Changesets:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4962&amp;root=mpfr&amp;view=rev">4962</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5096&amp;root=mpfr&amp;view=rev">5096</a>]</li>
+
+<li>The global inexact flag is not set by the <code>mpfr_sqrt</code>
+function when the result is inexact, and this function can yield
+an assertion failure in an exponent range that does not contain
+the value 1 (thus, very unlikely in practice).<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4963&amp;root=mpfr&amp;view=rev">4963</a>]</li>
+
+<li>The global inexact flag is not set by the <code>mpfr_sqr</code>
+function when the result is inexact.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4964&amp;root=mpfr&amp;view=rev">4964</a>]</li>
+
+<li>The <code>mpfr_sin</code> function can fail in a reduced exponent
+range.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4965&amp;root=mpfr&amp;view=rev">4965</a>]</li>
+
+<li>Several bugs in the gamma-related functions:
+<ul>
+<li>The exponent range is not restored for <code>mpfr_lgamma</code> and
+<code>mpfr_lngamma</code> on the values 1 and 2.</li>
+<li>The <code>mpfr_lgamma</code> and <code>mpfr_lngamma</code> functions
+loop on tiny inputs.</li>
+<li>The <code>mpfr_gamma</code> function applied on a huge integer fails
+on 64-bit machines.</li>
+</ul>
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4967&amp;root=mpfr&amp;view=rev">4967</a>]</li>
+
+<li>The <code>mpfr_erfc</code> function is very inefficient on large
+negative numbers.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4968&amp;root=mpfr&amp;view=rev">4968</a>]</li>
+
+<li>The <code>mpfr_zeta</code> function is incorrect on large negative
+numbers (due to an internal overflow): the ternary value is wrong
+(0 instead of non-zero), and the return value is also wrong in the
+<code>GMP_RNDU</code> rounding mode (-Inf instead of the largest
+negative number).<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4970&amp;root=mpfr&amp;view=rev">4970</a>]</li>
+
+<li>The <code>mpfr_mul</code> function reads uninitialized memory (but
+allocated). Unless <acronym>MPFR</acronym> has been built with some tool
+that does such a check (such as <cite>valgrind</cite>), this bug should
+have no effect in practice.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4971&amp;root=mpfr&amp;view=rev">4971</a>]</li>
+
+<li>The <code>mpfr_div_ui</code> function applied on (±0, non-zero) does
+not set the sign of the null result (this bug will not appear if the user
+calls <code>mpfr_div_ui(x, x, ...)</code>, <abbr>i.e.</abbr> if the input
+and output pointers are equal).<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4972&amp;root=mpfr&amp;view=rev">4972</a>]</li>
+
+<li>The <code>mpfr_j0</code> function applied on a large negative number
+and the <code>mpfr_jn</code> function applied on (even integer, large
+negative number) return a result with a wrong sign.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4983&amp;root=mpfr&amp;view=rev">4983</a>]</li>
+
+<li>The internal functions in <samp>isqrt.c</samp> can return an incorrect
+result or have undefined behavior on large values. In practice, with the
+current use of these functions by <acronym>MPFR</acronym>, this bug should
+have no effect, except on the efficiency of <code>mpfr_cos</code>, which
+can slightly be affected.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4992&amp;root=mpfr&amp;view=rev">4992</a>]</li>
+
+<li>The <code>mpfr_asin</code> function applied on ±0 does not set the sign
+of the null result.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5098&amp;root=mpfr&amp;view=rev">5098</a>]</li>
+
+<li>The power-related functions can return incorrect results on various
+special values or in case of exceptions. If the <code>mpfr_y1</code>
+function or the <code>mpfr_yn</code> function with <var>n</var> = 1 is
+called with the overflow flag set, it can yield a spurious overflow. If
+the <code>mpfr_cot</code> function is called with the underflow flag set,
+it can yield an assertion failure.<br />
+[Changesets:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4975&amp;root=mpfr&amp;view=rev">4975</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4977&amp;root=mpfr&amp;view=rev">4977</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5094&amp;root=mpfr&amp;view=rev">5094</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5109&amp;root=mpfr&amp;view=rev">5109</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5111&amp;root=mpfr&amp;view=rev">5111</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5128&amp;root=mpfr&amp;view=rev">5128</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5130&amp;root=mpfr&amp;view=rev">5130</a>]<br />
+If the <code>mpfr_sec</code>, <code>mpfr_csc</code>, <code>mpfr_cot</code>,
+<code>mpfr_sech</code>, <code>mpfr_csch</code> and <code>mpfr_coth</code>
+functions are called with the overflow flag set, they can return an
+incorrect result (spurious overflow).<br />
+[Changesets:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5155&amp;root=mpfr&amp;view=rev">5155</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5156&amp;root=mpfr&amp;view=rev">5156</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5158&amp;root=mpfr&amp;view=rev">5158</a>]</li>
+
+<li>The <code>mpfr_gamma</code> function can return a result with a
+wrong sign (negative instead of positive) in case of underflow with
+a positive value, <abbr>e.g.</abbr> on -1000000001.5 in the default
+exponent range.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5162&amp;root=mpfr&amp;view=rev">5162</a>]</li>
+
+<li>The <code>mpfr_strtofr</code> documentation is ambiguous and the code
+does not match the documentation on some particular points.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5174&amp;root=mpfr&amp;view=rev">5174</a>]</li>
+
+<li><acronym>MPFR</acronym> can crash in some high precisions, due to
+limited stack.<br />
+[Changesets:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5192&amp;root=mpfr&amp;view=rev">5192</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5206&amp;root=mpfr&amp;view=rev">5206</a>]</li>
+
+</ul>
+
+<p id="unfixed">Other bugs: please see the <samp>BUGS</samp> file.</p>
+
+<h2 id="changes">Changes from versions 2.2.* to version 2.3.0</h2>
+
+<ul>
+
+<li>The <samp>mpfr.info</samp> file is now installed in the <samp>share</samp>
+subdirectory (as required by the <cite>Filesystem Hierarchy Standard</cite>);
+see output of <samp>./configure --help</samp>.</li>
+
+<li>The shared library is now enabled by default. If the
+<acronym>MPFR</acronym> build fails on your platform, try the
+<samp>--disable-shared</samp> configure option to disable the
+shared library.</li>
+
+<li>Thread-safe support with Microsoft Visual compiler.</li>
+
+<li>New functions
+<code>mpfr_j0</code>, <code>mpfr_j1</code>, <code>mpfr_jn</code>,
+<code>mpfr_y0</code>, <code>mpfr_y1</code>, <code>mpfr_yn</code>,
+<code>mpfr_lgamma</code>, <code>mpfr_remainder</code>,
+<code>mpfr_remquo</code>, <code>mpfr_fms</code>, <code>mpfr_signbit</code>,
+<code>mpfr_setsign</code>, <code>mpfr_copysign</code>,
+<code>mpfr_get_patches</code>.</li>
+
+<li>Functions <code>mpfr_sin</code>, <code>mpfr_cos</code> and
+<code>mpfr_sin_cos</code> improved (argument reduction).</li>
+
+<li>More detailed <acronym>MPFR</acronym> manual.</li>
+
+<li>Improved tests (<samp>make check</samp>).</li>
+
+<li>Bug fixes.</li>
+
+</ul>
+
+<h2 id="platforms">Platforms Known to Support <cite><acronym>MPFR</acronym></cite></h2>
+
+<p><cite><acronym>MPFR</acronym></cite> 2.3.0 has been successfully
+compiled and checked on the following platforms:</p>
+
+<ul>
+<li><samp>armv5tel-unknown-linux-gnu</samp> (XScale-PXA255, <acronym>gcc</acronym> 2.95.2),</li>
+<li><samp>hppa2.0w-hp-hpux11.31</samp> (PA-RISC 8900, <acronym>HP</acronym> <acronym>cc</acronym> B.11.11.16),</li>
+<li><samp>i386-unknown-freebsd6.2</samp> (Intel Pentium III, <acronym>gcc</acronym> 3.4.6),</li>
+<li><samp>i686-pc-linux-gnu</samp> (Intel Pentium D, <acronym>gcc</acronym> 4.1.3 prerelease),</li>
+<li><samp>ia64-unknown-linux-gnu</samp> (Itanium, <acronym>gcc</acronym> 4.1.2 prerelease),</li>
+<li><samp>mips-sgi-irix6.5</samp> (MIPSpro 7.3.1.3m),</li>
+<li><samp>powerpc-apple-darwin8.10.0</samp> (PowerPC G5, <acronym>gcc</acronym> 4.0.1),</li>
+<li><samp>powerpc-unknown-linux-gnu</samp> (PowerPC G4, <acronym>gcc</acronym> 4.1.3 prerelease),</li>
+<li><samp>powerpc64-unknown-linux-gnu</samp> (POWER5, <acronym>gcc</acronym> 4.1.2 prerelease),</li>
+<li><samp>sparc-sun-solaris2.7</samp> (UltraSPARC-II, Sun WorkShop 6 2000/04/07 C 5.1),</li>
+<li><samp>x86_64-unknown-linux-gnu</samp> (<acronym>AMD</acronym> Opteron, <acronym>gcc</acronym> 4.1.2 prerelease).</li>
+</ul>
+
+<p><a href="../index.html">Back to the <cite><acronym>MPFR</acronym></cite>
+page.</a></p>
+
+<hr />
+
+<div class="footer"><a href="http://validator.w3.org/check/referer"><img
+  src="http://www.w3.org/Icons/valid-xhtml10"
+  alt="Valid XHTML 1.0!" height="31" width="88" /></a></div>
+
+</body>
+
+</html>

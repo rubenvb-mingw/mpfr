@@ -1,0 +1,33 @@
+diff -Naur mpfr-2.1.0-p8/strtofr.c mpfr-2.1.0-p9/strtofr.c
+--- mpfr-2.1.0-p8/strtofr.c	2004-10-22 13:16:26.000000000 +0000
++++ mpfr-2.1.0-p9/strtofr.c	2005-01-23 23:20:41.640717432 +0000
+@@ -409,7 +409,7 @@
+   size_t pstr_size;
+   mp_size_t ysize, real_ysize;
+   int res, err;
+-  TMP_DECL (maker);
++  TMP_DECL (marker);
+ 
+   /* determine the minimal precision for the computation */
+   prec = MPFR_PREC (x) + MPFR_INT_CEIL_LOG2 (MPFR_PREC (x));
+@@ -671,7 +671,7 @@
+   res = mpfr_set_overflow (x, rnd, (pstr->negative) ? -1 : 1);
+ 
+  end:
+-  TMP_FREE (maker);
++  TMP_FREE (marker);
+   return res;
+ }
+ 
+diff -Naur mpfr-2.1.0-p8/sum.c mpfr-2.1.0-p9/sum.c
+--- mpfr-2.1.0-p8/sum.c	2005-01-23 23:19:18.010431000 +0000
++++ mpfr-2.1.0-p9/sum.c	2005-01-23 23:20:41.651715760 +0000
+@@ -67,7 +67,7 @@
+         perm[target_rank] = tab[i];
+     }
+     
+-    TMP_FREE(account);
++    TMP_FREE(marker);
+ }
+ 
+ /* Performs a heap sort of the entries */

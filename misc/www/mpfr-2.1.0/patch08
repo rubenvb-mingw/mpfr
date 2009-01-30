@@ -1,0 +1,28 @@
+diff -Naur mpfr-2.1.0-p7/tests/tests.c mpfr-2.1.0-p8/tests/tests.c
+--- mpfr-2.1.0-p7/tests/tests.c	2004-10-27 13:16:13.000000000 +0000
++++ mpfr-2.1.0-p8/tests/tests.c	2005-01-23 23:20:08.857701208 +0000
+@@ -39,6 +39,10 @@
+ #  include <time.h>
+ #endif
+ 
++#if HAVE_SYS_FPU_H
++# include <sys/fpu.h>
++#endif
++
+ #include "mpfr-test.h"
+ 
+ static void tests_rand_start (void);
+diff -Naur mpfr-2.1.0-p7/tests/trint.c mpfr-2.1.0-p8/tests/trint.c
+--- mpfr-2.1.0-p7/tests/trint.c	2004-10-27 13:16:14.000000000 +0000
++++ mpfr-2.1.0-p8/tests/trint.c	2005-01-23 23:20:08.867699688 +0000
+@@ -25,6 +25,10 @@
+ 
+ #include "mpfr-test.h"
+ 
++#if __MPFR_STDC (199901L)
++# include <math.h>
++#endif
++
+ static void
+ special (void)
+ {

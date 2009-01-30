@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>The MPFR Library 2.3.0: Timings</title>
+<link rel="shortcut icon" href="../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../styles/screen.css" media="screen,tv,projection" />
+<link rel="stylesheet" type="text/css" href="../styles/print.css" media="print" />
+<link rel="top" title="The MPFR Library" href="../index.html" />
+<link rel="up" title="MPFR version 2.3.0" href="index.html" />
+</head>
+
+<body>
+
+<h1>Comparison of multiple-precision floating-point software</h1>
+
+<table border="1">
+<tbody><tr align="center">
+<td><a href="http://www.maplesoft.com/">Maple</a></td>
+<td><a href="http://www.wolfram.com/">Mathematica</a></td>
+<td><a href="http://magma.maths.usyd.edu.au/magma/">Magma</a></td>
+<td><a href="http://sagemath.org/">SAGE</a></td>
+<td><a href="http://gmplib.org/">GMP MPF</a></td>
+<td><a href="http://www.mpfr.org/">MPFR</a></td>
+<td><a href="http://pari.math.u-bordeaux.fr/">PARI</a></td>
+<td><a href="http://www.shoup.net/ntl/">NTL</a></td>
+<td><a href="http://www.ginac.de/CLN/">CLN</a></td>
+</tr>
+<tr align="center">
+<td>commercial</td>
+<td>commercial</td>
+<td>commercial</td>
+<td>free (GPL) </td>
+<td>free (LGPL)</td>
+<td>free (LGPL)</td>
+<td>free (GPL)</td>
+<td>free (GPL) </td>
+<td>free (GPL)</td>
+</tr>
+<tr align="center">
+<td>10.00 </td>
+<td>6.0.1</td>
+<td>2.13-5</td>
+<td>2.8.14</td>
+<td>4.2.2</td>
+<td>2.3.0</td>
+<td>2.3.2</td>
+<td>5.4.1</td>
+<td>1.2.0</td>
+</tr>
+<tr align="center">
+<td>interactive</td>
+<td>interactive</td>
+<td>interactive</td>
+<td>interactive</td>
+<td>library</td>
+<td>library</td>
+<td>library</td>
+<td>library</td>
+<td>library</td>
+</tr>
+</tbody></table>
+
+<p>The following tables give the cpu time in milliseconds spent by several
+systems or libraries for different operations, at different precisions
+(in digits).
+Those timings were obtained on a 16-core AMD Opteron 865 at 1.8GHz
+(sage.math.washington.edu)
+with 100GB of swap and 64GB of RAM under Linux 2.6.12-10-amd64-k8-smp.
+The version of GCC is 4.1.2.
+</p>
+
+<p>
+<b>GMP</b> has been built with 
+<a href="http://www.loria.fr/~gaudry/mpn_AMD64/">Gaudry's AMD64 patch</a>.
+<b>MPFR</b> was built with <tt>--with-gmp-build</tt>, and <tt>make tune</tt>.
+<b>PARI</b> and <b>NTL</b> have been built with native support.
+<b>CLN</b> has been built with <b>GMP</b> support.
+</p>
+
+<p>An entry "na" means a function not available in the corresponding software tool.
+The boldface entries are the fastest in each row.
+</p>
+
+<table border="1">
+<tbody><tr align="center">
+<td align="center">100 digits</td>
+<td align="left">Maple</td>
+<td align="left">Mathematica</td>
+<td align="left">Magma</td>
+<td align="left">SAGE</td>
+<td align="left">MPF</td>
+<td align="left">MPFR</td>
+<td align="left">Pari</td>
+<td align="left">NTL</td>
+<td align="left">CLN</td>
+</tr>
+<tr align="right">
+<!-- sqrt(3)*sqrt(5)-->
+<td align="center">mult</td>
+<td>0.0048</td>
+<td>0.0015</td>
+<td>0.0006</td>
+<td>0.0012</td>
+<td><b>0.00017</b></td>
+<td>0.00018</td>
+<td><b>0.00017</b></td>
+<td>0.00073</td>
+<td>0.00034</td>
+</tr>
+<!-- sqrt(3)/sqrt(5)-->
+<tr align="right">
+<td align="center">div</td>
+<td>0.0064</td>
+<td>0.0029</td>
+<td>0.0010</td>
+<td>0.0015</td>
+<td>0.00064</td>
+<td><b>0.00051</b></td>
+<td>0.00065</td>
+<td>0.00121</td>
+<td>0.00086</td>
+</tr>
+<!-- sqrt(x) where x=sqrt(3)-->
+<tr align="right">
+<td align="center">sqrt</td>
+<td>0.0732</td>
+<td>0.0033</td>
+<td>0.0015</td>
+<td>0.00235</td>
+<td>0.00095</td>
+<td><b>0.00086</b></td>
+<td>0.00171</td>
+<td>0.00751</td>
+<td>0.00106</td>
+</tr>
+<!-- exp(x) where x=sqrt(3)-->
+<tr align="right">
+<td align="center">exp</td>
+<td>0.164</td>
+<td>0.029</td>
+<td>0.012</td>
+<td>0.014</td>
+<td>na</td>
+<td><b>0.011</b></td>
+<td>0.018</td>
+<td>0.124</td>
+<td>0.035</td>
+</tr>
+<!-- log(x) where x=sqrt(3)-->
+<tr align="right">
+<td align="center">log</td>
+<td>0.228</td>
+<td>0.045</td>
+<td>0.0179</td>
+<td>0.0220</td>
+<td>na</td>
+<td><b>0.0168</b></td>
+<td>0.0287</td>
+<td>0.692</td>
+<td>0.0475</td>
+</tr>
+<!-- sin(x) where x=sqrt(3)-->
+<tr align="right">
+<td align="center">sin</td>
+<td>0.280</td>
+<td>0.027</td>
+<td>0.0159</td>
+<td>0.0156</td>
+<td>na</td>
+<td><b>0.0121</b></td>
+<td>0.0158</td>
+<td>0.137</td>
+<td>0.0420</td>
+</tr>
+<!-- cos(x) where x=sqrt(3)-->
+<tr align="right">
+<td align="center">cos</td>
+<td>0.260</td>
+<td>0.028</td>
+<td>0.0117</td>
+<td>0.0120</td>
+<td>na</td>
+<td><b>0.0092</b></td>
+<td>0.0135</td>
+<td>0.149</td>
+<td>0.0370</td>
+</tr>
+<!-- arccos(x) where x=sqrt(3)-->
+<tr align="right">
+<td align="center">acos</td>
+<td>2.12</td>
+<td>0.083</td>
+<td>0.235</td>
+<td>0.093</td>
+<td>na</td>
+<td>0.082</td>
+<td>0.061</td>
+<td>na</td>
+<td><b>0.055</b></td>
+</tr>
+<!-- arctan(x) where x=sqrt(3)-->
+<tr align="right">
+<td align="center">atan</td>
+<td>0.588</td>
+<td>0.075</td>
+<td>0.201</td>
+<td>0.084</td>
+<td>na</td>
+<td>0.073</td>
+<td>0.059</td>
+<td>na</td>
+<td><b>0.047</b></td>
+</tr>
+</tbody></table>
+
+<table border="1">
+<tbody><tr align="center">
+<td align="center">1000 digits</td>
+<td align="left">Maple</td>
+<td align="left">Mathematica</td>
+<td align="left">Magma</td>
+<td align="left">SAGE</td>
+<td align="left">MPF</td>
+<td align="left">MPFR</td>
+<td align="left">Pari</td>
+<td align="left">NTL</td>
+<td align="left">CLN</td>
+</tr>
+<tr align="right">
+<!-- sqrt(3)*sqrt(5)-->
+<td align="center">mult</td>
+<td>0.0600</td>
+<td>0.0088</td>
+<td>0.0043</td>
+<td>0.0050</td>
+<td>0.0046</td>
+<td><b>0.0039</b></td>
+<td>0.0076</td>
+<td>0.0247</td>
+<td>0.0072</td>
+</tr>
+<!-- sqrt(3)/sqrt(5)-->
+<tr align="right">
+<td align="center">div</td>
+<td>0.0640</td>
+<td>0.0152</td>
+<td>0.0087</td>
+<td>0.0092</td>
+<td>0.0084</td>
+<td><b>0.0082</b></td>
+<td>0.0106</td>
+<td>0.0332</td>
+<td>0.0119</td>
+</tr>
+<!-- sqrt(x) where x=sqrt(3)-->
+<tr align="right">
+<td align="center">sqrt</td>
+<td>0.408</td>
+<td>0.0144</td>
+<td>0.0076</td>
+<td>0.0092</td>
+<td><b>0.0074</b></td>
+<td><b>0.0074</b></td>
+<td>0.0150</td>
+<td>0.311</td>
+<td>0.0092</td>
+</tr>
+<!-- exp(x) where x=sqrt(3)-->
+<tr align="right">
+<td align="center">exp</td>
+<td>2.92</td>
+<td>0.668</td>
+<td>0.275</td>
+<td>0.259</td>
+<td>na</td>
+<td><b>0.253</b></td>
+<td>0.674</td>
+<td>10.55</td>
+<td>0.608</td>
+</tr>
+<!-- log(x) where x=sqrt(3)-->
+<tr align="right">
+<td align="center">log</td>
+<td>0.800</td>
+<td>0.792</td>
+<td>0.240</td>
+<td>0.242</td>
+<td>na</td>
+<td><b>0.232</b></td>
+<td>0.496</td>
+<td>85.87</td>
+<td>0.633</td>
+</tr>
+<!-- sin(x) where x=sqrt(3)-->
+<tr align="right">
+<td align="center">sin</td>
+<td>5.28</td>
+<td>0.428</td>
+<td>0.271</td>
+<td>0.275</td>
+<td>na</td>
+<td><b>0.269</b></td>
+<td>0.621</td>
+<td>11.84</td>
+<td>0.526</td>
+</tr>
+<!-- cos(x) where x=sqrt(3)-->
+<tr align="right">
+<td align="center">cos</td>
+<td>5.28</td>
+<td>0.432</td>
+<td>0.263</td>
+<td>0.258</td>
+<td>na</td>
+<td><b>0.254</b></td>
+<td>0.598</td>
+<td>12.57</td>
+<td>0.489</td>
+</tr>
+<!-- arccos(x) where x=sqrt(3)-->
+<tr align="right">
+<td align="center">acos</td>
+<td>7.38</td>
+<td>0.96</td>
+<td>2.83</td>
+<td>1.10</td>
+<td>na</td>
+<td>1.06</td>
+<td>1.70</td>
+<td>na</td>
+<td><b>0.80</b></td>
+</tr>
+<!-- arctan(x) where x=sqrt(3)-->
+<tr align="right">
+<td align="center">atan</td>
+<td>5.36</td>
+<td>0.93</td>
+<td>2.43</td>
+<td>1.00</td>
+<td>na</td>
+<td>0.97</td>
+<td>1.67</td>
+<td>na</td>
+<td><b>0.74</b></td>
+</tr>
+</tbody></table>
+
+<table border="1">
+<tbody><tr align="center">
+<td align="center">10000 digits</td>
+<td align="left">Maple</td>
+<td align="left">Mathematica</td>
+<td align="left">Magma</td>
+<td align="left">SAGE</td>
+<td align="left">MPF</td>
+<td align="left">MPFR</td>
+<td align="left">Pari</td>
+<td align="left">NTL</td>
+<td align="left">CLN</td>
+</tr>
+
+<tr align="right">
+<!-- sqrt(3)*sqrt(5)-->
+<td align="center">mult</td>
+<td>1.92</td>
+<td>0.232</td>
+<td>0.145</td>
+<td>0.141</td>
+<td>0.167</td>
+<td><b>0.139</b></td>
+<td>0.452</td>
+<td>0.974</td>
+<td>0.307</td>
+</tr>
+<!-- sqrt(3)/sqrt(5)-->
+<tr align="right">
+<td align="center">div</td>
+<td>1.96</td>
+<td>0.504</td>
+<td>0.339</td>
+<td>0.342</td>
+<td>0.342</td>
+<td><b>0.337</b></td>
+<td>0.647</td>
+<td>2.763</td>
+<td>0.743</td>
+</tr>
+<!-- sqrt(x) where x=sqrt(3)-->
+<tr align="right">
+<td align="center">sqrt</td>
+<td>9.04</td>
+<td>0.332</td>
+<td><b>0.233</b></td>
+<td>0.237</td>
+<td>0.236</td>
+<td><b>0.233</b></td>
+<td>0.649</td>
+<td>34.06</td>
+<td>0.453</td>
+</tr>
+<!-- exp(x) where x=sqrt(3)-->
+<tr align="right">
+<td align="center">exp</td>
+<td>147</td>
+<td>20.1</td>
+<td>18.8</td>
+<td>14.5</td>
+<td>na</td>
+<td><b>14.3</b></td>
+<td>45.3</td>
+<td>2924</td>
+<td>25.9</td>
+</tr>
+<!-- log(x) where x=sqrt(3)-->
+<tr align="right">
+<td align="center">log</td>
+<td>87.6</td>
+<td>17.8</td>
+<td>10.5</td>
+<td>9.9</td>
+<td>na</td>
+<td><b>9.7</b></td>
+<td>29.7</td>
+<td>30226</td>
+<td>30.3</td>
+</tr>
+<!-- sin(x) where x=sqrt(3)-->
+<tr align="right">
+<td align="center">sin</td>
+<td>295</td>
+<td>37.7</td>
+<td><b>24.4</b></td>
+<td>25.6</td>
+<td>na</td>
+<td>25.5</td>
+<td>102</td>
+<td>3120</td>
+<td>45.7</td>
+</tr>
+<!-- cos(x) where x=sqrt(3)-->
+<tr align="right">
+<td align="center">cos</td>
+<td>295</td>
+<td>37.6</td>
+<td><b>24.0</b></td>
+<td>25.2</td>
+<td>na</td>
+<td>25.0</td>
+<td>102</td>
+<td>14297</td>
+<td>43.9</td>
+</tr>
+<!-- arccos(x) where x=sqrt(3)-->
+<tr align="right">
+<td align="center">acos</td>
+<td>246</td>
+<td>79.7</td>
+<td>219</td>
+<td>44.0</td>
+<td>na</td>
+<td><b>43.7</b></td>
+<td>117</td>
+<td>na</td>
+<td>54.8</td>
+</tr>
+<!-- arctan(x) where x=sqrt(3)-->
+<tr align="right">
+<td align="center">atan</td>
+<td>251</td>
+<td>76.5</td>
+<td>187</td>
+<td>40.3</td>
+<td>na</td>
+<td><b>39.9</b></td>
+<td>116</td>
+<td>na</td>
+<td>52.8</td>
+</tr>
+</tbody></table>
+
+<p>The source file of these tests is available for
+<a href="timings.mpl">Maple</a>,
+<a href="timings.mma">Mathematica</a>,
+<a href="timings.magma">Magma</a>,
+<a href="timings.sage">SAGE</a>,
+<a href="timings-mpf.c">MPF</a>,
+<a href="timings-mpfr.c">MPFR</a>,
+<a href="timings-pari.c">Pari</a>,
+<a href="timings-ntl.c">NTL</a>,
+and <a href="../timing-sources/timings-cln.cc">CLN</a>.</p>
+
+<p>Thanks to the National Science Foundation (grant No. 0555776)
+and to the University of Washington, which provided the machine
+and software for this comparison.</p>
+
+</body>
+
+</html>

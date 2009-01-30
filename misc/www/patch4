@@ -1,0 +1,23 @@
+diff -c -r1.28 -r1.29
+*** sub.c       2000/08/16 09:04:59     1.28
+--- sub.c       2000/09/14 12:35:16     1.29
+***************
+*** 272,278 ****
+            mpn_lshift(ap, cp+(cn-an), an, overlap);
+            ap[0] += cp[cn-an-1]>>(BITS_PER_MP_LIMB-overlap);
+          }
+!         else mpn_lshift(ap+(an-cn), cp, cn, overlap);
+        }
+        else MPN_COPY(ap+(an-cn), cp, cn);
+        }
+--- 272,281 ----
+            mpn_lshift(ap, cp+(cn-an), an, overlap);
+            ap[0] += cp[cn-an-1]>>(BITS_PER_MP_LIMB-overlap);
+          }
+!         else {
+!           /* warning: mpn_lshift doesn't seem to like cn=0 */
+!           if (cn) mpn_lshift(ap+(an-cn), cp, cn, overlap); 
+!         }
+        }
+        else MPN_COPY(ap+(an-cn), cp, cn);
+        }

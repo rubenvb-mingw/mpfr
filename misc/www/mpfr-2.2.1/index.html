@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>MPFR version 2.2.1</title>
+<link rel="shortcut icon" href="../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../styles/screen.css" media="screen,tv,projection" />
+<link rel="stylesheet" type="text/css" href="../styles/print.css" media="print" />
+<link rel="top" title="The MPFR Library" href="../index.html" />
+<link rel="up" title="The MPFR Library" href="../index.html" />
+</head>
+
+<body>
+
+<div class="logo"><a href="../index.html"><img src="../mpfr100.png" height="40" width="100" alt="[MPFR]" /></a></div>
+
+<h1><acronym>MPFR</acronym> version 2.2.1 (released on 29 November 2006)</h1>
+
+<div>[<a href="#download">download</a>]
+[<a href="#doc">documentation</a>]
+[<a href="#bugs">bugs</a>]
+[<a href="#changes">changes</a>]
+[<a href="#platforms">platforms</a>]</div>
+
+<p><acronym>MPFR</acronym> 2.2.1 requires <acronym>GMP</acronym> 4.1.0
+or higher. This is the latest version of the 2.2 branch, which is no
+longer supported (newly discovered bugs will probably never be fixed
+on this branch). Please upgrade to <acronym>MPFR</acronym> 2.3.0 (or
+higher, when new versions are released):
+<a href="http://www.mpfr.org/mpfr-current/">latest <acronym>MPFR</acronym>
+release</a>.</p>
+
+<h2 id="download">Download</h2>
+
+<p>The <acronym>MPFR</acronym> 2.2.1 source can be downloaded in the
+following archive formats:</p>
+<ul>
+<li><a href="mpfr-2.2.1.tar.bz2">mpfr-2.2.1.tar.bz2</a> (tar/bzip2,
+770&nbsp;<abbr>KB</abbr>),</li>
+<li><a href="mpfr-2.2.1.tar.gz">mpfr-2.2.1.tar.gz</a> (tar/gzip,
+1020&nbsp;<abbr>KB</abbr>),</li>
+<li><a href="mpfr-2.2.1.zip">mpfr-2.2.1.zip</a> (zip,
+1.3&nbsp;<abbr>MB</abbr>).</li>
+<li>Source <acronym>RPM</acronym>:
+<a href="mpfr-2.2.1-2.src.rpm">mpfr-2.2.1-2.src.rpm</a> (1.1&nbsp;<abbr>MB</abbr>).</li>
+</ul>
+
+<p><acronym>MPFR</acronym> is also available via
+<a href="../ports.html">third-party packages and ports</a>.</p>
+
+<h2 id="doc">Documentation</h2>
+
+<ul>
+
+<li>The reference manual:
+[<a href="mpfr.html" title="Reference manual in HTML format">html</a>]
+[<a href="mpfr.dvi.gz" title="Reference manual in DVI format">dvi</a>]
+[<a href="mpfr.ps.gz" title="Reference manual in Postscript format">ps</a>]
+[<a href="mpfr.pdf" title="Reference manual in PDF format">pdf</a>]</li>
+
+<li>Old MPFR 2.2.0 reference manual translated into Japanese:
+[<a href="http://na-inet.jp/na/mpfr-ja-2.2.0.html"
+    title="Japanese reference manual in HTML format">html</a>]
+[<a href="http://na-inet.jp/na/mpfr-ja-2.2.0.pdf"
+    title="Japanese reference manual in PDF format">pdf</a>]
+[<a href="http://na-inet.jp/na/mpfr-ja-2.2.0.zip"
+    title="Japanese reference manual, sources">sources</a>]<br />
+There is not much difference though.</li>
+
+<li>The <a href="../faq.html"><acronym>MPFR</acronym>
+<acronym title="Frequently Asked Questions">FAQ</acronym></a>
+(common to all <acronym>MPFR</acronym> versions).</li>
+
+</ul>
+
+<h2 id="bugs">Bugs</h2>
+
+
+<p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
+update: 2007-02-17). The following instructions are for Linux and may
+be similar for other operating systems. You can apply the patches in
+several ways:</p>
+
+<ul>
+
+<li>Apply the <a href="patches">cumulative patch</a> on the 2.2.1 release
+or a partially patched version with the command
+<pre>patch -N -Z -p1 &lt; <var>path_to_patches_file</var></pre>
+from the build directory. The <samp>-N</samp> option allows the
+<samp>patch</samp> command to ignore patches already applied. The
+<samp>-Z</samp> option sets the modification time of the patched files
+from time stamps given in the patch file, thus avoiding the need of
+some development utilities (such as <cite>autoconf</cite>).
+Under Microsoft Windows, in addition to the above options, you may need
+the <samp>--binary</samp> option (this depends whether the end-of-lines
+have been converted when you downloaded the patch file). Also note that
+the <samp>--dry-run</samp> option does not work with this cumulative
+patch.</li>
+
+<li>Or apply the individual patches below.</li>
+
+<li>Or checkout the 2.2 branch from the Subversion repository,
+<abbr>e.g.</abbr> with the command
+<pre>svn co svn://scm.gforge.inria.fr/svn/mpfr/branches/2.2 mpfr-2.2</pre>
+In this case, as said on the <a href="../gforge.html">Gforge page</a>, you
+should read the <samp>README.dev</samp> file for details on how to build
+<acronym>MPFR</acronym>. Also note that the branch may contain additional
+minor fixes.</li>
+
+</ul>
+
+<p>With the first two ways, a suffix is added to the version string, so
+that one can know what patches have been applied. For practical reasons,
+not all the files where the version appears are patched, but the updated
+version string is available with the <code>MPFR_VERSION_STRING</code> macro
+(header) and the <code>mpfr_get_version</code> function (library).</p>
+
+<p>Note: These patches are in unified diff format and some vendors'
+<samp>patch</samp> commands cannot deal with them; in this case, please
+use <a href="http://directory.fsf.org/patch.html"><acronym>GNU</acronym>
+patch</a> (it <em>may</em> already be installed on your system, e.g. as
+<samp>/usr/local/bin/patch</samp> or <samp>gpatch</samp>).</p>
+
+<p id="fixed">Fixed bugs:</p>
+
+<ol>
+
+<li id="p1">Though documented in the <acronym>MPFR</acronym> manual,
+the <code>mpfr_init_set_ld</code> macro is missing. The
+<a href="patch01"><code>mpfr_init_set_ld</code> patch</a>
+adds it to the <samp>mpfr.h</samp> file.</li>
+
+<li id="p2">A test in <samp>tests/tget_f.c</samp> yields an integer overflow
+(the test fails when using <acronym>gcc</acronym>'s <samp>-ftrapv</samp>
+option). This is fixed by the <a href="patch02"><samp>tests/tget_f.c</samp>
+patch</a>.</li>
+
+<li id="p3">Some cases of overflow and underflow are not correctly handled
+in the <code>mpfr_set_si_2exp</code> and <code>mpfr_set_ui_2exp</code>
+functions (wrong flags, and even an incorrect value in case of double
+rounding). In corner cases (emin &#x2265; 4 and some other constraints),
+the <code>mpfr_set_si</code> and <code>mpfr_set_ui</code> may set the
+underflow flag though an underflow did not occur. These problems are fixed
+by the <a href="patch03"><samp>mpfr_set_si/ui</samp> patch</a>.</li>
+
+<li id="p4">The <code>mpfr_pow_si</code> function does not behave
+correctly on some extreme cases. In particular, computing
+2<sup><samp>LONG_MIN</samp>+1</sup> with <code>mpfr_pow_si</code> can
+yield a <acronym title="Not a Number">NaN</acronym>. For some input
+values, integer overflows may occur, but in practice, the results are
+correct as long as the implementation (C compiler) guarantees two's
+complement wrapping. These problems are fixed by the
+<a href="patch04"><code>mpfr_pow_si</code> patch</a>. Moreover this patch
+avoids a bug in Sun's compiler for Solaris/x86 (with optimizations).</li>
+
+<li id="p5"><a href="patch05"><acronym>MPFR</acronym> manual update</a>:
+The default install directory for the info file has changed and this patch
+updates it in the manual, and it adds a new section <cite>Exceptions</cite>
+and the missing description of the <code>mpfr_dim</code> function (that
+was added to <acronym>MPFR</acronym> 2.0.1).</li>
+
+</ol>
+
+<p>In addition to the bugs mentioned in the <samp>BUGS</samp> file:</p>
+
+<ul>
+
+<li>There are possible bugs with huge precisions (greater than
+2<sup>30</sup>) and with exponent ranges that do not allow to
+represent some numbers, such as 1 or 1/2.</li>
+
+<li>Some <acronym>MPFR</acronym> functions may fail if computations on the
+<code>double</code> floating-point type are carried out in a precision less
+than the <acronym>IEEE</acronym>-754 double precision. This can happen on
+x86 processors if the <acronym>FPU</acronym> is configured in single
+precision mode (though one should never do that).</li>
+
+<li>If you get the following error:
+<pre>Error in pow_si(x,x,-2) for x=2</pre>
+this may be a bug in your compiler, thus <em>not</em> an
+<acronym>MPFR</acronym> bug. Such a bug has been found
+<a href="http://gcc.gnu.org/bugzilla/show_bug.cgi?id=27116">in
+<acronym>GCC</acronym> preversions</a> and in Sun's compiler for Solaris/x86
+(when optimizations are enabled, which is the default when building
+<acronym>MPFR</acronym>). To avoid this compiler bug, please apply the
+above patches.</li>
+
+<li>Some error bounds are underestimated in the proof for various functions.
+In rare cases, this may lead to a slightly inaccurate result, but it is not
+known if such cases exist. This bug has been fixed in the trunk
+(<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php/trunk/?rev=4372&amp;root=mpfr&amp;view=rev">changeset 4372</a>).</li>
+
+<li>The <code>mpfr_fma</code> function behaves incorrectly if the
+multiplication overflows or underflows (in the current exponent range).</li>
+
+<li>Some functions behave incorrectly (with a possible infinite loop)
+<a href="http://websympa.loria.fr/wwsympa/arc/mpfr/2007-05/msg00018.html">on
+tiny arguments</a>, <abbr>e.g.</abbr> ±2<sup>emin&minus;1</sup>. This
+problem has been fixed in the trunk.</li>
+
+<li>Similarly, some functions behave incorrectly (with a possible
+infinite loop) on very large arguments, <abbr>e.g.</abbr>
+±(2<sup>emax</sup> &minus; epsilon).</li>
+
+<li><a href="http://websympa.loria.fr/wwsympa/arc/mpfr/2007-05/msg00018.html">Infinite
+loop in <code>mpfr_gamma</code> on some integers</a>.</li>
+
+<li>With <acronym>gcc</acronym>, the <code>mpfr_cmp_ui</code> and
+<code>mpfr_cmp_si</code> macros used on
+<acronym title="Not a Number">NaN</acronym> and the constant 0 can
+return an incorrect result and let the erange flag unset, because
+of a bug in a <acronym>gcc</acronym>-specific optimization.</li>
+
+<li>On some inputs, the <code>mpfr_div</code> function returns an
+incorrect value, which is not normalized (this can lead to an assertion
+failure, or perhaps even a memory corruption). This bug is
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php/trunk/div.c?root=mpfr&amp;rev=4530&amp;r1=4350&amp;r2=4530">fixed
+in the trunk</a>. See the
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php/trunk/tests/tdiv.c?root=mpfr&amp;rev=4350&amp;r1=4532&amp;r2=4350">corresponding
+tests</a>.</li>
+
+<li>The <code>mpfr_div</code> function returns an incorrectly rounded result
+in case of underflow or overflow when the quotient is negative and the
+rounding mode is either <code>GMP_RNDD</code> or <code>GMP_RNDU</code>.</li>
+
+<li>Assertion failure in <code>mpfr_log</code> on some data (see
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php/trunk/tests/tlog.c?root=mpfr&amp;rev=4736&amp;r1=4701&amp;r2=4736">testcase</a>).
+This is
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php/trunk/log.c?root=mpfr&amp;rev=4738&amp;r1=4350&amp;r2=4738">fixed
+in the trunk</a>.</li>
+
+<li>Assertion failure in <code>mpfr_asinh</code> on some data (see
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php/trunk/tests/tasinh.c?root=mpfr&amp;rev=4741&amp;r1=4701&amp;r2=4741">testcase</a>).
+This is
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php/trunk/asinh.c?root=mpfr&amp;rev=4742&amp;r1=4468&amp;r2=4742">fixed
+in the trunk</a>.</li>
+
+</ul>
+
+<h2 id="changes">Changes from version 2.2.0 to version 2.2.1</h2>
+
+<ul>
+
+<li>Many bug fixes (see the
+<a href="../mpfr-2.2.0/#bugs"><acronym>MPFR</acronym> 2.2.0 page</a>
+for the list).</li>
+
+<li>Updated <samp>mpfr-longlong.h</samp> from the <acronym>GMP</acronym> 4.2
+<samp>longlong.h</samp> file.</li>
+
+<li>Moved some internal declarations from <samp>mpfr.h</samp> to
+<samp>mpfr-impl.h</samp>.</li>
+
+<li>Use <samp>-search_paths_first</samp> on Darwin (Mac OS X) to fix
+linking behavior.</li>
+
+<li>Improved <code>make check</code>: much more complete generic tests.</li>
+
+<li>Improved <samp>INSTALL</samp> file and <acronym>MPFR</acronym>
+manual.</li>
+
+<li>The <samp>mpfr.info</samp> file is now installed in the
+<samp>share</samp> subdirectory (as required by the
+<a href="http://www.pathname.com/fhs/"><cite>Filesystem Hierarchy
+Standard</cite></a>); see output of
+<samp class="nowrap">./configure --help</samp>.</li>
+
+</ul>
+
+<h2 id="platforms">Platforms Known to Support <cite><acronym>MPFR</acronym></cite></h2>
+
+<p><cite><acronym>MPFR</acronym></cite> 2.2.1 has been successfully
+compiled and checked on the following platforms:</p>
+
+<ul>
+<li><samp>alphaev56-dec-osf4.0f</samp> (Alpha, <acronym>gcc</acronym> 4.1.1),</li>
+<li><samp>alphaev56-unknown-linux-gnu</samp> (Alpha, <acronym>gcc</acronym> 4.1.1),</li>
+<li><samp>alphaev68-dec-osf5.1</samp> (Alpha, <acronym>gcc</acronym> 3.2.1),</li>
+<li><samp>alphaev68-dec-osf5.1b</samp> (Alpha, <acronym>gcc</acronym> 4.1.1),</li>
+<li><samp>armv5tel-unknown-linux-gnu</samp> (XScale-PXA255, <acronym>gcc</acronym> 2.95.2),</li>
+<li><samp>hppa2.0w-hp-hpux11.23</samp> (PA-RISC 8900, <acronym>HP</acronym> <acronym>cc</acronym>),</li>
+<li><samp>i386-pc-solaris2.9</samp> (<acronym>gcc</acronym> 4.1.1),</li>
+<li><samp>i386-suse-linux-gnu</samp>,</li>
+<li><samp>i686-pc-linux-gnu</samp> (Dual Core <acronym>AMD</acronym> Opteron, <acronym>gcc</acronym> 3.3.5),</li>
+<li><samp>i686-pc-linux-gnu</samp> (Intel Pentium D, <acronym>gcc</acronym> 4.1.2 prerelease),</li>
+<li><samp>ia64-suse-linux-gnu</samp>,</li>
+<li><samp>ia64-unknown-linux-gnu</samp> (Itanium, <acronym>gcc</acronym> 3.2.3 prerelease),</li>
+<li><samp>ia64-unknown-linux-gnu</samp> (<acronym>gcc</acronym> 4.1.1),</li>
+<li><samp>mips-sgi-irix6.5</samp> (MIPSpro 7.3.1.3m),</li>
+<li><samp>powerpc-apple-darwin8.8.0</samp> (PowerPC G5, <acronym>gcc</acronym> 4.0.1),</li>
+<li><samp>powerpc-unknown-linux-gnu</samp> (PowerPC G4, <acronym>gcc</acronym> 4.1.2 prerelease),</li>
+<li><samp>powerpc64-unknown-linux-gnu</samp> (<acronym>gcc</acronym> 4.1.1),</li>
+<li><samp>powerpc64-unknown-linux-gnu</samp> (POWER5, <acronym>gcc</acronym> 4.1.2 prerelease),</li>
+<li><samp>ppc-suse-linux-gnu</samp>,</li>
+<li><samp>ppc64-suse-linux-gnu</samp>,</li>
+<li><samp>s390-suse-linux-gnu</samp>,</li>
+<li><samp>s390x-suse-linux-gnu</samp>,</li>
+<li><samp>sparc-sun-solaris2.7</samp> (UltraSPARC-II, Sun WorkShop 6 2000/04/07 C 5.1),</li>
+<li><samp>sparc-sun-solaris2.8</samp> (<acronym>gcc</acronym> 4.1.1),</li>
+<li><samp>sparc-sun-solaris2.10</samp> (Sun C 5.8 Patch 121015-03 2006/10/18),</li>
+<li><samp>x86_64-solaris2.10</samp> (<acronym>gcc</acronym> 4.1.1),</li>
+<li><samp>x86_64-suse-linux-gnu</samp>,</li>
+<li><samp>x86_64-unknown-linux-gnu</samp> (<acronym>AMD</acronym> Opteron, <acronym>gcc</acronym> 4.1.1),</li>
+<li><samp>Cygwin</samp> (Intel Celeron, <acronym>gcc</acronym> 3.4.2),</li>
+<li><samp>MINGW32_NT-5.1</samp> (Intel Pentium M, <acronym>gcc</acronym> 3.4.2).</li>
+</ul>
+
+<p><a href="../index.html">Back to the <cite><acronym>MPFR</acronym></cite>
+page.</a></p>
+
+<hr />
+
+<div class="footer"><a href="http://validator.w3.org/check/referer"><img
+  src="http://www.w3.org/Icons/valid-xhtml10"
+  alt="Valid XHTML 1.0!" height="31" width="88" /></a></div>
+
+</body>
+
+</html>
