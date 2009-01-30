@@ -1,0 +1,120 @@
+<title>How to contribute to MPFR?</title>
+<h1>How to contribute to MPFR?</h1>
+
+There are several ways to contribute to MPFR:
+<ul>
+<li> contribute a new mathematical function (see below); </li>
+<li> find, report and fix bugs; </li>
+<li> improve the code coverage and/or contribute new test cases; </li>
+<li> improve the documentation; </li>
+<li> measure and improve the efficiency of the code. </li>
+</ul>
+
+<h2>How to contribute a new mathematical function to MPFR?</h2>
+
+Assume you want to write the code, say <tt>mpfr_foo</tt>, for a new
+mathematical function (say <tt>foo</tt>):
+<ul>
+<li> You (or your employeer, depending on your status or your country)
+   first have to agree to donate your contribution to the MPFR project,
+   more precisely to agree with the license used by MPFR, to agree to assign
+   the copyright of your code to the FSF
+   (<a href="http://www.gnu.org/licenses/why-assign.html">this page</a>
+    explains why).
+   In addition, if it applies, your
+   employeer has to agree to disclaim rights on your contribution.
+   You also have to agree on maintaining your contribution in the future.
+   </li>
+
+<p>
+
+<li> You need to define precisely the function you want to implement, in
+   mathematical terms. For example, the <i>dilogarithm</i> function has
+   different
+   meanings in the literature. Use either a power series, an integral
+   representation, ... If possible, give references to the literature. </li>
+
+<p>
+
+<li> Then you need to choose an algorithm to evaluate the function
+   <tt>foo</tt>. Write
+   this algorithm, by detailing each atomic operation. Then you have to perform
+   an error analysis of your algorithm (both the mathematical error, i.e.,
+   when neglecting terms of a Taylor series, and the roundoff error). See for
+   example the
+   <a href="http://www.mpfr.org/algo.html"><tt>algorithms.tex</tt></a>
+   document (<a href="http://mpfr.org/algorithms.pdf">PDF version</a>),
+   which contains numerous examples of
+   such algorithms and error analyses. In some cases, you will need different
+   algorithms depending on the output precision and/or on the input range.
+   Please write this description in LaTeX, so that it can easily be included
+   in the <tt>algorithms.tex</tt> document. </li>
+
+<p>
+
+<li> Implement in C the algorithm(s) described in the previous step.
+   You have to follow
+   the following guidelines:
+   <ul>
+   <li> conform to the ISO C89 and C99 standards; </li>
+   <li> conform to the <a href="http://www.gnu.org/prep/standards/">GNU
+        Coding Standards</a>; </li>
+   <li> do not use machine floating-point types (<tt>double, float, decimalxx,
+        binaryxx</tt>); </li>
+   <li> do not use functions defined in <tt>math.h</tt>,
+        since they might give different results on different
+        configurations; </li>
+   <li> further technical information is available in the <tt>README.dev</tt>
+        file from the MPFR svn repository. </li>
+   </ul>
+   For example use the following to
+   decide if the computed approximation enables one to deduce correct rounding:
+   <br>
+   <tt>MPFR_CAN_ROUND (approx, approx_err, out_prec, rnd_mode)</tt>
+   </li>
+
+<p>
+
+<li> Implement a test program (say <tt>tfoo.c</tt>) which tests your
+   implementation for
+   correctness. This test program should:
+   <ul>
+   <li> test special values (+/-0, +/-Inf, NaN) </li>
+   <li> test exact values, for example exp2(1) = 2, sqrt(25) = 5, ... </li>
+   <li> test hard-coded values that you have computed with another software
+     tool, using a large precision. Please input those values in the same
+     format as in the <tt>tests/data/exp</tt> file for example. Please
+     indicate if those input/output pair were formally verified. </li>
+   <li> test random values : generate a random <i>x</i>, compute
+        <tt>foo(x)</tt> with say <i>p</i> bits,
+     then <tt>foo(x)</tt> with <i>p+10</i> bits, and check both results are
+     compatible.
+     Useful functions that do that automatically are
+     <tt>test_generic(), data_check()</tt> and <tt>bad_cases()</a>. </li>
+   <li> test in-place operations, i.e., with same input and output pointers,
+        like <tt>mpfr_foo (a, a, ...)</tt>. See the <tt>reuse.c</tt> test
+        program.
+    </ul>
+
+<p>
+
+<li> Write the documentation of the <tt>mpfr_foo</tt> function in the file
+   <tt>mpfr.texi</tt>. </li>
+
+<p>
+
+<li> (Optional) Test the efficiency of your implementation and compare it to
+   other software tools. </li>
+
+<p>
+
+<li> Send your contribution as a unified patch (<tt>diff -u</tt>) with respect
+   to the
+   development version to the MPFR developers. They will review your
+   contribution to decide if it will be included in MPFR. In that case your
+   contribution will be acknowledged in the corresponding source files and
+   in the documentation. </li>
+</ul>   
+   
+   
+
