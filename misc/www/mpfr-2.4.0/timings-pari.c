@@ -27,6 +27,15 @@ cputime ()
 }
 #endif
 
+void
+init_pari_version(ulong *major, ulong *minor, ulong *patch) {
+  const ulong mask = (1<<PARI_VERSION_SHIFT) - 1;
+  ulong n = PARI_VERSION_CODE;
+  *patch = n & mask; n >>= PARI_VERSION_SHIFT;
+  *minor = n & mask; n >>= PARI_VERSION_SHIFT;
+  *major = n;
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -34,6 +43,7 @@ main(int argc, char *argv[])
   GEN x, y, z;
   unsigned long ltop;
   unsigned long long_prec;
+  ulong major, minor, patch;
 
   if (argc != 2 && argc != 3) {
     fprintf(stderr, "Usage: timing digits [N]\n"); exit(1);
@@ -42,6 +52,9 @@ main(int argc, char *argv[])
   if (argc==3)  N = atoi(argv[2]);
   prec = (int) ( n * log(10.0) / log(2.0) + 1.0 );
   long_prec = (prec - 1)/BITS_IN_LONG + 3;
+  init_pari_version (&major, &minor, &patch);
+  printf ("%s\n", PARIVERSION);
+  printf ("Version: %d.%d.%d\n", major, minor, patch);
   printf ("Prec=%d LongPrec=%lu\n", prec, long_prec);
 
   pari_init (20000000, 1000); 
