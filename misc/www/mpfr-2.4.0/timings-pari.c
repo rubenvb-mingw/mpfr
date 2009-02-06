@@ -48,7 +48,13 @@ main(int argc, char *argv[])
 
   x = gsqrt(stoi(3), long_prec); x = addsr (-1, x);
   y = gsqrt(stoi(5), long_prec);
-  z = gsqrt(stoi(7), long_prec);
+  /* we do not precompute constants, in order to not disadvantage programs
+     that do not use precomputed constants */
+#if 0
+  (void) mplog2(long_prec+1);
+  (void)   mppi(long_prec+1);
+  (void)mpeuler(long_prec+1);
+#endif
 
   ltop = avma;
 
@@ -72,7 +78,7 @@ main(int argc, char *argv[])
 
   N=1;  st = cputime();
   do {
-    for (i=0;i<N;i++) z = gsqrt (x, long_prec), avma = ltop;
+    for (i=0;i<N;i++) z = sqrtr (x), avma = ltop;
     N=2*N;
     st2=cputime();
   } while (st2-st<1000);
@@ -81,7 +87,7 @@ main(int argc, char *argv[])
 
   N=1;  st = cputime();
   do {
-    for (i=0;i<N;i++) z = gexp (x, long_prec);
+    for (i=0;i<N;i++) z = mpexp (x);
     avma = ltop;
     N=2*N;
     st2=cputime();
@@ -91,7 +97,7 @@ main(int argc, char *argv[])
 
   N=1;  st = cputime();
   do {
-    for (i=0;i<N;i++) z = glog (x, long_prec), avma = ltop;
+    for (i=0;i<N;i++) z = mplog (x), avma = ltop;
     N=2*N;
     st2=cputime();
   } while (st2-st<1000);
@@ -100,7 +106,7 @@ main(int argc, char *argv[])
 
   N=1;  st = cputime();
   do {
-    for (i=0;i<N;i++) z = gsin (x, long_prec), avma = ltop;
+    for (i=0;i<N;i++) z = mpsin (x), avma = ltop;
     N=2*N;
     st2=cputime();
   } while (st2-st<1000);
@@ -109,7 +115,7 @@ main(int argc, char *argv[])
 
   N=1;  st = cputime();
   do {
-    for (i=0;i<N;i++) z = gcos (x, long_prec), avma = ltop;
+    for (i=0;i<N;i++) z = mpcos (x), avma = ltop;
     N=2*N;
     st2=cputime();
   } while (st2-st<1000);
