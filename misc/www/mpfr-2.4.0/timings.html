@@ -50,7 +50,7 @@
 <td>3.2.3</td>
 <td>4.2.2</td>
 <td>2.4.0</td>
-<td>2.3.2</td>
+<td>2.4.2.alpha</td>
 <td>5.4.2</td>
 <td>1.2.2</td>
 <!--td>0.9</td-->
@@ -82,7 +82,8 @@ The version of GCC is 4.2.4 (Ubuntu 4.2.4-1ubuntu3).
 <b>GMP</b> has been built with 
 <a href="http://www.loria.fr/~gaudry/mpn_AMD64/">Gaudry's AMD64 patch</a>.
 <b>MPFR</b> was built with <tt>--with-gmp-build</tt>, and <tt>make tune</tt>.
-<b>PARI</b> and <b>NTL</b> have been built with native support.
+<b>PARI</b> was built with GMP support.
+<b>NTL</b> was built with native support.
 <b>CLN</b> has been built with <b>GMP</b> support and with the
 following <a href="http://www.ginac.de/CLN/cln.git/?h=c706f4b04e208e98248fefc520d284aceaa39494">patch</a>.
 <!-- The <b>mpmath</b> timings were kindly given by Ondrej Certik,
@@ -117,7 +118,7 @@ The boldface entries are the fastest in each row.
 <td>0.00045</td>
 <td>0.00016</td>
 <td>0.00014</td> <!-- MPFR -->
-<td><b>0.00011</b></td>
+<td><b>0.00012</b></td>
 <td>0.000362</td>
 <td>0.000223</td>
 <!--td>0.00843</td-->
@@ -131,7 +132,7 @@ The boldface entries are the fastest in each row.
 <td>0.00074</td>
 <td>0.00051</td>
 <td><b>0.00039</b></td> <!-- MPFR -->
-<td><b>0.00039</b></td>
+<td>0.00040</td>
 <td>0.00072</td>
 <td>0.000567</td>
 <!--td>0.01050</td-->
@@ -145,7 +146,7 @@ The boldface entries are the fastest in each row.
 <td>0.00124</td>
 <td>0.00072</td>
 <td><b>0.00055</b></td> <!-- MPFR -->
-<td>0.00057</td>
+<td>0.00059</td>
 <td>0.00450</td>
 <td>0.00079</td>
 <!--td>0.01544</td-->
@@ -159,7 +160,7 @@ The boldface entries are the fastest in each row.
 <td>0.0103</td>
 <td>na</td>
 <td><b>0.0079</b></td> <!-- MPFR -->
-<td>0.0115</td>
+<td>0.0126</td>
 <td>0.070</td>
 <td>0.0232</td>
 <!--td>0.054</td-->
@@ -173,7 +174,7 @@ The boldface entries are the fastest in each row.
 <td>0.0155</td>
 <td>na</td>
 <td><b>0.0124</b></td> <!-- MPFR -->
-<td>0.0142</td>
+<td>0.0134</td>
 <td>0.388</td>
 <td>0.0305</td>
 <!--td>0.1428</td-->
@@ -187,7 +188,7 @@ The boldface entries are the fastest in each row.
 <td>0.0118</td>
 <td>na</td>
 <td><b>0.0087</b></td> <!-- MPFR -->
-<td>0.0114</td>
+<td>0.0121</td>
 <td>0.075</td>
 <td>0.0283</td>
 <!--td>0.0811</td-->
@@ -201,7 +202,7 @@ The boldface entries are the fastest in each row.
 <td>0.0081</td>
 <td>na</td>
 <td><b>0.0067</b></td> <!-- MPFR -->
-<td>0.0101</td>
+<td>0.0105</td>
 <td>0.081</td>
 <td>0.0249</td>
 <!--td>0.0815</td-->
@@ -215,7 +216,7 @@ The boldface entries are the fastest in each row.
 <td>0.065</td>
 <td>na</td>
 <td>0.061</td> <!-- MPFR -->
-<td><b>0.032</b></td>
+<td><b>0.034</b></td>
 <td>na</td>
 <td>0.036</td>
 <!--td>0.421</td-->
@@ -229,7 +230,7 @@ The boldface entries are the fastest in each row.
 <td>0.057</td>
 <td>na</td>
 <td>0.053</td> <!-- MPFR -->
-<td><b>0.031</b></td>
+<td>0.032</td>
 <td>na</td>
 <td><b>0.031</b></td>
 <!--td>0.516</td-->
@@ -301,7 +302,7 @@ The boldface entries are the fastest in each row.
 <td>0.251</td>
 <td>na</td>
 <td><b>0.243</b></td> <!-- MPFR -->
-<td>0.466</td>
+<td>0.469</td>
 <td>5.92</td>
 <td>0.449</td>
 <!--td>0.456</td-->
@@ -315,7 +316,7 @@ The boldface entries are the fastest in each row.
 <td>0.211</td>
 <td>na</td>
 <td><b>0.203</b></td> <!-- MPFR -->
-<td>0.264</td>
+<td>0.266</td>
 <td>47.74</td>
 <td>0.469</td>
 <!--td>0.905</td-->
@@ -329,7 +330,7 @@ The boldface entries are the fastest in each row.
 <td>0.260</td>
 <td>na</td>
 <td><b>0.254</b></td> <!-- MPFR -->
-<td>0.440</td>
+<td>0.398</td>
 <td>6.67</td>
 <td>0.381</td>
 <!--td>0.793</td-->
@@ -343,7 +344,7 @@ The boldface entries are the fastest in each row.
 <td><b>0.246</b></td>
 <td>na</td>
 <td>0.247</td> <!-- MPFR -->
-<td>0.427</td>
+<td>0.383</td>
 <td>6.94</td>
 <td>0.349</td>
 <!--td>0.790</td-->
@@ -357,7 +358,7 @@ The boldface entries are the fastest in each row.
 <td>0.95</td>
 <td>na</td>
 <td>0.94</td> <!-- MPFR -->
-<td>0.92</td>
+<td>0.94</td>
 <td>na</td>
 <td><b>0.59</b></td>
 <!--td>2.23</td-->
@@ -371,7 +372,7 @@ The boldface entries are the fastest in each row.
 <td>0.86</td>
 <td>na</td>
 <td>0.84</td> <!-- MPFR -->
-<td>0.91</td>
+<td>0.89</td>
 <td>na</td>
 <td><b>0.56</b></td>
 <!--td>2.19</td-->
@@ -402,7 +403,7 @@ The boldface entries are the fastest in each row.
 <td>0.155</td>
 <td>0.172</td>
 <td><b>0.151</b></td> <!-- MPFR -->
-<td>0.173</td>
+<td>0.175</td>
 <td>0.513</td>
 <td>0.222</td>
 <!--td>0.240</td-->
@@ -416,7 +417,7 @@ The boldface entries are the fastest in each row.
 <td>0.373</td>
 <td>0.369</td>
 <td><b>0.364</b></td> <!-- MPFR -->
-<td>0.366</td>
+<td>0.369</td>
 <td>1.662</td>
 <td>0.547</td>
 <!--td>0.488</td-->
@@ -429,8 +430,8 @@ The boldface entries are the fastest in each row.
 <!-- td><b>0.233</b></td--> <!-- Magma -->
 <td>0.236</td>
 <td>0.236</td>
-<td>0.233</td> <!-- MPFR -->
-<td><b>0.232</b></td>
+<td><b>0.233</b></td> <!-- MPFR -->
+<td><b>0.233</b></td>
 <td>20.48</td>
 <td>0.339</td>
 <!--td>0.334</td-->
@@ -458,7 +459,7 @@ The boldface entries are the fastest in each row.
 <td>10.4</td>
 <td>na</td>
 <td><b>10.0</b></td> <!-- MPFR -->
-<td>11.4</td>
+<td>11.3</td>
 <td>16060</td>
 <td>21.1</td>
 <!--td>77.2</td-->
@@ -472,7 +473,7 @@ The boldface entries are the fastest in each row.
 <td>25.7</td>
 <td>na</td>
 <td><b>24.8</b></td> <!-- MPFR -->
-<td>39.7</td>
+<td>33.2</td>
 <td>1670</td>
 <td>31.6</td>
 <!--td>77.6</td-->
@@ -486,7 +487,7 @@ The boldface entries are the fastest in each row.
 <td>25.2</td>
 <td>na</td>
 <td><b>24.4</b></td> <!-- MPFR -->
-<td>39.7</td>
+<td>32.9</td>
 <td>7570</td>
 <td>30.2</td>
 <!--td>76.7</td-->
@@ -500,7 +501,7 @@ The boldface entries are the fastest in each row.
 <td>45.9</td>
 <td>na</td>
 <td>43.9</td> <!-- MPFR -->
-<td>44.5</td>
+<td>44.8</td>
 <td>na</td>
 <td><b>39.7</b></td>
 <!--td>106.3</td-->
