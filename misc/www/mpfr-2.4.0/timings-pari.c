@@ -55,6 +55,9 @@ main(int argc, char *argv[])
   init_pari_version (&major, &minor, &patch);
   printf ("%s\n", PARIVERSION);
   printf ("Version: %d.%d.%d\n", major, minor, patch);
+#ifdef pari_version
+  printf ("Library version: %s\n", pari_version ());
+#endif
   printf ("Prec=%d LongPrec=%lu\n", prec, long_prec);
 
   pari_init (20000000, 1000); 
