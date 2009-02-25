@@ -143,11 +143,11 @@ is given as recommended above) to avoid the unnecessary rebuild of some
 files by additional development tools (not always available).</p></li>
 
 <li id="p2">The <code>mpfr_snprintf</code> and <code>mpfr_vsnprintf</code>
-functions do not behave correctly. Moreover they yield a <strong>buffer
-overflow</strong>: a null byte is written just after the end of the buffer,
-at position <var>n</var>+1, where <var>n</var> is the provided size. This
-bug is fixed in the <a href="patch02"><samp>mpfr_snprintf</samp> patch</a>,
-which also includes testcases.<br />
+functions do not behave correctly. Moreover they can yield a <strong>buffer
+overflow</strong>: a null byte is written one position after the expected
+null byte, which can be just after the end of the buffer. This bug is fixed
+in the <a href="patch02"><samp>mpfr_snprintf</samp> patch</a>, which also
+includes testcases.<br />
 [Changeset: <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6000&amp;root=mpfr&amp;view=rev">6000</a>]</li>
 
 </ol>
