@@ -38,8 +38,8 @@ st:=time(): to N do `evalf/cos/general`(x) od: st:=time()-st:
 evalf(1000*(st-st0)/N, 3);
 
 # evalf/arccos calls evalf(arcsin()) thus we need to forget evalf
-st0:=time(): to N do forget(evalf) od: st0:=time()-st0:
-st:=time(): to N do forget(evalf): `evalf/arccos/general`(x) od: st:=time()-st:
+st0:=time(): to N do subsop(4=NULL,op(evalf)) od: st0:=time()-st0:
+st:=time(): to N do subsop(4=NULL,op(evalf)); `evalf/arccos/general`(x) od: st:=time()-st:
 evalf(1000*(st-st0)/N, 3);
 
 st0:=time(): to N do od: st0:=time()-st0:
@@ -80,8 +80,8 @@ st:=time(): to N do `evalf/cos/general`(x) od: st:=time()-st:
 evalf(1000*(st-st0)/N, 3);
 
 # evalf/arccos calls evalf(arcsin()) thus we need to forget evalf
-st0:=time(): to N do forget(evalf) od: st0:=time()-st0:
-st:=time(): to N do forget(evalf): `evalf/arccos/general`(x) od: st:=time()-st:
+st0:=time(): to N do subsop(4=NULL,op(evalf)) od: st0:=time()-st0:
+st:=time(): to N do subsop(4=NULL,op(evalf)); `evalf/arccos/general`(x) od: st:=time()-st:
 evalf(1000*(st-st0)/N, 3);
 
 st0:=time(): to N do od: st0:=time()-st0:
@@ -122,8 +122,8 @@ st:=time(): to N do `evalf/cos/general`(x) od: st:=time()-st:
 evalf(1000*(st-st0)/N, 3);
 
 # evalf/arccos calls evalf(arcsin()) thus we need to forget evalf
-st0:=time(): to N do forget(evalf) od: st0:=time()-st0:
-st:=time(): to N do forget(evalf): `evalf/arccos/general`(x) od: st:=time()-st:
+st0:=time(): to N do subsop(4=NULL,op(evalf)) od: st0:=time()-st0:
+st:=time(): to N do subsop(4=NULL,op(evalf)); `evalf/arccos/general`(x) od: st:=time()-st:
 evalf(1000*(st-st0)/N, 3);
 
 st0:=time(): to N do od: st0:=time()-st0:
