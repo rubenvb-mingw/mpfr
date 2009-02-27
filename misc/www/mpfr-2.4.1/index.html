@@ -73,7 +73,72 @@ following archive formats:</p>
 
 <h2 id="bugs">Bugs</h2>
 
-<p>See the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php/tags/2.4.1/BUGS?rev=6012&amp;root=mpfr&amp;view=markup"><samp>BUGS</samp></a> file.</p>
+<p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
+update: 2009-02-27). The following instructions are for Linux and may
+be similar for other operating systems. You can apply the patches in
+several ways:</p>
+
+<ul>
+
+<li>Apply the <a href="patches">cumulative patch</a> on the 2.4.1 release
+or a partially patched version with the command
+<pre>patch -N -Z -p1 &lt; <var>path_to_patches_file</var></pre>
+from the source directory. The <samp>-N</samp> option allows the
+<samp>patch</samp> command to ignore patches already applied. The
+<samp>-Z</samp> option sets the modification time of the patched files
+from time stamps given in the patch file, thus avoiding the need of some
+development utilities (such as <cite>autoconf</cite>); this may generate
+a <q>Not setting time</q> warning for the <samp>PATCHES</samp> file, but
+you can safely ignore it. Under Microsoft Windows, in addition to the
+above options, you may need the <samp>--binary</samp> option (this depends
+whether the end-of-lines have been converted when you downloaded the patch
+file). Also note that the <samp>--dry-run</samp> option does not work with
+this cumulative patch.</li>
+
+<li>Or apply the individual patches below.</li>
+
+<li>Or checkout the 2.4 branch from the Subversion repository,
+<abbr>e.g.</abbr> with the command
+<pre>svn co svn://scm.gforge.inria.fr/svn/mpfr/branches/2.4 mpfr-2.4</pre>
+In this case, as said on the <a href="../gforge.html">Gforge page</a>, you
+should read the <samp>README.dev</samp> file for details on how to build
+<acronym>MPFR</acronym>. Also note that the branch may contain additional
+minor fixes.</li>
+
+</ul>
+
+<p>With the first two ways, the <samp>PATCHES</samp> file is modified,
+so that one can know what patches have been applied, using the new
+<samp>mpfr_get_patches</samp> function. Moreover a suffix is added to
+the version string, but note that for practical reasons, not all the
+files where the version appears are patched; thus one can also track
+applied patches with the <code>MPFR_VERSION_STRING</code> macro (header)
+and the <code>mpfr_get_version</code> function (library). However, if
+some patches are not applied or if patches are applied in a different
+order, then the patch command will fail to update some chunks, so that
+the suffix is not always reliable for patches.</p>
+
+<p>Note: These patches are in unified diff format and some vendors'
+<samp>patch</samp> commands cannot deal with them; in this case, please
+use <a href="http://directory.fsf.org/patch.html"><acronym>GNU</acronym>
+patch</a> (it <em>may</em> already be installed on your system, e.g. as
+<samp>/usr/local/bin/patch</samp> or <samp>gpatch</samp>).</p>
+
+<p id="fixed">Fixed bugs:</p>
+
+<ol>
+
+<li id="p1">The remainder functions (<code>mpfr_fmod</code>,
+<code>mpfr_remainder</code> and <code>mpfr_remquo</code>) round
+the result before changing its sign when <var>x</var> is negative.
+The consequence is that in non-symmetric rounding modes
+(<code>GMP_RNDD</code> and <code>GMP_RNDU</code>), the result
+can be rounded in the wrong direction. This bug is fixed in the
+<a href="patch01"><samp>remainder-neg</samp> patch</a>.</li>
+
+</ol>
+
+<p id="unfixed">Other bugs: please see the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php/tags/2.4.1/BUGS?rev=6012&amp;root=mpfr&amp;view=markup"><samp>BUGS</samp></a> file.</p>
 
 <h2 id="changes">Changes from version 2.4.0 to version 2.4.1</h2>
 
