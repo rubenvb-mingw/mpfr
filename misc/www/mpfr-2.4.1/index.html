@@ -140,6 +140,13 @@ is rounded in the wrong direction. This bug is fixed in the
 
 <p id="unfixed">Other bugs: please see the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php/tags/2.4.1/BUGS?rev=6012&amp;root=mpfr&amp;view=markup"><samp>BUGS</samp></a> file.</p>
 
+<p>Note: Under <acronym>HP-UX</acronym>, you may need to install
+<acronym>MPFR</acronym> before running <code>make check</code>. Indeed the
+<cite>libtool</cite> scripts included in the <acronym>MPFR</acronym> tarball
+(based on <cite>libtool</cite> 2.2) seem to have a bug: for the tests, the
+install directory (which may already contain an older <acronym>MPFR</acronym>
+version) has the precedence over the build directory.</p>
+
 <h2 id="changes">Changes from version 2.4.0 to version 2.4.1</h2>
 
 <ul>
