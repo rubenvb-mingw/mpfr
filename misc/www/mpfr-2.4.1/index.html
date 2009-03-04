@@ -74,7 +74,7 @@ following archive formats:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2009-02-27). The following instructions are for Linux and may
+update: 2009-03-04). The following instructions are for Linux and may
 be similar for other operating systems. You can apply the patches in
 several ways:</p>
 
@@ -135,6 +135,10 @@ The consequence is that in non-symmetric rounding modes
 (<code>GMP_RNDD</code> and <code>GMP_RNDU</code>), the result
 is rounded in the wrong direction. This bug is fixed in the
 <a href="patch01"><samp>remainder-neg</samp> patch</a>.</li>
+
+<li id="p2">Assertion failure messages do not mention
+<acronym>MPFR</acronym> explicitly. This is fixed in the
+<a href="patch02"><samp>assert</samp> patch</a>.</li>
 
 </ol>
 
