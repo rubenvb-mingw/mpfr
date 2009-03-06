@@ -1,48 +1,60 @@
-#!/bin/bash
+#!/bin/sh
 # Test coverage using gcov & lcov
 # download lcov  in http://ltp.sourceforge.net/coverage/lcov.php
 #
 # An adaptation of Patrick Pellissier's script in MPFR
 
-if [[ $# -eq 0 ]]; then
-  echo Usage: $0 srcdir [configure_options]
+set -e
+LC_ALL=C
+export LC_ALL
+
+if [ $# -eq 0 ]; then
+  echo "Usage: $0 srcdir [configure_options]"
   exit 1;
 fi
 
-SRC_DIR=$1
+SRC_DIR="$1"
 if [ -z "$PKG" ]; then
   PKG="mpfr"
 fi
-DEST_DIR=/tmp/o$PKG-gcov
+PRE_DEST_DIR="/tmp/o$PKG-$USER-gcov"
+DEST_DIR="$PRE_DEST_DIR/$PKG"
+# Use svnversion instead of "svn info" due to mixed revisions.
+# You may need to do a "svn update" first (see Subversion FAQ
+# and/or "svnversion --help" output for more information).
 if [ -z "$TESTNAME" ]; then
-  TESTNAME=$(cd $SRC_DIR; svn info|sed -n '/Revision: / p');
+  TESTNAME="r$(svnversion "$SRC_DIR")";
 fi
-echo $PKG " " $TESTNAME
+echo "$PKG $TESTNAME"
 
-# First Build MPFR in /tmp/
-echo "Erasing previous " $DEST_DIR
-rm -rf $DEST_DIR
-mkdir $DEST_DIR
+echo "Erasing previous $PRE_DEST_DIR"
+rm -rf "$PRE_DEST_DIR"
+# Security note: it is important to exit if the directory cannot be
+# created as it can already belongs to someone else. In particular,
+# this is done by set -e.
+mkdir "$PRE_DEST_DIR"
 
-echo "Copying "$PKG" sources to "$DEST_DIR
-cp $SRC_DIR/* $DEST_DIR 2>/dev/null
-mkdir $DEST_DIR/tests
-cp $SRC_DIR/tests/* $DEST_DIR/tests
-mkdir $DEST_DIR/tests/data
-cp $SRC_DIR/tests/data/* $DEST_DIR/tests/data
-mkdir $DEST_DIR/m4
-cp $SRC_DIR/m4/* $DEST_DIR/m4
+echo "Copying $PKG sources to $DEST_DIR"
+cd "$SRC_DIR"
+# This is the cleanest way to copy the sources. However the directories
+# are created with 777 permissons (in particular, writing for everyone);
+# that's why $distdir must be a subdirectory of $PRE_DEST_DIR.
+make distdir distdir="$DEST_DIR"
+mkdir "$DEST_DIR/tests/data"
+cp tests/data/* "$DEST_DIR/tests/data"
 
-cd $DEST_DIR
-echo "Building "$PKG
+cd "$DEST_DIR"
+echo "Building $PKG"
 ./configure --enable-assert --disable-shared --enable-static \
   CFLAGS="-fprofile-arcs -ftest-coverage -g"
-make check -j 4
+# Let's ignore errors in "make check".
+make check -j 4 || true
 
 # Then, make html pages
 mkdir html
-lcov -o html/$PKG.capture -t "$TESTNAME" -d . -c
-lcov -o html/$PKG.info -r html/$PKG.capture {*/tests/*,*/gmp/*,abort_prec_max.c}
-genhtml -o html --no-prefix -t "$TESTNAME" html/$PKG.info
+lcov -o "html/$PKG.capture" -t "$TESTNAME" -d . -c
+lcov -o "html/$PKG.info" -r "html/$PKG.capture" \
+  "{*/tests/*,*/gmp/*,abort_prec_max.c}"
+genhtml -o html --no-prefix -t "$TESTNAME" "html/$PKG.info"
 
-echo "See results in "$DEST_DIR"/html/index.html"
+echo "See results in $DEST_DIR/html/index.html"
