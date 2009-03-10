@@ -74,7 +74,7 @@ following archive formats:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2009-03-04). The following instructions are for Linux and may
+update: 2009-03-10). The following instructions are for Linux and may
 be similar for other operating systems. You can apply the patches in
 several ways:</p>
 
@@ -139,6 +139,21 @@ is rounded in the wrong direction. This bug is fixed in the
 <li id="p2">Assertion failure messages do not mention
 <acronym>MPFR</acronym> explicitly. This is fixed in the
 <a href="patch02"><samp>assert</samp> patch</a>.</li>
+
+<li id="p3">In the tests: <a href="patch03">patch adding casts to
+<code>void *</code></a> for <samp>%p</samp> in <code>printf</code>
+format. Most (if not all) C implementations should not be affected
+by these missing casts.</li>
+
+<li id="p4">A type is incorrect in the <samp>vasprintf.c</samp> file.
+In practice, this can make <acronym>MPFR</acronym> crash when the
+<samp>M</samp> specifier (for the formatted output functions) is
+used <em>and</em> a limb does not have the same size as a pointer
+(<abbr>e.g.</abbr> when <acronym>GMP</acronym> has been built with
+<samp>ABI=mode32</samp> on PowerPC G5). This bug is fixed in the
+<a href="patch04"><samp>vasprintf-mp_limb_t</samp> patch</a>.
+Note: the tests from <acronym>MPFR</acronym> 2.4.1 already contain
+a testcase in the <samp>tests/tfprintf.c</samp> file.</li>
 
 </ol>
 
