@@ -74,7 +74,7 @@ following archive formats:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2009-03-10). The following instructions are for Linux and may
+update: 2009-03-13). The following instructions are for Linux and may
 be similar for other operating systems. You can apply the patches in
 several ways:</p>
 
@@ -154,6 +154,14 @@ used <em>and</em> a limb does not have the same size as a pointer
 <a href="patch04"><samp>vasprintf-mp_limb_t</samp> patch</a>.
 Note: the tests from <acronym>MPFR</acronym> 2.4.1 already contain
 a testcase in the <samp>tests/tfprintf.c</samp> file.</li>
+
+<li id="p5">If a limb does not have the same size as an
+<code>unsigned long</code>, a shift count is incorrect in
+<code>mpfr_zeta_ui</code>. In such a case, the practical consequence
+is a possible performance loss. An incorrect result is theoretically
+possible (<abbr>e.g.</abbr> if the compiler optimizes out parts of code
+with undefined behavior), but unlikely in practice. This bug is fixed
+in the <a href="patch05"><samp>zeta_ui-shift</samp> patch</a>.</li>
 
 </ol>
 
