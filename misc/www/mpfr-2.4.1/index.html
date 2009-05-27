@@ -223,6 +223,26 @@ affected too.<br />
 [Changeset:
 <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6214&amp;root=mpfr&amp;view=rev">6214</a>]</li>
 
+<li><samp>&lt;string.h&gt;</samp> is not automatically included when
+building <acronym>MPFR</acronym> with <samp>--with-gmp-build</samp>, though
+it is needed by some files. This may result in incorrect build.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6216&amp;root=mpfr&amp;view=rev">6216</a>]</li>
+
+<li>Various bugs and portability problems in the formatted output functions
+(<samp>mpfr_*printf</samp>). In particular, a buffer overflow is possible
+in some precisions (see
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6112&amp;root=mpfr&amp;view=rev">changeset
+6112</a> from the trunk) and the conversion specifier <samp>G</samp> yields
+incorrect output.<br />
+[Changesets:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6218&amp;root=mpfr&amp;view=rev">6218</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6219&amp;root=mpfr&amp;view=rev">6219</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6221&amp;root=mpfr&amp;view=rev">6221</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6222&amp;root=mpfr&amp;view=rev">6222</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6223&amp;root=mpfr&amp;view=rev">6223</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6224&amp;root=mpfr&amp;view=rev">6224</a>]</li>
+
 </ul>
 
 <p id="unfixed">Other bugs: please see the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php/tags/2.4.1/BUGS?rev=6012&amp;root=mpfr&amp;view=markup"><samp>BUGS</samp></a> file.</p>
