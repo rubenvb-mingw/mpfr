@@ -243,6 +243,17 @@ incorrect output.<br />
 <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6223&amp;root=mpfr&amp;view=rev">6223</a>,
 <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6224&amp;root=mpfr&amp;view=rev">6224</a>]</li>
 
+<li>Major bug in <code>mpfr_fmod</code>, which can return an
+incorrect result, probably frequently. For more information, see the
+<a href="http://thread.gmane.org/gmane.comp.lib.mpfr.general/114">explanations
+by Eric Veach</a>, who reported the bug.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6235&amp;root=mpfr&amp;view=rev">6235</a>]</li>
+
+<li>If <acronym>MPFR</acronym> has been built with decimal support and <code>mpfr_exp_t</code> does not have the same size as a <code>long int</code>, <code>mpfr_get_decimal64</code> can behave incorrectly.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6250&amp;root=mpfr&amp;view=rev">6250</a>]</li>
+
 </ul>
 
 <p id="unfixed">Other bugs: please see the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php/tags/2.4.1/BUGS?rev=6012&amp;root=mpfr&amp;view=markup"><samp>BUGS</samp></a> file.</p>
