@@ -231,9 +231,9 @@ it is needed by some files. This may result in incorrect build.<br />
 
 <li>Various bugs and portability problems in the formatted output functions
 (<samp>mpfr_*printf</samp>). In particular, a buffer overflow is possible
-in some precisions (see
+when the precision field is a multiple of 4096 minus 1 (see
 <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6112&amp;root=mpfr&amp;view=rev">changeset
-6112</a> from the trunk) and the conversion specifier <samp>G</samp> yields
+6112</a> from the trunk), and the conversion specifier <samp>G</samp> yields
 incorrect output.<br />
 [Changesets:
 <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6218&amp;root=mpfr&amp;view=rev">6218</a>,
