@@ -206,6 +206,23 @@ exponent value is too small by one.<br />
 [Changeset:
 <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6204&amp;root=mpfr&amp;view=rev">6204</a>]</li>
 
+<li>When the source and build directories are different, the tests can
+fail if the source directory contains some special words or a comma
+(due to a lack of robustness in the use of the C preprocessor).<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6213&amp;root=mpfr&amp;view=rev">6213</a>]</li>
+
+<li>Function <code>mpfr_atan</code> has the following problems:
+<ul>
+<li>Crash with argument very near to but different from 1.</li>
+<li>In some very particular and extremely reduced exponent range,
+spurious overflow on ±1 and ±Inf.</li>
+</ul>
+Note: <code>mpfr_atan2</code> calls <code>mpfr_atan</code>, thus is
+affected too.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6214&amp;root=mpfr&amp;view=rev">6214</a>]</li>
+
 </ul>
 
 <p id="unfixed">Other bugs: please see the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php/tags/2.4.1/BUGS?rev=6012&amp;root=mpfr&amp;view=markup"><samp>BUGS</samp></a> file.</p>
