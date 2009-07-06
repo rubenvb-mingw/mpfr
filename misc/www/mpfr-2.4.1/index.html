@@ -250,9 +250,28 @@ by Eric Veach</a>, who reported the bug.<br />
 [Changeset:
 <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6235&amp;root=mpfr&amp;view=rev">6235</a>]</li>
 
-<li>If <acronym>MPFR</acronym> has been built with decimal support and <code>mpfr_exp_t</code> does not have the same size as a <code>long int</code>, <code>mpfr_get_decimal64</code> can behave incorrectly.<br />
+<li>If <acronym>MPFR</acronym> has been built with decimal support and
+<code>mpfr_exp_t</code> does not have the same size as a <code>long int</code>,
+<code>mpfr_get_decimal64</code> can behave incorrectly.<br />
 [Changeset:
 <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6250&amp;root=mpfr&amp;view=rev">6250</a>]</li>
+
+<li>The <samp>configure</samp> test <cite><acronym>gcc</acronym>
+float-conversion bug</cite> does not work on some platforms (because of
+aggressive optimizations). The following patch improves the portability.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6273&amp;root=mpfr&amp;view=rev">6273</a>]</li>
+
+<li>[To be completed]
+Other bugs in the formatted output functions (<samp>mpfr_*printf</samp>):
+<samp>%%</samp> in the format string outputs % twice instead of once.
+<samp>%.0Ra</samp>, <samp>%.0Rf</samp> and <samp>%.0Rg</samp> are wrong
+when the value to display is rounded up to the next power of the base.
+For <samp>%Rg</samp> (no explicit precision), the <acronym>MPFR</acronym>
+manual is incorrect.</li>
+<!-- TODO: %Rf change; give the new specifications.
+[Changesets: 6262, 6281, 6284, 6299, 6302, 6304]</li>
+-->
 
 </ul>
 
