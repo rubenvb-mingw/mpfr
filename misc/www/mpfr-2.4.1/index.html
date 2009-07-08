@@ -266,7 +266,7 @@ aggressive optimizations). The following patch improves the portability.<br />
 Other bugs in the formatted output functions (<samp>mpfr_*printf</samp>):
 <samp>%%</samp> in the format string outputs % twice instead of once.
 Output may be wrong when the value to display is rounded up to the next
-power of the base.
+power of the base (not completely fixed yet).
 <samp>%.0Rb</samp> is not supported (the precision is increased to 1).
 For <samp>%Rg</samp> (no explicit precision), the <acronym>MPFR</acronym>
 manual is incorrect.</li>
