@@ -267,6 +267,7 @@ Other bugs in the formatted output functions (<samp>mpfr_*printf</samp>):
 <samp>%%</samp> in the format string outputs % twice instead of once.
 <samp>%.0Ra</samp>, <samp>%.0Rf</samp> and <samp>%.0Rg</samp> are wrong
 when the value to display is rounded up to the next power of the base.
+<samp>%.0Rb</samp> is not supported (the precision is increased to 1).
 For <samp>%Rg</samp> (no explicit precision), the <acronym>MPFR</acronym>
 manual is incorrect.</li>
 <!-- TODO: %Rf change; give the new specifications.
