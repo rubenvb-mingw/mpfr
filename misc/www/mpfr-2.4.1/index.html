@@ -262,17 +262,28 @@ aggressive optimizations). The following patch improves the portability.<br />
 [Changeset:
 <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6273&amp;root=mpfr&amp;view=rev">6273</a>]</li>
 
-<li>[To be completed]
-Other bugs in the formatted output functions (<samp>mpfr_*printf</samp>):
+<li>The function <code>mpfr_coth</code> is wrong on ±0.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6338&amp;root=mpfr&amp;view=rev">6338</a>]</li>
+
+<li>Other bugs in the formatted output functions (<samp>mpfr_*printf</samp>):
 <samp>%%</samp> in the format string outputs % twice instead of once.
 Output may be wrong when the value to display is rounded up to the next
 power of the base (not completely fixed yet).
 <samp>%.0Rb</samp> is not supported (the precision is increased to 1).
 For <samp>%Rg</samp> (no explicit precision), the <acronym>MPFR</acronym>
-manual is incorrect.</li>
-<!-- TODO: %Rf change; give the new specifications.
-[Changesets: 6262, 6281, 6284, 6299, 6302, 6304, 6331]</li>
--->
+manual is incorrect: the default precision is 6.
+<samp>%Rf</samp> (no explicit precision) is not completely specified;
+because this makes more sense, the behavior will change in
+<acronym>MPFR</acronym> 2.4.2, with a default precision equal to 6.<br />
+[Changesets:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6262&amp;root=mpfr&amp;view=rev">6262</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6281&amp;root=mpfr&amp;view=rev">6281</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6284&amp;root=mpfr&amp;view=rev">6284</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6299&amp;root=mpfr&amp;view=rev">6299</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6302&amp;root=mpfr&amp;view=rev">6302</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6304&amp;root=mpfr&amp;view=rev">6304</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6341&amp;root=mpfr&amp;view=rev">6341</a>]</li>
 
 </ul>
 
