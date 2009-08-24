@@ -269,7 +269,7 @@ aggressive optimizations). The following patch improves the portability.<br />
 <li>Other bugs in the formatted output functions (<samp>mpfr_*printf</samp>):
 <samp>%%</samp> in the format string outputs % twice instead of once.
 Output may be wrong when the value to display is rounded up to the next
-power of the base (not completely fixed yet).
+power of the base.
 <samp>%.0Rb</samp> is not supported (the precision is increased to 1).
 For <samp>%Rg</samp> (no explicit precision), the <acronym>MPFR</acronym>
 manual is incorrect: the default precision is 6.
@@ -283,6 +283,7 @@ because this makes more sense, the behavior will change in
 <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6299&amp;root=mpfr&amp;view=rev">6299</a>,
 <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6302&amp;root=mpfr&amp;view=rev">6302</a>,
 <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6304&amp;root=mpfr&amp;view=rev">6304</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6331&amp;root=mpfr&amp;view=rev">6331</a>,
 <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6341&amp;root=mpfr&amp;view=rev">6341</a>]</li>
 
 </ul>
