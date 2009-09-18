@@ -19,7 +19,7 @@ cputime ()
 #include <sys/types.h>
 #include <sys/resource.h>
 
-int
+static int
 cputime ()
 {
   struct rusage rus;
@@ -30,17 +30,21 @@ cputime ()
 #endif
 
 int
-main(int argc, char *argv[])
+main (int argc, char *argv[])
 {
   int n, prec, st, st2, N, i;
   mpfr_t x, y, z;
   
-  if (argc != 2 && argc != 3) {
-    fprintf(stderr, "Usage: timing digits \n"); exit(1);
-  }
+  if (argc != 2 && argc != 3)
+    {
+      fprintf(stderr, "Usage: timing digits \n");
+      exit(1);
+    }
+
+  printf ("Using MPFR-%s with GMP-%s\n", mpfr_version, gmp_version);
   n = atoi(argv[1]);
   prec = (int) ( n * log(10.0) / log(2.0) + 1.0 );
-  printf("prec=%u\n", prec);
+  printf("[precision is %u bits]\n", prec);
  
   mpfr_init2(x, prec); mpfr_init2(y, prec); mpfr_init2(z, prec); 
 
@@ -131,4 +135,5 @@ main(int argc, char *argv[])
          (double)(st2-st)/(N-1),N-1,st2-st);
 
   mpfr_clear(x); mpfr_clear(y); mpfr_clear(z);
+  return 0;
 }
