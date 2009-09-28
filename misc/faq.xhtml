@@ -93,20 +93,21 @@ additional changes will be needed.</p></dd>
 
 <dd><p>This test (<samp>checking for __gmpz_init in -lgmp</samp>) comes
 after the <samp>gmp.h</samp> detection. The failure occurs either because
-the <cite><acronym>GMP</acronym></cite> library could not been found
+the <cite><acronym>GMP</acronym></cite> library could not be found
 (as it is not in the provided library search paths) or because the
 <cite><acronym>GMP</acronym></cite> library that was found does not have
 the expected <acronym title="Application Binary Interface">ABI</acronym>
 (<abbr>e.g.</abbr> 32-bit <abbr>vs</abbr> 64-bit). The latter problem can
 have several causes:</p>
 <ul>
-<li>A wrong library has been picked up. This can occur if you have several
-<cite><acronym>GMP</acronym></cite> versions installed on the machine and
-something is wrong with the provided library search paths.</li>
+<li>A wrong libgmp library has been picked up. This can occur if you have
+several <cite><acronym>GMP</acronym></cite> versions installed on the
+machine and something is wrong with the provided library search paths.</li>
 <li>Wrong compiler options (<samp>CFLAGS</samp>) were given. In general, the
 presence or absence of the <samp>-m64</samp> compiler option must match the
 library <acronym title="Application Binary Interface">ABI</acronym>.</li>
-<li>A wrong <samp>gmp.h</samp> file has been picked up. Indeed, by default,
+<li>A wrong <samp>gmp.h</samp> file has been picked up (if you have several
+<cite><acronym>GMP</acronym></cite> versions installed). Indeed, by default,
 <cite><acronym>MPFR</acronym></cite> gets the compiler options from the
 <samp>gmp.h</samp> file (with <cite><acronym>GMP</acronym></cite> 4.2.3
 or later); this is needed because <cite><acronym>GMP</acronym></cite> does
@@ -117,7 +118,7 @@ will be incorrect. Hence the failure.</li>
 </ul>
 <p>Note: The <samp>config.log</samp> output gives more information
 than the error message. In particular, see the output of the test:
-<samp>checking for CC and CFLAGS in gmp.h</samp>; it should give
+<samp>checking for CC and CFLAGS in gmp.h</samp>; it should give you
 the default compiler options (from <samp>gmp.h</samp>).</p>
 
 <p>See also the answer to the <a href="#undef_ref1">next question</a>.</p></dd>
