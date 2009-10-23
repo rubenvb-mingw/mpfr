@@ -33,11 +33,15 @@
 <p><acronym>MPFR</acronym> 2.4.1 requires <acronym>GMP</acronym> 4.1.0
 or higher (<acronym>GMP</acronym> 4.2.3 or higher is recommended).</p>
 
-<p><strong>Warning! On Solaris, <acronym>GCC</acronym> miscompiles
-<acronym>MPFR</acronym> 2.4.1.</strong> For more information, see this
-<a href="http://gcc.gnu.org/bugzilla/show_bug.cgi?id=40757">bug report</a>,
-in particular
-<a href="http://gcc.gnu.org/bugzilla/show_bug.cgi?id=40757#c26">Comment #26</a>.</p>
+<p><strong>Warning! On Solaris, <acronym>MPFR</acronym> 2.4.1 can be
+miscompiled with <acronym>GCC</acronym>.</strong> This is in fact a
+bug in the Solaris <code>memset</code> function, which has been fixed
+by Sun in October 2009. For more information about this bug, see this
+<a href="http://gcc.gnu.org/bugzilla/show_bug.cgi?id=40757" title="gcc 4.4.0 miscompiles mpfr-2.4.1">bug report</a>
+and this
+<a href="http://groups.google.com/group/sage-devel/browse_thread/thread/75962dd6d45f7ab0" title="sage-devel thread about the Solaris memset bug">thread</a>.
+See also <a href="http://groups.google.com/group/sage-devel/browse_thread/thread/3932945c46d3f536" title="sage-devel thread about the fix of the Solaris memset bug">information
+about the fix</a>.</p>
 
 <h2 id="download">Download</h2>
 
