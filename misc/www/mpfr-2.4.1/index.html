@@ -296,6 +296,69 @@ because this makes more sense, the behavior will change in
 <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6331&amp;root=mpfr&amp;view=rev">6331</a>,
 <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6341&amp;root=mpfr&amp;view=rev">6341</a>]</li>
 
+<li>In <samp>set_ld.c</samp>, a structure triggers the warning
+<q>dereferencing type-punned pointer will break strict-aliasing rules</q>
+with <acronym>GCC</acronym> 4.4 (possibly due to possible memory alignment
+problems). It is now replaced by a union.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6382&amp;root=mpfr&amp;view=rev">6382</a>]</li>
+
+<li>In <samp>tests/tsprintf.c</samp>, a forgotten C99 comment may prevent
+the build of the test suite with very old compilers.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6392&amp;root=mpfr&amp;view=rev">6392</a>]</li>
+
+<li>On Cygwin, the <samp>tsprintf</samp> test fails due to uncommon
+<samp>da_DK</samp> locale definition.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6395&amp;root=mpfr&amp;view=rev">6395</a>]</li>
+
+<li>On MinGW, the compiler complains about <code>wint_t</code> in
+<code>va_arg</code>. This is due to a non-conforming definition of
+<code>wint_t</code>, thus not a bug in <acronym>MPFR</acronym>, but
+the following workaround avoids this problem.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6416&amp;root=mpfr&amp;view=rev">6416</a>]</li>
+
+<li>If the <acronym>MPFR</acronym> configure script detects that
+<code>long double</code> implements the traditional x87 extended precision,
+then the conversion by <code>mpfr_get_ld</code> of a <acronym>MPFR</acronym>
+number corresponding to a subnormal is incorrect.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6422&amp;root=mpfr&amp;view=rev">6422</a>]</li>
+
+<li>The <code>mpfr_frac</code> function can return incorrect results, and
+even results in a bad format.<br />
+[Changesets:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6457&amp;root=mpfr&amp;view=rev">6457</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6468&amp;root=mpfr&amp;view=rev">6468</a>,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6472&amp;root=mpfr&amp;view=rev">6472</a>]</li>
+
+<li>Due to incorrect error analysis, <code>mpfr_sin_cos</code> fails to
+round some cases correctly (rare, except in low precision).<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6531&amp;root=mpfr&amp;view=rev">6531</a>]</li>
+
+<li>Assertion failure in <code>mpfr_cos</code> when the reduced argument
+is zero.<br />
+[Changesets:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6536&amp;root=mpfr&amp;view=rev">6536</a> (fix),
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6542&amp;root=mpfr&amp;view=rev">6542</a> (testcase)]</li>
+
+<li>Possible assertion failure in <code>mpfr_li2</code> when the argument
+is near 0.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6538&amp;root=mpfr&amp;view=rev">6538</a>]</li>
+
+<li>In directed rounding modes, the ternary value returned by
+<code>mpfr_cache</code> can be incorrect (in practice, with a
+probability 1/2). This affects all the constants that use
+<code>mpfr_cache</code> (<code>mpfr_const_catalan</code>,
+<code>mpfr_const_euler</code>, <code>mpfr_const_log2</code>
+and <code>mpfr_const_pi</code>).<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6541&amp;root=mpfr&amp;view=rev">6541</a>]</li>
+
 </ul>
 
 <p id="unfixed">Other bugs: please see the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php/tags/2.4.1/BUGS?rev=6012&amp;root=mpfr&amp;view=markup"><samp>BUGS</samp></a> file.</p>
