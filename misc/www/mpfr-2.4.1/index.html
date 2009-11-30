@@ -361,6 +361,23 @@ and <code>mpfr_const_pi</code>).<br />
 [Changeset:
 <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6541&amp;root=mpfr&amp;view=rev">6541</a>]</li>
 
+<li>The build can fail when <acronym>GCC</acronym> is installed,
+<samp>gmp.h</samp> contains <code>__GMP_CC</code> / <code>__GMP_CFLAGS</code>
+information and <acronym>GMP</acronym> has been compiled with a compiler
+somewhat incompatible with <acronym>GCC</acronym> (this can be the default on
+some machines). The reason is that the <samp>configure</samp> script detects
+<acronym>GCC</acronym> before the compiler from <code>__GMP_CC</code> is chosen
+and does some settings related to <acronym>GCC</acronym> (due to some autoconf
+macro), such as selecting <acronym>GCC</acronym>-specific options.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6581&amp;root=mpfr&amp;view=rev">6581</a>]</li>
+
+<li>When built with <samp>--with-gmp-build</samp>, <acronym>MPFR</acronym>
+can break strict-aliasing rules, yielding undefined behavior. The bug is
+visible with the <acronym>GCC</acronym> 4.5.0 20091119 snapshot.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6601&amp;root=mpfr&amp;view=rev">6601</a>]</li>
+
 </ul>
 
 <p id="unfixed">Other bugs: please see the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php/tags/2.4.1/BUGS?rev=6012&amp;root=mpfr&amp;view=markup"><samp>BUGS</samp></a> file.</p>
