@@ -6,7 +6,7 @@
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>MPFR version 2.4.2</title>
+<title>GNU MPFR version 2.4.2</title>
 <link rel="shortcut icon" href="../favicon.ico" />
 <link rel="stylesheet" type="text/css" href="../styles/screen.css" media="screen,tv,projection" />
 <link rel="stylesheet" type="text/css" href="../styles/print.css" media="print" />
@@ -18,13 +18,132 @@
 
 <div class="logo"><a href="../index.html"><img src="../mpfr100.png" height="40" width="100" alt="[MPFR]" /></a></div>
 
-<h1><acronym>MPFR</acronym> version 2.4.2</h1>
+<h1><acronym>GNU</acronym> <acronym>MPFR</acronym> version 2.4.2
+(released on 30 November 2009)</h1>
 
-<p>On 2009-11-20, <acronym>MPFR</acronym> 2.4.2 is currently under testing.
-It will be released soon.</p>
+<div>[<a href="#download">download</a>]
+[<a href="#doc">documentation</a>]
+[<a href="#bugs">bugs</a>]
+[<a href="#changes">changes</a>]
+[<a href="#platforms">platforms</a>]
+[<a href="../mpfr-2.4.0/timings.html" title="Comparison of other software to MPFR 2.4.0">timings of 2.4.0</a>]</div>
 
-<p><a href="../index.html">Back to the <cite><acronym>MPFR</acronym></cite>
-page.</a></p>
+<p>The <em lang="fr" xml:lang="fr">andouillette sauce moutarde</em> release,
+patch level 2.</p>
+
+<p><acronym>MPFR</acronym> 2.4.2 requires <acronym>GMP</acronym> 4.1.0
+or higher (<acronym>GMP</acronym> 4.2.3 or higher is recommended).</p>
+
+<p><strong>Warning! On Solaris, <acronym>MPFR</acronym> 2.4.2 can be
+miscompiled with <acronym>GCC</acronym>.</strong> This is in fact a
+bug in the Solaris <code>memset</code> function, which has been fixed
+by Sun in October 2009. For more information about this bug, see this
+<a href="http://gcc.gnu.org/bugzilla/show_bug.cgi?id=40757" title="gcc 4.4.0 miscompiles mpfr-2.4.1">bug report</a>
+and this
+<a href="http://groups.google.com/group/sage-devel/browse_thread/thread/75962dd6d45f7ab0" title="sage-devel thread about the Solaris memset bug">thread</a>.
+See also <a href="http://groups.google.com/group/sage-devel/browse_thread/thread/3932945c46d3f536" title="sage-devel thread about the fix of the Solaris memset bug">information
+about the fix</a>.</p>
+
+<h2 id="download">Download</h2>
+
+<p>The <acronym>MPFR</acronym> 2.4.2 source can be downloaded in the
+following archive formats:</p>
+<ul>
+<li><a href="mpfr-2.4.2.tar.xz">mpfr-2.4.2.tar.xz</a>
+(tar/xz, 930 <abbr>KB</abbr>,
+<a href="mpfr-2.4.2.tar.xz.asc" title="PGP signature for mpfr-2.4.2.tar.xz">signature</a>),</li>
+<li><a href="mpfr-2.4.2.tar.bz2">mpfr-2.4.2.tar.bz2</a>
+(tar/bzip2, 1.1 <abbr>MB</abbr>,
+<a href="mpfr-2.4.2.tar.bz2.asc" title="PGP signature for mpfr-2.4.2.tar.bz2">signature</a>),</li>
+<li><a href="mpfr-2.4.2.tar.gz">mpfr-2.4.2.tar.gz</a>
+(tar/gzip, 1.4 <abbr>MB</abbr>,
+<a href="mpfr-2.4.2.tar.gz.asc" title="PGP signature for mpfr-2.4.2.tar.gz">signature</a>),</li>
+<li><a href="mpfr-2.4.2.zip">mpfr-2.4.2.zip</a>
+(zip, 1.7 <abbr>MB</abbr>,
+<a href="mpfr-2.4.2.zip.asc" title="PGP signature for mpfr-2.4.2.zip">signature</a>).</li>
+</ul>
+
+<p><acronym>MPFR</acronym> is also available via
+<a href="../ports.html">third-party packages and ports</a>.</p>
+
+<h2 id="doc">Documentation</h2>
+
+<ul>
+
+<li>The reference manual:
+[<a href="mpfr.html" title="Reference manual in HTML format">html</a>]
+[<a href="mpfr.dvi.gz" title="Reference manual in DVI format">dvi</a>]
+[<a href="mpfr.ps.gz" title="Reference manual in Postscript format">ps</a>]
+[<a href="mpfr.pdf" title="Reference manual in PDF format">pdf</a>]</li>
+
+<li>The <a href="../faq.html"><acronym>MPFR</acronym>
+<acronym title="Frequently Asked Questions">FAQ</acronym></a>
+(common to all <acronym>MPFR</acronym> versions).</li>
+
+</ul>
+
+<h2 id="bugs">Bugs</h2>
+
+<p>See the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php/tags/2.4.2/BUGS?rev=6605&amp;root=mpfr&amp;view=markup"><samp>BUGS</samp></a> file.</p>
+
+<h2 id="changes">Changes from version 2.4.1 to version 2.4.2</h2>
+
+<ul>
+
+<li>Security fix in formatted output functions (buffer overflow).</li>
+
+<li>Formatted output functions: 6 is now the default value for
+empty precision field with <samp>%Rf</samp>.</li>
+
+<li>Better portability of <samp>configure</samp> script.</li>
+
+<li>Detection of <code>intmax_t</code> and <code>uintmax_t</code> types.</li>
+
+<li>Improved documentation: <code>mpfr_get_z_exp</code>,
+<code>mpfr_strtofr</code>, <code>mpfr_get_str</code> and
+formatted output functions.</li>
+
+<li>Improved message in case of assertion failure.</li>
+
+<li>Updated <code>tcmp_ld</code> test to really test the
+<code>long double</code>.</li>
+
+<li>Some documentation files are installed in <samp>$docdir</samp>.</li>
+
+<li>Removed <code>mpfr_init_cache</code> (unused and undocumented
+function).</li>
+
+<li>Fixed the way <samp>$CC</samp> / <samp>$CFLAGS</samp> are got from
+<samp>gmp.h</samp> (<code>__GMP_CC</code> / <code>__GMP_CFLAGS</code>).</li>
+
+<li>Bug fixes.</li>
+
+<li>Also note that <acronym>GCC</acronym> 4.4.0 (only this obsolete
+version) does not build <acronym>MPFR</acronym> 2.4.2 correctly;
+this is detected by <q><samp>make check</samp></q> (failures in
+<samp>tget_z</samp> and <samp>tpow_all</samp>).</li>
+
+</ul>
+
+<p><a href="../mpfr-2.4.1/index.html#changes">Changes in <acronym>MPFR</acronym> 2.4.1</a>.</p>
+
+<h2 id="platforms">Platforms Known to Support <acronym>MPFR</acronym></h2>
+
+<p><acronym>MPFR</acronym> 2.4.2 has been successfully
+compiled and checked on the following platforms:</p>
+
+<ul>
+<li><samp>armv6l-unknown-linux-gnueabi</samp> (OMAP 2420 ARMv6-compatible processor rev 2, <acronym>gcc</acronym> 3.4.4),</li>
+<li><samp>hppa2.0w-hp-hpux11.11</samp> (HP C/HP-UX Version B.11.11.16),</li>
+<li><samp>i386-pc-solaris2.10</samp> (Sun C 5.9 SunOS_i386 Patch 124868-10 2009/04/30),</li>
+<li><samp>i686-pc-linux-gnu</samp> (<acronym>gcc</acronym> 4.1.2 and <acronym>icc</acronym> 11.0),</li>
+<li><samp>ia64-unknown-linux-gnu</samp> (Itanium, <acronym>gcc</acronym> 4.1.2 and <acronym>icc</acronym> 10.1 and 11.0),</li>
+<li><samp>powerpc-apple-darwin8.11.0</samp> (PowerPC G5, <acronym>gcc</acronym> 4.0.1, 32 and 64 bits),</li>
+<li><samp>powerpc-unknown-linux-gnu</samp> (PowerPC G4, <acronym>gcc</acronym> 4.3.4),</li>
+<li><samp>x86_64-unknown-linux-gnu</samp> (<acronym>gcc</acronym> and g++ 4.3.4, <acronym>gcc</acronym> 4.5 snapshot, <acronym>opencc</acronym> 4.1, and <acronym>icc</acronym> 11.0).</li>
+</ul>
+
+<p><a href="../index.html">Back to the <acronym>MPFR</acronym> page.</a></p>
 
 <hr />
 
