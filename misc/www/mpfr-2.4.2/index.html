@@ -84,7 +84,84 @@ following archive formats:</p>
 
 <h2 id="bugs">Bugs</h2>
 
-<p>See the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php/tags/2.4.2/BUGS?rev=6606&amp;root=mpfr&amp;view=markup"><samp>BUGS</samp></a> file.</p>
+<p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
+update: 2009-12-07). The patches are distributed under the same license as
+this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
+Lesser General Public License (<acronym>GNU</acronym> Lesser
+<acronym>GPL</acronym>), version 2.1 or later. Note that patches
+from the trunk (<em>not</em> listed on this page) are under the
+<acronym>GNU</acronym> Lesser <acronym>GPL</acronym> version 3 or
+later, thus may be backported <em>only</em> by the authors or the
+<acronym title="Free Software Foundation">FSF</acronym> without
+a license upgrade.</p>
+
+<p>The following instructions are for Linux and may be similar for
+other operating systems. You can apply the patches in several ways:</p>
+
+<ul>
+
+<li>Apply the <a href="patches">cumulative patch</a> on the 2.4.2 release
+or a partially patched version with the command
+<pre>patch -N -Z -p1 &lt; <var>path_to_patches_file</var></pre>
+from the source directory. The <samp>-N</samp> option allows the
+<samp>patch</samp> command to ignore patches already applied. The
+<samp>-Z</samp> option sets the modification time of the patched files
+from time stamps given in the patch file, thus avoiding the need of some
+development utilities (such as <cite>autoconf</cite>); this may generate
+a <q>Not setting time</q> warning for the <samp>PATCHES</samp> file, but
+you can safely ignore it. Under Microsoft Windows, in addition to the
+above options, you may need the <samp>--binary</samp> option (this depends
+whether the end-of-lines have been converted when you downloaded the patch
+file). Also note that the <samp>--dry-run</samp> option does not work with
+this cumulative patch.</li>
+
+<li>Or apply the individual patches below.</li>
+
+<li>Or checkout the 2.4 branch from the Subversion repository,
+<abbr>e.g.</abbr> with the command
+<pre>svn co svn://scm.gforge.inria.fr/svn/mpfr/branches/2.4 mpfr-2.4</pre>
+In this case, as said on the <a href="../gforge.html">Gforge page</a>, you
+should read the <samp>README.dev</samp> file for details on how to build
+<acronym>MPFR</acronym>. Also note that the branch may contain additional
+minor fixes.</li>
+
+</ul>
+
+<p>With the first two ways, the <samp>PATCHES</samp> file is modified,
+so that one can know what patches have been applied, using the new
+<samp>mpfr_get_patches</samp> function. Moreover a suffix is added to
+the version string, but note that for practical reasons, not all the
+files where the version appears are patched; thus one can also track
+applied patches with the <code>MPFR_VERSION_STRING</code> macro (header)
+and the <code>mpfr_get_version</code> function (library). However, if
+some patches are not applied or if patches are applied in a different
+order, then the patch command will fail to update some chunks, so that
+the suffix is not always reliable for patches.</p>
+
+<p>Note: These patches are in unified diff format and some vendors'
+<samp>patch</samp> commands cannot deal with them; in this case, please
+use <a href="http://directory.fsf.org/patch.html"><acronym>GNU</acronym>
+patch</a> (it <em>may</em> already be installed on your system, e.g. as
+<samp>/usr/local/bin/patch</samp> or <samp>gpatch</samp>).</p>
+
+<p id="fixed">Fixed bugs:</p>
+
+<ol>
+
+<li id="p1">If the <code>mpfr_sin_cos</code> function is called on
+the minimum positive number or its opposite allowed by the current
+<acronym>MPFR</acronym> implementation (in the largest exponent range)
+and the rounding mode is toward zero or equivalent, then an underflow
+occurs but the underflow flag is not set. This bug in fixed by the
+<a href="patch01"><samp>sin_cos_underflow</samp> patch</a> (which also
+provides additional tests of <code>mpfr_sin_cos</code> to trigger this
+bug).<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6629&amp;root=mpfr&amp;view=rev">6629</a>]</li>
+
+</ol>
+
+<p id="unfixed">Other bugs: please see the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php/tags/2.4.2/BUGS?rev=6606&amp;root=mpfr&amp;view=markup"><samp>BUGS</samp></a> file.</p>
 
 <h2 id="changes">Changes from version 2.4.1 to version 2.4.2</h2>
 
