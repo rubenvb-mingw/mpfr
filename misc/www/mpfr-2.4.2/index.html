@@ -34,6 +34,13 @@ patch level 2.</p>
 <p><acronym>MPFR</acronym> 2.4.2 requires <acronym>GMP</acronym> 4.1.0
 or higher (<acronym>GMP</acronym> 4.2.3 or higher is recommended).</p>
 
+<p><strong>Warning! <acronym>GCC</acronym> 4.4.0 miscompiles
+<acronym>MPFR</acronym> 2.4.2.</strong> This is detected by
+<q><samp>make check</samp></q> (failures in <samp>tget_z</samp>
+and <samp>tpow_all</samp>). Please use a different compiler;
+note that only <acronym>GCC</acronym> 4.4.0 is affected; the
+bug has been fixed in <acronym>GCC</acronym> 4.4.1.</p>
+
 <p><strong>Warning! On Solaris, <acronym>MPFR</acronym> 2.4.2 can be
 miscompiled with <acronym>GCC</acronym>.</strong> This is in fact a
 bug in the Solaris <code>memset</code> function, which has been fixed
