@@ -92,7 +92,7 @@ following archive formats:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2009-12-07). The patches are distributed under the same license as
+update: 2009-12-18). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 2.1 or later. Note that patches
@@ -165,6 +165,16 @@ provides additional tests of <code>mpfr_sin_cos</code> to trigger this
 bug).<br />
 [Changeset:
 <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6629&amp;root=mpfr&amp;view=rev">6629</a>]</li>
+
+<li id="p2">Due to a <a href="http://gcc.gnu.org/gcc-4.4/changes.html">change
+in <acronym>GCC</acronym> 4.4 internals</a> for <acronym>MIPS</acronym>, the
+<acronym>MPFR</acronym> build fails on <acronym>MIPS</acronym> processors
+with <acronym>GCC</acronym> 4.4 and later.
+The <a href="patch02"><samp>longlong.h</samp> patch</a> (written
+by <a href="http://www.aurel32.net/">Aurélien Jarno</a>) solves
+this problem.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6638&amp;root=mpfr&amp;view=rev">6638</a>]</li>
 
 </ol>
 
