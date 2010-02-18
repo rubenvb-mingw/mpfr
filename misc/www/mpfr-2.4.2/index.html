@@ -189,12 +189,50 @@ solves this problem.<br />
 
 <p id="unfixed">Other bugs: please see the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php/tags/2.4.2/BUGS?rev=6606&amp;root=mpfr&amp;view=markup"><samp>BUGS</samp></a> file.</p>
 
-<p>Note: due to a bug in libtool 2.2.6, used to generate the scripts in the
+<p>Other problems, which are not <acronym>MPFR</acronym> bugs:</p>
+
+<ul>
+
+<li>Due to a bug in libtool 2.2.6, used to generate the scripts in the
 <acronym>MPFR</acronym> 2.4.2 tarball, useless checks for C++ and Fortran
 compilers are done. The only consequence should be that the configure step
 can be a bit longer. A freeze or failure because of such checks would be
 due to a broken installation of C++ and Fortran compilers. These checks
-have now completely been removed in the 2.4 branch (and the trunk).</p>
+have now completely been removed in the 2.4 branch (and the trunk).</li>
+
+<li>On some platforms, the build of C++ programs using both
+<acronym>MPFR</acronym> and <a href="http://www.boost.org/">Boost</a> can
+fail with Boost 1.42 and above, because the types <code>intmax_t</code>
+and <code>uintmax_t</code> are not defined. This is due to a heuristic
+used by <acronym>MPFR</acronym> (in the <samp>mpfr.h</samp> header file)
+to guess whether <samp>&lt;stdint.h&gt;</samp> has been included or not.
+As this heuristic may fail with some C++ libraries, it will be disabled
+for C++ compilers in <acronym>MPFR</acronym> 3. In the mean time, several
+workarounds can be used to avoid this problem:
+<ul>
+<li>Include <samp>mpfr.h</samp> <em>before</em> C++ library headers
+(not after).</li>
+<li>Define the types <code>intmax_t</code> and <code>uintmax_t</code>
+before <samp>mpfr.h</samp> is included. As Boost defines them in the
+<samp>std</samp> namespace, this can be done with:
+<pre>
+using std::intmax_t;
+using std::uintmax_t;
+</pre>
+but make sure that Boost headers (or <samp>&lt;cstdint&gt;</samp> if
+your platform has it) are included before.</li>
+<li>A global change: modify <samp>mpfr.h</samp> to disable the heuristic
+for C++ compilers (<em>not recommended</em> now, as this introduces an
+<acronym title="Application Program Interface">API</acronym> change with
+such compilers).</li>
+</ul>
+You can read the
+<a href="http://websympa.loria.fr/wwsympa/arc/mpfr/2010-02/msg00010.html">full
+discussion on the <acronym>MPFR</acronym> mailing-list</a> or
+<a href="http://thread.gmane.org/gmane.comp.lib.mpfr.general/669">on
+the Gmane mirror</a>.</li>
+
+</ul>
 
 <h2 id="changes">Changes from version 2.4.1 to version 2.4.2</h2>
 
