@@ -206,9 +206,10 @@ fail with Boost 1.42 and above, because the types <code>intmax_t</code>
 and <code>uintmax_t</code> are not defined. This is due to a heuristic
 used by <acronym>MPFR</acronym> (in the <samp>mpfr.h</samp> header file)
 to guess whether <samp>&lt;stdint.h&gt;</samp> has been included or not.
-As this heuristic may fail with some C++ libraries, it will be disabled
-for C++ compilers in <acronym>MPFR</acronym> 3. In the mean time, several
-workarounds can be used to avoid this problem:
+As this heuristic may fail with some C++ libraries,
+<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=6699&amp;root=mpfr&amp;view=rev">it
+will be disabled for C++ compilers in <acronym>MPFR</acronym> 3</a>. In
+the mean time, several workarounds can be used to avoid this problem:
 <ul>
 <li>Include <samp>mpfr.h</samp> <em>before</em> C++ library headers
 (not after).</li>
