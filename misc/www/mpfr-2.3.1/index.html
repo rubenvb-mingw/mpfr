@@ -154,7 +154,7 @@ branch) are given for the reference.</p>
 
 <!--
   Update with:
-    perl -pi -e '/\[Changesets?:/ && s! (\d+)!\n<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=\1">\1</a>!g' index.html
+    perl -pi -e '/\[Changesets?:/ && s! (\d+)!\n<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=\1">\1</a>!g' index.html
 -->
 
 <li>Functions <code>mpfr_pow_ui</code>, <code>mpfr_pow_si</code> and
@@ -162,7 +162,7 @@ branch) are given for the reference.</p>
 instead of 1 (as documented, <acronym>MPFR</acronym>'s power functions are
 based on the specifications of the <acronym>ISO</acronym> C99 standard).<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5426">5426</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=5426">5426</a>]</li>
 
 <li>Underflow bug in function <code>mpfr_div</code>, which returns
 +2<sup>emin&minus;1</sup> (<abbr>resp.</abbr> &minus;2<sup>emin&minus;1</sup>)
@@ -171,8 +171,8 @@ the rounded result in unbounded exponent range is ±2<sup>emin&minus;2</sup>
 and the corresponding ternary value is positive (<abbr>resp.</abbr>
 negative).<br />
 [Changesets:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5518">5518</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5520">5520</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=5518">5518</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=5520">5520</a>]</li>
 
 <li>Underflow bug due to double-rounding in functions
 <code>mpfr_mul_2si</code>, <code>mpfr_div_2si</code> and
@@ -182,7 +182,7 @@ instead of +2<sup>emin&minus;1</sup> (<abbr>resp.</abbr>
 result in unbounded exponent range is ±2<sup>emin&minus;2</sup> and the
 corresponding ternary value is negative (<abbr>resp.</abbr> positive).<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5521">5521</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=5521">5521</a>]</li>
 
 <li>Function <code>mpfr_exp</code> has the following problems:
 <ul>
@@ -204,13 +204,13 @@ used in very high precisions.</li>
 <li>Overflow/underflow detection/handling is incorrect.</li>
 </ul>
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5526">5526</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=5526">5526</a>]</li>
 
 <li>In <code>mpfr_pow_si</code>, Ziv's iteration is done in a linear way
 (old code) instead of the common way. This means a noticeable performance
 loss in very special cases.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5529">5529</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=5529">5529</a>]</li>
 
 <li>The overflow flag can be lost in many functions called with the maximum
 exponent equal to <code>MPFR_EMAX_MAX</code> (this is the default on 32-bit
@@ -218,7 +218,7 @@ platforms, but not on 64-bit platforms) when the temporary result (in a
 higher precision) is representable but once rounded, it yields an overflow.
 Most code is very unlikely to be affected by this bug.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5546">5546</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=5546">5546</a>]</li>
 
 <li><acronym>MPFR</acronym>'s  power functions (<code>mpfr_pow</code>,
 <code>mpfr_pow_ui</code>, <code>mpfr_pow_si</code>, <code>mpfr_pow_z</code>)
@@ -231,8 +231,8 @@ first;</li>
 possible spurious exceptions in case of internal overflow/underflow).</li>
 </ul>
 [Changesets:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5558">5558</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5562">5562</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=5558">5558</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=5562">5562</a>]</li>
 
 <li>Function <code>mpfr_hypot</code> has the following problems:
 <ul>
@@ -242,16 +242,16 @@ internal underflow);</li>
 <li>in case of overflow, the overflow flag is not always set.</li>
 </ul>
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5568">5568</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=5568">5568</a>]</li>
 
 <li>Possible assertion failure in the power functions, that can occur
 in case of intermediate underflow or overflow.
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5622">5622</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=5622">5622</a>]</li>
 
 </ul>
 
-<p id="unfixed">Other bugs: please see the <a href="https://gforge.inria.fr/scm/viewvc.php/tags/2.3.1/BUGS?view=markup&root=mpfr&pathrev=5233"><samp>BUGS</samp></a> file.</p>
+<p id="unfixed">Other bugs: please see the <a href="https://gforge.inria.fr/scm/viewvc.php/tags/2.3.1/BUGS?view=markup&amp;root=mpfr&amp;pathrev=5233"><samp>BUGS</samp></a> file.</p>
 
 <h2 id="changes">Changes from version 2.3.0 to version 2.3.1</h2>
 

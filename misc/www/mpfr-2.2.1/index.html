@@ -192,7 +192,7 @@ above patches.</li>
 <li>Some error bounds are underestimated in the proof for various functions.
 In rare cases, this may lead to a slightly inaccurate result, but it is not
 known if such cases exist. This bug has been fixed in the trunk
-(<a href="https://gforge.inria.fr/scm/viewvc.php/trunk/?view=rev&root=mpfr&revision=4372">changeset 4372</a>).</li>
+(<a href="https://gforge.inria.fr/scm/viewvc.php/trunk/?view=rev&amp;root=mpfr&amp;revision=4372">changeset 4372</a>).</li>
 
 <li>The <code>mpfr_fma</code> function behaves incorrectly if the
 multiplication overflows or underflows (in the current exponent range).</li>
@@ -218,9 +218,9 @@ of a bug in a <acronym>gcc</acronym>-specific optimization.</li>
 <li>On some inputs, the <code>mpfr_div</code> function returns an
 incorrect value, which is not normalized (this can lead to an assertion
 failure, or perhaps even a memory corruption). This bug is
-<a href="https://gforge.inria.fr/scm/viewvc.php/trunk/div.c?root=mpfr&r1=4350&r2=4530&pathrev=4530">fixed
+<a href="https://gforge.inria.fr/scm/viewvc.php/trunk/div.c?root=mpfr&amp;r1=4350&amp;r2=4530&amp;pathrev=4530">fixed
 in the trunk</a>. See the
-<a href="https://gforge.inria.fr/scm/viewvc.php/trunk/tests/tdiv.c?root=mpfr&r1=4532&r2=4350&pathrev=4350">corresponding
+<a href="https://gforge.inria.fr/scm/viewvc.php/trunk/tests/tdiv.c?root=mpfr&amp;r1=4532&amp;r2=4350&amp;pathrev=4350">corresponding
 tests</a>.</li>
 
 <li>The <code>mpfr_div</code> function returns an incorrectly rounded result
@@ -228,15 +228,15 @@ in case of underflow or overflow when the quotient is negative and the
 rounding mode is either <code>GMP_RNDD</code> or <code>GMP_RNDU</code>.</li>
 
 <li>Assertion failure in <code>mpfr_log</code> on some data (see
-<a href="https://gforge.inria.fr/scm/viewvc.php/trunk/tests/tlog.c?root=mpfr&r1=4701&r2=4736&pathrev=4736">testcase</a>).
+<a href="https://gforge.inria.fr/scm/viewvc.php/trunk/tests/tlog.c?root=mpfr&amp;r1=4701&amp;r2=4736&amp;pathrev=4736">testcase</a>).
 This is
-<a href="https://gforge.inria.fr/scm/viewvc.php/trunk/log.c?root=mpfr&r1=4350&r2=4738&pathrev=4738">fixed
+<a href="https://gforge.inria.fr/scm/viewvc.php/trunk/log.c?root=mpfr&amp;r1=4350&amp;r2=4738&amp;pathrev=4738">fixed
 in the trunk</a>.</li>
 
 <li>Assertion failure in <code>mpfr_asinh</code> on some data (see
-<a href="https://gforge.inria.fr/scm/viewvc.php/trunk/tests/tasinh.c?root=mpfr&r1=4701&r2=4741&pathrev=4741">testcase</a>).
+<a href="https://gforge.inria.fr/scm/viewvc.php/trunk/tests/tasinh.c?root=mpfr&amp;r1=4701&amp;r2=4741&amp;pathrev=4741">testcase</a>).
 This is
-<a href="https://gforge.inria.fr/scm/viewvc.php/trunk/asinh.c?root=mpfr&r1=4468&r2=4742&pathrev=4742">fixed
+<a href="https://gforge.inria.fr/scm/viewvc.php/trunk/asinh.c?root=mpfr&amp;r1=4468&amp;r2=4742&amp;pathrev=4742">fixed
 in the trunk</a>.</li>
 
 </ul>

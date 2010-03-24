@@ -199,33 +199,33 @@ branch) are given for the reference.</p>
 
 <!--
   Update with:
-    perl -pi -e '/\[Changesets?:/ && s! (\d+)!\n<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=\1">\1</a>!g' index.html
+    perl -pi -e '/\[Changesets?:/ && s! (\d+)!\n<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=\1">\1</a>!g' index.html
 -->
 
 <li>Use of non-portable shell constructs can make <samp>configure</samp>
 fail, <abbr>e.g.</abbr> on HP-UX.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6127">6127</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6127">6127</a>]</li>
 
 <li>A test in <samp>texp.c</samp> is incorrect: a spurious test failure
 occurs if the user sets <code>MPFR_EXP_THRESHOLD</code> to a very small
 value in <samp>mparam.h</samp> (<abbr>e.g.</abbr> by tuning
 <acronym>MPFR</acronym>).<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6198">6198</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6198">6198</a>]</li>
 
 <li>On platforms where <code>long double</code> corresponds to the x87
 extended-precision format, <code>mpfr_get_ld</code> does not correctly
 handle the subnormal range (possible assertion failure) and the maximum
 exponent value is too small by one.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6204">6204</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6204">6204</a>]</li>
 
 <li>When the source and build directories are different, the tests can
 fail if the source directory contains some special words or a comma
 (due to a lack of robustness in the use of the C preprocessor).<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6213">6213</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6213">6213</a>]</li>
 
 <li>Function <code>mpfr_atan</code> has the following problems:
 <ul>
@@ -236,50 +236,50 @@ spurious overflow on ±1 and ±Inf.</li>
 Note: <code>mpfr_atan2</code> calls <code>mpfr_atan</code>, thus is
 affected too.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6214">6214</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6214">6214</a>]</li>
 
 <li><samp>&lt;string.h&gt;</samp> is not automatically included when
 building <acronym>MPFR</acronym> with <samp>--with-gmp-build</samp>, though
 it is needed by some files. This may result in incorrect build.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6216">6216</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6216">6216</a>]</li>
 
 <li>Various bugs and portability problems in the formatted output functions
 (<samp>mpfr_*printf</samp>). In particular, a buffer overflow is possible
 when the precision field is a multiple of 4096 minus 1 (see
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6112">changeset
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6112">changeset
 6112</a> from the trunk), and the conversion specifier <samp>G</samp> yields
 incorrect output.<br />
 [Changesets:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6218">6218</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6219">6219</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6221">6221</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6222">6222</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6223">6223</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6224">6224</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6218">6218</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6219">6219</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6221">6221</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6222">6222</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6223">6223</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6224">6224</a>]</li>
 
 <li>Major bug in <code>mpfr_fmod</code>, which can return an
 incorrect result, probably frequently. For more information, see the
 <a href="http://thread.gmane.org/gmane.comp.lib.mpfr.general/114">explanations
 by Eric Veach</a>, who reported the bug.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6235">6235</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6235">6235</a>]</li>
 
 <li>If <acronym>MPFR</acronym> has been built with decimal support and
 <code>mpfr_exp_t</code> does not have the same size as a <code>long int</code>,
 <code>mpfr_get_decimal64</code> can behave incorrectly.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6250">6250</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6250">6250</a>]</li>
 
 <li>The <samp>configure</samp> test <cite><acronym>gcc</acronym>
 float-conversion bug</cite> does not work on some platforms (because of
 aggressive optimizations). The following patch improves the portability.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6273">6273</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6273">6273</a>]</li>
 
 <li>The function <code>mpfr_coth</code> is wrong on ±0.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6338">6338</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6338">6338</a>]</li>
 
 <li>Other bugs in the formatted output functions (<samp>mpfr_*printf</samp>):
 <samp>%%</samp> in the format string outputs % twice instead of once.
@@ -292,69 +292,69 @@ manual is incorrect: the default precision is 6.
 because this makes more sense, the behavior will change in
 <acronym>MPFR</acronym> 2.4.2, with a default precision equal to 6.<br />
 [Changesets:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6262">6262</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6281">6281</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6284">6284</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6299">6299</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6302">6302</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6304">6304</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6331">6331</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6341">6341</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6262">6262</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6281">6281</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6284">6284</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6299">6299</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6302">6302</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6304">6304</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6331">6331</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6341">6341</a>]</li>
 
 <li>In <samp>set_ld.c</samp>, a structure triggers the warning
 <q>dereferencing type-punned pointer will break strict-aliasing rules</q>
 with <acronym>GCC</acronym> 4.4 (possibly due to possible memory alignment
 problems). It is now replaced by a union.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6382">6382</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6382">6382</a>]</li>
 
 <li>In <samp>tests/tsprintf.c</samp>, a forgotten C99 comment may prevent
 the build of the test suite with very old compilers.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6392">6392</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6392">6392</a>]</li>
 
 <li>On Cygwin, the <samp>tsprintf</samp> test fails due to uncommon
 <samp>da_DK</samp> locale definition.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6395">6395</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6395">6395</a>]</li>
 
 <li>On MinGW, the compiler complains about <code>wint_t</code> in
 <code>va_arg</code>. This is due to a non-conforming definition of
 <code>wint_t</code>, thus not a bug in <acronym>MPFR</acronym>, but
 the following workaround avoids this problem.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6416">6416</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6416">6416</a>]</li>
 
 <li>If the <acronym>MPFR</acronym> configure script detects that
 <code>long double</code> implements the traditional x87 extended precision,
 then the conversion by <code>mpfr_get_ld</code> of a <acronym>MPFR</acronym>
 number corresponding to a subnormal is incorrect.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6422">6422</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6422">6422</a>]</li>
 
 <li>The <code>mpfr_frac</code> function can return incorrect results, and
 even results in a bad format.<br />
 [Changesets:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6457">6457</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6468">6468</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6472">6472</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6457">6457</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6468">6468</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6472">6472</a>]</li>
 
 <li>Due to incorrect error analysis, <code>mpfr_sin_cos</code> fails to
 round some cases correctly (rare, except in low precision).<br />
 [Changesets:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6531">6531</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6558">6558</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6531">6531</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6558">6558</a>]</li>
 
 <li>Assertion failure in <code>mpfr_cos</code> when the reduced argument
 is zero.<br />
 [Changesets:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6536">6536</a> (fix),
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6542">6542</a> (testcase)]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6536">6536</a> (fix),
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6542">6542</a> (testcase)]</li>
 
 <li>Possible assertion failure in <code>mpfr_li2</code> when the argument
 is near 0.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6538">6538</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6538">6538</a>]</li>
 
 <li>In directed rounding modes, the ternary value returned by
 <code>mpfr_cache</code> can be incorrect (in practice, with a
@@ -363,7 +363,7 @@ probability 1/2). This affects all the constants that use
 <code>mpfr_const_euler</code>, <code>mpfr_const_log2</code>
 and <code>mpfr_const_pi</code>).<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6541">6541</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6541">6541</a>]</li>
 
 <li>The build can fail when <acronym>GCC</acronym> is installed,
 <samp>gmp.h</samp> contains <code>__GMP_CC</code> / <code>__GMP_CFLAGS</code>
@@ -374,17 +374,17 @@ some machines). The reason is that the <samp>configure</samp> script detects
 and does some settings related to <acronym>GCC</acronym> (due to some autoconf
 macro), such as selecting <acronym>GCC</acronym>-specific options.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6581">6581</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6581">6581</a>]</li>
 
 <li>When built with <samp>--with-gmp-build</samp>, <acronym>MPFR</acronym>
 can break strict-aliasing rules, yielding undefined behavior. The bug is
 visible with the <acronym>GCC</acronym> 4.5.0 20091119 snapshot.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=6601">6601</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6601">6601</a>]</li>
 
 </ul>
 
-<p id="unfixed">Other bugs: please see the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/scm/viewvc.php/tags/2.4.1/BUGS?view=markup&root=mpfr&pathrev=6012"><samp>BUGS</samp></a> file.</p>
+<p id="unfixed">Other bugs: please see the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/scm/viewvc.php/tags/2.4.1/BUGS?view=markup&amp;root=mpfr&amp;pathrev=6012"><samp>BUGS</samp></a> file.</p>
 
 <p>Note: Under <acronym>HP-UX</acronym>, you may need to install
 <acronym>MPFR</acronym> before running <code>make check</code>. Indeed the
