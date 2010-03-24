@@ -175,32 +175,32 @@ than 1 is probably incorrect (a small term was missing in the error
 analysis); it has been rewritten, using a much simpler formula, which
 also makes this case much faster.<br />
 [Changesets:
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4958&amp;root=mpfr&amp;view=rev">4958</a>,
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4976&amp;root=mpfr&amp;view=rev">4976</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=4958">4958</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=4976">4976</a>]</li>
 
 <li>The <code>mpfr_sin_cos</code> function can return an incorrect result
 if the input pointer and the pointer for the cosine are equal. Moreover,
 it can be very slow on very small inputs.<br />
 [Changesets:
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4962&amp;root=mpfr&amp;view=rev">4962</a>,
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5096&amp;root=mpfr&amp;view=rev">5096</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=4962">4962</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5096">5096</a>]</li>
 
 <li>The global inexact flag is not set by the <code>mpfr_sqrt</code>
 function when the result is inexact, and this function can yield
 an assertion failure in an exponent range that does not contain
 the value 1 (thus, very unlikely in practice).<br />
 [Changeset:
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4963&amp;root=mpfr&amp;view=rev">4963</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=4963">4963</a>]</li>
 
 <li>The global inexact flag is not set by the <code>mpfr_sqr</code>
 function when the result is inexact.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4964&amp;root=mpfr&amp;view=rev">4964</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=4964">4964</a>]</li>
 
 <li>The <code>mpfr_sin</code> function can fail in a reduced exponent
 range.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4965&amp;root=mpfr&amp;view=rev">4965</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=4965">4965</a>]</li>
 
 <li>Several bugs in the gamma-related functions:
 <ul>
@@ -212,12 +212,12 @@ loop on tiny inputs.</li>
 on 64-bit machines.</li>
 </ul>
 [Changeset:
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4967&amp;root=mpfr&amp;view=rev">4967</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=4967">4967</a>]</li>
 
 <li>The <code>mpfr_erfc</code> function is very inefficient on large
 negative numbers.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4968&amp;root=mpfr&amp;view=rev">4968</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=4968">4968</a>]</li>
 
 <li>The <code>mpfr_zeta</code> function is incorrect on large negative
 numbers (due to an internal overflow): the ternary value is wrong
@@ -225,27 +225,27 @@ numbers (due to an internal overflow): the ternary value is wrong
 <code>GMP_RNDU</code> rounding mode (-Inf instead of the largest
 negative number).<br />
 [Changeset:
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4970&amp;root=mpfr&amp;view=rev">4970</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=4970">4970</a>]</li>
 
 <li>The <code>mpfr_mul</code> function reads uninitialized memory (but
 allocated). Unless <acronym>MPFR</acronym> has been built with some tool
 that does such a check (such as <cite>valgrind</cite>), this bug should
 have no effect in practice.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4971&amp;root=mpfr&amp;view=rev">4971</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=4971">4971</a>]</li>
 
 <li>The <code>mpfr_div_ui</code> function applied on (±0, non-zero) does
 not set the sign of the null result (this bug will not appear if the user
 calls <code>mpfr_div_ui(x, x, ...)</code>, <abbr>i.e.</abbr> if the input
 and output pointers are equal).<br />
 [Changeset:
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4972&amp;root=mpfr&amp;view=rev">4972</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=4972">4972</a>]</li>
 
 <li>The <code>mpfr_j0</code> function applied on a large negative number
 and the <code>mpfr_jn</code> function applied on (even integer, large
 negative number) return a result with a wrong sign.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4983&amp;root=mpfr&amp;view=rev">4983</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=4983">4983</a>]</li>
 
 <li>The internal functions in <samp>isqrt.c</samp> can return an incorrect
 result or have undefined behavior on large values. In practice, with the
@@ -253,12 +253,12 @@ current use of these functions by <acronym>MPFR</acronym>, this bug should
 have no effect, except on the efficiency of <code>mpfr_cos</code>, which
 can slightly be affected.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4992&amp;root=mpfr&amp;view=rev">4992</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=4992">4992</a>]</li>
 
 <li>The <code>mpfr_asin</code> function applied on ±0 does not set the sign
 of the null result.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5098&amp;root=mpfr&amp;view=rev">5098</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5098">5098</a>]</li>
 
 <li>The power-related functions can return incorrect results on various
 special values or in case of exceptions. If the <code>mpfr_y1</code>
@@ -267,39 +267,39 @@ called with the overflow flag set, it can yield a spurious overflow. If
 the <code>mpfr_cot</code> function is called with the underflow flag set,
 it can yield an assertion failure.<br />
 [Changesets:
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4975&amp;root=mpfr&amp;view=rev">4975</a>,
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=4977&amp;root=mpfr&amp;view=rev">4977</a>,
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5094&amp;root=mpfr&amp;view=rev">5094</a>,
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5109&amp;root=mpfr&amp;view=rev">5109</a>,
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5111&amp;root=mpfr&amp;view=rev">5111</a>,
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5128&amp;root=mpfr&amp;view=rev">5128</a>,
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5130&amp;root=mpfr&amp;view=rev">5130</a>]<br />
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=4975">4975</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=4977">4977</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5094">5094</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5109">5109</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5111">5111</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5128">5128</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5130">5130</a>]<br />
 If the <code>mpfr_sec</code>, <code>mpfr_csc</code>, <code>mpfr_cot</code>,
 <code>mpfr_sech</code>, <code>mpfr_csch</code> and <code>mpfr_coth</code>
 functions are called with the overflow flag set, they can return an
 incorrect result (spurious overflow).<br />
 [Changesets:
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5155&amp;root=mpfr&amp;view=rev">5155</a>,
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5156&amp;root=mpfr&amp;view=rev">5156</a>,
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5158&amp;root=mpfr&amp;view=rev">5158</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5155">5155</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5156">5156</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5158">5158</a>]</li>
 
 <li>The <code>mpfr_gamma</code> function can return a result with a
 wrong sign (negative instead of positive) in case of underflow with
 a positive value, <abbr>e.g.</abbr> on -1000000001.5 in the default
 exponent range.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5162&amp;root=mpfr&amp;view=rev">5162</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5162">5162</a>]</li>
 
 <li>The <code>mpfr_strtofr</code> documentation is ambiguous and the code
 does not match the documentation on some particular points.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5174&amp;root=mpfr&amp;view=rev">5174</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5174">5174</a>]</li>
 
 <li><acronym>MPFR</acronym> can crash in some high precisions, due to
 limited stack.<br />
 [Changesets:
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5192&amp;root=mpfr&amp;view=rev">5192</a>,
-<a href="https://gforge.inria.fr/plugins/scmsvn/viewcvs.php?rev=5206&amp;root=mpfr&amp;view=rev">5206</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5192">5192</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&root=mpfr&revision=5206">5206</a>]</li>
 
 </ul>
 
