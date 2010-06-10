@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Run this script on the list of tarballs to prepare the FTP upload
+# to ftp.gnu.org. See:
+#   http://www.gnu.org/prep/maintain/maintain.html#Automated-FTP-Uploads
+
+set -e
+for i in $@
+do
+  gpg -b "$i"
+  dir="$i.directive"
+  printf "version: 1.1\ndirectory: mpfr\nfilename: %s\n" "$i" > "$dir"
+  gpg --clearsign "$dir"
+  rm -f "$dir"
+done
