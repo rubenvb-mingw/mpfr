@@ -18,10 +18,192 @@
 
 <div class="logo"><a href="../index.html"><img src="../mpfr100.png" height="40" width="100" alt="[MPFR]" /></a></div>
 
-<h1><acronym>GNU</acronym> <acronym>MPFR</acronym> version 3.0.0</h1>
+<h1><acronym>GNU</acronym> <acronym>MPFR</acronym> version 3.0.0
+(released on 10 June 2010)</h1>
 
-<p>On 2010-05-24, <acronym>MPFR</acronym> 3.0.0 is currently under testing.
-It will be released soon.</p>
+<div>[<a href="#download">download</a>]
+[<a href="#doc">documentation</a>]
+[<a href="#bugs">bugs</a>]
+[<a href="#changes">changes</a>]
+[<a href="#platforms">platforms</a>]</div>
+
+<p>The <cite lang="fr" xml:lang="fr">boudin aux pommes</cite> release.</p>
+
+<p><acronym>MPFR</acronym> 3.0.0 requires <acronym>GMP</acronym> 4.1.0
+or higher (<acronym>GMP</acronym> 4.2.3 or higher is recommended).</p>
+
+<h2 id="download">Download</h2>
+
+<p>The <acronym>MPFR</acronym> 3.0.0 source can be downloaded in the
+following archive formats:</p>
+<ul>
+<li><a href="mpfr-3.0.0.tar.xz">mpfr-3.0.0.tar.xz</a>
+(tar/xz, 978 <abbr>KB</abbr>,
+<a href="mpfr-3.0.0.tar.xz.asc" title="PGP signature for mpfr-3.0.0.tar.xz">signature</a>),</li>
+<li><a href="mpfr-3.0.0.tar.bz2">mpfr-3.0.0.tar.bz2</a>
+(tar/bzip2, 1.1 <abbr>MB</abbr>,
+<a href="mpfr-3.0.0.tar.bz2.asc" title="PGP signature for mpfr-3.0.0.tar.bz2">signature</a>),</li>
+<li><a href="mpfr-3.0.0.tar.gz">mpfr-3.0.0.tar.gz</a>
+(tar/gzip, 1.4 <abbr>MB</abbr>,
+<a href="mpfr-3.0.0.tar.gz.asc" title="PGP signature for mpfr-3.0.0.tar.gz">signature</a>),</li>
+<li><a href="mpfr-3.0.0.zip">mpfr-3.0.0.zip</a>
+(zip, 1.8 <abbr>MB</abbr>,
+<a href="mpfr-3.0.0.zip.asc" title="PGP signature for mpfr-3.0.0.zip">signature</a>).</li>
+</ul>
+
+<p><acronym>MPFR</acronym> is also available via
+<a href="../ports.html">third-party packages and ports</a>.</p>
+
+<h2 id="doc">Documentation</h2>
+
+<ul>
+
+<li>The reference manual:
+[<a href="mpfr.html" title="Reference manual in HTML format">html</a>]
+[<a href="mpfr.dvi.gz" title="Reference manual in DVI format">dvi</a>]
+[<a href="mpfr.ps.gz" title="Reference manual in Postscript format">ps</a>]
+[<a href="mpfr.pdf" title="Reference manual in PDF format">pdf</a>]</li>
+
+<li>The <a href="../faq.html"><acronym>MPFR</acronym>
+<acronym title="Frequently Asked Questions">FAQ</acronym></a>
+(common to all <acronym>MPFR</acronym> versions).</li>
+
+</ul>
+
+<h2 id="bugs">Bugs</h2>
+
+<!-- For BUGS, it's better to point to HEAD, as changes will be noted above. -->
+<p>See the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/scm/viewvc.php/trunk/BUGS?view=markup&amp;root=mpfr"><samp>BUGS</samp></a> file.</p>
+
+<h2 id="changes">Changes from versions 2.4.* to version 3.0.0</h2>
+
+<ul>
+
+<li><acronym>MPFR</acronym> 3.0.0 is binary incompatible with previous versions
+but (almost) <acronym title="Application Program Interface">API</acronym>
+compatible. More precisely the obsolete functions <code>mpfr_random</code>
+and <code>mpfr_random2</code> have been removed, the meaning of the return
+type of the function <code>mpfr_get_f</code> has changed, and the return type
+of the function <code>mpfr_get_z</code> is now <code>int</code> instead of
+<code>void</code>. In practice, this should not break any existing code.</li>
+
+<li><acronym>MPFR</acronym> is now distributed under the
+<a href="http://www.gnu.org/licenses/lgpl-3.0.html"><acronym>GNU</acronym>
+Lesser General Public License version 3</a> or later
+(<acronym title="Lesser General Public License">LGPL</acronym> v3+).</li>
+
+<li>Rounding modes <samp>GMP_RND<em>x</em></samp> are now
+<samp>MPFR_RND<em>x</em></samp> (<samp>GMP_RND<em>x</em></samp>
+kept for compatibility).</li>
+
+<li>A new rounding mode (<code>MPFR_RNDA</code>) is available to round away
+from zero.</li>
+
+<li>The rounding mode type is now <code>mpfr_rnd_t</code> (as in previous
+versions, both <code>mpfr_rnd_t</code> and <code>mp_rnd_t</code> are
+accepted, but <code>mp_rnd_t</code> may be removed in the future).</li>
+
+<li>The precision type is now <code>mpfr_prec_t</code> (as in previous
+versions, both <code>mpfr_prec_t</code> and <code>mp_prec_t</code> are
+accepted, but <code>mp_prec_t</code> may be removed in the future) and
+it is now signed (it was unsigned in <acronym>MPFR</acronym> 2.*, but
+this was not documented). In practice, this change should not affect
+existing code that assumed nothing on the precision type.</li>
+
+<li><acronym>MPFR</acronym> now has its own exponent type
+<code>mpfr_exp_t</code>, which is currently the same as
+<acronym>GMP</acronym>'s <code>mp_exp_t</code>.</li>
+
+<li>Functions <code>mpfr_random</code> and <code>mpfr_random2</code>
+have been removed.</li>
+
+<li><code>mpfr_get_f</code> and <code>mpfr_get_z</code> now return a
+ternary value.</li>
+
+<li><code>mpfr_strtofr</code> now accepts bases from 37 to 62.</li>
+
+<li><code>mpfr_custom_get_mantissa</code> was renamed to
+<code>mpfr_custom_get_significand</code>
+(<code>mpfr_custom_get_mantissa</code> is still available
+via a <code>#define</code>).</li>
+
+<li>Functions <code>mpfr_get_si</code>, <code>mpfr_get_ui</code>,
+<code>mpfr_get_sj</code>, <code>mpfr_get_uj</code>, <code>mpfr_get_z</code>
+and <code>mpfr_get_z_2exp</code> no longer have cases with undefined
+behavior; in these cases, the behavior is now specified, and in
+particular, the <em>erange</em> flag is set.</li>
+
+<li>New functions <code>mpfr_buildopt_tls_p</code> and
+<code>mpfr_buildopt_decimal_p</code> giving information
+about options used at <acronym>MPFR</acronym> build time.</li>
+
+<li>New function <code>mpfr_regular_p</code>.</li>
+
+<li>New function <code>mpfr_set_zero</code>.</li>
+
+<li>New function <code>mpfr_digamma</code>.</li>
+
+<li>New function <code>mpfr_ai</code> (incomplete, experimental).</li>
+
+<li>New functions <code>mpfr_set_flt</code> and <code>mpfr_get_flt</code>
+to convert from/to the <code>float</code> type.</li>
+
+<li>New function <code>mpfr_urandom</code>.</li>
+
+<li>New function <code>mpfr_set_z_2exp</code> (companion to
+<code>mpfr_get_z_2exp</code>, which was renamed from
+<code>mpfr_get_z_exp</code> in previous versions).</li>
+
+<li>Speed improvement for large operands in the trigonometric functions
+(<code>mpfr_sin</code>, <code>mpfr_cos</code>, <code>mpfr_tan</code>,
+<code>mpfr_sin_cos</code>): speedup of about 2.5 for 10<sup>5</sup> digits,
+of about 5 for 10<sup>6</sup> digits.</li>
+
+<li>Speed improvement for large operands of the inverse trigonometric
+functions (<code>arcsin</code>, <code>arccos</code>, <code>arctan</code>):
+about 2 for 10<sup>3</sup> digits, up to 2.7 for 10<sup>6</sup> digits.</li>
+
+<li>Some documentation files are installed in <samp>$docdir</samp>.</li>
+
+<li>The detection of a <acronym>GMP</acronym> build directory (more
+precisely, the internal header files of <acronym>GMP</acronym>) was
+previously done separately from the use of the <samp>--with-gmp-build</samp>
+configure option. This was not consistent with the documentation and with
+other parts of the configure script. So, as of <acronym>MPFR</acronym> 3.0.0,
+the internal header files of <acronym>GMP</acronym> are now used if and only
+if the <samp>--with-gmp-build</samp> configure option is given.</li>
+
+<li>The <samp>configure</samp> script recognizes some extra
+<code>long double</code> formats (double big endian, double little endian,
+double-double big endian).</li>
+
+<li><acronym>MPFR</acronym> manual: added <cite>API Compatibility</cite>
+section.</li>
+
+<li>Test coverage: 97.1% lines of code.</li>
+
+<li>Bug fixes.</li>
+
+</ul>
+
+<h2 id="platforms">Platforms Known to Support <cite><acronym>MPFR</acronym></cite></h2>
+
+<p><cite><acronym>MPFR</acronym></cite> 3.0.0 has been successfully
+compiled and checked on the following platforms:</p>
+
+<ul>
+<li><samp>armv5tel-unknown-linux-gnueabi</samp> (<acronym>gcc</acronym> 4.1.2),</li>
+<li><samp>armv6l-unknown-linux-gnueabi</samp> (<acronym>gcc</acronym> 3.4.4),</li>
+<li><samp>armv7l-unknown-linux-gnueabi</samp> (<acronym>gcc</acronym> 4.4.1),</li>
+<li><samp>i386-pc-solaris2.10</samp> (Sun C 5.8 Patch 121016-08 2009/04/20 and Sun C 5.9 SunOS_i386 Patch 124868-10 2009/04/30),</li>
+<li><samp>i686-pc-linux-gnu</samp> (<acronym>gcc</acronym> 4.1.2, and <acronym>icc</acronym> 11.0),</li>
+<li><samp>ia64-unknown-linux-gnu</samp> (<acronym>gcc</acronym> 4.3.2),</li>
+<li><samp>mips64el-unknown-linux-gnu</samp> (<acronym>gcc</acronym> 4.3.2),</li>
+<li><samp>powerpc-apple-darwin8.11.0</samp> (PowerPC G5, <acronym>gcc</acronym> 4.0.1, 32 and 64 bits),</li>
+<li><samp>powerpc-unknown-linux-gnu</samp> (PowerPC G4, <acronym>gcc</acronym> 4.4.3),</li>
+<li><samp>x86_64-unknown-freebsd8.0</samp> (<acronym>gcc</acronym> 4.2.1),</li>
+<li><samp>x86_64-unknown-linux-gnu</samp> (<acronym>gcc</acronym> 4.3.2, 4.4.3, 4.4.4 and 4.6 snapshot, g++ 4.4.4, <acronym>opencc</acronym> 4.1, <acronym>llvm-gcc</acronym> 4.2.1, and <acronym>icc</acronym> 11.0).</li>
+</ul>
 
 <p><a href="../index.html">Back to the <cite><acronym>MPFR</acronym></cite>
 page.</a></p>
