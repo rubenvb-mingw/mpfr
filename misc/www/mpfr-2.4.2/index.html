@@ -34,6 +34,12 @@ patch level 2.</p>
 <p><acronym>MPFR</acronym> 2.4.2 requires <acronym>GMP</acronym> 4.1.0
 or higher (<acronym>GMP</acronym> 4.2.3 or higher is recommended).</p>
 
+<p>This is the latest version of the 2.4 branch, which is no longer supported
+(major bugs will be fixed for some time as patches only). Please upgrade to
+<acronym>MPFR</acronym> 3.0.0 (or higher, when new versions are released):
+<a href="http://www.mpfr.org/mpfr-current/">latest <acronym>MPFR</acronym>
+release</a>.</p>
+
 <p><strong>Warning! <acronym>GCC</acronym> 4.4.0 miscompiles
 <acronym>MPFR</acronym> 2.4.2.</strong> This is detected by
 <q><samp>make check</samp></q> (failures in <samp>tget_z</samp>
@@ -186,6 +192,12 @@ solves this problem.<br />
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6651">6651</a>]</li>
 
 </ol>
+
+<p>The internal <code>mpfr_exp_2</code> function, called by
+<code>mpfr_exp</code> when the target precision is less than some
+threshold, can suffer from a buffer overflow.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6956">6956</a>]</p>
 
 <p id="unfixed">Other bugs: please see the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/scm/viewvc.php/tags/2.4.2/BUGS?view=markup&amp;root=mpfr&amp;pathrev=6606"><samp>BUGS</samp></a> file.</p>
 
