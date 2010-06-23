@@ -193,11 +193,29 @@ solves this problem.<br />
 
 </ol>
 
-<p>The internal <code>mpfr_exp_2</code> function, called by
+<p>Bugs that are fixed in the 2.4 or 3.0 branch:</p>
+
+<ul>
+
+<!--
+  Update with:
+    perl -pi -e '/\[Changesets?:/ && s! (\d+)!\n<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=\1">\1</a>!g' index.html
+-->
+
+<li>The internal <code>mpfr_exp_2</code> function, called by
 <code>mpfr_exp</code> when the target precision is less than some
 threshold, can suffer from a buffer overflow.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6956">6956</a>]</p>
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6956">6956</a>]</li>
+
+<li>The integer value returned by the <code>mpfr_out_str</code>
+function is incorrect on NaN and infinities. Moreover output errors
+are not handled, and if such an error occurs, the return value is
+incorrect (it should have been 0).<br />
+[Changeset:
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6980">6980</a>]</li>
+
+</ul>
 
 <p id="unfixed">Other bugs: please see the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/scm/viewvc.php/tags/2.4.2/BUGS?view=markup&amp;root=mpfr&amp;pathrev=6606"><samp>BUGS</samp></a> file.</p>
 
