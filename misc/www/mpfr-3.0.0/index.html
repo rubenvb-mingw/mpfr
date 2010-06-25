@@ -73,7 +73,7 @@ following archive formats:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2010-06-23). The patches are distributed under the same license as
+update: 2010-06-25). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -137,6 +137,15 @@ are not handled, and if such an error occurs, the return value is
 incorrect (it should have been 0). These bugs are fixed by the
 <a href="patch01"><samp>mpfr_out_str</samp> patch</a> (which also
 provides additional tests of <code>mpfr_out_str</code>).</li>
+
+<li id="p2">On some environments such as Solaris with Sun's compiler,
+<acronym>MPFR</acronym> is not built correctly; this can be seen
+with <samp>make check</samp>, where a typical error is the symbol
+<samp>alloca</samp> being undefined. The real reason of this failure is
+that <code>HAVE_ALLOCA_H</code> is not defined. This problem has been
+introduced in <acronym>MPFR</acronym> 3.0.0 (but older versions may fail
+too when the <samp>--with-gmp-build</samp> configure option is used).
+It is fixed in the <a href="patch02"><samp>alloca</samp> patch</a>.</li>
 
 </ol>
 
