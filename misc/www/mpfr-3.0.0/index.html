@@ -73,7 +73,7 @@ following archive formats:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2010-06-25). The patches are distributed under the same license as
+update: 2010-07-10). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -145,6 +145,11 @@ with <samp>make check</samp>, where a typical error is the symbol
 that <code>HAVE_ALLOCA_H</code> is not defined. This problem has been
 introduced in <acronym>MPFR</acronym> 3.0.0.
 It is fixed in the <a href="patch02"><samp>alloca</samp> patch</a>.</li>
+
+<li id="p3">The underflow detection in <code>mpfr_gamma</code> is incorrect.
+A possible consequence is that the function can freeze. This bug is fixed
+by the <a href="patch03"><samp>gamma_underflow</samp> patch</a> (which also
+provides a testcase for 32-bit machines).</li>
 
 </ol>
 
