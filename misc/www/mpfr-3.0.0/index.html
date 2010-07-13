@@ -156,6 +156,8 @@ provides a testcase for 32-bit machines).</li>
 <!-- For BUGS, it's better to point to HEAD, as changes will be noted above. -->
 <p id="unfixed">Other bugs: please see the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/scm/viewvc.php/trunk/BUGS?view=markup&amp;root=mpfr"><samp>BUGS</samp></a> file.</p>
 
+<p>Note: if you are trying to build <acronym>GCC</acronym> and get the error <q>header files gmp-impl.h and longlong.h not found</q>, please look at <a href="http://gcc.gnu.org/bugzilla/show_bug.cgi?id=44455" title="GCC fails to build if MPFR 3.0.0 (Release Candidate) is used"><acronym>GCC</acronym> bug 44455</a>. This problem is a consequence of a <a href="#gmp-build">correction in the detection of a <acronym>GMP</acronym> build directory</a>.</p>
+
 <h2 id="changes">Changes from versions 2.4.* to version 3.0.0</h2>
 
 <ul>
@@ -246,8 +248,8 @@ about 2 for 10<sup>3</sup> digits, up to 2.7 for 10<sup>6</sup> digits.</li>
 
 <li>Some documentation files are installed in <samp>$docdir</samp>.</li>
 
-<li>The detection of a <acronym>GMP</acronym> build directory (more
-precisely, the internal header files of <acronym>GMP</acronym>) was
+<li id="gmp-build">The detection of a <acronym>GMP</acronym> build directory
+(more precisely, the internal header files of <acronym>GMP</acronym>) was
 previously done separately from the use of the <samp>--with-gmp-build</samp>
 configure option. This was not consistent with the documentation and with
 other parts of the configure script. So, as of <acronym>MPFR</acronym> 3.0.0,
