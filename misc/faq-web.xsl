@@ -22,6 +22,14 @@
             doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
             indent="no"/>
 
+<xsl:template match="/">
+  <xsl:comment>
+    Do not modify directly! Regenerate this file with:
+      xsltproc -\-nodtdattr faq-web.xsl faq.xhtml
+  </xsl:comment>
+  <xsl:apply-templates/>
+</xsl:template>
+
 <xsl:template match="processing-instruction('questions')">
   <ol>&nl;
     <xsl:for-each select="following-sibling::h:dl[@class = 'faq']/h:dt">
