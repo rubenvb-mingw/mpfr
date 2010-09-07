@@ -73,7 +73,7 @@ following archive formats:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2010-07-10). The patches are distributed under the same license as
+update: 2010-09-07). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -150,6 +150,32 @@ It is fixed in the <a href="patch02"><samp>alloca</samp> patch</a>.</li>
 A possible consequence is that the function can freeze. This bug is fixed
 by the <a href="patch03"><samp>gamma_underflow</samp> patch</a> (which also
 provides a testcase for 32-bit machines).</li>
+
+<li id="p4"><p>In the <code>mpfr_cmp_ui</code> macro for
+<acronym>GCC</acronym>-based compilers, when the second argument is a
+constant expression with the value 0, the first argument is evaluated
+twice, making the behavior incorrect when the evaluation of the first
+argument yields side effects. The <code>mpfr_cmp_si</code> macro uses
+<code>mpfr_cmp_ui</code>, thus is also affected by this bug. Note that
+though <code>mpfr_cmp_ui</code> and <code>mpfr_cmp_si</code> are described
+as functions, they are also implemented as macros in <samp>mpfr.h</samp>
+(except in case of a bug like here, a macro implementation should
+<em>not</em> introduce a difference in the behavior).</p>
+<p>A much less important problem is that the <code>mpfr_cmp_si</code> and
+<code>mpfr_set_si</code> macros for <acronym>GCC</acronym>-based compilers
+(from <samp>mpfr.h</samp>) can yield warnings when user code is compiled
+with the <samp>-Wconversion</samp> option.</p>
+<p>These macros <code>mpfr_cmp_ui</code>, <code>mpfr_cmp_si</code>,
+<code>mpfr_set_ui</code> and <code>mpfr_set_si</code> for
+<acronym>GCC</acronym>-based compilers can have an incorrect behavior if
+user code with undefined behavior requires to behave according to some
+non-standard C extension (like with the use of the <samp>-fwrapv</samp>
+<acronym>GCC</acronym> option) and the call is done with an argument
+that requires an implicit conversion to <code>unsigned long</code> or
+<code>long</code>.</p>
+<p>All these problems are fixed by the
+<a href="patch04"><samp>mpfr_cmp/set_ui/si</samp> patch</a> (which also
+provides a testcase for the first problem).</p></li>
 
 </ol>
 
