@@ -74,7 +74,7 @@ following archive formats:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2010-09-07). The patches are distributed under the same license as
+update: 2010-10-21). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -177,6 +177,36 @@ that requires an implicit conversion to <code>unsigned long</code> or
 <p>All these problems are fixed by the
 <a href="patch04"><samp>mpfr_cmp/set_ui/si</samp> patch</a> (which also
 provides a testcase for the first problem).</p></li>
+
+<li id="p5">The <samp>tcan_round</samp> test can fail due to a bug in the
+test, that can occur now that the <code>mpfr_prec_t</code> type is signed.
+This problem is fixed by the <a href="patch05"><samp>tcan_round</samp>
+patch</a>.</li>
+
+<li id="p6">In some special cases, the subtraction code can return a
+result that is not correctly rounded (both <code>mpfr_add</code> and
+<code>mpfr_sub</code> functions call this code, depending on the signs
+of the inputs). It can possibly yield undefined behavior, as the result
+may not be normalized (if <acronym>MPFR</acronym> had been built with
+the <samp>--enable-assert</samp> configure option, an assertion failure
+occurs in such a case). This bug cannot occur if the input and output
+precisions of the subtraction are the same, but it can also be triggered
+by functions that call <code>mpfr_add</code> or <code>mpfr_sub</code>
+with different precisions, <abbr>e.g.</abbr> by <code>mpfr_fma</code>
+and <code>mpfr_fms</code>. All the <acronym>MPFR</acronym> versions
+up to version 3.0.0 are affected. This bug is fixed by the
+<a href="patch06"><samp>mpfr_sub1</samp> patch</a> (which also
+provides testcases for <code>mpfr_sub</code> and <code>mpfr_fma</code>).<br />
+[<a href="https://gforge.inria.fr/tracker/index.php?func=detail&amp;aid=11301"><code>mpfr_sub1</code>
+bug report on the tracker</a>]</li>
+
+<li id="p7">The <code>mpfr_set_ld</code> function is buggy on very small
+values. This bug cannot occur on platforms where the <code>long double</code>
+type corresponds to x87 extended precision or less, but it has been observed
+on a platform with quadruple precision. This bug is fixed by the
+<a href="patch07"><samp>mpfr_set_ld</samp> patch</a>.<br />
+[<a href="https://gforge.inria.fr/tracker/index.php?func=detail&amp;aid=11300"><code>mpfr_set_ld</code>
+bug report on the tracker</a>]</li>
 
 </ol>
 
