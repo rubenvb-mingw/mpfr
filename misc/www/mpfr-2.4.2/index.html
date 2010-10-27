@@ -193,7 +193,7 @@ solves this problem.<br />
 
 </ol>
 
-<p>Bugs that are fixed in the 2.4 or 3.0 branch:</p>
+<p>Bugs that are fixed in the 2.4 or 3.0 branch (and later):</p>
 
 <ul>
 
@@ -216,6 +216,23 @@ incorrect (it should have been 0).<br />
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=6980">6980</a>]</li>
 
 </ul>
+
+<p>The <a href="../mpfr-3.0.0/#p6">following bug in the subtraction code</a>
+is fixed in the 3.0 branch (and later);
+<a href="https://bugzilla.redhat.com/show_bug.cgi?id=643657#c3">a patch
+has been backported</a> for older <acronym>MPFR</acronym> versions.
+In some special cases, the subtraction code can return a
+result that is not correctly rounded (both <code>mpfr_add</code> and
+<code>mpfr_sub</code> functions call this code, depending on the signs
+of the inputs). It can possibly yield undefined behavior, as the result
+may not be normalized (if <acronym>MPFR</acronym> had been built with
+the <samp>--enable-assert</samp> configure option, an assertion failure
+occurs in such a case). This bug cannot occur if the input and output
+precisions of the subtraction are the same, but it can also be triggered
+by functions that call <code>mpfr_add</code> or <code>mpfr_sub</code>
+with different precisions, <abbr>e.g.</abbr> by <code>mpfr_fma</code>
+and <code>mpfr_fms</code>. All the <acronym>MPFR</acronym> versions
+up to version 3.0.0 are affected.</p>
 
 <p id="unfixed">Other bugs: please see the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/scm/viewvc.php/tags/2.4.2/BUGS?view=markup&amp;root=mpfr&amp;pathrev=6606"><samp>BUGS</samp></a> file.</p>
 
