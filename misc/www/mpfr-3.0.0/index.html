@@ -74,7 +74,7 @@ following archive formats:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2010-10-21). The patches are distributed under the same license as
+update: 2010-11-10). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -210,6 +210,19 @@ on a platform with quadruple precision. This bug is fixed by the
 <a href="patch07"><samp>mpfr_set_ld</samp> patch</a>.<br />
 [<a href="https://gforge.inria.fr/tracker/index.php?func=detail&amp;aid=11300"><code>mpfr_set_ld</code>
 bug report on the tracker</a>]</li>
+
+<li id="p8">The <a href="#p4"><samp>mpfr_cmp/set_ui/si</samp> patch</a>
+introduced two minor problems: First, if the user defines a macro with the
+same name as some keywords (which is implicitly discouraged), the behavior
+can be incorrect (compilation failure of the user code, wrong results...);
+this problem was already there for some other macros. Second, some usual
+type checking was no longer done; for instance, passing a pointer instead
+of an integer was no longer regarded as an error at compilation time. The
+<a href="patch08"><samp>macros</samp> patch</a> fixes these problems.
+Note however that defining a macro with the name <code>do</code>,
+<code>while</code> or <code>sizeof</code> is still forbidden,
+and other restrictions may be added in the future (unless
+<code>MPFR_USE_NO_MACRO</code> has been defined).</li>
 
 </ol>
 
