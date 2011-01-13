@@ -22,8 +22,9 @@ MPFR:
 
 DONE coding sprints:
 - Once the double inclusion of mpfr.h is fully supported, add tstdint
-  to check_PROGRAMS in the tests/Makefile.am file. [Patrick,Mickael,Vincent]
+  to check_PROGRAMS in the tests/Makefile.am file. [Patrick,Vincent]
   Note: also added tvalist
+- Skipped tests with return 77 (Automake). [Patrick,Vincent]
 
 Coding sprints:
 - test logging MPC (Eztrace ou pragmas GCC) [Andreas,Franck,Philippe,Mickael]
