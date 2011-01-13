@@ -20,11 +20,14 @@ MPFR:
   * aussi sur liste gcc + newsgroups [Vincent]
   * ceux qui font des interfaces C++ [Mickael]
 
+DONE coding sprints:
+- Once the double inclusion of mpfr.h is fully supported, add tstdint
+  to check_PROGRAMS in the tests/Makefile.am file. [Patrick,Mickael,Vincent]
+  Note: also added tvalist
+
 Coding sprints:
 - test logging MPC (Eztrace ou pragmas GCC) [Andreas,Franck,Philippe,Mickael]
 - regarder les FIXME [Paul,Laurent]
-- Once the double inclusion of mpfr.h is fully supported, add tstdint
-  to check_PROGRAMS in the tests/Makefile.am file. [Patrick,Mickael,Vincent]
 
 - enable-thread-safe [Vincent,Patrick,Laurent]
 - register_printf_function deprecated (logging.c) [Philippe,Patrick]
