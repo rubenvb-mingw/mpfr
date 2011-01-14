@@ -24,12 +24,18 @@ DONE coding sprints:
 - Once the double inclusion of mpfr.h is fully supported, add tstdint
   to check_PROGRAMS in the tests/Makefile.am file. [Patrick,Vincent]
   Note: also added tvalist
+- extended Lemma 2 in algorithms.tex [Laurent,Paul]
+- test logging MPC (Eztrace ou pragmas GCC) [Andreas,Franck,Philippe,Mickael]
+  -> partially done (for mpc_mul), remains to extend to other functions,
+     and to integrate in configure
 - Skipped tests with return 77 (Automake). [Patrick,Vincent]
 - Enable TLS (thread safe) by default if supported [Vincent,Patrick]
 
 Coding sprints:
-- test logging MPC (Eztrace ou pragmas GCC) [Andreas,Franck,Philippe,Mickael]
-- regarder les FIXME [Paul,Laurent]
+- register_printf_function deprecated (logging.c) [Philippe,Patrick]
+- regarder les FIXME [Laurent,Paul]
+- mpfr_inp_raw, mpfr_out_raw [Paul,Vincent,Mickael,Patrick]
+- web page comparing timings of MPC and other systems [Andreas,Paul]
 
 - document MPFR_USE_FILE and MPFR_USE_VA_LIST [Vincent,Patrick]
 - register_printf_function deprecated (logging.c) [Philippe,Patrick]
@@ -41,12 +47,10 @@ Coding sprints:
 - mpfr_set_q [Vincent]
 - random distribution functions [Laurent,Philippe]
 - mpfr_frexp [Paul,Franck]
-- mpfr_inp_raw, mpfr_out_raw [Paul,Vincent]
 - eliminer appels a mpfr_set_emax dans MPC (sqr, pow, pow_ui) [Andreas,Paul]
 - CEVAL [Paul,Andreas]
 - AGM complexe
 - correctly rounded roots of unity
-- web page comparing timings of MPC and other systems [Andreas,Paul]
 - use of PIPOL for MPC [Philippe,Franck,Andreas]
 - [MPC] algorithms.tex -> improve mpc_pow, add trig functions
 - mpc_fma [Paul,Andreas,Mickael]
