@@ -30,6 +30,7 @@ DONE coding sprints:
      and to integrate in configure
 - Skipped tests with return 77 (Automake). [Patrick,Vincent]
 - Enable TLS (thread safe) by default if supported [Vincent,Patrick]
+- mpc_fma [Paul]
 
 Coding sprints:
 - register_printf_function deprecated (logging.c) [Philippe,Patrick]
@@ -53,10 +54,23 @@ Coding sprints:
 - correctly rounded roots of unity
 - use of PIPOL for MPC [Philippe,Franck,Andreas]
 - [MPC] algorithms.tex -> improve mpc_pow, add trig functions
-- mpc_fma [Paul,Andreas,Mickael]
 - MAJ copyright fichiers MPFR pour 2011 [Vincent]
 
 ADT:
+- date limite 21 janvier, resultats en mars, embauche >= octobre 2011
+- Participants : Lyon (coordinateur), Nancy, Bordeaux
+- budget pour 1 "retraite" par an
+2 gros objectifs :
+(1) implanter arithmetique (centre,rayon) avec rayon en basse precision
+  (midrad) alors que MPFI calcule les deux bornes (infsup).
+  Rayon : nombre MPFR ou entier (representant l'erreur en ulps) comme iRRAM ?
+  Si erreur plus grande qu'un mot machine -> reduire la precision du centre ?
+  Regarder "Ball arithmetic" de Joris van der Hoeven (GMPX).
+  Aussi utiliser l'arithmetique (centre,rayon) dans MPFR.
+  Discussion avec les developpeurs de MPC a propos d'une arithmetique
+  (centre,rayon) pour MPC (centre c complexe, rayon r reel) : |z-c| <= r
+(2) mpfr_scanf (pour ingenieur de recherche)
+- demande 1 IJD pour (1) [2 ans], 1 IR SED pour (2) [1 an?]
 - reecriture mpfr_greater_p en code natif
 - replace the *_THRESHOLD macros by global (TLS) variables that can be
   changed at run time (via a function, like other variables)? One benefit...
@@ -67,6 +81,19 @@ ADT:
 - [maybe useful for SAGE] implement companion frac_* functions to the rint_*
   functions. For example mpfr_frac_floor(x) = x - floor(x). (The current
   mpfr_frac function corresponds to mpfr_rint_trunc.)
+-> Vincent redige un premier jet pour mercredi
+
+ADT PARI-MP:
+- Franck embauche sur 12 mois (avec Karim Belabas et Bill Allombert)
+- Pari logiciel de theorie des nombres -> Franck s'occupe des couches basses
+  (flottants, entiers)
+- objectif : uniformiser les representations entiers/flottants pour avoir
+  des fonctions plus uniforme
+- actuellement 2 noyaux entiers : noyau natif (on garde) et noyau GMP
+- flottants pas bases sur les entiers actuellement -> objectif est de les
+  baser sur les entiers (noyau natif ou GMP) -> aucune specification sur
+  l'erreur d'arrondi ?
+- utilisation de la custom interface de MPFR prevue (month 22 to 24)
 
 ##############################################################################
 
