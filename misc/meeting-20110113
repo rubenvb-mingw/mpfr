@@ -7,16 +7,15 @@ MPFR:
     
 - 3.1.0 : prerelease fin mars [Vincent]
   * reste binary compatible avec 3.0.0
-  * division par zero [Vincent]
   * enable-thread-safe par defaut : on regarde pendant les coding sprints si
     on peut detecter facilement si les threads sont supportees
     [Vincent,Patrick,Laurent]
-  * register_printf_function deprecated (logging.c) [Philippe,Patrick]
   * nouvelle macro MPFR_IS_ZERO(x) || MPFR_GET_EXP(x) <= value [Vincent]
   * TODO: verifier/mettre a jour mpfr_get_str, base <= 62 [Paul,Franck]
 - passage mpfr_exp_t en int64_t :
   * on ne le fait pas pour 3.1.0 -> 4.0.0 ?
-  * on pose la question sur la liste mpfr du passage en C99 [Paul]
+  * on pose la question sur la liste mpfr du passage en C99 [fait]
+    -> Vincent repond a Brian
   * aussi sur liste gcc + newsgroups [Vincent]
   * ceux qui font des interfaces C++ [Mickael]
 
@@ -31,6 +30,19 @@ DONE coding sprints:
 - Skipped tests with return 77 (Automake). [Patrick,Vincent]
 - Enable TLS (thread safe) by default if supported [Vincent,Patrick]
 - mpc_fma [Paul]
+- [MPFR] ported to cdash for the tests using CTest
+  -> ask an account on the Inria Dashboard
+
+PARTLY DONE coding sprints:
+- division par zero [Vincent,Patrick]
+- random distribution functions [Laurent]
+  mpfr_urandom_gaussian (rop1, rop2, randstate, rnd)
+  polar Marsaglia transform
+  remains doc + tests
+- [MPC] autotools + logging [Andreas,Mickael] --enable-logging
+  added configure option, works, problem with dlsym() which returns void*
+  -> cast needed from void* into function pointer ?
+- register_printf_function deprecated (logging.c) [Philippe,Patrick]
 
 Coding sprints:
 - register_printf_function deprecated (logging.c) [Philippe,Patrick]
@@ -39,14 +51,12 @@ Coding sprints:
 - web page comparing timings of MPC and other systems [Andreas,Paul]
 
 - document MPFR_USE_FILE and MPFR_USE_VA_LIST [Vincent,Patrick]
-- register_printf_function deprecated (logging.c) [Philippe,Patrick]
 - efficacite de mpfr_root [Paul]
 - probleme mpfr_rootrem [r7178,7180?] [Paul]
 - inline mpfr_neg [Vincent,Patrick,Mickael]
 - test coverage [Paul,Andreas,Vincent?]
 - probleme mpfr_sub avec exposant de plage reduite [Paul]
 - mpfr_set_q [Vincent]
-- random distribution functions [Laurent,Philippe]
 - mpfr_frexp [Paul,Franck]
 - eliminer appels a mpfr_set_emax dans MPC (sqr, pow, pow_ui) [Andreas,Paul]
 - CEVAL [Paul,Andreas]
