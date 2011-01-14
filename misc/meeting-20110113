@@ -112,8 +112,7 @@ MPC:
   * faire une release 0.9 fin janvier [Andreas]
   * faire un depot APP de la 0.9 [Andreas]
   * demander a la FSF pour passer en GNU et le passage des droits a la FSF
-    (voir avec autres developpeurs et leur employeur si ok: Mickael,
-    Patrick "cleaned up some code", Mark Helbling -> 1 ligne + 1 fonction)
+    (voir avec autres developpeurs et leur employeur si ok: Mickael)
     negocier avec la FSF sur la mention de Magma et TRIP sur la page web
     [Andreas]
   * faire une release 1.0 en mai? [Andreas]
