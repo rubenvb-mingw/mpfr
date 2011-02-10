@@ -1,23 +1,21 @@
 /* timings-mpfr - program to measure the efficiency of GNU MPFR
 
-Copyright 2011 Free Software Foundation, Inc.
+Copyright 2001, 2010, 2011 Free Software Foundation, Inc.
+Copyright 2001 Norbert Mueller (Univ. Trier, Germany).
 Contributed by the Arenaire and Caramel projects, INRIA.
-With the contribution of Norbert Mueller (Univ. Trier, Germany).
 
-This file is part of the GNU MPFR Library.
-
-The GNU MPFR Library is free software; you can redistribute it and/or modify
+This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
 the Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
-The GNU MPFR Library is distributed in the hope that it will be useful, but
+This program is distributed in the hope that it will be useful, but
 WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 License for more details.
 
 You should have received a copy of the GNU Lesser General Public License
-along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
+along with this program; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
