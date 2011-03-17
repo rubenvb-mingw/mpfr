@@ -192,9 +192,9 @@ Note that if the input and the output parameters have the same precision
 (most of the cases), then it is very unlikely that there exists a value
 <var>x</var> that can trigger the bug; tests have been carried out on
 32-bit and 64-bit platforms on the inputs that are the most likely to be
-affected (precision &le; 200, round(<var>x</var> / log(2)) &le; 3000).<br />
+affected (precision &#8804; 200, round(<var>x</var> / log(2)) &#8804; 3000).<br />
 Note: the bug is in <samp>exp_2.c</samp>, which is <em>not</em> used in
-very high precisions, say &ge; 50000.</li>
+very high precisions, say &#8805; 50000.</li>
 <li>Due to an incorrect error bound, one can get incorrectly rounded results
 (see <code>bug20080731</code> in
 <a href="https://gforge.inria.fr/scm/viewvc.php/*checkout*/branches/2.3/tests/texp.c?root=mpfr&amp;content-type=text%2Fplain&amp;pathrev=5526"><samp>texp.c</samp></a>
@@ -225,7 +225,7 @@ Most code is very unlikely to be affected by this bug.<br />
 have the following problems:
 <ul>
 <li>assertion failure on <code>mpfr_pow(z, x, y, rnd)</code> with integer
-|y| &ge; 2<sup>256</sup>, unless an overflow or underflow had been detected
+|y| &#8805; 2<sup>256</sup>, unless an overflow or underflow had been detected
 first;</li>
 <li>overflow/underflow detection/handling is incorrect (<abbr>e.g.</abbr>
 possible spurious exceptions in case of internal overflow/underflow).</li>
