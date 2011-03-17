@@ -261,6 +261,33 @@ the 3.0 branch:</p>
 [Changeset:
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7446">7446</a>]</li>
 
+<li>For users of Intel's compiler (<acronym>ICC</acronym>) under Microsoft Windows: <acronym>MPFR</acronym> incorrectly assumes that <acronym>ICC</acronym> has some extensions like under <acronym>GNU</acronym>/Linux.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7454">7454</a>]</li>
+
+<li>In <code>mpfr_jn</code>: for negative <var>n</var>, incorrect error analysis; for <var>n</var> = 0, integer overflow when determining the initial working precision. In <code>mpfr_gamma</code>: for small arguments whose absolute value is a power of two, the result may not be correctly rounded in the <code>MPFR_RNDA</code> rounding mode and/or if the argument is negative (in rounding to nearest, only the ternary value can be incorrect). Other various bugs:
+<ul>
+<li>Some functions (<code>mpfr_acos</code>, <code>mpfr_agm</code>, <code>mpfr_atan2</code>, <code>mpfr_div_2si</code>, <code>mpfr_div_2ui</code>, <code>mpfr_j0</code>, <code>mpfr_j1</code>, <code>mpfr_jn</code>, <code>mpfr_mul_2si</code>, <code>mpfr_y0</code>, <code>mpfr_y1</code>, <code>mpfr_yn</code>, <code>mpfr_zeta</code>) do not behave correctly in extremely reduced exponent range; this was described in the <samp>BUGS</samp> file.</li>
+<li>Some functions (<code>mpfr_agm</code>, <code>mpfr_div_2si</code>, <code>mpfr_div_2ui</code>, <code>mpfr_fmod</code>, <code>mpfr_j0</code>, <code>mpfr_j1</code>, <code>mpfr_jn</code>, <code>mpfr_mul_2si</code>, <code>mpfr_remainder</code>, <code>mpfr_remquo</code>) can have intermediate exceptions, provide incorrect flags, and/or have incorrect error analysis on some special values (such as huge or tiny); this was more or less described in the <samp>BUGS</samp> file.</li>
+</ul>
+[Changesets:
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7519">7519</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7535">7535</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7543">7543</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7544">7544</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7554">7554</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7557">7557</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7562">7562</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7563">7563</a>]</li>
+
+<li>On machines where the maximum exponent range is larger than the default exponent range (such as on conventional 64-bit machines), <code>mpfr_erfc</code> wrongly underflows for x &#8805; 27282.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7569">7569</a>]</li>
+
+<li>In an extremely reduced exponent range, <code>mpfr_erfc</code> can incorrectly set flags or possibly crash.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7574">7574</a>]</li>
+
 </ul>
 
 <!-- For BUGS, it's better to point to HEAD, as changes will be noted above. -->
