@@ -292,7 +292,7 @@ the 3.0 branch:</p>
 [Changeset:
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7593">7593</a>]</li>
 
-<li>The <code>mpfr_pow</code> function behaves incorrectly on <em>reused</em> arguments (<code>mpfr_pow(x,x,y,rnd)</code> or <code>mpfr_pow(y,x,y,rnd)</code> for instance): when <var>x</var> is negative and <var>y</var> is an odd integer larger than 2<sup>256</sup>, the returned result can have a wrong sign (positive instead of negative) and possibly be rounded in the wrong direction.<br />
+<li>The <code>mpfr_pow</code> function behaves incorrectly on <em>reused</em> arguments (<code>mpfr_pow(x,x,y,rnd)</code> or <code>mpfr_pow(y,x,y,rnd)</code> for instance): when <var>x</var> is negative and |<var>y</var>| is an odd integer larger than 2<sup>256</sup>, the returned result can have a wrong sign (positive instead of negative) and possibly be rounded in the wrong direction.<br />
 [Changeset:
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7608">7608</a>]</li>
 
