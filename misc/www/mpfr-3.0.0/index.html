@@ -280,7 +280,7 @@ the 3.0 branch:</p>
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7562">7562</a>,
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7563">7563</a>]</li>
 
-<li>On machines where the maximum exponent range is larger than the default exponent range (such as on conventional 64-bit machines), <code>mpfr_erfc</code> wrongly underflows for x &#8805; 27282.<br />
+<li>On machines where the maximum exponent range is larger than the default exponent range (such as on conventional 64-bit machines), <code>mpfr_erfc</code> wrongly underflows for <var>x</var> &#8805; 27282.<br />
 [Changeset:
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7569">7569</a>]</li>
 
@@ -291,6 +291,10 @@ the 3.0 branch:</p>
 <li>If <var>emin</var> &gt; 1, the power functions can yield an assertion failure (debug mode) or set incorrect flags.<br />
 [Changeset:
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7593">7593</a>]</li>
+
+<li>The <code>mpfr_pow</code> function behaves incorrectly on <em>reused</em> arguments (<code>mpfr_pow(x,x,y,rnd)</code> or <code>mpfr_pow(y,x,y,rnd)</code> for instance): when <var>x</var> is negative and <var>y</var> is an odd integer larger than 2<sup>256</sup>, the returned result can have a wrong sign (positive instead of negative) and possibly be rounded in the wrong direction.<br />
+[Changeset:
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7608">7608</a>]</li>
 
 </ul>
 
