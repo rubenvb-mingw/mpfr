@@ -72,7 +72,7 @@ following archive formats:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2011-04-12). The patches are distributed under the same license as
+update: 2011-05-04). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -137,6 +137,22 @@ incorrect result on +1 and -1. This bug is fixed by the
 <a href="patch01"><samp>asin_exprange</samp> patch</a>
 (which also provides a testcase).</li>
 <!-- Note: on such inputs, one necessarily has emax >= 1. -->
+
+<li id="p2">The <code>mpfr_rec_sqrt</code> function can have undefined
+behavior due to the call of <code>mpn_add_1</code> or <code>mpn_sub_1</code>
+(from <acronym>GMP</acronym>) with a null size, which is not allowed.
+The fourth argument of <code>mpn_add_1</code> or <code>mpn_sub_1</code>
+(<abbr>i.e.</abbr> the value that should have been added or subtracted)
+is here also 0, so that the consequences are limited. In practice, with
+the current <acronym>GMP</acronym> version, this yields a small buffer
+overflow (1 limb, <abbr>i.e.</abbr> 32 bits or 64 bits), as shown by
+<cite>valgrind</cite>, with the possible consequences: a crash, or
+memory corruption (very unlikely) if another process or thread modifies
+the limb at the same time (as in this context, the value is first read
+then written back by <acronym>GMP</acronym>). This bug has always been
+present since the introduction of the <code>mpfr_rec_sqrt</code>
+function in <acronym>MPFR</acronym> 2.4.0. It is fixed by the
+<a href="patch02"><samp>rec_sqrt-carry</samp> patch</a>.</li>
 
 </ol>
 
