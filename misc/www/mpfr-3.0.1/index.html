@@ -72,7 +72,7 @@ following archive formats:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2011-05-04). The patches are distributed under the same license as
+update: 2011-05-05). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -153,6 +153,16 @@ then written back by <acronym>GMP</acronym>). This bug has always been
 present since the introduction of the <code>mpfr_rec_sqrt</code>
 function in <acronym>MPFR</acronym> 2.4.0. It is fixed by the
 <a href="patch02"><samp>rec_sqrt-carry</samp> patch</a>.</li>
+
+<li id="p3">The <code>mpfr_atan</code> function calls
+<code>mpfr_check_range</code> on the unrounded result (no longer allocated)
+instead of the rounded result. Consequence of this bug: possible incorrect
+or invalid result and/or incorrect flags if the unrounded result or rounded
+result is not in the current exponent range. Or possibly worse if the
+memory used by the unrounded result is modified before the return of the
+function. This bug has been present since <acronym>MPFR</acronym> 2.1.0
+(exceptions were not supported before). It is fixed by the
+<a href="patch03"><samp>atan-expo-range</samp> patch</a>.</li>
 
 </ol>
 
