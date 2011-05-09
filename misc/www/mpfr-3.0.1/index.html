@@ -72,7 +72,7 @@ following archive formats:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2011-05-05). The patches are distributed under the same license as
+update: 2011-05-09). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -163,6 +163,13 @@ memory used by the unrounded result is modified before the return of the
 function. This bug has been present since <acronym>MPFR</acronym> 2.1.0
 (exceptions were not supported before). It is fixed by the
 <a href="patch03"><samp>atan-expo-range</samp> patch</a>.</li>
+
+<li id="p4">The <samp>texp</samp> test doesn't filter out the value 0
+(which can appear with some seeds, set by <samp>GMP_CHECK_RANDOMIZE</samp>)
+when comparing the <code>mpfr_exp_2</code> and <code>mpfr_exp_3</code>
+internal functions. The consequence is a failure in this test if this
+happens. This is a bug only in the tests, not in the library itself. It
+is fixed by the <a href="patch04"><samp>texp-zero</samp> patch</a>.</li>
 
 </ol>
 
