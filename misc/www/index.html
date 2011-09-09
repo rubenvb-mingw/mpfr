@@ -153,6 +153,17 @@ with using of classes, templates and function objects.</li>
 written by Pavel Holoborodko. The precision of the temporary results in
 an expression is chosen as the maximum precision of its arguments, and
 the final result is rounded to the precision of the target variable.</li>
+<li>The
+<a href="http://chschneider.eu/programming/mpfr_real/"><samp>mpfr::real</samp>
+class</a>, written by Christian Schneider.
+<q>It consists of a template class with precision and rounding mode passed
+as template arguments. Hence, effectively a new type will be created for
+each precision and rounding that is used. All the operators available
+for fundamental floating point types as well as type conversions from
+and to other types, and the set of mathematical functions known from
+<samp>math.h/cmath</samp> are implemented. This should allow for an easy
+substitution of, <abbr>e.g.</abbr>, a double with the wrapper class in
+most cases.</q></li>
 <li><a href="http://perso.ens-lyon.fr/nathalie.revol/software.html"><cite><acronym>MPFR++</acronym></cite></a>,
 developed in the
 <a href="http://www.ens-lyon.fr/LIP/Arenaire/" lang="fr" xml:lang="fr">Arénaire</a>
