@@ -18,10 +18,148 @@
 
 <div class="logo"><a href="../index.html"><img src="../mpfr100.png" height="40" width="100" alt="[MPFR]" /></a></div>
 
-<h1><acronym>GNU</acronym> <acronym>MPFR</acronym> version 3.1.0</h1>
+<h1><acronym>GNU</acronym> <acronym>MPFR</acronym> version 3.1.0 (released on 3 October 2011)</h1>
 
-<p>On 2011-09-17, <acronym>MPFR</acronym> 3.1.0 is currently under testing.
-It will be released soon.</p>
+<div>[<a href="#download">download</a>]
+[<a href="#doc">documentation</a>]
+[<a href="#bugs">bugs</a>]
+[<a href="#changes">changes</a>]
+[<a href="#platforms">platforms</a>]</div>
+
+<p>The <cite lang="fr" xml:lang="fr">canard à l'orange</cite> release.</p>
+
+<p><acronym>MPFR</acronym> 3.1.0 requires <acronym>GMP</acronym> 4.1.0
+or higher (<acronym>GMP</acronym> 4.2.3 or higher is recommended).</p>
+
+<h2 id="download">Download</h2>
+
+<p>The <acronym>MPFR</acronym> 3.1.0 source can be downloaded in the
+following archive formats:</p>
+<ul>
+<li><a href="mpfr-3.1.0.tar.xz">mpfr-3.1.0.tar.xz</a>
+(tar/xz, 1.1 <abbr>MB</abbr>,
+<a href="mpfr-3.1.0.tar.xz.asc" title="PGP signature for mpfr-3.1.0.tar.xz">signature</a>),</li>
+<li><a href="mpfr-3.1.0.tar.bz2">mpfr-3.1.0.tar.bz2</a>
+(tar/bzip2, 1.2 <abbr>MB</abbr>,
+<a href="mpfr-3.1.0.tar.bz2.asc" title="PGP signature for mpfr-3.1.0.tar.bz2">signature</a>),</li>
+<li><a href="mpfr-3.1.0.tar.gz">mpfr-3.1.0.tar.gz</a>
+(tar/gzip, 1.6 <abbr>MB</abbr>,
+<a href="mpfr-3.1.0.tar.gz.asc" title="PGP signature for mpfr-3.1.0.tar.gz">signature</a>),</li>
+<li><a href="mpfr-3.1.0.zip">mpfr-3.1.0.zip</a>
+(zip, 2.0 <abbr>MB</abbr>,
+<a href="mpfr-3.1.0.zip.asc" title="PGP signature for mpfr-3.1.0.zip">signature</a>).</li>
+</ul>
+
+<p><acronym>MPFR</acronym> is also available via
+<a href="../ports.html">third-party packages and ports</a>.</p>
+
+<h2 id="doc">Documentation</h2>
+
+<ul>
+
+<li>The reference manual:
+[<a href="mpfr.html" title="Reference manual in HTML format">html</a>]
+[<a href="mpfr.dvi.gz" title="Reference manual in DVI format">dvi</a>]
+[<a href="mpfr.ps.gz" title="Reference manual in Postscript format">ps</a>]
+[<a href="mpfr.pdf" title="Reference manual in PDF format">pdf</a>]</li>
+
+<li>The <a href="../faq.html"><acronym>MPFR</acronym>
+<acronym title="Frequently Asked Questions">FAQ</acronym></a>
+(common to all <acronym>MPFR</acronym> versions).</li>
+
+</ul>
+
+<h2 id="bugs">Bugs</h2>
+
+<!-- For BUGS, it's better to point to HEAD, as changes will be noted above. -->
+<p>See the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/scm/viewvc.php/trunk/BUGS?view=markup&amp;root=mpfr"><samp>BUGS</samp></a> file.</p>
+
+<h2 id="changes">Changes from versions 3.0.* to version 3.1.0</h2>
+
+<ul>
+
+<li>The <acronym>MPFR</acronym> source has been reorganized.</li>
+
+<li>Dropped <samp>ansi2knr</samp> support.</li>
+
+<li><acronym title="Thread Local Storage">TLS</acronym> support is
+now detected automatically. If <acronym>TLS</acronym> is supported,
+<acronym>MPFR</acronym> is built as thread safe by default. To disable
+<acronym>TLS</acronym> explicitly, configure <acronym>MPFR</acronym>
+with <samp>--disable-thread-safe</samp>.</li>
+
+<li>New <samp>--enable-gmp-internals</samp> configure option to use
+<acronym>GMP</acronym>'s undocumented functions (not from the public
+<acronym title="Application Program Interface">API</acronym>). Note
+that library versioning is not guaranteed to work if this option is
+used.</li>
+
+<li>The <code>mpfr_urandom</code> and <code>mpfr_urandomb</code> functions
+now return identical values on processors with different word size (assuming
+the same random seed, and since the <acronym>GMP</acronym> random generator
+does not depend itself on the word size, <abbr>cf</abbr>
+<a href="http://gmplib.org/list-archives/gmp-devel/2010-September/001642.html">http://gmplib.org/list-archives/gmp-devel/2010-September/001642.html</a>).</li>
+
+<li>The <code>mpfr_add_one_ulp</code> and <code>mpfr_sub_one_ulp</code>
+macros (which are obsolete and no more documented) will be removed in a
+future release.</li>
+
+<li>Speed improvement for the <code>mpfr_sqr</code> and <code>mpfr_div</code>
+functions using Mulders' algorithm. As a consequence, other functions using
+those routines are also faster.</li>
+
+<li>Much faster formatted output (<code>mpfr_printf</code>, <abbr>etc.</abbr>)
+with <samp>%Rg</samp> and similar.</li>
+
+<li>The <samp>--with-gmp-build</samp> configure option can now be used when
+the <acronym>GMP</acronym> source directory and the <acronym>GMP</acronym>
+build directory are different (without having to copy header files manually
+as before).</li>
+
+<li>New functions <code>mpfr_buildopt_gmpinternals_p</code>,
+<code>mpfr_buildopt_tune_case</code>, <code>mpfr_frexp</code>,
+<code>mpfr_grandom</code> and <code>mpfr_z_sub</code>.</li>
+
+<li>New divide-by-zero exception (flag) and associated functions.</li>
+
+<li>The <samp>mpfr.h</samp> header can be included several times, while still
+supporting optional functions (see Section <cite>Headers and Libraries</cite>
+in the manual).</li>
+
+<li>Updated tuning parameters.</li>
+
+<li>Improved <acronym>MPFR</acronym> manual.</li>
+
+<li><acronym>MPFR</acronym> tests: <cite>libtool</cite> no longer generates
+wrapper scripts with <q><samp>make check</samp></q> (so that running the
+tests under <cite>valgrind</cite> or <cite>gdb</cite> is easier).</li>
+
+<li>Bug fixes (<a href="../mpfr-3.0.1/#fixed">detailed list on the
+<acronym>MPFR</acronym> 3.0.1 page</a> for some of them).</li>
+
+</ul>
+
+<p>Note: The <code>mpfr_subnormalize</code> implementation up to
+<cite><acronym>MPFR</acronym></cite> 3.0.0 did not change the flags.
+In particular, it did not follow the generic rule concerning the
+inexact flag (and no special behavior was specified). The case of
+the underflow flag was more a lack of specification.</p>
+
+<h2 id="platforms">Platforms Known to Support <cite><acronym>MPFR</acronym></cite></h2>
+
+<p><cite><acronym>MPFR</acronym></cite> 3.1.0 has been successfully
+compiled and checked on the following platforms:</p>
+
+<ul>
+<li><samp>i386-pc-solaris2.10</samp> (Sun C 5.9 SunOS_i386 Patch 124868-10 2009/04/30),</li>
+<li><samp>i686-pc-linux-gnu</samp> (<acronym>gcc</acronym> and g++ 4.3.4),</li>
+<li><samp>ia64-unknown-linux-gnu</samp> (<acronym>gcc</acronym> 4.4.5),</li>
+<li><samp>powerpc-unknown-linux-gnu</samp> (PowerPC G4, <acronym>gcc</acronym> 4.6.1),</li>
+<li><samp>sparc64-unknown-linux-gnu</samp> (<acronym>gcc</acronym> 4.3.2),</li>
+<li><samp>x86_64-unknown-linux-gnu</samp> (<acronym>gcc</acronym> 4.4.5, 4.6.1 and 4.7 snapshot, g++ 4.6.1, <acronym>llvm-gcc</acronym> 4.5.3, and clang 2.9),</li>
+<li><samp>x86_64-unknown-netbsd5.1</samp> (<acronym>gcc</acronym> 4.1.3),</li>
+<li><samp>sparc64-unknown-openbsd4.6</samp> (<acronym>gcc</acronym> 3.3.5).</li>
+</ul>
 
 <p><a href="../index.html">Back to the <cite><acronym>MPFR</acronym></cite>
 page.</a></p>
