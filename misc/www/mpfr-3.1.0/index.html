@@ -153,7 +153,9 @@ is fixed by the <a href="patch02"><samp>lib-search-path</samp> patch</a>.</li>
 <li id="p3">The formatted output functions (<samp>mpfr_*printf</samp>)
 may output/return an incorrect string when the value is rounded up
 to the next power of 10 (for instance, 999.99999... printed with
-<code>"%.20RNg"</code> may give "100" instead of "1000"). This bug
+<code>"%.20RNg"</code> may give "100" instead of "1000"). This bug,
+which has always been present (since these functions were introduced
+in <acronym>MPFR</acronym> 2.4.0),
 is fixed by the <a href="patch03"><samp>vasprintf</samp> patch</a>
 (which also provides testcases).</li>
 
