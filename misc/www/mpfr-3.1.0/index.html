@@ -73,7 +73,7 @@ following archive formats:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2011-10-15). The patches are distributed under the same license as
+update: 2011-11-03). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -149,6 +149,13 @@ library is already installed in the corresponding <abbr>lib</abbr> directory,
 the tests are linked against this old <acronym>MPFR</acronym> library instead
 of the one that has just been compiled. This problem due to autoconf/automake
 is fixed by the <a href="patch02"><samp>lib-search-path</samp> patch</a>.</li>
+
+<li id="p3">The formatted output functions (<samp>mpfr_*printf</samp>)
+may output/return an incorrect string when the value is rounded up
+to the next power of 10 (for instance, 999.99999... printed with
+<code>"%.20RNg"</code> may give "100" instead of "1000"). This bug
+is fixed by the <a href="patch03"><samp>vasprintf</samp> patch</a>
+(which also provides testcases).</li>
 
 </ol>
 
