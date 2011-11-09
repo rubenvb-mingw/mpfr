@@ -157,7 +157,9 @@ to the next power of 10 (for instance, 999.99999... printed with
 which has always been present (since these functions were introduced
 in <acronym>MPFR</acronym> 2.4.0),
 is fixed by the <a href="patch03"><samp>vasprintf</samp> patch</a>
-(which also provides testcases).</li>
+(which also provides testcases). Note: <acronym>MPFR</acronym> 3.1.0
+also introduced a regression in some other cases, such as -9.996 in
+32 bits printed with <code>"%.2Rg"</code>.</li>
 
 </ol>
 
