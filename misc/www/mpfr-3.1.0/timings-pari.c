@@ -85,6 +85,15 @@ main(int argc, char *argv[])
 
   N=1;  st = cputime();
   do {
+    for (i=0;i<N;i++) z = sqrr (x), avma = ltop;
+    N=2*N;
+    st2=cputime();
+  } while (st2-st<1000);
+  printf("x^2        took %f ms (%d eval in %d ms)\n",
+         (double)(st2-st)/(N-1),N-1,st2-st);
+
+  N=1;  st = cputime();
+  do {
     for (i=0;i<N;i++) z = divrr (x, y), avma = ltop;
     N=2*N;
     st2=cputime();
