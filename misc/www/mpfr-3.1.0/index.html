@@ -73,7 +73,7 @@ following archive formats:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2011-11-03). The patches are distributed under the same license as
+update: 2011-11-28). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -160,6 +160,16 @@ is fixed by the <a href="patch03"><samp>vasprintf</samp> patch</a>
 (which also provides testcases). Note: <acronym>MPFR</acronym> 3.1.0
 also introduced a regression in some other cases, such as -9.996 in
 32 bits printed with <code>"%.2Rg"</code>.</li>
+
+<li id="p4">The testsuite (<samp>make check</samp>) fails when
+<acronym>MPFR</acronym> is built against <acronym>GMP</acronym> 4.1.*
+(which is a very old version). This is <em>not</em> a bug in the
+<acronym>MPFR</acronym> library, but in the tests, which do not take
+into account the fact that the default random number generator of
+<acronym>GMP</acronym> changed between versions 4.1 and 4.2. This problem
+is fixed by the <a href="patch04"><samp>gmp41compat</samp> patch</a>, which
+also updates the <acronym>MPFR</acronym> manual to mention this change
+(in the <cite><acronym>API</acronym> Compatibility</cite> chapter).</li>
 
 </ol>
 
