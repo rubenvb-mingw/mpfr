@@ -1,0 +1,12 @@
+mpfrtests.sh
+  Script to perform tests of MPFR tarballs with various options.
+
+mpfrtests.data
+  Example of mpfrtests.data file for the mpfrtests.sh script.
+  Users who want to use mpfrtests.sh should make their own
+  mpfrtests.data file (because the list of machines and paths
+  will differ).
+
+release-3.1.0-p4
+  Example of mpfrtests.sh output on various machines (obtained
+  with an MPFR 3.1.0-p4 tarball).

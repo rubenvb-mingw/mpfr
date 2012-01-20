@@ -1,0 +1,244 @@
+HOST:ble.lip.ens-lyon.fr
+PROC:Intel Xeon
+CONF:--with-gmp=/home/vlefevre/i686/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+INFO:gcc --version | head -n 1
+CHECK
+#CONF:--with-gmp=/home/vlefevre/i686/gmp-debug
+#CONF:--enable-assert=full
+#CONF:CC=icc
+#INFO:icc --version | head -n 1
+#CHECK
+CONF:CFLAGS=-Wall -O2 -ansi -pedantic-errors
+INFO:gcc --version | head -n 1
+CHECK
+CONF:--enable-gmp-internals
+CONF:CC=g++
+INFO:g++ --version | head -n 1
+CHECK
+CONF:--with-gmp=/home/vlefevre/i686-gmp-4.1.4
+CONF:--enable-assert=full
+INFO:gcc --version | head -n 1
+CHECK
+
+HOST:ypig.lip.ens-lyon.fr
+PROC:Intel Xeon E5520
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-shared
+CONF:--enable-thread-safe
+INFO:gcc --version | head -n 1
+CHECK
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:CFLAGS=-Wall -std=c99 -O3 -D_XOPEN_SOURCE=500 -ftrapv
+INFO:gcc --version | head -n 1
+CHECK
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:CFLAGS=-Wall -Wformat=2 -O2 -ansi -pedantic-errors
+INFO:gcc --version | head -n 1
+CHECK
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+CONF:CC=g++
+INFO:g++ --version | head -n 1
+CHECK
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-gmp-internals
+INFO:gcc --version | head -n 1
+CHECK
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-gmp-internals
+CONF:--enable-thread-safe
+CONF:CC=g++
+INFO:g++ --version | head -n 1
+CHECK
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+CONF:CC=llvm-gcc
+INFO:llvm-gcc --version | head -n 1
+CHECK
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+CONF:CC=clang
+INFO:clang --version | head -n 1
+CHECK
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-logging
+CONF:CC=gcc-snapshot
+CONF:CFLAGS=-Wall -O3 -march=native -std=gnu99
+INFO:gcc-snapshot --version | head -n 1
+CHECK
+CONF:--with-gmp-build=/home/vlefevre/software/gmp-5.0.1
+CONF:CC=gcc-snapshot
+INFO:gcc-snapshot --version | head -n 1
+CHECK
+CONF:--prefix=/home/vlefevre/notgcc
+CONF:--with-gmp=/home/vlefevre/notgcc
+CONF:--disable-shared
+INFO:notgcc --version | sed -n 's/.*\(Id:.*\) \$/\1/p'
+INFO:perl -pi -e 's/^wl=""/wl="-Wl,"/' libtool
+CHECK
+CONF:--with-gmp=/home/vlefevre/gmp-4.1.4
+CONF:--enable-assert=full
+INFO:gcc --version | head -n 1
+CHECK
+
+HOST:patate.lip.ens-lyon.fr
+PROC:Quad-Core AMD Opteron 8356
+CONF:--with-gmp=/home/vlefevre/x86_64/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+INFO:gcc --version | head -n 1
+CHECK
+#CONF:--with-gmp=/home/vlefevre/x86_64/gmp-debug
+#CONF:--enable-assert=full
+#CONF:CC=opencc
+#INFO:opencc --version 2>&1 | sed '/^$/Q'
+#CHECK
+#CONF:--with-gmp=/home/vlefevre/x86_64/gmp-debug
+#CONF:--enable-assert=full
+#CONF:CC=icc
+#INFO:icc --version | head -n 1
+#CHECK
+
+HOST:xvii.vinc17.org
+PROC:Intel Core2 Duo P8600
+CONF:--with-gmp=/usr/local/gmp-4.3.1-debug
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+INFO:gcc --version | head -n 1
+CHECK
+
+HOST:gcc60.fsffrance.org
+PROC:Itanium 2 Madison
+CONF:--enable-assert=full
+INFO:gcc --version | head -n 1
+CHECK
+
+HOST:gcc66.fsffrance.org
+PROC:Itanium 2 Madison
+CONF:--enable-assert=full
+INFO:gcc --version | head -n 1
+CHECK
+
+HOST:ay.vinc17.org
+PROC:PowerPC G4
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+INFO:gcc --version | head -n 1
+CHECK
+CONF:--enable-gmp-internals
+INFO:gcc --version | head -n 1
+CHECK
+
+HOST:gcc110.fsffrance.org
+PROC:POWER7
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+INFO:gcc --version | head -n 1
+CHECK
+
+HOST:gcc51.fsffrance.org
+PROC:MIPS Loongson 2F
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+INFO:gcc --version | head -n 1
+CHECK
+
+HOST:gcc62.fsffrance.org
+PROC:TI UltraSparc II BlackBird
+CONF:--enable-assert=full
+INFO:gcc --version | head -n 1
+CHECK
+CONF:--enable-gmp-internals
+INFO:gcc --version | head -n 1
+CHECK
+
+HOST:n810.vinc17.org
+PROC:OMAP 2420
+CONF:--enable-shared
+CONF:--enable-thread-safe
+CONF:--enable-assert=full
+INFO:gcc --version | head -n 1
+CHECK
+
+HOST:gcc33.fsffrance.org
+PROC:ARM Freescale i.MX515
+CONF:--enable-assert=full
+INFO:gcc --version | head -n 1
+CHECK
+
+HOST:gcc55.fsffrance.org
+PROC:ARM Feroceon 88FR131
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+INFO:gcc --version | head -n 1
+CHECK
+
+HOST:gcc61.fsffrance.org
+PROC:PA8600
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+INFO:gcc --version | head -n 1
+CHECK
+
+HOST:allo-psmn
+PROC:x86
+CONF:--with-gmp=/home/vlefevre/i386-solaris
+CONF:--disable-dependency-tracking
+CONF:--enable-assert=full
+INFO:cc -V 2>&1 | head -n 1
+CHECK
+
+HOST:prunille.vinc17.org
+PROC:PowerPC G5
+CONF:--with-gmp=/usr/local/gmp-assert
+CONF:--enable-assert=full
+CONF:--enable-shared
+INFO:gcc --version | head -n 1
+CHECK
+CONF:--enable-assert=full
+CONF:CFLAGS=-m64 -ftrapv
+INFO:gcc --version | head -n 1
+CHECK
+CONF:--with-gmp=/usr/local/gmp-5.0.1-mode32
+CONF:--enable-assert=full
+INFO:gcc --version | head -n 1
+CHECK
+
+HOST:gcc101.fsffrance.org
+PROC:AMD Opteron 252
+CONF:--with-gmp=/home/vinc17/gmp-debug
+CONF:--enable-assert=full
+INFO:gcc --version | head -n 1
+CHECK
+
+HOST:gcc70.fsffrance.org
+PROC:Intel Xeon 3.2E Irwindale
+CONF:--with-gmp=/home/vinc17/gmp-debug
+CONF:--enable-assert=full
+INFO:gcc --version | head -n 1
+CHECK
+
+HOST:gcc64.fsffrance.org
+PROC:Sun UltraSPARC-IIIi
+CONF:--with-gmp=/home/vinc17/gmp-debug
+CONF:--enable-assert=full
+INFO:gcc --version | head -n 1
+CHECK
+CONF:--with-gmp=/home/vinc17/gmp-debug
+CONF:--enable-gmp-internals
+INFO:gcc --version | head -n 1
+CHECK
+
+$Id: mpfrtests.data 48000 2011-12-04 09:39:18Z vinc17/xvii $
