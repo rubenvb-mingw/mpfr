@@ -35,8 +35,10 @@ or higher (<acronym>GMP</acronym> 4.2.3 or higher is recommended).</p>
 <p><strong>Warning! Due to the fact that
 <acronym title="Thread Local Storage">TLS</acronym> support is now detected
 automatically, the <acronym>MPFR</acronym> build can be incorrect on some
-platforms</strong> (compiler or system bug). Indeed, with some compilers
-on some platforms, the <acronym>TLS</acronym> implementation is buggy,
+platforms</strong> (compiler or system bug). Indeed,
+<a href="http://www.loria.fr/~zimmerma/software/compilerbugs.html">with
+some compilers on some platforms, the <acronym>TLS</acronym> implementation
+is buggy</a>,
 and <acronym>MPFR</acronym> cannot detect every problem at configure time.
 Please run <q><samp>make check</samp></q> to see if your build is affected.
 If you get failures, you should try the <samp>--disable-thread-safe</samp>
