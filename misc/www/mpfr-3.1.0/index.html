@@ -87,7 +87,7 @@ following archive formats:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2011-11-28). The patches are distributed under the same license as
+update: 2012-02-24). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -184,6 +184,27 @@ into account the fact that the default random number generator of
 is fixed by the <a href="patch04"><samp>gmp41compat</samp> patch</a>, which
 also updates the <acronym>MPFR</acronym> manual to mention this change
 (in the <cite><acronym>API</acronym> Compatibility</cite> chapter).</li>
+
+<li id="p5">When logging is used (note that logging support must
+have explicitly been enabled in the <acronym>MPFR</acronym> build),
+<abbr>e.g.</abbr> with <samp>MPFR_LOG_ALL=1</samp>, the program may
+randomly freeze (observed with dynamic linking), take a lot of memory
+or have other random behavior. The problem actually occurs in the
+following functions: <code>mpfr_add_d</code>, <code>mpfr_add_ui</code>
+and <code>mpfr_mul_d</code>; but <code>mpfr_add_ui</code> is used by
+other functions (directly or indirectly). This is due to a typo in an
+argument for the internal logging macro <code>MPFR_LOG_FUNC</code>:
+instead of the variable <code>mpfr_log_prec</code> (whose value is 6
+by default), the function pointer <code>mpfr_get_prec</code> is used,
+and it has an arbitrary value. This bug
+(<a href="https://gforge.inria.fr/tracker/index.php?func=detail&amp;aid=13933&amp;group_id=136&amp;atid=619">#13933</a>)
+is fixed by the <a href="patch05"><samp>logging-freeze</samp> patch</a>.</li>
+
+<li id="p6">In the logging system, an incorrect format is used for
+<code>MPFR_LOG_VAR</code>. If the logged variable has a huge value,
+the output has many digits; this can potentially take much memory
+and disk space. This bug is fixed by the
+<a href="patch06"><samp>logging-varfmt</samp> patch</a>.</li>
 
 </ol>
 
