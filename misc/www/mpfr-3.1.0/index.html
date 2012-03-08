@@ -87,7 +87,7 @@ following archive formats:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2012-02-24). The patches are distributed under the same license as
+update: 2012-03-08). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -205,6 +205,26 @@ is fixed by the <a href="patch05"><samp>logging-freeze</samp> patch</a>.</li>
 the output has many digits; this can potentially take much memory
 and disk space. This bug is fixed by the
 <a href="patch06"><samp>logging-varfmt</samp> patch</a>.</li>
+
+<li id="p7">Since the change of <code>mpfr_prec_t</code> to a signed type, it
+is no longer possible to use precisions close to <code>MPFR_PREC_MAX</code>
+in some cases where it used to work. This problem is fixed by the
+<a href="patch07"><samp>large-prec</samp> patch</a>, which also provides
+a simple testcase. Note that:
+<ul>
+<li>Only machines with a 32-bit precision type are affected by this
+problem in practice (<q>32-bit machines</q>, or <q>64-bit machines</q>
+where <acronym>MPFR</acronym> is built with a 32-bit
+<acronym title="Application Binary Interface">ABI</acronym>,
+<abbr>e.g.</abbr> with the <samp>-m32</samp> compiler option).</li>
+<li>In general, intermediate variables are used and the precision is
+increased internally, so that <acronym>MPFR</acronym> may abort in
+very large precisions, even less than <code>MPFR_PREC_MAX</code>,
+because of this type limitation or a lack of memory.</li>
+<li>In very large precisions, there may still be integer overflows
+(due to increased working precision) instead of a clean abort.</li>
+</ul>
+</li>
 
 </ol>
 
