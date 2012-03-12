@@ -87,7 +87,7 @@ following archive formats:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2012-03-09). The patches are distributed under the same license as
+update: 2012-03-12). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -225,6 +225,22 @@ because of this type limitation or a lack of memory.</li>
 (due to increased working precision) instead of a clean abort.</li>
 </ul>
 </li>
+
+<li id="p8">For users of <acronym>GMP</acronym>'s development
+version (<acronym>GMP</acronym>'s Mercurial repository) and/or
+the future <acronym>GMP</acronym> 5.1.0 version (and later):
+The <samp>mpfr.h</samp> header file uses the <samp>gmp.h</samp>
+internal <code>__gmp_const</code> macro, which has been
+<a href="http://gmplib.org:8000/gmp/rev/d287cfaf6732">removed
+from the <acronym>GMP</acronym> repository on 2012-03-04</a>.
+The <a href="patch08"><samp>__gmp_const</samp> patch</a> provides
+a temporary fix. More precisely, in the past, this macro was used
+for K&amp;R (pre-<acronym>ANSI</acronym>) C compatibility, and it
+should nowadays be defined to <code>const</code>; this is what the
+patch does when <acronym>GMP</acronym> doesn't define this macro.
+Future major <acronym>MPFR</acronym> versions (3.2.0 and later)
+will replace <code>__gmp_const</code> by <code>const</code>, like
+what has been done in <acronym>GMP</acronym>.</li>
 
 </ol>
 
