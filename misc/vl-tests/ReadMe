@@ -7,6 +7,6 @@ mpfrtests.data
   mpfrtests.data file (because the list of machines and paths
   will differ).
 
-release-3.1.0-p4
+release-3.1.0-p8
   Example of mpfrtests.sh output on various machines (obtained
-  with an MPFR 3.1.0-p4 tarball).
+  with MPFR 3.1.0-p4 and 3.1.0-p8 tarballs).

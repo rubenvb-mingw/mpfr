@@ -4,14 +4,28 @@
 # Written in 2011-2012 by Vincent Lefevre.
 #
 # Usage: ./mpfrtests.sh [ +<host> ] [ <archive.tar.gz> ] < mpfrtests.data
+#    or  ./mpfrtests.sh -C
 #
-# A +<host> argument can be needed when the FQDN is not set correctly.
-# The default <archive.tar.gz> value is "mpfr-tests.tar.gz".
-# A file mpfrtests.<host>.out is output.
+# In normal use (first form):
+#   A +<host> argument can be needed when the FQDN is not set correctly.
+#   The default <archive.tar.gz> value is "mpfr-tests.tar.gz".
+#   A file mpfrtests.<host>.out is output.
+# With the -C option (second form):
+#   Clean-up: Any temporary mpfrtests directory is removed (such
+#   a directory isn't removed automatically in case of abnormal
+#   termination, in order to be able to debug).
 
 # For the Solaris /bin/sh
 { a=a; : ${a%b}; } 2> /dev/null || test ! -x /usr/xpg4/bin/sh || \
   exec /usr/xpg4/bin/sh -- "$0" ${1+"$@"}
+
+prefix="/tmp/mpfrtests-$USER-"
+
+if [ "x$1" = "x-C" ]; then
+  chmod -R u+w "$prefix"*
+  rm -rf "$prefix"*
+  exit 0
+fi
 
 set -e
 
@@ -131,7 +145,7 @@ tstall()
 if [ -x configure ]; then
   tstall
 elif [ -f "$tgz" ]; then
-  tmpdir="/tmp/mpfrtests-$USER-$$"
+  tmpdir="${prefix}$$"
   rm -rf "$tmpdir"
   mkdir "$tmpdir"
   chmod 700 "$tmpdir"
@@ -169,4 +183,4 @@ fi
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 49177 2012-01-20 15:17:08Z vinc17/ypig $
+# $Id: mpfrtests.sh 50292 2012-03-12 12:37:59Z vinc17/ypig $

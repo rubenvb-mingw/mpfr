@@ -77,7 +77,7 @@ CONF:CC=gcc-snapshot
 CONF:CFLAGS=-Wall -O3 -march=native -std=gnu99
 INFO:gcc-snapshot --version | head -n 1
 CHECK
-CONF:--with-gmp-build=/home/vlefevre/software/gmp-5.0.1
+CONF:--with-gmp-build=/home/vlefevre/software/gmp-5.0.4
 CONF:CC=gcc-snapshot
 INFO:gcc-snapshot --version | head -n 1
 CHECK
@@ -89,6 +89,12 @@ INFO:perl -pi -e 's/^wl=""/wl="-Wl,"/' libtool
 CHECK
 CONF:--with-gmp=/home/vlefevre/gmp-4.1.4
 CONF:--enable-assert=full
+INFO:gcc --version | head -n 1
+CHECK
+# gmp-dev: a build from the http://gmplib.org:8000/gmp Mercurial repository.
+CONF:--with-gmp=/home/vlefevre/gmp-dev
+CONF:--enable-assert=full
+CONF:--enable-logging
 INFO:gcc --version | head -n 1
 CHECK
 
@@ -152,6 +158,16 @@ HOST:gcc51.fsffrance.org
 PROC:MIPS Loongson 2F
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
+INFO:gcc --version | head -n 1
+CHECK
+
+HOST:gcc49.fsffrance.org
+PROC:MIPS Loongson 3A
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+INFO:gcc --version | head -n 1
+CHECK
+CONF:--enable-gmp-internals
 INFO:gcc --version | head -n 1
 CHECK
 
@@ -241,4 +257,4 @@ CONF:--enable-gmp-internals
 INFO:gcc --version | head -n 1
 CHECK
 
-$Id: mpfrtests.data 48000 2011-12-04 09:39:18Z vinc17/xvii $
+$Id: mpfrtests.data 50291 2012-03-12 11:52:35Z vinc17/ypig $
