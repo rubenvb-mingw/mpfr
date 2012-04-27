@@ -87,7 +87,7 @@ following archive formats:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2012-03-12). The patches are distributed under the same license as
+update: 2012-04-27). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -241,6 +241,11 @@ patch does when <acronym>GMP</acronym> doesn't define this macro.
 Future major <acronym>MPFR</acronym> versions (3.2.0 and later)
 will replace <code>__gmp_const</code> by <code>const</code>, like
 what has been done in <acronym>GMP</acronym>.</li>
+
+<li id="p9">The underflow detection code of <code>mpfr_gamma</code> is
+buggy: some results may incorrectly be regarded as underflow. This bug
+is fixed by the <a href="patch09"><samp>gamma-underflow</samp> patch</a>,
+which also provides a testcase.</li>
 
 </ol>
 
