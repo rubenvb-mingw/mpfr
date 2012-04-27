@@ -245,7 +245,10 @@ what has been done in <acronym>GMP</acronym>.</li>
 <li id="p9">The underflow detection code of <code>mpfr_gamma</code> is
 buggy: some results may incorrectly be regarded as underflow. This bug
 is fixed by the <a href="patch09"><samp>gamma-underflow</samp> patch</a>,
-which also provides a testcase.</li>
+which also provides a testcase. <strong>Warning! While this patch avoids
+incorrect results on values close to underflow, it makes another problem
+appear: a possible infinite loop for some underflow cases. In particular,
+the testsuite will freeze on 32-bit machines.</strong></li>
 
 </ol>
 
