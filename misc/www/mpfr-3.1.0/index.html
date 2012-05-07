@@ -87,7 +87,7 @@ following archive formats:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2012-04-27). The patches are distributed under the same license as
+update: 2012-05-07). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -248,7 +248,14 @@ is fixed by the <a href="patch09"><samp>gamma-underflow</samp> patch</a>,
 which also provides a testcase. <strong>Warning! While this patch avoids
 incorrect results on values close to underflow, it makes another problem
 appear: a possible infinite loop for some underflow cases. In particular,
-the testsuite will freeze on 32-bit machines.</strong></li>
+the testsuite will freeze on 32-bit machines. You also need the following
+patch to avoid that.</strong></li>
+
+<li id="p10">As the early overflow/underflow detection code of
+<code>mpfr_gamma</code> is not exact, the exact detection must be performed
+in the general computation code to avoid an endless loop. This is done by
+the <a href="patch10"><samp>gamma-overunderflow</samp> patch</a>, which
+also provides testcases.</li>
 
 </ol>
 
