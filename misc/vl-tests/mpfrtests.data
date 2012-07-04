@@ -81,6 +81,14 @@ CONF:--with-gmp-build=/home/vlefevre/software/gmp-5.0.4
 CONF:CC=gcc-snapshot
 INFO:gcc-snapshot --version | head -n 1
 CHECK
+CONF:CFLAGS=-O2 -DMPFR_TEST_DIVBYZERO=1 -DMPFR_ERRDIVZERO=1
+CONF:CC=gcc-snapshot
+INFO:gcc-snapshot --version | head -n 1
+CHECK
+CONF:CFLAGS=-O2 -std=c99 -D_MPFR_PREC_FORMAT=2
+CONF:CC=gcc-snapshot
+INFO:gcc-snapshot --version | head -n 1
+CHECK
 CONF:--prefix=/home/vlefevre/notgcc
 CONF:--with-gmp=/home/vlefevre/notgcc
 CONF:--disable-shared
@@ -96,6 +104,12 @@ CONF:--with-gmp=/home/vlefevre/gmp-dev
 CONF:--enable-assert=full
 CONF:--enable-logging
 INFO:gcc --version | head -n 1
+CHECK
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+CONF:CFLAGS=-m32 -O2
+CONF:CC=gcc-4.7
+INFO:gcc-4.7 --version | head -n 1
 CHECK
 
 HOST:patate.lip.ens-lyon.fr
@@ -121,6 +135,12 @@ PROC:Intel Core2 Duo P8600
 CONF:--with-gmp=/usr/local/gmp-4.3.1-debug
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
+INFO:gcc --version | head -n 1
+CHECK
+CONF:CFLAGS=-O2 -DMPFR_TEST_DIVBYZERO=1 -DMPFR_ERRDIVZERO=1
+INFO:gcc --version | head -n 1
+CHECK
+CONF:CFLAGS=-O2 -D_MPFR_PREC_FORMAT=2
 INFO:gcc --version | head -n 1
 CHECK
 
@@ -154,8 +174,9 @@ CONF:--enable-thread-safe
 INFO:gcc --version | head -n 1
 CHECK
 
-HOST:gcc51.fsffrance.org
+HOST:gcc42.fsffrance.org
 PROC:MIPS Loongson 2F
+CONF:--with-gmp=/home/vinc17/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
 INFO:gcc --version | head -n 1
@@ -205,7 +226,9 @@ HOST:gcc61.fsffrance.org
 PROC:PA8600
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
-INFO:gcc --version | head -n 1
+CONF:CC=/opt/cfarm/release/4.4.1/bin/gcc
+CONF:CFLAGS=-Wall -O3 -mpa-risc-1-1 -std=gnu99
+INFO:/opt/cfarm/release/4.4.1/bin/gcc --version | head -n 1
 CHECK
 
 HOST:allo-psmn
@@ -257,4 +280,4 @@ CONF:--enable-gmp-internals
 INFO:gcc --version | head -n 1
 CHECK
 
-$Id: mpfrtests.data 50291 2012-03-12 11:52:35Z vinc17/ypig $
+$Id: mpfrtests.data 52994 2012-07-03 14:26:18Z vinc17/ypig $
