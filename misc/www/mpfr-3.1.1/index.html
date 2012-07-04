@@ -31,6 +31,20 @@
 <p><acronym>MPFR</acronym> 3.1.1 requires <acronym>GMP</acronym> 4.1.0
 or higher (<acronym>GMP</acronym> 4.2.3 or higher is recommended).</p>
 
+<p><strong>Warning! Due to the fact that
+<acronym title="Thread Local Storage">TLS</acronym> support is now detected
+automatically, the <acronym>MPFR</acronym> build can be incorrect on some
+platforms</strong> (compiler or system bug). Indeed,
+<a href="http://www.loria.fr/~zimmerma/software/compilerbugs.html">the
+<acronym>TLS</acronym> implementation of some compilers/platforms is buggy</a>,
+and <acronym>MPFR</acronym> cannot detect every problem at configure time.
+Please run <q><samp>make check</samp></q> to see if your build is affected.
+If you get failures, you should try the <samp>--disable-thread-safe</samp>
+configure option to disable <acronym>TLS</acronym> and see if this solves
+these failures. But you should not use an <acronym>MPFR</acronym> library
+with <acronym>TLS</acronym> disabled in a multithreaded program (unless
+you know what you are doing).</p>
+
 <h2 id="download">Download</h2>
 
 <p>The <acronym>MPFR</acronym> 3.1.1 source can be downloaded in the
