@@ -73,6 +73,11 @@ tst()
         echo "MPFR version: $(cat ${1:-.}/VERSION)" >> "$out"
         unset conf || true
 	;;
+      ENV:*)
+        v="${line#ENV:}"
+        export "$v"
+        env="$env ${v%=*}"
+        ;;
       CONF:*)
         if [ -z "$conf" ]; then
           if [ -z "$1" ]; then
@@ -82,6 +87,7 @@ tst()
             cd obj
             conf="../$1/configure"
           fi
+          envvars=""
         fi
         conf="$conf '${line#CONF:}'"
         ;;
@@ -115,6 +121,7 @@ tst()
           cd ..
           rm -rf obj
         fi
+        [ -z "$env" ] || unset $env
         ;;
       \#*)
         continue
@@ -183,4 +190,4 @@ fi
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 50292 2012-03-12 12:37:59Z vinc17/ypig $
+# $Id: mpfrtests.sh 53113 2012-07-07 01:33:54Z vinc17/xvii $

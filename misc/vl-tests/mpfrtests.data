@@ -225,10 +225,17 @@ CHECK
 HOST:gcc61.fsffrance.org
 PROC:PA8600
 CONF:--enable-assert=full
-CONF:--enable-thread-safe
+CONF:--disable-thread-safe
 CONF:CC=/opt/cfarm/release/4.4.1/bin/gcc
-CONF:CFLAGS=-Wall -O3 -mpa-risc-1-1 -std=gnu99
+CONF:CFLAGS=-Wall -O2 -mpa-risc-1-1 -std=gnu99
 INFO:/opt/cfarm/release/4.4.1/bin/gcc --version | head -n 1
+CHECK
+ENV:LD_LIBRARY_PATH=/home/vinc17/sw/gcc-189305/lib
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+CONF:CC=/home/vinc17/sw/gcc-189305/bin/gcc
+CONF:CFLAGS=-Wall -O3 -mpa-risc-1-1 -std=gnu99
+INFO:/home/vinc17/sw/gcc-189305/bin/gcc --version | head -n 1
 CHECK
 
 HOST:allo-psmn
@@ -280,4 +287,4 @@ CONF:--enable-gmp-internals
 INFO:gcc --version | head -n 1
 CHECK
 
-$Id: mpfrtests.data 52994 2012-07-03 14:26:18Z vinc17/ypig $
+$Id: mpfrtests.data 53113 2012-07-07 01:33:54Z vinc17/xvii $
