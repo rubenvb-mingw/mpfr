@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# Test the tuning of MPFR
+
+set -e
+
+if [ $# -ne 2 ]; then
+  echo "Usage: tune-test <gmp-tarball> <mpfr-tarball>" >&2
+  exit 1
+fi
+
+alias mj="make ${MAKE_JOBS:+-j$MAKE_JOBS}"
+
+dir=`mktemp -d --tmpdir tune-test.XXXXXX`
+echo "Temporary directory: $dir"
+tar -C $dir -xf "$1"
+tar -C $dir -xf "$2"
+
+gmpdir=`echo $dir/gmp*`
+
+echo "Building and tuning GMP..."
+cd $gmpdir
+./configure
+mj
+cd tune
+make tuneup
+make speed
+./tuneup
+cd ..
+mj
+mj check
+
+echo "Building and tuning MPFR..."
+cd $dir/mpfr*
+./configure --with-gmp-build=$gmpdir
+mj
+cd tune
+make tune
+
+cd /tmp
+rm -rf $dir
