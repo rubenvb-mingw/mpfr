@@ -10,3 +10,6 @@ mpfrtests.data
 release-3.1.0-p8
   Example of mpfrtests.sh output on various machines (obtained
   with MPFR 3.1.0-p4 and 3.1.0-p8 tarballs).
+
+vfy-data
+  Check the format of the mpfrtests data file.

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Test of MPFR tarballs with various options.
-# Written in 2011-2012 by Vincent Lefevre.
+# Written in 2011-2013 by Vincent Lefevre.
 #
 # Usage: ./mpfrtests.sh [ +<host> ] [ <archive.tar.gz> ] < mpfrtests.data
 #    or  ./mpfrtests.sh -C
@@ -65,35 +65,52 @@ tst()
   first=1
   while read line
   do
+    printf "%s\n" "$line"
     case "$line" in
       PROC:*)
 	[ -n "$first" ]
         echo "* $fqdn ($(${1:-.}/config.guess) / ${line#PROC:})" > "$out"
         [ -z "$1" ] || echo "with objdir != srcdir" >> "$out"
         echo "MPFR version: $(cat ${1:-.}/VERSION)" >> "$out"
-        unset conf || true
 	;;
+      CHECK-BEGIN)
+        [ -z "$first" ]
+        [ -z "$check" ]
+        check=1
+        if [ -z "$1" ]; then
+          conf="./configure"
+        else
+          mkdir obj
+          cd obj
+          conf="../$1/configure"
+        fi
+        ;;
       ENV:*)
-        v="${line#ENV:}"
+        [ -n "$check" ]
+        v=${line#ENV:}
         export "$v"
         env="$env ${v%=*}"
         ;;
+      EVAL:*)
+        [ -n "$check" ]
+        # NOTE: Do not use commands that could affect later tests unless
+        # this is done on purpose, such as setting environment variables
+        # (for this, use the "ENV:" feature). Use "EVAL:" to run commands
+        # that affect the build, not to output information ("INFO:").
+        cmd=${line#EVAL:}
+        printf "\$ %s\n" "$cmd" >> "$out"
+        eval $cmd
+        ;;
       CONF:*)
-        if [ -z "$conf" ]; then
-          if [ -z "$1" ]; then
-            conf="./configure"
-          else
-            mkdir obj
-            cd obj
-            conf="../$1/configure"
-          fi
-          envvars=""
-        fi
+        [ -n "$check" ]
+        [ -n "$conf" ]
         conf="$conf '${line#CONF:}'"
         ;;
       INFO:*)
+        [ -n "$check" ]
         if [ -n "$conf" ]; then
           echo '$ ./config.status -V' >> "$out"
+          echo "*** Running configure ***"
           dotee "$conf" mpfrtests.cfgout
           ./config.status -V | sed '/with options/q' >> "$out"
           gmpvers=$(sed -n "s/$gmprx/\1/p" mpfrtests.cfgout)
@@ -106,14 +123,18 @@ tst()
         printf "\$ %s\n" "${cmd% | head -n 1}" >> "$out"
         eval $cmd >> "$out"
         ;;
-      CHECK)
+      CHECK-END)
+        [ -n "$check" ]
         [ -z "$conf" ]
+        echo "*** Running make ***"
         eval $mj
+        echo "*** Running make check ***"
         dotee "$mj check" mpfrtests.makeout
         sed -n "/: tzeta_ui/,/tests passed/ {
                   s/^.*\(MPFR tuning parameters.*\)/[\1]/p
                   s/^\(.*tests passed\)/--> \1/p
                 }" mpfrtests.makeout >> "$out"
+        echo "*** Cleaning up ***"
         if [ -z "$1" ]; then
           rm mpfrtests.makeout
           make distclean
@@ -122,6 +143,7 @@ tst()
           rm -rf obj
         fi
         [ -z "$env" ] || unset $env
+        unset check || true
         ;;
       \#*)
         continue
@@ -149,14 +171,24 @@ tstall()
   return 0
 }
 
-if [ -x configure ]; then
-  tstall
-elif [ -f "$tgz" ]; then
+mktmpdir()
+{
   tmpdir="${prefix}$$"
   rm -rf "$tmpdir"
   mkdir "$tmpdir"
   chmod 700 "$tmpdir"
   [ ! -h "$tmpdir" ]
+}
+
+if [ -x configure ]; then
+  # Here the temporary directory is not used by the script itself;
+  # it is created in case it is used by mpfrtests.data commands.
+  mktmpdir
+  [ ! -f Makefile ] || make distclean
+  tstall
+  rm -rf "$tmpdir"
+elif [ -f "$tgz" ]; then
+  mktmpdir
   cd "$tmpdir"
   case "$tgz" in
     /*) ;;
@@ -190,4 +222,4 @@ fi
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 53113 2012-07-07 01:33:54Z vinc17/xvii $
+# $Id: mpfrtests.sh 59095 2013-03-19 16:11:21Z vinc17/ypig $

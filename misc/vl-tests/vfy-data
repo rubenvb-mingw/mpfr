@@ -1,0 +1,56 @@
+#!/bin/sh
+
+# Check the format of the mpfrtests data file from the standard input.
+# In case of error, run "sh -x vfy-data < mpfrtests.data" for a trace.
+
+set -e
+
+nxt=HOST
+while read line
+do
+  : $line
+  case "$line" in
+    HOST:*)
+      [ "$nxt" = HOST ]
+      nxt=PROC
+      ;;
+    PROC:*)
+      [ "$nxt" = PROC ]
+      nxt=CHECK-BEGIN
+      ;;
+    CHECK-BEGIN)
+      [ "$nxt" = CHECK-BEGIN ]
+      nxt=CONF
+      ;;
+    CONF:*)
+      [ "$nxt" = CONF ]
+      ;;
+    INFO:*)
+      [ "$nxt" = CONF ] || [ "$nxt" = INFO ]
+      nxt=INFO
+      ;;
+    ENV:*|EVAL:*)
+      [ "$nxt" = CONF ] || [ "$nxt" = INFO ]
+      ;;
+    CHECK-END)
+      [ "$nxt" = INFO ]
+      nxt=CHECK-BEGIN
+      ;;
+    \#*)
+      # Comment
+      continue
+      ;;
+    ?*)
+      # Any unrecognized non-empty line
+      exit 1
+      ;;
+    *)
+      # Empty line
+      [ "$nxt" = CHECK-BEGIN ]
+      nxt=HOST
+      ;;
+  esac
+done
+[ "$nxt" = CHECK-BEGIN ] || [ "$nxt" = HOST ]
+
+# $Id: vfy-data 59091 2013-03-19 15:17:51Z vinc17/ypig $
