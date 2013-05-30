@@ -1,0 +1,31 @@
+#!/usr/bin/env perl
+
+use strict;
+
+my $end = 99999;
+
+sub range ($)
+  {
+    my ($a,$b);
+    my $r = '';
+    foreach (split(/, */, $_[0]), $end)
+      {
+        $_ == $b + 1 and $b = $_, next;
+        if ($b != $a)
+          {
+            $b > $a or die;
+            $r .= "-$b";
+          }
+        last if $_ == $end;
+        $r .= ", " if $r ne '';
+        $r .= $a = $b = $_;
+      }
+    return $r;
+  }
+
+while (<>)
+  {
+    s[Copyright \K *((\d{4}, *)*\d{4}) *(?= Free Software Foundation)]
+     [range($1)]e;
+    print;
+  }
