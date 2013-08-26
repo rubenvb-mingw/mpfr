@@ -1,3 +1,6 @@
+# TODO: test with gcc -mpc64 under Linux to simulate the FreeBSD/NetBSD
+# behavior (problems may appear with mpfr_get_ld and mpfr_set_ld).
+
 HOST:orge.lip.ens-lyon.fr
 PROC:Intel Xeon E5310 [32 bits]
 CHECK-BEGIN
@@ -82,6 +85,11 @@ CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
 CONF:CC=clang
+INFO:clang --version | head -n 1
+CHECK-END
+CHECK-BEGIN
+CONF:CC=clang
+CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize-recover
 INFO:clang --version | head -n 1
 CHECK-END
 CHECK-BEGIN
@@ -384,4 +392,4 @@ CONF:--enable-gmp-internals
 INFO:gcc --version | head -n 1
 CHECK-END
 
-# $Id: mpfrtests.data 59096 2013-03-19 16:19:24Z vinc17/ypig $
+# $Id: mpfrtests.data 62892 2013-08-26 14:09:09Z vinc17/ypig $

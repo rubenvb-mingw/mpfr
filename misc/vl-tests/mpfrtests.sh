@@ -3,12 +3,12 @@
 # Test of MPFR tarballs with various options.
 # Written in 2011-2013 by Vincent Lefevre.
 #
-# Usage: ./mpfrtests.sh [ +<host> ] [ <archive.tar.gz> ] < mpfrtests.data
+# Usage: ./mpfrtests.sh [ +<host> ] [ <archive.tar.*> ] < mpfrtests.data
 #    or  ./mpfrtests.sh -C
 #
 # In normal use (first form):
 #   A +<host> argument can be needed when the FQDN is not set correctly.
-#   The default <archive.tar.gz> value is "mpfr-tests.tar.gz".
+#   The default <archive.tar.*> value is "mpfr-tests.tar.gz".
 #   A file mpfrtests.<host>.out is output.
 # With the -C option (second form):
 #   Clean-up: Any temporary mpfrtests directory is removed (such
@@ -45,6 +45,13 @@ rm -f "$out"
 gmprx='.*gmp.h version and libgmp version are the same... (\(.*\)\/.*'
 mj="make ${MAKE_JOBS:+-j$MAKE_JOBS}"
 tgz="${1:-mpfr-tests.tar.gz}"
+
+case "$tgz" in
+  *bz2) unarch=bunzip2 ;;
+  *gz)  unarch=gunzip ;;
+  *xz)  unarch=unxz ;;
+  *) echo "Unknown file extension in $tgz" >&2; exit 1 ;;
+esac
 
 # Note: the "|| true" is for NetBSD's buggy sh.
 unset tmpdir || true
@@ -194,7 +201,7 @@ elif [ -f "$tgz" ]; then
     /*) ;;
     *) tgz="$pwd/$tgz" ;;
   esac
-  gunzip -c "$tgz" | tar xf -
+  $unarch -c "$tgz" | tar xf -
   # When $$ (the PID) is even, test MPFR with objdir != srcdir.
   case $$ in
     *[02468])
@@ -222,4 +229,4 @@ fi
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 59095 2013-03-19 16:11:21Z vinc17/ypig $
+# $Id: mpfrtests.sh 60933 2013-06-05 14:12:01Z vinc17/ypig $

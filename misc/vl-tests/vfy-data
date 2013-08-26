@@ -46,11 +46,11 @@ do
       ;;
     *)
       # Empty line
-      [ "$nxt" = CHECK-BEGIN ]
+      [ "$nxt" = CHECK-BEGIN ] || [ "$nxt" = HOST ]
       nxt=HOST
       ;;
   esac
 done
 [ "$nxt" = CHECK-BEGIN ] || [ "$nxt" = HOST ]
 
-# $Id: vfy-data 59091 2013-03-19 15:17:51Z vinc17/ypig $
+# $Id: vfy-data 62526 2013-08-11 22:16:56Z vinc17/ypig $
