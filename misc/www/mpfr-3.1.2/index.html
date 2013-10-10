@@ -179,7 +179,8 @@ in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=8684">8684</a>.</li>
 
 <li id="p3">Some <samp>tget_flt</samp> tests fail in environments where
-native division by zero is not supported, <abbr>e.g.</abbr> regarded as
+native C floating-point division by zero is not supported,
+<abbr>e.g.</abbr> regarded as
 an error, such as with <cite>Clang</cite>'s sanitizer; some similar tests
 were already disabled in such a case, but not all. The <samp>tset_ld</samp>
 test triggers a useless overflow on a <code>double</code>. These problems
