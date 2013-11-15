@@ -99,7 +99,7 @@ The key fingerprint is:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2013-10-10). The patches are distributed under the same license as
+update: 2013-11-15). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -190,6 +190,17 @@ which also disables constant division by zero on the native C type
 <a href="http://llvm.org/bugs/show_bug.cgi?id=17381">incorrect code</a>.
 Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=8691">8691</a>.</li>
+
+<li id="p4">The formatted output functions (<samp>mpfr_*printf</samp>) are
+incorrect on the value 0 when using the alternative form (<samp>#</samp>
+flag), a positive precision, and the <samp>g</samp> or <samp>G</samp>
+conversion specifier: there is one additional trailing 0. The corresponding
+test is also incorrect (explaining why the bug was not detected). These
+problems are fixed by the <a href="patch04"><samp>printf-alt0</samp></a>
+patch, which also provides some additional related tests.
+Corresponding changesets in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=8708">8708</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=8710">8710</a>.</li>
 
 </ol>
 
