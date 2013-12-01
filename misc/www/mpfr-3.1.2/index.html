@@ -99,7 +99,7 @@ The key fingerprint is:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2013-11-15). The patches are distributed under the same license as
+update: 2013-12-01). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -201,6 +201,15 @@ patch, which also provides some additional related tests.
 Corresponding changesets in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=8708">8708</a>,
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=8710">8710</a>.</li>
+
+<li id="p5">Only for applications using the custom interface:
+The <samp>mpfr_custom_init_set</samp> macro has a
+<a href="https://sympa.inria.fr/sympa/arc/mpfr/2013-11/msg00029.html">typo
+in a variable name</a>, which can yield incorrect behavior if the
+second argument is not a simple expression. This bug is fixed by
+the <a href="patch05"><samp>custom_init_set</samp></a> patch.
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=8717">8717</a>.</li>
 
 </ol>
 
