@@ -20,7 +20,10 @@
             encoding="iso-8859-1"
             doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
             doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
-            indent="no"/>
+            />
+
+<!-- See https://bugzilla.gnome.org/show_bug.cgi?id=705489
+     about indentation with libxslt 1.1.27+ -->
 
 <xsl:template match="/">
   <xsl:comment>
