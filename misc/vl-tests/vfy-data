@@ -1,9 +1,12 @@
 #!/bin/sh
 
-# Check the format of the mpfrtests data file from the standard input.
-# In case of error, run "sh -x vfy-data < mpfrtests.data" for a trace.
+# Check the format of the mpfrtests data file provided in argument or
+# from the standard input.
+# In case of error, run "sh -x vfy-data mpfrtests.data" for a trace.
 
 set -e
+
+[ -z "$1" ] || exec < "$1"
 
 nxt=HOST
 while read line
@@ -18,7 +21,7 @@ do
       [ "$nxt" = PROC ]
       nxt=CHECK-BEGIN
       ;;
-    CHECK-BEGIN)
+    CHECK-BEGIN*)
       [ "$nxt" = CHECK-BEGIN ]
       nxt=CONF
       ;;
@@ -53,4 +56,4 @@ do
 done
 [ "$nxt" = CHECK-BEGIN ] || [ "$nxt" = HOST ]
 
-# $Id: vfy-data 62526 2013-08-11 22:16:56Z vinc17/ypig $
+# $Id: vfy-data 66746 2014-01-22 09:53:52Z vinc17/ypig $

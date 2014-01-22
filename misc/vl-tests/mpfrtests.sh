@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Test of MPFR tarballs with various options.
-# Written in 2011-2013 by Vincent Lefevre.
+# Written in 2011-2014 by Vincent Lefevre.
 #
 # Usage: ./mpfrtests.sh [ +<host> ] [ <archive.tar.*> ] < mpfrtests.data
 #    or  ./mpfrtests.sh -C
@@ -78,18 +78,28 @@ tst()
 	[ -n "$first" ]
         echo "* $fqdn ($(${1:-.}/config.guess) / ${line#PROC:})" > "$out"
         [ -z "$1" ] || echo "with objdir != srcdir" >> "$out"
-        echo "MPFR version: $(cat ${1:-.}/VERSION)" >> "$out"
+        version=$(cat ${1:-.}/VERSION)
+        echo "MPFR version: $version" >> "$out"
+        versnum=$(eval "expr $(echo $version | \
+          sed -n 's/^\([0-9]\+\)\.\([0-9]\+\)\..*/100 \\* \1 + \2/p')")
 	;;
-      CHECK-BEGIN)
+      CHECK-BEGIN*)
         [ -z "$first" ]
         [ -z "$check" ]
-        check=1
-        if [ -z "$1" ]; then
-          conf="./configure"
+        if expr $versnum ${line#CHECK-BEGIN} > /dev/null; then
+          check=1
+          if [ -z "$1" ]; then
+            conf="./configure"
+          else
+            mkdir obj
+            cd obj
+            conf="../$1/configure"
+          fi
         else
-          mkdir obj
-          cd obj
-          conf="../$1/configure"
+          while read line
+          do
+            if [ "$line" = CHECK-END ]; then break; fi
+          done
         fi
         ;;
       ENV:*)
@@ -234,4 +244,4 @@ fi
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 66735 2014-01-21 23:07:24Z vinc17/ypig $
+# $Id: mpfrtests.sh 66746 2014-01-22 09:53:52Z vinc17/ypig $
