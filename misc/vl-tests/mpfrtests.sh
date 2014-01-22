@@ -140,6 +140,11 @@ tst()
         sed -n "/: tzeta_ui/,/tests passed/ {
                   s/^.*\(MPFR tuning parameters.*\)/[\1]/p
                   s/^\(.*tests passed\)/--> \1/p
+                  / PASS:/,/ FAIL:/H
+                  / ERROR:/ {
+                    g
+                    s,.* PASS: *\([0-9]\+\).* SKIP: *\([0-9]\+\).* FAIL: *\([0-9]\+\).*,--> PASS: \1 / SKIP: \2 / FAIL: \3,p
+                  }
                 }" mpfrtests.makeout >> "$out"
         echo "*** Cleaning up ***"
         if [ -z "$1" ]; then
@@ -229,4 +234,4 @@ fi
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 60933 2013-06-05 14:12:01Z vinc17/ypig $
+# $Id: mpfrtests.sh 66735 2014-01-21 23:07:24Z vinc17/ypig $
