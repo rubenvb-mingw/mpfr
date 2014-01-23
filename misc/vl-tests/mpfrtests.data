@@ -158,12 +158,20 @@ INFO:gcc-snapshot --version | head -n 1
 INFO:hg identify -n /home/vlefevre/software/gmp-dev
 CHECK-END
 CHECK-BEGIN
-EVAL:mkdir $tmpdir/include
-EVAL:echo invalid > $tmpdir/include/stdint.h
-EVAL:C_INCLUDE_PATH=$tmpdir/include
+ENV:C_INCLUDE_PATH=$tmpdir/include
+EVAL:mkdir $C_INCLUDE_PATH
+EVAL:echo invalid > $C_INCLUDE_PATH/stdint.h
 CONF:CFLAGS=-O2 -ansi -pedantic-errors
 INFO:gcc --version | head -n 1
 INFO:echo "#include <stdint.h>" | gcc -H -E - 2>&1 >/dev/null | head -n 1
+CHECK-END
+CHECK-BEGIN
+ENV:PATH=$HOME/tcc/bin:$PATH
+CONF:--enable-assert=full
+CONF:--disable-shared
+CONF:CC=tcc
+CONF:CFLAGS=-O2
+INFO:tcc -version
 CHECK-END
 
 HOST:tomate.lip.ens-lyon.fr
@@ -392,4 +400,4 @@ CONF:--enable-gmp-internals
 INFO:gcc --version | head -n 1
 CHECK-END
 
-# $Id: mpfrtests.data 66746 2014-01-22 09:53:52Z vinc17/ypig $
+# $Id: mpfrtests.data 66783 2014-01-23 17:34:34Z vinc17/ypig $

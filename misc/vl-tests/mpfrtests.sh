@@ -75,14 +75,14 @@ tst()
     printf "%s\n" "$line"
     case "$line" in
       PROC:*)
-	[ -n "$first" ]
+        [ -n "$first" ]
         echo "* $fqdn ($(${1:-.}/config.guess) / ${line#PROC:})" > "$out"
         [ -z "$1" ] || echo "with objdir != srcdir" >> "$out"
         version=$(cat ${1:-.}/VERSION)
         echo "MPFR version: $version" >> "$out"
         versnum=$(eval "expr $(echo $version | \
           sed -n 's/^\([0-9]\+\)\.\([0-9]\+\)\..*/100 \\* \1 + \2/p')")
-	;;
+        ;;
       CHECK-BEGIN*)
         [ -z "$first" ]
         [ -z "$check" ]
@@ -104,9 +104,17 @@ tst()
         ;;
       ENV:*)
         [ -n "$check" ]
+        # NOTE: The environment will be restored before the next test.
         v=${line#ENV:}
-        export "$v"
-        env="$env ${v%=*}"
+        var=${v%%=*}
+        val=$(env | grep "^$var=" || true)
+        if [ -z "$val" ]; then
+          env="$env unset $var;"
+        else
+          env="$env $var=\"${val#*=}\";"
+        fi
+        printf "ENV: %s\n" "$v" >> "$out"
+        eval "export $v"
         ;;
       EVAL:*)
         [ -n "$check" ]
@@ -164,7 +172,7 @@ tst()
           cd ..
           rm -rf obj
         fi
-        [ -z "$env" ] || unset $env
+        [ -z "$env" ] || eval "$env"
         unset check || true
         ;;
       \#*)
@@ -244,4 +252,4 @@ fi
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 66746 2014-01-22 09:53:52Z vinc17/ypig $
+# $Id: mpfrtests.sh 66782 2014-01-23 17:31:29Z vinc17/ypig $
