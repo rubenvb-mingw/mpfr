@@ -43,13 +43,14 @@ CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
-CONF:CFLAGS=-Wall -std=c99 -O3 -D_XOPEN_SOURCE=500 -ftrapv
+CONF:CFLAGS=-Wall -std=c99 -O3 -D_XOPEN_SOURCE=500 -ftrapv -pedantic-errors
 INFO:gcc --version | head -n 1
 CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
-CONF:CFLAGS=-Wall -Wformat=2 -O2 -ansi -pedantic-errors
+# Assertions generate long strings for ISO C90; not a problem in practice.
+CONF:CFLAGS=-Wall -Wformat=2 -O2 -ansi -pedantic-errors -Wno-error=overlength-strings
 INFO:gcc --version | head -n 1
 CHECK-END
 CHECK-BEGIN
@@ -149,6 +150,13 @@ CONF:CC=gcc-4.7
 INFO:gcc-4.7 --version | head -n 1
 CHECK-END
 CHECK-BEGIN
+CONF:--with-gmp-build=/home/vlefevre/software/gmp-6.0.0
+CONF:--enable-assert=full
+CONF:--enable-decimal-float
+CONF:--enable-logging
+INFO:gcc --version | head -n 1
+CHECK-END
+CHECK-BEGIN
 # software/gmp-dev directory: clone of http://gmplib.org:8000/gmp (Mercurial).
 CONF:--with-gmp-build=/home/vlefevre/software/gmp-dev
 CONF:--enable-assert=full
@@ -161,7 +169,7 @@ CHECK-BEGIN
 ENV:C_INCLUDE_PATH=$tmpdir/include
 EVAL:mkdir $C_INCLUDE_PATH
 EVAL:echo invalid > $C_INCLUDE_PATH/stdint.h
-CONF:CFLAGS=-O2 -ansi -pedantic-errors
+CONF:CFLAGS=-O2 -std=c99 -pedantic-errors
 INFO:gcc --version | head -n 1
 INFO:echo "#include <stdint.h>" | gcc -H -E - 2>&1 >/dev/null | head -n 1
 CHECK-END
@@ -400,4 +408,4 @@ CONF:--enable-gmp-internals
 INFO:gcc --version | head -n 1
 CHECK-END
 
-# $Id: mpfrtests.data 66783 2014-01-23 17:34:34Z vinc17/ypig $
+# $Id: mpfrtests.data 68779 2014-04-15 15:33:17Z vinc17/ypig $
