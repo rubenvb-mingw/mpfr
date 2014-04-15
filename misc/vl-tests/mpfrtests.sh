@@ -81,7 +81,7 @@ tst()
         version=$(cat ${1:-.}/VERSION)
         echo "MPFR version: $version" >> "$out"
         versnum=$(eval "expr $(echo $version | \
-          sed -n 's/^\([0-9]\+\)\.\([0-9]\+\)\..*/100 \\* \1 + \2/p')")
+          sed -n 's/^\([0-9]\{1,\}\)\.\([0-9]\{1,\}\)\..*/100 \\* \1 + \2/p')")
         ;;
       CHECK-BEGIN*)
         [ -z "$first" ]
@@ -161,7 +161,7 @@ tst()
                   / PASS:/,/ FAIL:/H
                   / ERROR:/ {
                     g
-                    s,.* PASS: *\([0-9]\+\).* SKIP: *\([0-9]\+\).* FAIL: *\([0-9]\+\).*,--> PASS: \1 / SKIP: \2 / FAIL: \3,p
+                    s!.* PASS: *\([0-9]\{1,\}\).* SKIP: *\([0-9]\{1,\}\).* FAIL: *\([0-9]\{1,\}\).*!--> PASS: \1 / SKIP: \2 / FAIL: \3!p
                   }
                 }" mpfrtests.makeout >> "$out"
         echo "*** Cleaning up ***"
@@ -252,4 +252,4 @@ fi
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 66782 2014-01-23 17:31:29Z vinc17/ypig $
+# $Id: mpfrtests.sh 68790 2014-04-15 23:20:44Z vinc17/xvii $
