@@ -142,11 +142,20 @@ tst()
           [ -n "$gmpvers" ]
           printf "[GMP %s]\n" "$gmpvers" >> "$out"
           rm mpfrtests.cfgout
+          CC=$(sed -n 's/^CC *= *//p' Makefile)
           unset conf || true
         fi
         cmd=${line#INFO:}
-        printf "\$ %s\n" "${cmd% | head -n 1}" >> "$out"
-        eval $cmd >> "$out"
+        case "$cmd" in
+          CCV:*)
+            printf "CC = %s\n" "$CC" >> "$out"
+            eval "$CC ${cmd#CCV:} 2>&1 | head -n 1" >> "$out"
+            ;;
+          *)
+            printf "\$ %s\n" "${cmd% | head -n 1}" >> "$out"
+            eval $cmd >> "$out"
+            ;;
+        esac
         ;;
       CHECK-END)
         [ -n "$check" ]
@@ -252,4 +261,4 @@ fi
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 68790 2014-04-15 23:20:44Z vinc17/xvii $
+# $Id: mpfrtests.sh 69013 2014-04-25 12:10:18Z vinc17/ypig $

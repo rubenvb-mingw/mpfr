@@ -7,27 +7,27 @@ CHECK-BEGIN
 CONF:--with-gmp=/home/vlefevre/i686/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 #CHECK-BEGIN
 #CONF:--with-gmp=/home/vlefevre/i686/gmp-debug
 #CONF:--enable-assert=full
 #CONF:CC=icc
-#INFO:icc --version | head -n 1
+#INFO:CCV:--version
 #CHECK-END
 CHECK-BEGIN
 CONF:CFLAGS=-Wall -O2 -ansi -pedantic-errors
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--enable-gmp-internals
 CONF:CC=g++
-INFO:g++ --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN < 302
 CONF:--with-gmp=/home/vlefevre/i686-gmp-4.1.4
 CONF:--enable-assert=full
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 
 HOST:ypig.lip.ens-lyon.fr
@@ -38,33 +38,33 @@ CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-shared
 CONF:--enable-thread-safe
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:CFLAGS=-Wall -std=c99 -O3 -D_XOPEN_SOURCE=500 -ftrapv -pedantic-errors
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 # Assertions generate long strings for ISO C90; not a problem in practice.
 CONF:CFLAGS=-Wall -Wformat=2 -O2 -ansi -pedantic-errors -Wno-error=overlength-strings
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
 CONF:CC=g++
-INFO:g++ --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-gmp-internals
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
@@ -72,49 +72,54 @@ CONF:--enable-assert=full
 CONF:--enable-gmp-internals
 CONF:--enable-thread-safe
 CONF:CC=g++
-INFO:g++ --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
 CONF:CC=llvm-gcc
-INFO:llvm-gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
 CONF:CC=clang
-INFO:clang --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:CC=clang
 CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize-recover
-INFO:clang --version | head -n 1
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:CC=clang
+CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-logging
 CONF:CC=gcc-snapshot
-CONF:CFLAGS=-Wall -O3 -march=native -std=gnu99
-INFO:gcc-snapshot --version | head -n 1
+CONF:CFLAGS=-Wall -O3 -march=native -fsanitize=undefined -fno-sanitize-recover
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp-build=/home/vlefevre/software/gmp-5.1.3
 CONF:CC=gcc-snapshot
-INFO:gcc-snapshot --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
-CONF:CFLAGS=-O2 -DMPFR_TEST_DIVBYZERO=1 -DMPFR_ERRDIVZERO=1
+CONF:CFLAGS=-O2 -std=gnu99 -DMPFR_TEST_DIVBYZERO=1 -DMPFR_ERRDIVZERO=1
 CONF:CC=gcc-snapshot
-INFO:gcc-snapshot --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:CFLAGS=-O2 -std=c99 -D_MPFR_PREC_FORMAT=2
 CONF:CC=gcc-snapshot
-INFO:gcc-snapshot --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--prefix=/home/vlefevre/notgcc
@@ -126,35 +131,35 @@ CHECK-END
 CHECK-BEGIN < 302
 CONF:--with-gmp=/home/vlefevre/gmp-4.1.4
 CONF:--enable-assert=full
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 # gmp-dev: a build from the http://gmplib.org:8000/gmp Mercurial repository.
 CONF:--with-gmp=/home/vlefevre/gmp-dev
 CONF:--enable-assert=full
 CONF:--enable-logging
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
 CONF:CFLAGS=-m32 -O2
 CONF:CC=gcc-4.7
-INFO:gcc-4.7 --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp-build=/home/vlefevre/software/gmp-5.1.3
 CONF:--enable-assert=full
 CONF:--enable-decimal-float
 CONF:CC=gcc-4.7
-INFO:gcc-4.7 --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp-build=/home/vlefevre/software/gmp-6.0.0
 CONF:--enable-assert=full
 CONF:--enable-decimal-float
 CONF:--enable-logging
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 # software/gmp-dev directory: clone of http://gmplib.org:8000/gmp (Mercurial).
@@ -162,7 +167,7 @@ CONF:--with-gmp-build=/home/vlefevre/software/gmp-dev
 CONF:--enable-assert=full
 CONF:--enable-decimal-float
 CONF:CC=gcc-snapshot
-INFO:gcc-snapshot --version | head -n 1
+INFO:CCV:--version
 INFO:hg identify -n /home/vlefevre/software/gmp-dev
 CHECK-END
 CHECK-BEGIN
@@ -170,7 +175,7 @@ ENV:C_INCLUDE_PATH=$tmpdir/include
 EVAL:mkdir $C_INCLUDE_PATH
 EVAL:echo invalid > $C_INCLUDE_PATH/stdint.h
 CONF:CFLAGS=-O2 -std=c99 -pedantic-errors
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 INFO:echo "#include <stdint.h>" | gcc -H -E - 2>&1 >/dev/null | head -n 1
 CHECK-END
 CHECK-BEGIN
@@ -179,7 +184,7 @@ CONF:--enable-assert=full
 CONF:--disable-shared
 CONF:CC=tcc
 CONF:CFLAGS=-O2
-INFO:tcc -version
+INFO:CCV:-version
 CHECK-END
 
 HOST:tomate.lip.ens-lyon.fr
@@ -188,7 +193,7 @@ CHECK-BEGIN
 CONF:--with-gmp=/home/vlefevre/x86_64/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 #CHECK-BEGIN
 #CONF:--with-gmp=/home/vlefevre/x86_64/gmp-debug
@@ -200,7 +205,7 @@ CHECK-END
 #CONF:--with-gmp=/home/vlefevre/x86_64/gmp-debug
 #CONF:--enable-assert=full
 #CONF:CC=icc
-#INFO:icc --version | head -n 1
+#INFO:CCV:--version
 #CHECK-END
 
 HOST:xvii.vinc17.org
@@ -210,34 +215,34 @@ EVAL:unset CPATH C_INCLUDE_PATH LIBRARY_PATH LD_LIBRARY_PATH
 CONF:--with-gmp=/usr/local/gmp-4.3.1-debug
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:CFLAGS=-O2 -DMPFR_TEST_DIVBYZERO=1 -DMPFR_ERRDIVZERO=1
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:CFLAGS=-O2 -D_MPFR_PREC_FORMAT=2
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp-build=/home/vinc17/software/gmp-5.1.1
 CONF:CC=gcc-snapshot
-INFO:gcc-snapshot --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 
 HOST:gcc60.fsffrance.org
 PROC:Itanium 2 Madison
 CHECK-BEGIN
 CONF:--enable-assert=full
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 
 HOST:gcc66.fsffrance.org
 PROC:Itanium 2 Madison
 CHECK-BEGIN
 CONF:--enable-assert=full
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 
 HOST:ay.vinc17.org
@@ -246,11 +251,11 @@ CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--enable-gmp-internals
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 
 HOST:gcc110.fsffrance.org
@@ -258,7 +263,7 @@ PROC:POWER7
 CHECK-BEGIN
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 
 HOST:gcc42.fsffrance.org
@@ -267,7 +272,7 @@ CHECK-BEGIN
 CONF:--with-gmp=/home/vinc17/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 
 HOST:gcc49.fsffrance.org
@@ -275,22 +280,22 @@ PROC:MIPS Loongson 3A
 CHECK-BEGIN
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--enable-gmp-internals
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 
 HOST:gcc62.fsffrance.org
 PROC:TI UltraSparc II BlackBird
 CHECK-BEGIN
 CONF:--enable-assert=full
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--enable-gmp-internals
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 
 HOST:n810.vinc17.org
@@ -299,14 +304,14 @@ CHECK-BEGIN
 CONF:--enable-shared
 CONF:--enable-thread-safe
 CONF:--enable-assert=full
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 
 HOST:gcc33.fsffrance.org
 PROC:ARM Freescale i.MX515
 CHECK-BEGIN
 CONF:--enable-assert=full
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 
 HOST:gcc55.fsffrance.org
@@ -314,7 +319,7 @@ PROC:ARM Feroceon 88FR131
 CHECK-BEGIN
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 
 HOST:ypig-arm.vinc17.org
@@ -322,7 +327,7 @@ PROC:ARM926EJ-S rev 5 [qemu]
 CHECK-BEGIN
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 
 HOST:gcc61.fsffrance.org
@@ -332,7 +337,7 @@ CONF:--enable-assert=full
 CONF:--disable-thread-safe
 CONF:CC=/opt/cfarm/release/4.4.1/bin/gcc
 CONF:CFLAGS=-Wall -O2 -mpa-risc-1-1 -std=gnu99
-INFO:/opt/cfarm/release/4.4.1/bin/gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 ENV:LD_LIBRARY_PATH=/home/vinc17/sw/gcc-189305/lib
@@ -340,7 +345,7 @@ CONF:--enable-assert=full
 CONF:--enable-thread-safe
 CONF:CC=/home/vinc17/sw/gcc-189305/bin/gcc
 CONF:CFLAGS=-Wall -O3 -mpa-risc-1-1 -std=gnu99
-INFO:/home/vinc17/sw/gcc-189305/bin/gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 
 HOST:allo-psmn
@@ -349,7 +354,7 @@ CHECK-BEGIN
 CONF:--with-gmp=/home/vlefevre/i386-solaris
 CONF:--disable-dependency-tracking
 CONF:--enable-assert=full
-INFO:cc -V 2>&1 | head -n 1
+INFO:CCV:-V
 CHECK-END
 
 HOST:prunille.vinc17.org
@@ -358,17 +363,17 @@ CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-assert
 CONF:--enable-assert=full
 CONF:--enable-shared
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--enable-assert=full
 CONF:CFLAGS=-m64 -ftrapv
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-5.0.1-mode32
 CONF:--enable-assert=full
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 
 HOST:gcc101.fsffrance.org
@@ -376,7 +381,7 @@ PROC:AMD Opteron 252
 CHECK-BEGIN
 CONF:--with-gmp=/home/vinc17/gmp-debug
 CONF:--enable-assert=full
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 
 HOST:freebsd-83-amd64.gcc76.fsffrance.org
@@ -384,7 +389,7 @@ PROC:Intel Core i7-2600
 CHECK-BEGIN
 CONF:--with-gmp=/scratch/vinc17/freebsd-83-amd64
 CONF:--enable-assert=full
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 
 HOST:gcc70.fsffrance.org
@@ -392,7 +397,7 @@ PROC:Intel Xeon 3.2E Irwindale
 CHECK-BEGIN
 CONF:--with-gmp=/home/vinc17/gmp-debug
 CONF:--enable-assert=full
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 
 HOST:gcc64.fsffrance.org
@@ -400,12 +405,12 @@ PROC:Sun UltraSPARC-IIIi
 CHECK-BEGIN
 CONF:--with-gmp=/home/vinc17/gmp-debug
 CONF:--enable-assert=full
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=/home/vinc17/gmp-debug
 CONF:--enable-gmp-internals
-INFO:gcc --version | head -n 1
+INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 68779 2014-04-15 15:33:17Z vinc17/ypig $
+# $Id: mpfrtests.data 69476 2014-05-14 14:00:25Z vinc17/ypig $
