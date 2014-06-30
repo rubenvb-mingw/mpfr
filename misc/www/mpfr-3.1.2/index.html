@@ -99,7 +99,7 @@ The key fingerprint is:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2014-04-16). The patches are distributed under the same license as
+update: 2014-06-30). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -166,16 +166,16 @@ and the code will behave as expected (this is why the bug hadn't been
 detected until now). But problems may occur if a sanitizer is used (this is
 how this bug was detected) or possibly in case of advanced optimizations,
 such as <acronym title="link-time optimization">LTO</acronym>.
-This is fixed by the <a href="patch01"><samp>exp_2</samp> patch</a>,
-which corresponds to the following changeset in the 3.1 branch:
+This is fixed by the <a href="patch01"><samp>exp_2</samp> patch</a>.<br />
+Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=8683">8683</a>.</li>
 
 <li id="p2">The <code>mpfr_fits_u*_p</code> functions return 0
 (<q>doesn't fit</q>) instead of non-zero (<q>fits</q>) on negative arguments
 for which the rounding to an integer in the given rounding mode is 0. This
 bug is fixed by the <a href="patch02"><samp>fits-smallneg</samp> patch</a>,
-which also updates the testcases. It corresponds to the following changeset
-in the 3.1 branch:
+which also updates the testcases.<br />
+Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=8684">8684</a>.</li>
 
 <li id="p3">Some <samp>tget_flt</samp> tests fail in environments where
@@ -187,7 +187,7 @@ test triggers a useless overflow on a <code>double</code>. These problems
 are fixed by the <a href="patch03"><samp>clang-divby0</samp> patch</a>,
 which also disables constant division by zero on the native C type
 <code>double</code> with <cite>Clang</cite> in order to avoid
-<a href="http://llvm.org/bugs/show_bug.cgi?id=17381">incorrect code</a>.
+<a href="http://llvm.org/bugs/show_bug.cgi?id=17381">incorrect code</a>.<br />
 Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=8691">8691</a>.</li>
 
@@ -197,7 +197,7 @@ flag), a positive precision, and the <samp>g</samp> or <samp>G</samp>
 conversion specifier: there is one additional trailing 0. The corresponding
 test is also incorrect (explaining why the bug was not detected). These
 problems are fixed by the <a href="patch04"><samp>printf-alt0</samp>
-patch</a>, which also provides some additional related tests.
+patch</a>, which also provides some additional related tests.<br />
 Corresponding changesets in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=8708">8708</a>,
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=8710">8710</a>.</li>
@@ -207,13 +207,14 @@ The <samp>mpfr_custom_init_set</samp> macro has a
 <a href="https://sympa.inria.fr/sympa/arc/mpfr/2013-11/msg00029.html">typo
 in a variable name</a>, which can yield incorrect behavior if the
 second argument is not a simple expression. This bug is fixed by
-the <a href="patch05"><samp>custom_init_set</samp> patch</a>.
+the <a href="patch05"><samp>custom_init_set</samp> patch</a>.<br />
 Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=8717">8717</a>.</li>
 
-<li id="p6">The <samp>li2.c</samp> build fails with the <acronym>GCC</acronym>
-<samp>-Werror=return-type</samp> option when logging has been enabled. This
-problem is fixed by the <a href="patch06"><samp>li2-return</samp> patch</a>.
+<li id="p6">The build fails on <samp>li2.c</samp> with the
+<acronym>GCC</acronym> <samp>-Werror=return-type</samp> option
+when logging has been enabled. This problem is fixed by the
+<a href="patch06"><samp>li2-return</samp> patch</a>.<br />
 Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=8801">8801</a>.</li>
 
@@ -221,15 +222,35 @@ Corresponding changeset in the 3.1 branch:
 output precisions larger than or equal to <code>MPFR_EXP_THRESHOLD</code>
 (several thousands of bits; its value depends on the architecture). This
 bug is fixed by the <a href="patch07"><samp>exp3</samp> patch</a>, which
-also provides a testcase. Corresponding changeset in the 3.1 branch:
+also provides a testcase.<br />
+Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=8803">8803</a>.</li>
 
 <li id="p8">This <acronym>MPFR</acronym> release fails to build with
 <acronym>GMP</acronym> 6 when the <samp>--with-gmp-build</samp> configure
 option is used. The <a href="patch08"><samp>gmp6-compat</samp> patch</a>
-fixes this compatibility problem.
+fixes this compatibility problem.<br />
 Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=9034">9034</a>.</li>
+
+<li id="p9">When dividing a very large number (near the maximum finite
+one, in absolute value) by a very small number (near the minimum one,
+in absolute value), an integer overflow occurs in the computation of
+the exponent of the result, yielding undefined behavior, such as the
+result 0 instead of infinity. This bug is fixed by the
+<a href="patch09"><samp>div-overflow</samp> patch</a>, which also
+provides a testcase.<br />
+Corresponding changesets in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=9102">9102</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=9104">9104</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=9105">9105</a>.</li>
+
+<li id="p10">The <samp>vasprintf.c</samp> source file contains incorrect
+assertions, which may fail while the computation is valid. These assertions
+are fixed by the <a href="patch10"><samp>vasprintf</samp> patch</a>, which
+also provides a testcase.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=9110">9110</a>.</li>
 
 </ol>
 
