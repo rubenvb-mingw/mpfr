@@ -26,7 +26,7 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 #include "gmp.h"
 #include "mpfr.h"
 
-#include "fmprb.h"
+#include "arb.h"
 
 #if defined (USG) || defined (__SVR4) || defined (_UNICOS) || defined(HPUX)
 #include <time.h>
@@ -56,7 +56,7 @@ int
 main (int argc, char *argv[])
 {
   int n, prec, st, st2, N, i;
-  fmprb_t x, y, z;
+  arb_t x, y, z;
   
   if (argc != 2 && argc != 3)
     {
@@ -64,25 +64,25 @@ main (int argc, char *argv[])
       exit(1);
     }
 
-  printf ("Using ARB-%s with GMP-%s\n", "1.0.0", gmp_version);
+  printf ("Using ARB-%s with GMP-%s\n", "2.3.0", gmp_version);
   n = atoi(argv[1]);
   prec = (int) ( n * log(10.0) / log(2.0) + 1.0 );
   printf("[precision is %u bits]\n", prec);
 
-  fmprb_init(x); fmprb_init(y); fmprb_init(z);
+  arb_init(x); arb_init(y); arb_init(z);
 
-  fmprb_set_ui(x, 3);
-  fmprb_sqrt(x, x, prec);
-  fmprb_sub_ui(x, x, 1, prec);
+  arb_set_ui(x, 3);
+  arb_sqrt(x, x, prec);
+  arb_sub_ui(x, x, 1, prec);
 
-  fmprb_set_ui(y, 5);
-  fmprb_sqrt(y, y, prec);
+  arb_set_ui(y, 5);
+  arb_sqrt(y, y, prec);
 
-  fmprb_log(z, x, prec);
+  arb_log(z, x, prec);
 
   N=1;  st = cputime();
   do {
-    for (i=0;i<N;i++) fmprb_mul(z, x, y, prec);
+    for (i=0;i<N;i++) arb_mul(z, x, y, prec);
     N=2*N;
     st2=cputime();
   } while (st2-st<1000); 	  
@@ -91,7 +91,7 @@ main (int argc, char *argv[])
 
   N=1;  st = cputime();
   do {
-    for (i=0;i<N;i++) fmprb_mul(z, x, x, prec);
+    for (i=0;i<N;i++) arb_mul(z, x, x, prec);
     N=2*N;
     st2=cputime();
   } while (st2-st<1000); 	  
@@ -100,7 +100,7 @@ main (int argc, char *argv[])
 
   N=1;  st = cputime();
   do {
-    for (i=0;i<N;i++) fmprb_div(z, x, y, prec);
+    for (i=0;i<N;i++) arb_div(z, x, y, prec);
     N=2*N;
     st2=cputime();
   } while (st2-st<1000); 	  
@@ -109,7 +109,7 @@ main (int argc, char *argv[])
   
   N=1;  st = cputime();
   do {
-    for (i=0;i<N;i++) fmprb_sqrt(z, x, prec);
+    for (i=0;i<N;i++) arb_sqrt(z, x, prec);
     N=2*N;
     st2=cputime();
   } while (st2-st<1000); 	  
@@ -118,7 +118,7 @@ main (int argc, char *argv[])
   
   N=1;  st = cputime();
   do {
-    for (i=0;i<N;i++) fmprb_exp(z, x, prec);
+    for (i=0;i<N;i++) arb_exp(z, x, prec);
     N=2*N;
     st2=cputime();
   } while (st2-st<1000); 	  
@@ -127,7 +127,7 @@ main (int argc, char *argv[])
   
   N=1;  st = cputime();
   do {
-    for (i=0;i<N;i++) fmprb_log(z, x, prec);
+    for (i=0;i<N;i++) arb_log(z, x, prec);
     N=2*N;
     st2=cputime();
   } while (st2-st<1000); 	  
@@ -136,7 +136,7 @@ main (int argc, char *argv[])
   
   N=1;  st = cputime();
   do {
-    for (i=0;i<N;i++) fmprb_sin(z, x, prec);
+    for (i=0;i<N;i++) arb_sin(z, x, prec);
     N=2*N;
     st2=cputime();
   } while (st2-st<1000); 	  
@@ -145,7 +145,7 @@ main (int argc, char *argv[])
   
   N=1;  st = cputime();
   do {
-    for (i=0;i<N;i++) fmprb_cos(z, x, prec);
+    for (i=0;i<N;i++) arb_cos(z, x, prec);
     N=2*N;
     st2=cputime();
   } while (st2-st<1000);
@@ -154,7 +154,7 @@ main (int argc, char *argv[])
 
   N=1;  st = cputime();
   do {
-    for (i=0;i<N;i++) fmprb_acos(z, x, prec);
+    for (i=0;i<N;i++) arb_acos(z, x, prec);
     N=2*N;
     st2=cputime();
   } while (st2-st<1000);
@@ -163,14 +163,14 @@ main (int argc, char *argv[])
   
   N=1;  st = cputime();
   do {
-    for (i=0;i<N;i++) fmprb_atan(z, x, prec);
+    for (i=0;i<N;i++) arb_atan(z, x, prec);
     N=2*N;
     st2=cputime();
   } while (st2-st<1000);
   printf("arctan(x)  took %f ms (%d eval in %d ms)\n",
          (double)(st2-st)/(N-1),N-1,st2-st);
 
-  fmprb_clear(x); fmprb_clear(y); fmprb_clear(z);
+  arb_clear(x); arb_clear(y); arb_clear(z);
   return 0;
 }
 

@@ -1,0 +1,41 @@
+zimmerma@boxen:~/arb-2.3.0$ ./a.out 100
+Using ARB-1.0.0 with GMP-5.1.2
+[precision is 333 bits]
+x*y        took 0.000139 ms (8388607 eval in 1162 ms)
+x*x        took 0.000120 ms (8388607 eval in 1010 ms)
+x/y        took 0.000473 ms (4194303 eval in 1983 ms)
+sqrt(x)    took 0.000595 ms (2097151 eval in 1248 ms)
+exp(x)     took 0.001938 ms (1048575 eval in 2032 ms)
+log(x)     took 0.001966 ms (524287 eval in 1031 ms)
+sin(x)     took 0.002447 ms (524287 eval in 1283 ms)
+cos(x)     took 0.002085 ms (524287 eval in 1093 ms)
+arccos(x)  took 0.004498 ms (262143 eval in 1179 ms)
+arctan(x)  took 0.001781 ms (1048575 eval in 1868 ms)
+
+zimmerma@boxen:~/arb-2.3.0$ ./a.out 1000
+Using ARB-1.0.0 with GMP-5.1.2
+[precision is 3322 bits]
+x*y        took 0.003054 ms (524287 eval in 1601 ms)
+x*x        took 0.001922 ms (1048575 eval in 2015 ms)
+x/y        took 0.007275 ms (262143 eval in 1907 ms)
+sqrt(x)    took 0.005142 ms (262143 eval in 1348 ms)
+exp(x)     took 0.127823 ms (8191 eval in 1047 ms)
+log(x)     took 0.121956 ms (16383 eval in 1998 ms)
+sin(x)     took 0.199243 ms (8191 eval in 1632 ms)
+cos(x)     took 0.162007 ms (8191 eval in 1327 ms)
+arccos(x)  took 0.173849 ms (8191 eval in 1424 ms)
+arctan(x)  took 0.135148 ms (8191 eval in 1107 ms)
+
+zimmerma@boxen:~/arb-2.3.0$ ./a.out 10000
+Using ARB-1.0.0 with GMP-5.1.2
+[precision is 33220 bits]
+x*y        took 0.093878 ms (16383 eval in 1538 ms)
+x*x        took 0.062504 ms (16383 eval in 1024 ms)
+x/y        took 0.255922 ms (4095 eval in 1048 ms)
+sqrt(x)    took 0.176779 ms (8191 eval in 1448 ms)
+exp(x)     took 5.360784 ms (255 eval in 1367 ms)
+log(x)     took 7.031373 ms (255 eval in 1793 ms)
+sin(x)     took 15.393701 ms (127 eval in 1955 ms)
+cos(x)     took 16.543307 ms (127 eval in 2101 ms)
+arccos(x)  took 17.188976 ms (127 eval in 2183 ms)
+arctan(x)  took 14.157480 ms (127 eval in 1798 ms)
