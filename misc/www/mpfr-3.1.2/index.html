@@ -99,7 +99,7 @@ The key fingerprint is:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2014-06-30). The patches are distributed under the same license as
+update: 2014-12-04). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -252,6 +252,21 @@ are fixed by the <a href="patch10"><samp>vasprintf</samp> patch</a>, which
 also provides a testcase.<br />
 Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=9110">9110</a>.</li>
+
+<li id="p11">A buffer overflow may occur in <code>mpfr_strtofr</code>.
+This is due to incorrect <acronym>GMP</acronym> documentation for
+<code>mpn_set_str</code> about the size of a buffer
+(<a href="https://gmplib.org/list-archives/gmp-bugs/2013-December/003267.html">discussion</a>;
+<a href="https://gmplib.org/repo/gmp-5.1/raw-rev/d19172622a74">first fix in the <acronym>GMP</acronym> documentation</a>). This bug is present in the
+<acronym>MPFR</acronym> versions from 2.1.0 (adding <code>mpfr_strtofr</code>)
+to this one, and can be detected by running <q><samp>make check</samp></q>
+in a 32-bit <acronym>ABI</acronym> under <acronym>GNU</acronym>/Linux with
+<code>alloca</code> disabled (this is currently possible by using the
+<samp>--with-gmp-build</samp> configure option where <code>alloca</code>
+has been disabled in the <acronym>GMP</acronym> build). It is fixed by
+the <a href="patch11"><samp>strtofr</samp> patch</a>.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=9243">9243</a>.</li>
 
 </ol>
 
