@@ -129,13 +129,16 @@ tst()
       CONF:*)
         [ -n "$check" ]
         [ -n "$conf" ]
-        conf="$conf '${line#CONF:}'"
+        # Quote each configure parameter with double quotes, thus allowing
+        # expansion of environment variables (possibly set with "ENV:").
+        conf="$conf \"${line#CONF:}\""
         ;;
       INFO:*)
         [ -n "$check" ]
         if [ -n "$conf" ]; then
           echo '$ ./config.status -V' >> "$out"
           echo "*** Running configure ***"
+          echo "$conf"
           dotee "$conf" mpfrtests.cfgout
           ./config.status -V | sed '/with options/q' >> "$out"
           gmpvers=$(sed -n "s/$gmprx/\1/p" mpfrtests.cfgout)
@@ -261,4 +264,4 @@ fi
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 69013 2014-04-25 12:10:18Z vinc17/ypig $
+# $Id: mpfrtests.sh 75172 2014-12-03 13:39:16Z vinc17/ypig $

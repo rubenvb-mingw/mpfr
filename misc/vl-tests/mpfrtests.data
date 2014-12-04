@@ -4,13 +4,13 @@
 HOST:orge.lip.ens-lyon.fr
 PROC:Intel Xeon E5310 [32 bits]
 CHECK-BEGIN
-CONF:--with-gmp=/home/vlefevre/i686/gmp-debug
+CONF:--with-gmp=$HOME/i686/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
 INFO:CCV:--version
 CHECK-END
 #CHECK-BEGIN
-#CONF:--with-gmp=/home/vlefevre/i686/gmp-debug
+#CONF:--with-gmp=$HOME/i686/gmp-debug
 #CONF:--enable-assert=full
 #CONF:CC=icc
 #INFO:CCV:--version
@@ -25,7 +25,7 @@ CONF:CC=g++
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN < 302
-CONF:--with-gmp=/home/vlefevre/i686-gmp-4.1.4
+CONF:--with-gmp=$HOME/i686-gmp-4.1.4
 CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
@@ -85,17 +85,51 @@ CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
-CONF:CC=clang
+CONF:CC=clang-3.4
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
-CONF:CC=clang
+CONF:CC=clang-3.4
 CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize-recover
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
-CONF:CC=clang
-CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover
+CONF:CC=clang-3.4
+CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover -DMPFR_MY_MPZ_INIT=0
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+CONF:CC=clang-3.5
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:CC=clang-3.5
+CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize-recover
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:CC=clang-3.5
+CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover -DMPFR_MY_MPZ_INIT=0
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+CONF:CC=clang-3.6
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:CC=clang-3.6
+CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize-recover
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:CC=clang-3.6
+CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover -DMPFR_MY_MPZ_INIT=0
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -107,12 +141,13 @@ CONF:CFLAGS=-Wall -O3 -march=native -fsanitize=undefined -fno-sanitize-recover
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
-CONF:--with-gmp-build=/home/vlefevre/software/gmp-5.1.3
+CONF:--with-gmp-build=$HOME/software/gmp-5.1.3
 CONF:CC=gcc-snapshot
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
-CONF:CFLAGS=-O2 -std=gnu99 -DMPFR_TEST_DIVBYZERO=1 -DMPFR_ERRDIVZERO=1
+# -DMPFR_TEST_DIVBYZERO should be removed in the future.
+CONF:CFLAGS=-O2 -std=gnu99 -DMPFR_TESTS_DIVBYZERO -DMPFR_TEST_DIVBYZERO -DMPFR_ERRDIVZERO
 CONF:CC=gcc-snapshot
 INFO:CCV:--version
 CHECK-END
@@ -122,20 +157,20 @@ CONF:CC=gcc-snapshot
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
-CONF:--prefix=/home/vlefevre/notgcc
-CONF:--with-gmp=/home/vlefevre/wd
+CONF:--prefix=$HOME/notgcc
+CONF:--with-gmp=$HOME/wd
 CONF:--disable-shared
 INFO:notgcc --version | sed -n 's/.*\(Id:.*\) \$/\1/p'
 INFO:perl -pi -e 's/^wl=""/wl="-Wl,"/' libtool
 CHECK-END
 CHECK-BEGIN < 302
-CONF:--with-gmp=/home/vlefevre/gmp-4.1.4
+CONF:--with-gmp=$HOME/gmp-4.1.4
 CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 # gmp-dev: a build from the http://gmplib.org:8000/gmp Mercurial repository.
-CONF:--with-gmp=/home/vlefevre/gmp-dev
+CONF:--with-gmp=$HOME/gmp-dev
 CONF:--enable-assert=full
 CONF:--enable-logging
 INFO:CCV:--version
@@ -148,27 +183,46 @@ CONF:CC=gcc-4.7
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
-CONF:--with-gmp-build=/home/vlefevre/software/gmp-5.1.3
+CONF:--with-gmp-build=$HOME/software/gmp-5.1.3
 CONF:--enable-assert=full
 CONF:--enable-decimal-float
 CONF:CC=gcc-4.7
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
-CONF:--with-gmp-build=/home/vlefevre/software/gmp-6.0.0
+# GMP should be compiled with "--disable-alloca ABI=32" to be able to detect
+# a buffer overflow due to incorrect GMP documentation for mpn_set_str.
+# See discussion:
+#   https://gmplib.org/list-archives/gmp-bugs/2013-December/003267.html
+# and the first fix in the GMP documentation:
+#   https://gmplib.org/repo/gmp-5.1/raw-rev/d19172622a74
+# This bug is present in MPFR versions from 2.1.0 (adding mpfr_strtofr)
+# to 3.1.2; it is fixed in r8722 (trunk) and r9243 (3.1 branch).
+ENV:GMPDIR=$HOME/software/gmp-6.0.0-32
+CONF:--with-gmp-build=$GMPDIR
 CONF:--enable-assert=full
 CONF:--enable-decimal-float
 CONF:--enable-logging
 INFO:CCV:--version
+INFO:$GMPDIR/config.status -V | sed -n 's/^ *with options/GMP configure options:/p'
+CHECK-END
+CHECK-BEGIN
+ENV:GMPDIR=$HOME/software/gmp-6.0.0-64
+CONF:--with-gmp-build=$GMPDIR
+CONF:--enable-assert=full
+CONF:--enable-decimal-float
+CONF:--enable-logging
+INFO:CCV:--version
+INFO:$GMPDIR/config.status -V | sed -n 's/^ *with options/GMP configure options:/p'
 CHECK-END
 CHECK-BEGIN
 # software/gmp-dev directory: clone of http://gmplib.org:8000/gmp (Mercurial).
-CONF:--with-gmp-build=/home/vlefevre/software/gmp-dev
+CONF:--with-gmp-build=$HOME/software/gmp-dev
 CONF:--enable-assert=full
 CONF:--enable-decimal-float
 CONF:CC=gcc-snapshot
 INFO:CCV:--version
-INFO:hg identify -n /home/vlefevre/software/gmp-dev
+INFO:hg identify -n $HOME/software/gmp-dev
 CHECK-END
 CHECK-BEGIN
 ENV:C_INCLUDE_PATH=$tmpdir/include
@@ -179,30 +233,42 @@ INFO:CCV:--version
 INFO:echo "#include <stdint.h>" | gcc -H -E - 2>&1 >/dev/null | head -n 1
 CHECK-END
 CHECK-BEGIN
-ENV:PATH=$HOME/tcc/bin:$PATH
+#ENV:PATH=$HOME/tcc/bin:$PATH
 CONF:--enable-assert=full
-CONF:--disable-shared
+#CONF:--disable-shared
 CONF:CC=tcc
 CONF:CFLAGS=-O2
 INFO:CCV:-version
+CHECK-END
+CHECK-BEGIN
+ENV:INTEL=$HOME/intel
+ENV:INTELC=$INTEL/composer_xe_2015.0.090
+ENV:PATH=$INTELC/bin/intel64:$PATH
+ENV:LIBRARY_PATH=$INTELC/compiler/lib/intel64:$INTELC/ipp/lib/intel64:$INTELC/mkl/lib/intel64:$INTELC/tbb/lib/intel64/gcc4.4
+ENV:LD_LIBRARY_PATH=$INTELC/compiler/lib/intel64:$INTELC/ipp/lib/intel64:$INTELC/mkl/lib/intel64:$INTELC/tbb/lib/intel64/gcc4.4
+ENV:CPATH=$INTELC/ipp/include:$INTELC/mkl/include:$INTELC/tbb/include
+ENV:INTEL_LICENSE_FILE=$INTEL/licenses
+CONF:--enable-assert=full
+CONF:CC=icc
+INFO:CCV:--version
 CHECK-END
 
 HOST:tomate.lip.ens-lyon.fr
 PROC:Quad-Core AMD Opteron 8378
 CHECK-BEGIN
-CONF:--with-gmp=/home/vlefevre/x86_64/gmp-debug
+CONF:--with-gmp=$HOME/x86_64/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
 INFO:CCV:--version
 CHECK-END
 #CHECK-BEGIN
-#CONF:--with-gmp=/home/vlefevre/x86_64/gmp-debug
+#CONF:--with-gmp=$HOME/x86_64/gmp-debug
 #CONF:--enable-assert=full
 #CONF:CC=opencc
 #INFO:opencc --version 2>&1 | sed '/^$/Q'
 #CHECK-END
 #CHECK-BEGIN
-#CONF:--with-gmp=/home/vlefevre/x86_64/gmp-debug
+#CONF:--with-gmp=$HOME/x86_64/gmp-debug
 #CONF:--enable-assert=full
 #CONF:CC=icc
 #INFO:CCV:--version
@@ -218,7 +284,8 @@ CONF:--enable-thread-safe
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
-CONF:CFLAGS=-O2 -DMPFR_TEST_DIVBYZERO=1 -DMPFR_ERRDIVZERO=1
+# -DMPFR_TEST_DIVBYZERO should be removed in the future.
+CONF:CFLAGS=-O2 -DMPFR_TESTS_DIVBYZERO -DMPFR_TEST_DIVBYZERO -DMPFR_ERRDIVZERO
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -226,7 +293,7 @@ CONF:CFLAGS=-O2 -D_MPFR_PREC_FORMAT=2
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
-CONF:--with-gmp-build=/home/vinc17/software/gmp-5.1.1
+CONF:--with-gmp-build=$HOME/software/gmp-5.1.1
 CONF:CC=gcc-snapshot
 INFO:CCV:--version
 CHECK-END
@@ -269,7 +336,7 @@ CHECK-END
 HOST:gcc42.fsffrance.org
 PROC:MIPS Loongson 2F
 CHECK-BEGIN
-CONF:--with-gmp=/home/vinc17/gmp-debug
+CONF:--with-gmp=$HOME/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
 INFO:CCV:--version
@@ -340,10 +407,10 @@ CONF:CFLAGS=-Wall -O2 -mpa-risc-1-1 -std=gnu99
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
-ENV:LD_LIBRARY_PATH=/home/vinc17/sw/gcc-189305/lib
+ENV:LD_LIBRARY_PATH=$HOME/sw/gcc-189305/lib
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
-CONF:CC=/home/vinc17/sw/gcc-189305/bin/gcc
+CONF:CC=$HOME/sw/gcc-189305/bin/gcc
 CONF:CFLAGS=-Wall -O3 -mpa-risc-1-1 -std=gnu99
 INFO:CCV:--version
 CHECK-END
@@ -351,7 +418,7 @@ CHECK-END
 HOST:allo-psmn
 PROC:x86
 CHECK-BEGIN
-CONF:--with-gmp=/home/vlefevre/i386-solaris
+CONF:--with-gmp=$HOME/i386-solaris
 CONF:--disable-dependency-tracking
 CONF:--enable-assert=full
 INFO:CCV:-V
@@ -379,7 +446,7 @@ CHECK-END
 HOST:gcc101.fsffrance.org
 PROC:AMD Opteron 252
 CHECK-BEGIN
-CONF:--with-gmp=/home/vinc17/gmp-debug
+CONF:--with-gmp=$HOME/gmp-debug
 CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
@@ -395,7 +462,7 @@ CHECK-END
 HOST:gcc70.fsffrance.org
 PROC:Intel Xeon 3.2E Irwindale
 CHECK-BEGIN
-CONF:--with-gmp=/home/vinc17/gmp-debug
+CONF:--with-gmp=$HOME/gmp-debug
 CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
@@ -403,14 +470,14 @@ CHECK-END
 HOST:gcc64.fsffrance.org
 PROC:Sun UltraSPARC-IIIi
 CHECK-BEGIN
-CONF:--with-gmp=/home/vinc17/gmp-debug
+CONF:--with-gmp=$HOME/gmp-debug
 CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
-CONF:--with-gmp=/home/vinc17/gmp-debug
+CONF:--with-gmp=$HOME/gmp-debug
 CONF:--enable-gmp-internals
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 69476 2014-05-14 14:00:25Z vinc17/ypig $
+# $Id: mpfrtests.data 75197 2014-12-04 01:12:54Z vinc17/xvii $
