@@ -250,6 +250,7 @@ CHECK-BEGIN
 CONF:--enable-assert=full
 #CONF:--disable-shared
 CONF:CC=tcc
+CONF:LD=tcc
 CONF:CFLAGS=-O2
 INFO:CCV:-version
 CHECK-END
@@ -493,4 +494,4 @@ CONF:--enable-gmp-internals
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 78921 2015-05-05 15:22:49Z vinc17/ypig $
+# $Id: mpfrtests.data 79295 2015-05-20 09:53:35Z vinc17/ypig $
