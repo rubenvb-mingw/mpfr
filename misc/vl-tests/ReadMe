@@ -11,9 +11,9 @@ release-3.1.0-p8
   Example of mpfrtests.sh output on various machines (obtained
   with GNU MPFR 3.1.0-p4 and 3.1.0-p8 tarballs).
 
-release-3.1.2-p4
+release-3.1.2-p11
   Example of mpfrtests.sh output on various machines (obtained
-  with GNU MPFR 3.1.2 and 3.1.2-p4 tarballs).
+  with GNU MPFR 3.1.2 and 3.1.2-p* tarballs).
 
 vfy-data
   Check the format of the mpfrtests data file.

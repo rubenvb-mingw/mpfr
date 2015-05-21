@@ -32,8 +32,11 @@ do
       [ "$nxt" = CONF ] || [ "$nxt" = INFO ]
       nxt=INFO
       ;;
-    ENV:*|EVAL:*)
+    ENV:*)
       [ "$nxt" = CONF ] || [ "$nxt" = INFO ]
+      ;;
+    EVAL:*)
+      [ "$nxt" = CONF ] || [ "$nxt" = INFO ] || [ "$nxt" = CHECK-BEGIN ]
       ;;
     CHECK-END)
       [ "$nxt" = INFO ]
@@ -56,4 +59,4 @@ do
 done
 [ "$nxt" = CHECK-BEGIN ] || [ "$nxt" = HOST ]
 
-# $Id: vfy-data 66746 2014-01-22 09:53:52Z vinc17/ypig $
+# $Id: vfy-data 79319 2015-05-21 12:29:39Z vinc17/ypig $

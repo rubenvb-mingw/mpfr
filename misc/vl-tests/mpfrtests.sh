@@ -81,7 +81,7 @@ tst()
         version=$(cat ${1:-.}/VERSION)
         echo "MPFR version: $version" >> "$out"
         versnum=$(eval "expr $(echo $version | \
-          sed -n 's/^\([0-9]\{1,\}\)\.\([0-9]\{1,\}\)\..*/100 \\* \1 + \2/p')")
+          sed -n 's/^\([0-9]\{1,\}\)\.\([0-9]\{1,\}\)\.\([0-9]\{1,\}\).*/10000 \\* \1 + 100 \\* \2 + \3/p')")
         ;;
       CHECK-BEGIN*)
         [ -z "$first" ]
@@ -117,7 +117,7 @@ tst()
         eval "export $v"
         ;;
       EVAL:*)
-        [ -n "$check" ]
+        [ -z "$first" ]
         # NOTE: Do not use commands that could affect later tests unless
         # this is done on purpose, such as setting environment variables
         # (for this, use the "ENV:" feature). Use "EVAL:" to run commands
@@ -264,4 +264,4 @@ fi
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 75172 2014-12-03 13:39:16Z vinc17/ypig $
+# $Id: mpfrtests.sh 79319 2015-05-21 12:29:39Z vinc17/ypig $
