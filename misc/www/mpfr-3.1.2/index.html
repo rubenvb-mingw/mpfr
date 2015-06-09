@@ -168,7 +168,7 @@ how this bug was detected) or possibly in case of advanced optimizations,
 such as <acronym title="link-time optimization">LTO</acronym>.
 This is fixed by the <a href="patch01"><samp>exp_2</samp> patch</a>.<br />
 Corresponding changeset in the 3.1 branch:
-<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=8683&view=revision">8683</a>.</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=8683&amp;view=revision">8683</a>.</li>
 
 <li id="p2">The <code>mpfr_fits_u*_p</code> functions return 0
 (<q>doesn't fit</q>) instead of non-zero (<q>fits</q>) on negative arguments
@@ -176,7 +176,7 @@ for which the rounding to an integer in the given rounding mode is 0. This
 bug is fixed by the <a href="patch02"><samp>fits-smallneg</samp> patch</a>,
 which also updates the testcases.<br />
 Corresponding changeset in the 3.1 branch:
-<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=8684&view=revision">8684</a>.</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=8684&amp;view=revision">8684</a>.</li>
 
 <li id="p3">Some <samp>tget_flt</samp> tests fail in environments where
 native C floating-point division by zero is not supported,
@@ -189,7 +189,7 @@ which also disables constant division by zero on the native C type
 <code>double</code> with <cite>Clang</cite> in order to avoid
 <a href="http://llvm.org/bugs/show_bug.cgi?id=17381">incorrect code</a>.<br />
 Corresponding changeset in the 3.1 branch:
-<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=8691&view=revision">8691</a>.</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=8691&amp;view=revision">8691</a>.</li>
 
 <li id="p4">The formatted output functions (<samp>mpfr_*printf</samp>) are
 incorrect on the value 0 when using the alternative form (<samp>#</samp>
@@ -199,8 +199,8 @@ test is also incorrect (explaining why the bug was not detected). These
 problems are fixed by the <a href="patch04"><samp>printf-alt0</samp>
 patch</a>, which also provides some additional related tests.<br />
 Corresponding changesets in the 3.1 branch:
-<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=8708&view=revision">8708</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=8710&view=revision">8710</a>.</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=8708&amp;view=revision">8708</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=8710&amp;view=revision">8710</a>.</li>
 
 <li id="p5">Only for applications using the custom interface:
 The <samp>mpfr_custom_init_set</samp> macro has a
@@ -209,14 +209,14 @@ in a variable name</a>, which can yield incorrect behavior if the
 second argument is not a simple expression. This bug is fixed by
 the <a href="patch05"><samp>custom_init_set</samp> patch</a>.<br />
 Corresponding changeset in the 3.1 branch:
-<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=8717&view=revision">8717</a>.</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=8717&amp;view=revision">8717</a>.</li>
 
 <li id="p6">The build fails on <samp>li2.c</samp> with the
 <acronym>GCC</acronym> <samp>-Werror=return-type</samp> option
 when logging has been enabled. This problem is fixed by the
 <a href="patch06"><samp>li2-return</samp> patch</a>.<br />
 Corresponding changeset in the 3.1 branch:
-<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=8801&view=revision">8801</a>.</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=8801&amp;view=revision">8801</a>.</li>
 
 <li id="p7">The rounding of <code>mpfr_exp</code> can be incorrect for
 output precisions larger than or equal to <code>MPFR_EXP_THRESHOLD</code>
@@ -224,14 +224,14 @@ output precisions larger than or equal to <code>MPFR_EXP_THRESHOLD</code>
 bug is fixed by the <a href="patch07"><samp>exp3</samp> patch</a>, which
 also provides a testcase.<br />
 Corresponding changeset in the 3.1 branch:
-<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=8803&view=revision">8803</a>.</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=8803&amp;view=revision">8803</a>.</li>
 
 <li id="p8">This <acronym>MPFR</acronym> release fails to build with
 <acronym>GMP</acronym> 6 when the <samp>--with-gmp-build</samp> configure
 option is used. The <a href="patch08"><samp>gmp6-compat</samp> patch</a>
 fixes this compatibility problem.<br />
 Corresponding changeset in the 3.1 branch:
-<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9034&view=revision">9034</a>.</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9034&amp;view=revision">9034</a>.</li>
 
 <li id="p9">When dividing a very large number (near the maximum finite
 one, in absolute value) by a very small number (near the minimum one,
@@ -241,9 +241,9 @@ result 0 instead of infinity. This bug is fixed by the
 <a href="patch09"><samp>div-overflow</samp> patch</a>, which also
 provides a testcase.<br />
 Corresponding changesets in the 3.1 branch:
-<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9102&view=revision">9102</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9104&view=revision">9104</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9105&view=revision">9105</a>.</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9102&amp;view=revision">9102</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9104&amp;view=revision">9104</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9105&amp;view=revision">9105</a>.</li>
 
 <li id="p10">The <samp>vasprintf.c</samp> source file contains incorrect
 assertions, which may fail while the computation is valid; this can occur
@@ -251,7 +251,7 @@ only when outputting tiny numbers (very small exponents). These assertions
 are fixed by the <a href="patch10"><samp>vasprintf</samp> patch</a>, which
 also provides a testcase.<br />
 Corresponding changeset in the 3.1 branch:
-<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9110&view=revision">9110</a>.</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9110&amp;view=revision">9110</a>.</li>
 
 <li id="p11">A buffer overflow may occur in <code>mpfr_strtofr</code>.
 This is due to incorrect <acronym>GMP</acronym> documentation for
@@ -266,14 +266,14 @@ in a 32-bit <acronym>ABI</acronym> under <acronym>GNU</acronym>/Linux with
 has been disabled in the <acronym>GMP</acronym> build). It is fixed by
 the <a href="patch11"><samp>strtofr</samp> patch</a>.<br />
 Corresponding changeset in the 3.1 branch:
-<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9243&view=revision">9243</a>.</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9243&amp;view=revision">9243</a>.</li>
 
 </ol>
 
-<p>Other bugs are fixed in the 3.1 branch (for the future <acronym>MPFR</acronym> 3.1.3 release). The main one is that the inexact flag is not set by <code>mpfr_mul_ui</code>, affecting <code>mpfr_mul_si</code> too (changeset <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9516&view=revision">9516</a>). The other fixed bugs are minor ones, such as support for very reduced exponent range in more functions.</p>
+<p>Other bugs are fixed in the 3.1 branch (for the future <acronym>MPFR</acronym> 3.1.3 release). The main one is that the inexact flag is not set by <code>mpfr_mul_ui</code>, affecting <code>mpfr_mul_si</code> too (changeset <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9516&amp;view=revision">9516</a>). The other fixed bugs are minor ones, such as support for very reduced exponent range in more functions.</p>
 
 <!-- For BUGS, it's better to point to HEAD, as changes will be noted above. -->
-<p>See the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href=https://gforge.inria.fr/scm/viewvc.php/mpfr/trunk/BUGS?view=markup><samp>BUGS</samp></a> file.</p>
+<p>See the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr/trunk/BUGS?view=markup><samp>BUGS</samp></a> file.</p>
 
 <h2 id="changes">Changes from version 3.1.1 to version 3.1.2</h2>
 

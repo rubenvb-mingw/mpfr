@@ -170,7 +170,7 @@ occurs but the underflow flag is not set. This bug in fixed by the
 provides additional tests of <code>mpfr_sin_cos</code> to trigger this
 bug).<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=6629&view=revision">6629</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=6629&amp;view=revision">6629</a>]</li>
 
 <li id="p2">Due to a <a href="https://gcc.gnu.org/gcc-4.4/changes.html">change
 in <acronym>GCC</acronym> 4.4 internals</a> for <acronym>MIPS</acronym>, the
@@ -180,7 +180,7 @@ The <a href="patch02"><samp>longlong.h</samp> patch</a> (written
 by <a href="http://www.aurel32.net/">Aurélien Jarno</a>) solves
 this problem.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=6638&view=revision">6638</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=6638&amp;view=revision">6638</a>]</li>
 
 <li id="p3">Due to an internal change in <acronym>GMP</acronym>,
 <a href="https://sympa.inria.fr/sympa/arc/mpfr/2010-01/msg00008.html"><acronym>MPFR</acronym>
@@ -189,7 +189,7 @@ cannot be built with the <acronym>GMP</acronym> 5 internal files</a>
 <a href="patch03"><samp>gmp5</samp> patch</a> from Patrick Pélissier
 solves this problem.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=6651&view=revision">6651</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=6651&amp;view=revision">6651</a>]</li>
 
 </ol>
 
@@ -206,14 +206,14 @@ solves this problem.<br />
 <code>mpfr_exp</code> when the target precision is less than some
 threshold, can suffer from a buffer overflow.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=6956&view=revision">6956</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=6956&amp;view=revision">6956</a>]</li>
 
 <li>The integer value returned by the <code>mpfr_out_str</code>
 function is incorrect on NaN and infinities. Moreover output errors
 are not handled, and if such an error occurs, the return value is
 incorrect (it should have been 0).<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=6980&view=revision">6980</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=6980&amp;view=revision">6980</a>]</li>
 
 </ul>
 
@@ -254,7 +254,7 @@ and <code>uintmax_t</code> are not defined. This is due to a heuristic
 used by <acronym>MPFR</acronym> (in the <samp>mpfr.h</samp> header file)
 to guess whether <samp>&lt;stdint.h&gt;</samp> has been included or not.
 As this heuristic may fail with some C++ libraries,
-<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=6699&view=revision">it
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=6699&amp;view=revision">it
 will be disabled for C++ compilers in <acronym>MPFR</acronym> 3</a>. In
 the mean time, several workarounds can be used to avoid this problem:
 <ul>
