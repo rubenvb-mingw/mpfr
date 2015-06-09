@@ -243,31 +243,31 @@ the 3.0 branch:</p>
 
 <li>When <acronym>MPFR</acronym> has been built with <code>_GMP_IEEE_FLOATS</code> defined (<abbr>e.g.</abbr> because the <samp>--with-gmp-build</samp> configure option was used), the generated code may be wrong for due to broken aliasing rules. Potentially affected functions: those that convert a <acronym>MPFR</acronym> number to a native floating-point number. No wrong code has actually been reported, but since some tests failed in the past for a similar bug, concerned users may want to apply the patch given by the changeset below.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7080">7080</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=7080&view=revision">7080</a>]</li>
 
 <li>For <code>mpfr_jn</code> (thus for <code>mpfr_j0</code> and <code>mpfr_j1</code> too), the exponent range is not widened and the global flags are not saved, meaning that results can be wrong if the current exponent range is too small and some flags may incorrectly be set.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7422">7422</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=7422&view=revision">7422</a>]</li>
 
 <li>When logging is used, <code>mpfr_li2</code> crashes or has other undefined behavior (due to missing argument for <code>fprintf</code>).<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7424">7424</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=7424&view=revision">7424</a>]</li>
 
 <li>The <code>mpfr_sum</code> test <samp>tsum.c</samp> does not handle null values correctly. In particular, one gets an assertion failure in <code>mpfr_get_str</code> when running the test with <samp>MPFR_LOG_ALL=1</samp> (when logging is enabled).<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7432">7432</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=7432&view=revision">7432</a>]</li>
 
 <li>The <code>mpfr_subnormalize</code> function does not set the inexact and underflow flags when needed (the behavior was unspecified for the underflow flag, but it was clearly a bug for the inexact flag, to be consistent with the returned ternary value). The changeset below also has an update for the <acronym>MPFR</acronym> manual.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7444">7444</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=7444&view=revision">7444</a>]</li>
 
 <li>On some platforms (typically non-64-bit ones), <code>mpfr_get_sj</code> can have the following problem. If the resulting integer is a non-zero value that is small enough in absolute value, then the function can perform a right shift with a shift count larger than or equal to the width of the left operand; this has an undefined behavior. However such a shifted value is always 0 here, so that most current platforms (if not all) should be unaffected by this problem (except if compiler features to dynamically detect undefined behavior are used).<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7446">7446</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=7446&view=revision">7446</a>]</li>
 
 <li>For users of Intel's compiler (<acronym>ICC</acronym>) under Microsoft Windows: <acronym>MPFR</acronym> incorrectly assumes that <acronym>ICC</acronym> has some extensions like under <acronym>GNU</acronym>/Linux.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7454">7454</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=7454&view=revision">7454</a>]</li>
 
 <li>In <code>mpfr_jn</code>: for negative <var>n</var>, incorrect error analysis; for <var>n</var> = 0, integer overflow when determining the initial working precision. In <code>mpfr_gamma</code>: for small arguments whose absolute value is a power of two, the result may not be correctly rounded in the <code>MPFR_RNDA</code> rounding mode and/or if the argument is negative (in rounding to nearest, only the ternary value can be incorrect). Other various bugs:
 <ul>
@@ -275,30 +275,30 @@ the 3.0 branch:</p>
 <li>Some functions (<code>mpfr_agm</code>, <code>mpfr_div_2si</code>, <code>mpfr_div_2ui</code>, <code>mpfr_fmod</code>, <code>mpfr_j0</code>, <code>mpfr_j1</code>, <code>mpfr_jn</code>, <code>mpfr_mul_2si</code>, <code>mpfr_remainder</code>, <code>mpfr_remquo</code>) can have intermediate exceptions, provide incorrect flags, and/or have incorrect error analysis on some special values (such as huge or tiny); this was more or less described in the <samp>BUGS</samp> file.</li>
 </ul>
 [Changesets:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7519">7519</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7535">7535</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7543">7543</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7544">7544</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7554">7554</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7557">7557</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7562">7562</a>,
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7563">7563</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=7519&view=revision">7519</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=7535&view=revision">7535</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=7543&view=revision">7543</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=7544&view=revision">7544</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=7554&view=revision">7554</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=7557&view=revision">7557</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=7562&view=revision">7562</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=7563&view=revision">7563</a>]</li>
 
 <li>On machines where the maximum exponent range is larger than the default exponent range (such as on conventional 64-bit machines), <code>mpfr_erfc</code> wrongly underflows for <var>x</var> &#8805; 27282.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7569">7569</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=7569&view=revision">7569</a>]</li>
 
 <li>In an extremely reduced exponent range, <code>mpfr_erfc</code> can incorrectly set flags or possibly crash.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7574">7574</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=7574&view=revision">7574</a>]</li>
 
 <li>If <var>emin</var> &gt; 1, the power functions can yield an assertion failure (debug mode) or set incorrect flags.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7593">7593</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=7593&view=revision">7593</a>]</li>
 
 <li>The <code>mpfr_pow</code> function behaves incorrectly on <em>reused</em> arguments (<code>mpfr_pow(x,x,y,rnd)</code> or <code>mpfr_pow(y,x,y,rnd)</code> for instance): when <var>x</var> is negative and |<var>y</var>| is an odd integer larger than 2<sup>256</sup>, the returned result can have a wrong sign (positive instead of negative) and possibly be rounded in the wrong direction.<br />
 [Changeset:
-<a href="https://gforge.inria.fr/scm/viewvc.php?view=rev&amp;root=mpfr&amp;revision=7608">7608</a>]</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=7608&view=revision">7608</a>]</li>
 
 </ul>
 
