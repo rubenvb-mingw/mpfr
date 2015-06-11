@@ -183,7 +183,7 @@ CHECK-END
 CHECK-BEGIN
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
-CONF:CFLAGS=-m32 -O2 -DMPFR_COV_CHECK
+CONF:CFLAGS=-m32 -O2 -DMPFR_COV_CHECK -DMPFR_ALLOCA_MAX=0
 CONF:CC=gcc-4.7
 INFO:CCV:--version
 CHECK-END
@@ -191,7 +191,7 @@ CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
-CONF:CFLAGS=-O3 -march=native -DMPFR_COV_CHECK
+CONF:CFLAGS=-O3 -march=native -DMPFR_COV_CHECK -DMPFR_ALLOCA_MAX=0
 CONF:CC=gcc-5
 INFO:CCV:--version
 CHECK-END
@@ -504,4 +504,4 @@ CONF:--enable-gmp-internals
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 79320 2015-05-21 12:31:08Z vinc17/ypig $
+# $Id: mpfrtests.data 79788 2015-06-11 09:09:08Z vinc17/ypig $
