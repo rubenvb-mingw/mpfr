@@ -19,7 +19,7 @@
 { a=a; : ${a%b}; } 2> /dev/null || test ! -x /usr/xpg4/bin/sh || \
   exec /usr/xpg4/bin/sh -- "$0" ${1+"$@"}
 
-prefix="/tmp/mpfrtests-$USER-"
+prefix="${TMPDIR:-/tmp}/mpfrtests-$USER-"
 
 if [ "x$1" = "x-C" ]; then
   chmod -R u+w "$prefix"*
@@ -264,4 +264,4 @@ fi
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 79319 2015-05-21 12:29:39Z vinc17/ypig $
+# $Id: mpfrtests.sh 79823 2015-06-12 16:50:18Z vinc17/xvii $
