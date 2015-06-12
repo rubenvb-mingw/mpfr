@@ -278,6 +278,8 @@ Corresponding changeset in the 3.1 branch:
 
 <li>If the output precision is large enough (the lower bound ranges from 10000 to 40000 depending on the platform), the <code>mpfr_sin</code> function can modify the exponent range, extending it to the maximum (fix in changeset <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9548&amp;view=revision">9548</a>). Note: this is a potential vulnerability if the application relies on small exponent range to avoid denial of service due to trigonometric functions taking much memory on inputs with a very large positive exponent.</li>
 
+<li>The <code>mpfr_fma</code> function does always round correctly in case of underflow (fix in changeset <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9570&amp;view=revision">9570</a>). The <code>mpfr_fms</code> function is affected too as a consequence.</li>
+
 </ul>
 
 <p>The other fixed bugs are minor ones, such as support for very reduced exponent range in more functions.</p>
