@@ -1,3 +1,47 @@
+zimmerma@boxen:~/arb-2.7.0$ build/examples/timings-arb 100
+Using ARB-2.7.0 with GMP-5.1.2
+[precision is 333 bits]
+x*y        took 0.000141 ms (8388607 eval in 1180 ms)
+x*x        took 0.000123 ms (8388607 eval in 1030 ms)
+x/y        took 0.000366 ms (4194303 eval in 1536 ms)
+sqrt(x)    took 0.000607 ms (2097151 eval in 1274 ms)
+exp(x)     took 0.002037 ms (524287 eval in 1068 ms)
+log(x)     took 0.002012 ms (524287 eval in 1055 ms)
+sin(x)     took 0.002468 ms (524287 eval in 1294 ms)
+cos(x)     took 0.002468 ms (524287 eval in 1294 ms)
+arccos(x)  took 0.006699 ms (262143 eval in 1756 ms)
+arctan(x)  took 0.002401 ms (524287 eval in 1259 ms)
+
+zimmerma@boxen:~/arb-2.7.0$ build/examples/timings-arb 1000
+Using ARB-2.7.0 with GMP-5.1.2
+[precision is 3322 bits]
+x*y        took 0.003048 ms (524287 eval in 1598 ms)
+x*x        took 0.001870 ms (1048575 eval in 1961 ms)
+x/y        took 0.004040 ms (262143 eval in 1059 ms)
+sqrt(x)    took 0.004921 ms (262143 eval in 1290 ms)
+exp(x)     took 0.105231 ms (16383 eval in 1724 ms)
+log(x)     took 0.108466 ms (16383 eval in 1777 ms)
+sin(x)     took 0.119575 ms (16383 eval in 1959 ms)
+cos(x)     took 0.119331 ms (16383 eval in 1955 ms)
+arccos(x)  took 0.145770 ms (8191 eval in 1194 ms)
+arctan(x)  took 0.120430 ms (16383 eval in 1973 ms)
+
+zimmerma@boxen:~/arb-2.7.0$ build/examples/timings-arb 10000
+Using ARB-2.7.0 with GMP-5.1.2
+[precision is 33220 bits]
+x*y        took 0.094915 ms (16383 eval in 1555 ms)
+x*x        took 0.062748 ms (16383 eval in 1028 ms)
+x/y        took 0.193627 ms (8191 eval in 1586 ms)
+sqrt(x)    took 0.175925 ms (8191 eval in 1441 ms)
+exp(x)     took 5.462745 ms (255 eval in 1393 ms)
+log(x)     took 7.023529 ms (255 eval in 1791 ms)
+sin(x)     took 15.346457 ms (127 eval in 1949 ms)
+cos(x)     took 15.370079 ms (127 eval in 1952 ms)
+arccos(x)  took 9.755906 ms (127 eval in 1239 ms)
+arctan(x)  took 9.070866 ms (127 eval in 1152 ms)
+
+##############################################################################
+
 zimmerma@boxen:~/arb-2.3.0$ ./a.out 100
 Using ARB-1.0.0 with GMP-5.1.2
 [precision is 333 bits]
