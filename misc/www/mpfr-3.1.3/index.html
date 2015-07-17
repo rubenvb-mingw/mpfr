@@ -177,6 +177,24 @@ which also provides testcases.<br />
 Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9608&amp;view=revision">9608</a>.</li>
 
+<li id="p3">The <code>mpfr_mul_2si</code>, <code>mpfr_div_2ui</code> and
+<code>mpfr_div_2si</code> functions in rounding to nearest can round in
+the wrong direction when the exact result is &#8722;2<sup>emin&#8722;2</sup>,
+<abbr>i.e.</abbr> the middle of 0 and the minimum negative number in
+absolute value. This is fixed by the
+<a href="patch03"><samp>muldiv-2exp-underflow</samp> patch</a>,
+which also provides testcases.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9620&amp;view=revision">9620</a>.</li>
+
+<li id="p4">The <code>mpfr_frexp</code> function does not handle
+internal overflow and it can yield an assertion failure when the
+current exponent range does not contain 0. This is fixed by the
+<a href="patch04"><samp>frexp</samp> patch</a>,
+which also provides testcases.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9621&amp;view=revision">9621</a>.</li>
+
 </ol>
 
 <!-- For BUGS, it's better to point to HEAD, as changes will be noted above. -->
