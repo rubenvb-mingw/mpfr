@@ -64,7 +64,7 @@ main (int argc, char *argv[])
       exit(1);
     }
 
-  printf ("Using ARB-%s with GMP-%s\n", "2.3.0", gmp_version);
+  printf ("Using ARB-%s with GMP-%s\n", arb_version, gmp_version);
   n = atoi(argv[1]);
   prec = (int) ( n * log(10.0) / log(2.0) + 1.0 );
   printf("[precision is %u bits]\n", prec);
