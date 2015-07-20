@@ -79,7 +79,7 @@ tst()
         echo "* $fqdn ($(${1:-.}/config.guess) / ${line#PROC:})" > "$out"
         [ -z "$1" ] || echo "with objdir != srcdir" >> "$out"
         version=$(cat ${1:-.}/VERSION)
-        echo "MPFR version: $version" >> "$out"
+        echo "MPFR version: $version${svnvers:+ [$svnvers]}" >> "$out"
         versnum=$(eval "expr $(echo $version | \
           sed -n 's/^\([0-9]\{1,\}\)\.\([0-9]\{1,\}\)\.\([0-9]\{1,\}\).*/10000 \\* \1 + 100 \\* \2 + \3/p')")
         ;;
@@ -222,11 +222,17 @@ mktmpdir()
   [ ! -h "$tmpdir" ]
 }
 
+svnvers=""
+
 if [ -x configure ]; then
   # Here the temporary directory is not used by the script itself;
   # it is created in case it is used by mpfrtests.data commands.
   mktmpdir
   [ ! -f Makefile ] || make distclean
+  if [ -d .svn ]; then
+    svnvers=r$(svnversion)
+    [ "$svnvers" != "rUnversioned directory" ] || svnvers=""
+  fi
   tstall
   rm -rf "$tmpdir"
 elif [ -f "$tgz" ]; then
@@ -264,4 +270,4 @@ fi
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 80953 2015-07-20 22:07:25Z vinc17/ypig $
+# $Id: mpfrtests.sh 80954 2015-07-20 23:08:43Z vinc17/ypig $
