@@ -168,7 +168,7 @@ tst()
         echo "*** Running make check ***"
         dotee "$mj check" mpfrtests.makeout
         sed -n "/: tzeta_ui/,/tests passed/ {
-                  s/^.*\(MPFR tuning parameters.*\)/[\1]/p
+                  /^\[tversion\]/p
                   s/^\(.*tests passed\)/--> \1/p
                   / PASS:/,/ FAIL:/H
                   / ERROR:/ {
@@ -264,4 +264,4 @@ fi
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 79823 2015-06-12 16:50:18Z vinc17/xvii $
+# $Id: mpfrtests.sh 80953 2015-07-20 22:07:25Z vinc17/ypig $
