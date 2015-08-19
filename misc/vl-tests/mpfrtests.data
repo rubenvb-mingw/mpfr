@@ -171,6 +171,8 @@ CHECK-END
 CHECK-BEGIN < 30200
 CONF:--with-gmp=$HOME/gmp-4.1.4
 CONF:--enable-assert=full
+# No longer use the default gcc (now gcc-5) due to Debian bug 796076.
+CONF:CC=gcc-4.9
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -504,4 +506,4 @@ CONF:--enable-gmp-internals
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 79788 2015-06-11 09:09:08Z vinc17/ypig $
+# $Id: mpfrtests.data 81820 2015-08-19 09:38:40Z vinc17/ypig $
