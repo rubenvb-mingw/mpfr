@@ -74,13 +74,13 @@ CONF:--enable-thread-safe
 CONF:CC=g++
 INFO:CCV:--version
 CHECK-END
-CHECK-BEGIN
-CONF:--with-gmp=/usr/local/gmp-debug
-CONF:--enable-assert=full
-CONF:--enable-thread-safe
-CONF:CC=llvm-gcc
-INFO:CCV:--version
-CHECK-END
+#CHECK-BEGIN
+#CONF:--with-gmp=/usr/local/gmp-debug
+#CONF:--enable-assert=full
+#CONF:--enable-thread-safe
+#CONF:CC=llvm-gcc
+#INFO:CCV:--version
+#CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
@@ -509,4 +509,4 @@ CONF:--enable-gmp-internals
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 81852 2015-08-20 01:50:21Z vinc17/ypig $
+# $Id: mpfrtests.data 81854 2015-08-20 02:33:56Z vinc17/zira $
