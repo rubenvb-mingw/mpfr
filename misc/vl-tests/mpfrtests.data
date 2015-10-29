@@ -51,7 +51,7 @@ CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-float128
 CONF:CC=gcc-snapshot
-CONF:CFLAGS=$cflags1 -std=c90 -pedantic -Wno-error=overlength-strings
+CONF:CFLAGS=$cflags1 -std=c90 -pedantic -Wno-error=overlength-strings -DMPFR_TUNE_COVERAGE
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN > 30103
@@ -575,4 +575,4 @@ CONF:--enable-gmp-internals
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 82016 2015-08-25 20:17:28Z vinc17/ypig $
+# $Id: mpfrtests.data 83668 2015-10-29 12:25:02Z vinc17/ypig $
