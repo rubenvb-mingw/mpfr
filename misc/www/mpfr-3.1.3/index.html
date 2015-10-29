@@ -99,7 +99,7 @@ The key fingerprint is:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2015-07-17). The patches are distributed under the same license as
+update: 2015-10-29). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -194,6 +194,19 @@ current exponent range does not contain 0. This is fixed by the
 which also provides testcases.<br />
 Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9621&amp;view=revision">9621</a>.</li>
+
+<li id="p5">With some <samp>mparam.h</samp> files, the <code>mpfr_div</code>
+function can return an incorrect result. This is fixed by the
+<a href="patch05"><samp>divhigh-basecase</samp> patch</a>, which also
+provides a testcase. Note that this bug is new in <acronym>MPFR</acronym> 3.1
+and cannot be triggered with the <samp>mparam.h</samp> files
+distributed in the tarball. Thus most users should not be affected.
+However this bug may be visible after a <q><samp>make tune</samp></q>
+(which generates a new <samp>mparam.h</samp> file).
+<a href="https://sympa.inria.fr/sympa/arc/mpfr/2015-10/msg00023.html">More
+details in the discussion in the <acronym>MPFR</acronym> list</a>.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9711&amp;view=revision">9711</a>.</li>
 
 </ol>
 
