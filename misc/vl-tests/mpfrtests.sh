@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Test of MPFR tarballs with various options.
-# Written in 2011-2014 by Vincent Lefevre.
+# Written in 2011-2015 by Vincent Lefevre.
 #
 # Usage: ./mpfrtests.sh [ +<host> ] [ <archive.tar.*> ] < mpfrtests.data
 #    or  ./mpfrtests.sh -C
@@ -88,6 +88,7 @@ tst()
         [ -z "$check" ]
         if expr $versnum ${line#CHECK-BEGIN} > /dev/null; then
           check=1
+          echo '----------------------------------------' >> "$out"
           if [ -z "$1" ]; then
             conf="./configure"
           else
@@ -267,7 +268,10 @@ else
   exit 1
 fi
 
+printf "\n============================================================\n" \
+  >> "$out"
+
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 80954 2015-07-20 23:08:43Z vinc17/ypig $
+# $Id: mpfrtests.sh 85300 2015-12-27 17:51:33Z vinc17/zira $

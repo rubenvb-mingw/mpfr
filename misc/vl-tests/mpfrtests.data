@@ -55,6 +55,8 @@ CONF:CFLAGS=$cflags1 -std=c90 -pedantic -Wno-error=overlength-strings -DMPFR_TUN
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN > 30103
+# For the decimal separator "," (instead of "."):
+ENV:LC_ALL=fr_FR.utf8
 # For MPFR 3.1, changeset r9664 is needed.
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
@@ -64,6 +66,7 @@ CONF:CFLAGS=$cflags1 -std=c99 -pedantic
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
+ENV:LC_ALL=tr_TR.iso88599
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-shared
@@ -393,6 +396,169 @@ CONF:CC=gcc-snapshot
 INFO:CCV:--version
 CHECK-END
 
+HOST:zira.vinc17.org
+PROC:Intel Core i7-4810MQ
+EVAL:unset CPATH C_INCLUDE_PATH LIBRARY_PATH LD_LIBRARY_PATH LD_RUN_PATH
+EVAL:cflags1="-O2 -Wall -Wold-style-declaration -Wold-style-definition -Wmissing-parameter-type -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wno-error=unused-function -Werror"
+CHECK-BEGIN
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN >= 30200
+# MPFR 3.2 is needed due to --enable-decimal-float without --with-gmp-build
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-logging
+CONF:--enable-decimal-float
+CONF:--enable-float128
+CONF:CC=gcc-snapshot
+CONF:CFLAGS=$cflags1
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+ENV:LC_ALL=tr_TR.iso88599
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-shared
+CONF:--enable-thread-safe
+CONF:CC=gcc-4.9
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+# For the decimal separator "," (instead of "."):
+ENV:LC_ALL=fr_FR.utf8
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:CFLAGS=-Wall -std=c99 -O3 -D_XOPEN_SOURCE=500 -ftrapv -pedantic-errors
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:CC=g++
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:CC=clang-3.6
+CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize-recover
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:CC=clang-3.6
+CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover -DMPFR_MY_MPZ_INIT=0
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+CONF:CFLAGS=-O3 -march=native -DMPFR_COV_CHECK -DMPFR_ALLOCA_MAX=0
+CONF:CC=gcc-5
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--enable-assert=full
+CONF:CC=tcc
+CONF:LD=tcc
+CONF:CFLAGS=-O2
+INFO:CCV:-version
+CHECK-END
+
+HOST:cventin.lip.ens-lyon.fr
+PROC:Intel Xeon E5-2609 v3
+EVAL:unset CPATH C_INCLUDE_PATH LIBRARY_PATH LD_LIBRARY_PATH LD_RUN_PATH
+EVAL:cflags1="-O2 -Wall -Wold-style-declaration -Wold-style-definition -Wmissing-parameter-type -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wno-error=unused-function -Werror"
+CHECK-BEGIN
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN >= 30200
+# MPFR 3.2 is needed due to --enable-decimal-float without --with-gmp-build
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-logging
+CONF:--enable-decimal-float
+CONF:--enable-float128
+CONF:CC=gcc-snapshot
+CONF:CFLAGS=$cflags1
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+ENV:LC_ALL=tr_TR.iso88599
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-shared
+CONF:--enable-thread-safe
+CONF:CC=gcc-4.9
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+# For the decimal separator "," (instead of "."):
+ENV:LC_ALL=fr_FR.utf8
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:CFLAGS=-Wall -std=c99 -O3 -D_XOPEN_SOURCE=500 -ftrapv -pedantic-errors
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:CC=g++-4.9
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-gmp-internals
+CONF:--enable-thread-safe
+CONF:CC=g++
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:CC=clang-3.6
+CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize-recover
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:CC=clang-3.6
+CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover -DMPFR_MY_MPZ_INIT=0
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+CONF:CC=clang-3.7
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+CONF:CC=clang-3.8
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+CONF:CFLAGS=-m32 -O2 -DMPFR_COV_CHECK -DMPFR_ALLOCA_MAX=0
+CONF:CC=gcc-5
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+CONF:CFLAGS=-O3 -march=native -DMPFR_COV_CHECK -DMPFR_ALLOCA_MAX=0
+CONF:CC=gcc-4.8
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--enable-assert=full
+CONF:CC=tcc
+CONF:LD=tcc
+CONF:CFLAGS=-O2
+INFO:CCV:-version
+CHECK-END
+
 HOST:gcc60.fsffrance.org
 PROC:Itanium 2 Madison
 CHECK-BEGIN
@@ -575,4 +741,4 @@ CONF:--enable-gmp-internals
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 83668 2015-10-29 12:25:02Z vinc17/ypig $
+# $Id: mpfrtests.data 85313 2015-12-27 22:35:13Z vinc17/cventin $
