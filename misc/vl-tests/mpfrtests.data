@@ -558,6 +558,14 @@ CONF:LD=tcc
 CONF:CFLAGS=-O2
 INFO:CCV:-version
 CHECK-END
+CHECK-BEGIN
+CONF:--host=i586-mingw32msvc
+CONF:--disable-shared
+CONF:--with-gmp=/usr/local/gmp-mingw32
+CONF:--enable-assert=full
+ENV:LOG_COMPILER=wine
+INFO:CCV:--version
+CHECK-END
 
 HOST:gcc60.fsffrance.org
 PROC:Itanium 2 Madison
@@ -741,4 +749,4 @@ CONF:--enable-gmp-internals
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 85313 2015-12-27 22:35:13Z vinc17/cventin $
+# $Id: mpfrtests.data 86149 2016-01-29 15:01:14Z vinc17/cventin $

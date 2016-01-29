@@ -42,7 +42,7 @@ pwd=$(pwd)
 out=$pwd/mpfrtests.$fqdn.out
 rm -f "$out"
 
-gmprx='.*gmp.h version and libgmp version are the same... (\(.*\)\/.*'
+gmprx='.*gmp.h version and libgmp version are the same... '
 mj="make ${MAKE_JOBS:+-j$MAKE_JOBS}"
 tgz="${1:-mpfr-tests.tar.gz}"
 
@@ -142,9 +142,18 @@ tst()
           echo "$conf"
           dotee "$conf" mpfrtests.cfgout
           ./config.status -V | sed '/with options/q' >> "$out"
-          gmpvers=$(sed -n "s/$gmprx/\1/p" mpfrtests.cfgout)
-          [ -n "$gmpvers" ]
-          printf "[GMP %s]\n" "$gmpvers" >> "$out"
+          gmpv1=$(sed -n "s/$gmprx//p" mpfrtests.cfgout)
+          if [ -z "$gmpv1" ]; then
+            echo "$0: can't get GMP version" >&2
+            exit 1
+          elif [ "x$gmpv1" != "xcannot test" ]; then
+            gmpvers=$(printf %s "$gmpv1" | sed -n "s/^(\(.*\)\/.*) yes/\1/p")
+            if [ -z "$gmpvers" ]; then
+              echo "$0: bad GMP version" >&2
+              exit 1
+            fi
+            printf "[GMP %s]\n" "$gmpvers" >> "$out"
+          fi
           rm mpfrtests.cfgout
           CC=$(sed -n 's/^CC *= *//p' Makefile)
           unset conf || true
@@ -274,4 +283,4 @@ printf "\n============================================================\n" \
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 85300 2015-12-27 17:51:33Z vinc17/zira $
+# $Id: mpfrtests.sh 86148 2016-01-29 14:47:06Z vinc17/cventin $
