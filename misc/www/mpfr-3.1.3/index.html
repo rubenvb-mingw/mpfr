@@ -99,7 +99,7 @@ The key fingerprint is:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2015-10-29). The patches are distributed under the same license as
+update: 2016-02-15). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -208,6 +208,91 @@ However this bug may be visible after a <q><samp>make tune</samp></q>
 details in the discussion in the <acronym>MPFR</acronym> list</a>.<br />
 Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9711&amp;view=revision">9711</a>.</li>
+
+<li id="p6">The Bessel functions (<code>mpfr_j0</code>, <code>mpfr_j1</code>,
+<code>mpfr_jn</code>, <code>mpfr_y0</code>, <code>mpfr_y1</code>,
+<code>mpfr_yn</code>) can return an incorrect result. This is fixed by the
+<a href="patch06"><samp>jn</samp> patch</a>, which also provides a testcase.
+<a href="https://sympa.inria.fr/sympa/arc/mpfr/2016-01/msg00027.html">Bug
+report by Fredrik Johansson</a>.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9845&amp;view=revision">9845</a>.</li>
+
+<li id="p7">The Riemann Zeta function <code>mpfr_zeta</code> can return an
+incorrect result when the argument is near an even negative integer. This
+is fixed by the <a href="patch07"><samp>zeta</samp> patch</a>, which also
+provides a testcase.
+<a href="https://sympa.inria.fr/sympa/arc/mpfr/2016-01/msg00028.html">Bug
+report by Fredrik Johansson</a>.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9855&amp;view=revision">9855</a>.</li>
+
+<li id="p8">The square root function <code>mpfr_sqrt</code> can return invalid
+data under very particular conditions: when the precision of the result is
+a multiple of the number of bits per word (<code>GMP_NUMB_BITS</code>), the
+rounding mode is to nearest (<code>MPFR_RNDN</code>), and internally, the
+result has to be rounded up to a power of 2. This can yield assertion
+failures (or other unknown behavior), thus make applications crash. This
+is fixed by the <a href="patch08"><samp>sqrt</samp> patch</a>, which also
+provides a testcase.
+<a href="https://sympa.inria.fr/sympa/arc/mpfr/2016-01/msg00043.html">Bug
+report by Fredrik Johansson</a>.<br />
+Corresponding changesets in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9860&amp;view=revision">9860</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=9862&amp;view=revision">9862</a>.</li>
+
+<li id="p9">The <em>si</em> functions (<code>mpfr_add_si</code>,
+<code>mpfr_sub_si</code>, <code>mpfr_si_sub</code>, <code>mpfr_mul_si</code>,
+<code>mpfr_div_si</code>, <code>mpfr_si_div</code>) have undefined behavior
+when the integer is the minimum one: <code>LONG_MIN</code>. However,
+on most processors (if not all), this bug has no visible effect when
+<acronym>MPFR</acronym> is compiled in the usual way. It is visible
+when using an <q>undefined behavior sanitizer</q>. This is fixed by
+the <a href="patch09"><samp>si-ops</samp> patch</a>.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10023&amp;view=revision">10023</a>.
+Changeset
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10002&amp;view=revision">10002</a>
+improves the generic tests of functions with an integer argument, but
+is not included in this patch since it is more general.</li>
+
+<li id="p10">The <code>mpfr_can_round_raw</code> internal rounding-test
+function can return true instead of false in case of a change of binade
+(more specifically, exponent decrease) on the approximation interval.
+This bug affects the <code>mpfr_can_round</code> public function. Some
+<acronym>MPFR</acronym> math functions might also be affected, but if
+they are, errors should be very rare. Consequences can be inaccurate
+results. This is fixed by the <a href="patch10"><samp>can_round</samp>
+patch</a>, which also provides testcases and cleans up related code.
+<a href="https://sympa.inria.fr/sympa/arc/mpfr/2016-01/msg00066.html">Bug
+report and discussion</a>.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10029&amp;view=revision">10029</a>.</li>
+
+<li id="p11">The <code>mpfr_fits_*</code> functions
+(<code>mpfr_fits_ulong_p</code>, <code>mpfr_fits_slong_p</code>,
+<code>mpfr_fits_uint_p</code>, <abbr>etc.</abbr>) can set some flags,
+while the flags should not be modified. These functions can also trigger
+assertion failures for non-integer numbers just above the positive limit
+of the type when additional assertions are checked (<acronym>MPFR</acronym>
+configured with <samp>--enable-assert</samp>). This is fixed by the
+<a href="patch11"><samp>fits</samp> patch</a>, which also provides
+testcases.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10035&amp;view=revision">10035</a>.</li>
+
+<li id="p12">The <code>mpfr_root</code> function, which computes the
+<var>k</var>th root of a floating-point number has major issues with large
+values of <var>k</var>: <acronym>MPFR</acronym> can take much memory, and
+when <var>k</var> is very large, <acronym>MPFR</acronym> can crash or the
+function can return an incorrect result due to internal integer overflow.
+This is fixed by the <a href="patch12"><samp>root</samp> patch</a>, which
+also provides testcases. This has been done by changing the algorithm for
+<var>k</var> &gt; 100.
+<a href="https://sympa.inria.fr/sympa/arc/mpfr/2016-02/msg00007.html">Bug
+report</a>.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10040&amp;view=revision">10040</a>.</li>
 
 </ol>
 
