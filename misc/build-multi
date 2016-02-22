@@ -28,14 +28,17 @@ do
   tar -C "$dir" -xf "$i"
   src=$dir/$i:t:r:r
   pushd "$src"
-  versnum=$(eval "expr $(sed -n 's/^\([0-9]\{1,\}\)\.\([0-9]\{1,\}\)\.\([0-9]\{1,\}\).*/10000 \\* \1 + 100 \\* \2 + \3/p' VERSION)")
-  [[ $versnum -lt 30101 ]] && perl -pi -e 's/__gmp_const/const/g' **/*.{c,h}
   version=$(<VERSION)
+  [[ $version < 3.1.1 ]] && perl -pi -e 's/__gmp_const/const/g' **/*.{c,h}
   prefix=$PWD:h/mpfr/$version
   ./configure --prefix="$prefix"
   mj
   mj check
   make install
+  # Remove the mpf2mpfr.h header file: it is useless here and it yields
+  # "conflicting types" errors because abi-compliance-checker includes
+  # it before mpfr.h while it should be included after.
+  rm "$prefix/include/mpf2mpfr.h"
   popd
   rm -r -- "$src"
   # http://lvc.github.io/abi-compliance-checker/Xml-Descriptor.html
