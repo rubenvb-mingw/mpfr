@@ -147,7 +147,8 @@ tst()
             echo "$0: can't get GMP version" >&2
             exit 1
           elif [ "x$gmpv1" != "xcannot test" ]; then
-            gmpvers=$(printf %s "$gmpv1" | sed -n "s/^(\(.*\)\/.*) yes/\1/p")
+            gmpvers=$(printf "%s\n" "$gmpv1" | \
+                      sed -n "s/^(\(.*\)\/.*) yes/\1/p")
             if [ -z "$gmpvers" ]; then
               echo "$0: bad GMP version" >&2
               exit 1
@@ -283,4 +284,4 @@ printf "\n============================================================\n" \
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 86148 2016-01-29 14:47:06Z vinc17/cventin $
+# $Id: mpfrtests.sh 86792 2016-02-23 23:09:52Z vinc17/zira $
