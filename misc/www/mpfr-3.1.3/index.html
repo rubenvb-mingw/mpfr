@@ -99,7 +99,7 @@ The key fingerprint is:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2016-02-15). The patches are distributed under the same license as
+update: 2016-02-23). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -293,6 +293,62 @@ also provides testcases. This has been done by changing the algorithm for
 report</a>.<br />
 Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10040&amp;view=revision">10040</a>.</li>
+
+<li id="p13">The <code>mpfr_gamma</code> function has the following issues
+when the argument is an integer fitting in an <code>unsigned long</code>:
+it may set the inexact flag even when the result is exact, and the result
+may be incorrect in a very reduced exponent range. This is fixed by the
+<a href="patch13"><samp>gamma</samp> patch</a>, which also provides a
+testcase.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10071&amp;view=revision">10071</a>.</li>
+
+<li id="p14">When <code>mpfr_fmod</code>, <code>mpfr_remainder</code> or
+<code>mpfr_remquo</code> is called on arguments with a huge difference in
+magnitude, <acronym>MPFR</acronym> can take much memory or crash. This is
+fixed by the <a href="patch14"><samp>rem1</samp> patch</a>, which also
+provides testcases.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10075&amp;view=revision">10075</a>.</li>
+
+<li id="p15">When <code>mpfr_agm</code> is called on arguments that have the
+same value, the ternary value is set to 0, whether the result is exact or
+not. This is fixed by the <a href="patch15"><samp>agm-eq</samp> patch</a>,
+which also provides a testcase.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10078&amp;view=revision">10078</a>.</li>
+
+<li id="p16">The <code>mpfr_sum</code> function can return wrong results
+when not all the numbers have the same precision. This is fixed by the
+<a href="patch16"><samp>sum</samp> patch</a>, which also provides a testcase.
+A side effect of this fix is that it can make <code>mpfr_sum</code> much
+slower and/or take much more memory in some of such cases <em>with the same
+program</em>; this is normal and cannot easily be avoided with the current
+algorithm.<br />
+The full rewrite currently in the trunk (for the next major version)
+has not been merged because this would not be a simple patch (and it
+is still incomplete when a number is reused as the output). Thus
+<acronym>MPFR</acronym> can still take much memory or crash when a huge
+internal precision is needed in case the exact result is very close to
+a number that is exactly representable in the output precision (+ 1 for
+rounding to nearest); this is the Table Maker's Dilemma.<br />
+Note also that the prototype of the <code>mpfr_sum_sort</code> internal
+but exported function had to be changed. Since this function is used
+only internally and by the tests, this does not break the
+<acronym title="Application Binary Interface">ABI</acronym>. However the
+old (3.1.3) and new tsum tests are source &amp; binary incompatible.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10083&amp;view=revision">10083</a>.</li>
+
+<li id="p17">The <code>mpfr_cmp_d</code> (<abbr>resp.</abbr>
+<code>mpfr_cmp_ld</code>) function was setting the NaN flag when the
+<code>double</code> (<abbr>resp.</abbr> <code>long double</code>) was
+a NaN and could return an incorrect result (assertion failure in debug
+mode) in reduced exponent range. This is fixed by the
+<a href="patch17"><samp>cmp_d</samp> patch</a>, which also provides
+testcases.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10090&amp;view=revision">10090</a>.</li>
 
 </ol>
 
