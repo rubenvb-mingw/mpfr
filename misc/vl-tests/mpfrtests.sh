@@ -1,7 +1,15 @@
 #!/bin/sh
 
 # Test of MPFR tarballs with various options.
-# Written in 2011-2015 by Vincent Lefevre.
+#
+# Written in 2011-2016 by Vincent Lefevre <vincent@vinc17.net>.
+# This script is free software; you can copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
 #
 # Usage: ./mpfrtests.sh [ +<host> ] [ <archive.tar.*> ] < mpfrtests.data
 #    or  ./mpfrtests.sh -C
@@ -45,6 +53,7 @@ rm -f "$out"
 gmprx='.*gmp.h version and libgmp version are the same... '
 mj="make ${MAKE_JOBS:+-j$MAKE_JOBS}"
 tgz="${1:-mpfr-tests.tar.gz}"
+cr="$(printf \\r)"
 
 case "$tgz" in
   *bz2) unarch=bunzip2 ;;
@@ -178,8 +187,16 @@ tst()
         eval $mj
         echo "*** Running make check ***"
         dotee "$mj check" mpfrtests.makeout
+        # Note: We need to remove the possible CR characters, as produced
+        # by checks under Wine. But the sed from Solaris does not support
+        # \r or even [:cntrl:]; indeed, neither of the following works:
+        #   printf "a\rb\n" | sed -n "s/\r//p"
+        #   printf "a\rb\n" | sed -n "s/[[:cntrl:]]//p"
+        # while GNU sed 4.2.2 is fine even with the --posix option.
+        # But we can do:
+        #   printf "a\rb\n" | sed -n "s/$(printf \\r)//p"
         sed -n "/: tzeta_ui/,/tests passed/ {
-                  /^\[tversion\]/p
+                  s/^\(\[tversion\].*[^$cr]\)$cr*/\1/p
                   s/^\(.*tests passed\)/--> \1/p
                   / PASS:/,/ FAIL:/H
                   / ERROR:/ {
@@ -284,4 +301,4 @@ printf "\n============================================================\n" \
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 86792 2016-02-23 23:09:52Z vinc17/zira $
+# $Id: mpfrtests.sh 86810 2016-02-24 13:33:32Z vinc17/cventin $
