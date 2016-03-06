@@ -18,10 +18,113 @@
 
 <div class="logo"><a href="../index.html"><img src="../mpfr100.png" height="40" width="100" alt="[MPFR]" /></a></div>
 
-<h1><acronym>GNU</acronym> <acronym>MPFR</acronym> version 3.1.4</h1>
+<h1><acronym>GNU</acronym> <acronym>MPFR</acronym> version 3.1.4 (released on 6 March 2016)</h1>
 
-<p>On 2016-02-24, <acronym>MPFR</acronym> 3.1.4 is currently under testing.
-It will be released soon.</p>
+<div>[<a href="#download">download</a>]
+[<a href="#doc">documentation</a>]
+[<a href="#bugs">bugs</a>]
+[<a href="#changes">changes</a>]
+[<a href="#platforms">platforms</a>]
+[<a href="../mpfr-3.1.2/timings.html" title="Comparison of other software to MPFR 3.1.2">timings of 3.1.2</a>]</div>
+
+<p>The <cite lang="fr" xml:lang="fr">canard à l'orange</cite> release, patch level 4.</p>
+
+<p><acronym>MPFR</acronym> 3.1.4 requires <acronym>GMP</acronym> 4.1.0
+or higher (<acronym>GMP</acronym> 4.2.3 or higher is recommended).</p>
+
+<p><strong>Warning! Due to the fact that
+<acronym title="Thread Local Storage">TLS</acronym> support is now detected
+automatically, the <acronym>MPFR</acronym> build can be incorrect on some
+platforms</strong> (compiler or system bug). Indeed,
+<a href="http://www.loria.fr/~zimmerma/software/compilerbugs.html">the
+<acronym>TLS</acronym> implementation of some compilers/platforms is buggy</a>,
+and <acronym>MPFR</acronym> cannot detect every problem at configure time.
+Please run <q><samp>make check</samp></q> to see if your build is affected.
+If you get failures, you should try the <samp>--disable-thread-safe</samp>
+configure option to disable <acronym>TLS</acronym> and see if this solves
+these failures. But you should not use an <acronym>MPFR</acronym> library
+with <acronym>TLS</acronym> disabled in a multithreaded program (unless
+you know what you are doing).</p>
+
+<h2 id="download">Download</h2>
+
+<p>The <acronym>MPFR</acronym> 3.1.4 source can be downloaded in the
+following archive formats:</p>
+<ul>
+<li><a href="mpfr-3.1.4.tar.xz">mpfr-3.1.4.tar.xz</a>
+(tar/xz, 1.1 <abbr>MB</abbr>,
+<a href="mpfr-3.1.4.tar.xz.asc" title="PGP signature for mpfr-3.1.4.tar.xz">signature</a>),</li>
+<li><a href="mpfr-3.1.4.tar.bz2">mpfr-3.1.4.tar.bz2</a>
+(tar/bzip2, 1.3 <abbr>MB</abbr>,
+<a href="mpfr-3.1.4.tar.bz2.asc" title="PGP signature for mpfr-3.1.4.tar.bz2">signature</a>),</li>
+<li><a href="mpfr-3.1.4.tar.gz">mpfr-3.1.4.tar.gz</a>
+(tar/gzip, 1.7 <abbr>MB</abbr>,
+<a href="mpfr-3.1.4.tar.gz.asc" title="PGP signature for mpfr-3.1.4.tar.gz">signature</a>),</li>
+<li><a href="mpfr-3.1.4.zip">mpfr-3.1.4.zip</a>
+(zip, 2.1 <abbr>MB</abbr>,
+<a href="mpfr-3.1.4.zip.asc" title="PGP signature for mpfr-3.1.4.zip">signature</a>).</li>
+</ul>
+
+<p>Each tarball is signed by Vincent Lefèvre. This can be verified using the
+<acronym title="Digital Signature Algorithm">DSA</acronym> key <abbr>ID</abbr>
+<samp>98C3739D</samp>; this key can be retrieved with:</p>
+<pre>gpg --recv-keys 98C3739D</pre>
+<p>or by downloading it from
+<a href="https://www.vinc17.net/pgp.html">https://www.vinc17.net/pgp.html</a>.
+The key fingerprint is:</p>
+<pre>07F3 DBBE CC1A 3960 5078  094D 980C 1976 98C3 739D</pre>
+<p>The signatures can be verified with:</p>
+<pre>gpg --verify <em>file.asc</em></pre>
+<p>You should check that the key fingerprint matches.</p>
+
+<p><acronym>MPFR</acronym> is also available via
+<a href="../ports.html">third-party packages and ports</a>.</p>
+
+<h2 id="doc">Documentation</h2>
+
+<ul>
+
+<li>The reference manual:
+[<a href="mpfr.html" title="Reference manual in HTML format">html</a>]
+[<a href="mpfr.dvi.gz" title="Reference manual in DVI format">dvi</a>]
+[<a href="mpfr.ps.gz" title="Reference manual in Postscript format">ps</a>]
+[<a href="mpfr.pdf" title="Reference manual in PDF format">pdf</a>]</li>
+
+<li>The <a href="../faq.html"><acronym>MPFR</acronym>
+<acronym title="Frequently Asked Questions">FAQ</acronym></a>
+(common to all <acronym>MPFR</acronym> versions).</li>
+
+</ul>
+
+<h2 id="bugs">Bugs</h2>
+
+<!-- For BUGS, it's better to point to HEAD, as changes will be noted above. -->
+<p>See the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr/trunk/BUGS?view=markup"><samp>BUGS</samp></a> file.</p>
+
+<h2 id="changes">Changes from version 3.1.3 to version 3.1.4</h2>
+
+<ul>
+
+<li>Improved <acronym>MPFR</acronym> manual.</li>
+
+<li>Bug fixes (<a href="../mpfr-3.1.3/#fixed">detailed list on the <cite><acronym>MPFR</acronym></cite> 3.1.3 page</a> and <samp>ChangeLog</samp> file).</li>
+
+<li>MinGW (<acronym title="Microsoft">MS</acronym> Windows): Added support for thread-safe <acronym title="Dynamic Link Library">DLL</acronym> (shared library).</li>
+
+</ul>
+
+<h2 id="platforms">Platforms Known to Support <cite><acronym>MPFR</acronym></cite></h2>
+
+<p><cite><acronym>MPFR</acronym></cite> 3.1.4 has been successfully
+compiled and checked on the following platforms:</p>
+
+<ul>
+<li><samp>i386-pc-solaris2.10</samp> (Sun C 5.9 SunOS_i386 Patch 124868-10 2009/04/30),</li>
+<li><samp>i586-mingw32msvc</samp> (<cite>Wine</cite>, <acronym>gcc</acronym> 5.3.1),</li>
+<li><samp>powerpc64-unknown-linux-gnu</samp> (POWER7, <acronym>gcc</acronym> 4.8.3),</li>
+<li><samp>x86_64-pc-linux-gnu</samp> (<acronym>gcc</acronym> 4.7.4, 4.8.5, 4.9.3, 5.3.1 and 6.0.0 snapshot, g++ 5.3.1, clang 3.4.2, 3.5.2, 3.6.2, 3.7.1 and 3.8.0, <acronym>icc</acronym> 15.0.0, and <acronym>tcc</acronym> 0.9.26),</li>
+<li><samp>x86_64-unknown-netbsd5.1</samp> (NetBSD 5.1, <acronym>gcc</acronym> 4.1.3).</li>
+</ul>
 
 <p><a href="../index.html">Back to the <cite><acronym>MPFR</acronym></cite>
 page.</a></p>
