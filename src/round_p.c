@@ -23,7 +23,8 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 #include "mpfr-impl.h"
 
 /* Check against mpfr_can_round? */
-#if MPFR_WANT_ASSERT >= 2
+#ifdef MPFR_WANT_ASSERT
+# if MPFR_WANT_ASSERT >= 2
 int mpfr_round_p_2 (mp_limb_t *, mp_size_t, mpfr_exp_t, mpfr_prec_t);
 int
 mpfr_round_p (mp_limb_t *bp, mp_size_t bn, mpfr_exp_t err0, mpfr_prec_t prec)
@@ -49,7 +50,8 @@ mpfr_round_p (mp_limb_t *bp, mp_size_t bn, mpfr_exp_t err0, mpfr_prec_t prec)
   return i1;
 }
 # define mpfr_round_p mpfr_round_p_2
-#endif  /* MPFR_WANT_ASSERT >= 2 */
+# endif
+#endif
 
 /*
  * Assuming {bp, bn} is an approximation of a non-singular number
@@ -73,16 +75,16 @@ mpfr_round_p (mp_limb_t *bp, mp_size_t bn, mpfr_exp_t err0, mpfr_prec_t prec)
   err = MIN (err, (mpfr_uexp_t) err0);
 
   k = prec / GMP_NUMB_BITS;
-  s = GMP_NUMB_BITS - prec % GMP_NUMB_BITS;
+  s = GMP_NUMB_BITS - prec%GMP_NUMB_BITS;
   n = err / GMP_NUMB_BITS - k;
 
   MPFR_ASSERTD (n >= 0);
   MPFR_ASSERTD (bn > k);
 
   /* Check first limb */
-  bp += bn - 1 - k;
+  bp += bn-1-k;
   tmp = *bp--;
-  mask = s == GMP_NUMB_BITS ? MPFR_LIMB_MAX : MPFR_LIMB_MASK (s);
+  mask = s == GMP_NUMB_BITS ? MP_LIMB_T_MAX : MPFR_LIMB_MASK (s);
   tmp &= mask;
 
   if (MPFR_LIKELY (n == 0))
@@ -111,14 +113,14 @@ mpfr_round_p (mp_limb_t *bp, mp_size_t bn, mpfr_exp_t err0, mpfr_prec_t prec)
     {
       /* Check if all (n-1) limbs are 11111111111111111 */
       while (--n)
-        if (*bp-- != MPFR_LIMB_MAX)
+        if (*bp-- != MP_LIMB_T_MAX)
           return 1;
       /* Check if final error limb is 0 */
       s = GMP_NUMB_BITS - err % GMP_NUMB_BITS;
       if (s == GMP_NUMB_BITS)
         return 0;
       tmp = *bp >> s;
-      return tmp != (MPFR_LIMB_MAX >> s);
+      return tmp != (MP_LIMB_T_MAX >> s);
     }
   else
     {

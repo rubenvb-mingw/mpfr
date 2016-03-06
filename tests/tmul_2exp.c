@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 static const char * const val[] = {
@@ -268,7 +271,7 @@ overflow0 (mpfr_exp_t emax)
       RND_LOOP (r)
         {
           int inex1, inex2;
-          mpfr_flags_t flags1, flags2;
+          unsigned int flags1, flags2;
 
           /* Even if there isn't an overflow (rounding ~ toward zero),
              the result is the same as the one of an overflow. */

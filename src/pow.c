@@ -195,7 +195,7 @@ mpfr_pow_general (mpfr_ptr z, mpfr_srcptr x, mpfr_srcptr y,
   /* the optimal number of bits : see algorithms.tex */
   Nt = Nz + 5 + MPFR_INT_CEIL_LOG2 (Nz);
 
-  /* initialize of intermediary variable */
+  /* initialise of intermediary variable */
   mpfr_init2 (t, Nt);
 
   MPFR_ZIV_INIT (ziv_loop, Nt);
@@ -360,28 +360,15 @@ mpfr_pow_general (mpfr_ptr z, mpfr_srcptr x, mpfr_srcptr y,
           MPFR_GET_EXP (z) == __gmpfr_emin - 1 - lk && mpfr_powerof2_raw (z))
         {
           /* Rounding to nearest, real result > z * 2^k = 2^(emin - 2),
-           * underflow case:
-           * (a) if the precision of z is > 1, we will obtain the correct
-           *     result and exceptions by replacing z by nextabove(z).
-           * (b) if the precision of z is 1, we first copy z to zcopy of
-           *     precision 2 bits and perform nextabove(zcopy).
+           * underflow case: as the minimum precision is > 1, we will
+           * obtain the correct result and exceptions by replacing z by
+           * nextabove(z).
            */
-          if (MPFR_PREC(z) >= 2)
-            mpfr_nextabove (z);
-          else
-            {
-              mpfr_t zcopy;
-              mpfr_init2 (zcopy, MPFR_PREC(z) + 1);
-              mpfr_set (zcopy, z, MPFR_RNDZ);
-              mpfr_nextabove (zcopy);
-              inex2 = mpfr_mul_2si (z, zcopy, lk, rnd_mode);
-              mpfr_clear (zcopy);
-              goto under_over;
-            }
+          MPFR_ASSERTN (MPFR_PREC_MIN > 1);
+          mpfr_nextabove (z);
         }
-      MPFR_CLEAR_FLAGS ();
+      mpfr_clear_flags ();
       inex2 = mpfr_mul_2si (z, z, lk, rnd_mode);
-    under_over:
       if (inex2)  /* underflow or overflow */
         {
           inexact = inex2;
@@ -516,7 +503,7 @@ mpfr_pow (mpfr_ptr z, mpfr_srcptr x, mpfr_srcptr y, mpfr_rnd_t rnd_mode)
             {
               MPFR_ASSERTD (! MPFR_IS_INF (y));
               MPFR_SET_INF (z);
-              MPFR_SET_DIVBY0 ();
+              mpfr_set_divby0 ();
             }
           else
             MPFR_SET_ZERO (z);
@@ -575,7 +562,7 @@ mpfr_pow (mpfr_ptr z, mpfr_srcptr x, mpfr_srcptr y, mpfr_rnd_t rnd_mode)
              to round y*o(log2(x)) toward zero too;
          (ii) if x < 0, we first compute t = o(-x), with rounding toward 1,
               and then follow as in case (1). */
-      if (MPFR_IS_POS (x))
+      if (MPFR_SIGN (x) > 0)
         mpfr_log2 (t, x, MPFR_RNDZ);
       else
         {
@@ -589,7 +576,7 @@ mpfr_pow (mpfr_ptr z, mpfr_srcptr x, mpfr_srcptr y, mpfr_rnd_t rnd_mode)
       if (overflow)
         {
           MPFR_LOG_MSG (("early overflow detection\n", 0));
-          negative = MPFR_IS_NEG (x) && is_odd (y);
+          negative = MPFR_SIGN(x) < 0 && is_odd (y);
           return mpfr_overflow (z, rnd_mode, negative ? -1 : 1);
         }
     }
@@ -632,7 +619,7 @@ mpfr_pow (mpfr_ptr z, mpfr_srcptr x, mpfr_srcptr y, mpfr_rnd_t rnd_mode)
           MPFR_LOG_MSG (("early underflow detection\n", 0));
           return mpfr_underflow (z,
                                  rnd_mode == MPFR_RNDN ? MPFR_RNDZ : rnd_mode,
-                                 MPFR_IS_NEG (x) && is_odd (y) ? -1 : 1);
+                                 MPFR_SIGN (x) < 0 && is_odd (y) ? -1 : 1);
         }
     }
 
@@ -678,7 +665,7 @@ mpfr_pow (mpfr_ptr z, mpfr_srcptr x, mpfr_srcptr y, mpfr_rnd_t rnd_mode)
            possible (due to basic overflow and underflow checking above, as
            the result is ~ 2^tmp), and an underflow is not possible either
            because b is an integer (thus either 0 or >= 1). */
-        MPFR_CLEAR_FLAGS ();
+        mpfr_clear_flags ();
         inexact = mpfr_exp2 (z, tmp, rnd_mode);
         mpfr_clear (tmp);
         if (sgnx < 0 && is_odd (y))
@@ -714,9 +701,9 @@ mpfr_pow (mpfr_ptr z, mpfr_srcptr x, mpfr_srcptr y, mpfr_rnd_t rnd_mode)
     MPFR_ASSERTN (MPFR_IS_PURE_FP (t));
     err = MPFR_GET_EXP (y) + MPFR_GET_EXP (t);
     mpfr_clear (t);
-    MPFR_CLEAR_FLAGS ();
+    mpfr_clear_flags ();
     MPFR_SMALL_INPUT_AFTER_SAVE_EXPO (z, __gmpfr_one, - err, 0,
-                                      (MPFR_IS_POS (y)) ^ (cmp_x_1 < 0),
+                                      (MPFR_SIGN (y) > 0) ^ (cmp_x_1 < 0),
                                       rnd_mode, expo, {});
   }
 

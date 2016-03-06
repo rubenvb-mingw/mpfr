@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 static void
@@ -207,7 +210,7 @@ main (void)
     }
   mpfr_clear (x);
 
-  test_generic (MPFR_PREC_MIN, 200, 10);
+  test_generic (2, 200, 10);
 
   data_check ("data/cbrt", mpfr_cbrt, "mpfr_cbrt");
 

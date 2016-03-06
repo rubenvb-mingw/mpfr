@@ -34,16 +34,6 @@ mpfr_buildopt_tls_p (void)
 }
 
 int
-mpfr_buildopt_float128_p (void)
-{
-#ifdef MPFR_WANT_FLOAT128
-  return 1;
-#else
-  return 0;
-#endif
-}
-
-int
 mpfr_buildopt_decimal_p (void)
 {
 #ifdef MPFR_WANT_DECIMAL_FLOATS
@@ -65,6 +55,9 @@ mpfr_buildopt_gmpinternals_p (void)
 
 const char *mpfr_buildopt_tune_case (void)
 {
-  /* MPFR_TUNE_CASE is always defined (can be "default"). */
+#ifdef MPFR_TUNE_CASE
   return MPFR_TUNE_CASE;
+#else
+  return "Generic thresholds";
+#endif
 }

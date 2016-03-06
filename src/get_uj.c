@@ -21,7 +21,7 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
 #ifdef HAVE_CONFIG_H
-# include "config.h"
+# include "config.h"       /* for a build within gmp */
 #endif
 
 #include "mpfr-intmax.h"
@@ -38,7 +38,7 @@ mpfr_get_uj (mpfr_srcptr f, mpfr_rnd_t rnd)
 
   if (MPFR_UNLIKELY (!mpfr_fits_uintmax_p (f, rnd)))
     {
-      MPFR_SET_ERANGEFLAG ();
+      MPFR_SET_ERANGE ();
       return MPFR_IS_NAN (f) || MPFR_IS_NEG (f) ?
         (uintmax_t) 0 : MPFR_UINTMAX_MAX;
     }

@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 /* checks that y/x gives the right result with 53 bits of precision */
@@ -55,7 +58,7 @@ check_inexact (void)
   mpfr_init (y);
   mpfr_init (z);
 
-  for (px = MPFR_PREC_MIN; px < 300; px++)
+  for (px = 2; px < 300; px++)
     {
       mpfr_set_prec (x, px);
       do
@@ -64,7 +67,7 @@ check_inexact (void)
         }
       while (mpfr_cmp_ui (x, 0) == 0);
       u = randlimb ();
-      for (py = MPFR_PREC_MIN; py < 300; py++)
+      for (py = 2; py < 300; py++)
         {
           mpfr_set_prec (y, py);
           mpfr_set_prec (z, py + px);
@@ -181,7 +184,7 @@ check_overflow (void)
   mpfr_exp_t emin, emax;
   mpfr_t x, y1, y2;
   int inex1, inex2, rnd_mode;
-  mpfr_flags_t flags1, flags2;
+  unsigned int flags1, flags2;
 
   emin = mpfr_get_emin ();
   emax = mpfr_get_emax ();
@@ -244,7 +247,7 @@ main (int argc, char *argv[])
         "-6.8938315017943889615e-297");
   check_overflow ();
 
-  test_generic (MPFR_PREC_MIN, 1000, 100);
+  test_generic (2, 1000, 100);
 
   /* inv is for 1/x */
   data_check ("data/inv", mpfr_inv, "mpfr_ui_div(1,x)");

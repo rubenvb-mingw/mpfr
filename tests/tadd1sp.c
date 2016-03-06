@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 static void check_special (void);
@@ -62,7 +65,7 @@ main (void)
   tests_start_mpfr ();
 
   check_special ();
-  for(p = MPFR_PREC_MIN; p < 200 ; p++)
+  for(p = 2 ; p < 200 ; p++)
     check_random (p);
   check_overflow ();
 

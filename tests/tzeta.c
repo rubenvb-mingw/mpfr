@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 static void
@@ -247,7 +250,7 @@ main (int argc, char *argv[])
   mpfr_set_ui (s, 1, MPFR_RNDN);
   mpfr_clear_divby0();
   mpfr_zeta (z, s, MPFR_RNDN);
-  if (!mpfr_inf_p (z) || MPFR_IS_NEG (z) || !mpfr_divby0_p())
+  if (!mpfr_inf_p (z) || MPFR_SIGN (z) < 0 || !mpfr_divby0_p())
     {
       printf ("Error in mpfr_zeta for s = 1 (should be +inf) with divby0 flag\n");
       exit (1);
@@ -339,14 +342,14 @@ main (int argc, char *argv[])
 
   mpfr_set_str (s, "-400000001", 10, MPFR_RNDZ);
   mpfr_zeta (z, s, MPFR_RNDN);
-  if (!(mpfr_inf_p (z) && MPFR_IS_NEG (z)))
+  if (!(mpfr_inf_p (z) && MPFR_SIGN(z) < 0))
     {
       printf ("Error in mpfr_zeta (-400000001)\n");
       exit (1);
     }
   mpfr_set_str (s, "-400000003", 10, MPFR_RNDZ);
   mpfr_zeta (z, s, MPFR_RNDN);
-  if (!(mpfr_inf_p (z) && MPFR_IS_POS (z)))
+  if (!(mpfr_inf_p (z) && MPFR_SIGN(z) > 0))
     {
       printf ("Error in mpfr_zeta (-400000003)\n");
       exit (1);
@@ -384,7 +387,7 @@ main (int argc, char *argv[])
   mpfr_set_prec (z, 128);
   mpfr_set_str_binary (s, "-0.1000000000000000000000000000000000000000000000000000000000000001E64");
   inex = mpfr_zeta (z, s, MPFR_RNDN);
-  MPFR_ASSERTN (mpfr_inf_p (z) && MPFR_IS_NEG (z) && inex < 0);
+  MPFR_ASSERTN (mpfr_inf_p (z) && MPFR_SIGN (z) < 0 && inex < 0);
   inex = mpfr_zeta (z, s, MPFR_RNDU);
   mpfr_set_inf (s, -1);
   mpfr_nextabove (s);
@@ -415,7 +418,7 @@ main (int argc, char *argv[])
   mpfr_clear (y);
   mpfr_clear (z);
 
-  test_generic (MPFR_PREC_MIN, 70, 5);
+  test_generic (2, 70, 5);
   test2 ();
 
   tests_end_mpfr ();

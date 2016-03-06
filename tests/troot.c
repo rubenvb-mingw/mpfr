@@ -20,16 +20,10 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
-
-#include <time.h>
-
-/* return the cpu time in seconds */
-static double
-cputime (void)
-{
-  return (double) clock () / (double) CLOCKS_PER_SEC;
-}
 
 #define DEFN(N)                                                         \
   static int root##N (mpfr_ptr y, mpfr_srcptr x, mpfr_rnd_t rnd)        \
@@ -376,7 +370,7 @@ cmp_pow (void)
       for (i = 0; i < 10; i++)
         {
           mpfr_rnd_t rnd;
-          mpfr_flags_t flags1, flags2;
+          unsigned int flags1, flags2;
           int inex1, inex2;
 
           tests_default_random (x, 0, __gmpfr_emin, __gmpfr_emax, 1);
@@ -412,52 +406,12 @@ cmp_pow (void)
 }
 
 int
-main (int argc, char *argv[])
+main (void)
 {
   mpfr_t x;
   int r;
   mpfr_prec_t p;
   unsigned long k;
-
-  if (argc == 3) /* troot prec k */
-    {
-      double st1, st2;
-      unsigned long k;
-      int l;
-      mpfr_t y;
-      p = strtoul (argv[1], NULL, 10);
-      k = strtoul (argv[2], NULL, 10);
-      mpfr_init2 (x, p);
-      mpfr_init2 (y, p);
-      mpfr_const_pi (y, MPFR_RNDN);
-      mpfr_root (x, y, k, MPFR_RNDN); /* to warm up cache */
-      st1 = cputime ();
-      for (l = 0; cputime () - st1 < 1.0; l++)
-        mpfr_root (x, y, k, MPFR_RNDN);
-      st1 = (cputime () - st1) / l;
-      printf ("mpfr_root       took %.2es\n", st1);
-
-      /* compare with x^(1/k) = exp(1/k*log(x)) */
-      /* first warm up cache */
-      mpfr_swap (x, y);
-      mpfr_log (y, x, MPFR_RNDN);
-      mpfr_div_ui (y, y, k, MPFR_RNDN);
-      mpfr_exp (y, y, MPFR_RNDN);
-
-      st2 = cputime ();
-      for (l = 0; cputime () - st2 < 1.0; l++)
-        {
-          mpfr_log (y, x, MPFR_RNDN);
-          mpfr_div_ui (y, y, k, MPFR_RNDN);
-          mpfr_exp (y, y, MPFR_RNDN);
-        }
-      st2 = (cputime () - st2) / l;
-      printf ("exp(1/k*log(x)) took %.2es\n", st2);
-
-      mpfr_clear (x);
-      mpfr_clear (y);
-      return 0;
-    }
 
   tests_start_mpfr ();
 
@@ -468,7 +422,7 @@ main (int argc, char *argv[])
 
   mpfr_init (x);
 
-  for (p = MPFR_PREC_MIN; p < 100; p++)
+  for (p = 2; p < 100; p++)
     {
       mpfr_set_prec (x, p);
       for (r = 0; r < MPFR_RND_MAX; r++)
@@ -521,7 +475,7 @@ main (int argc, char *argv[])
     }
   mpfr_clear (x);
 
-  test_generic_ui (MPFR_PREC_MIN, 200, 30);
+  test_generic_ui (2, 200, 30);
 
   bad_cases (root2, pow2, "mpfr_root[2]", 8, -256, 255, 4, 128, 800, 40);
   bad_cases (root3, pow3, "mpfr_root[3]", 8, -256, 255, 4, 128, 800, 40);

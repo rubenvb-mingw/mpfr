@@ -27,9 +27,6 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
    Define ULONG_ARG1 or ULONG_ARG2 for function with an unsigned long
    operand in first or second place like sub_ui or ui_sub. */
 
-/* TODO: Add support for type long and extreme integer values, as done
-   in tgeneric_ui.c; then tgeneric_ui.c could probably disappear. */
-
 #if defined(TWO_ARGS) || defined(DOUBLE_ARG1) || defined(DOUBLE_ARG2) || \
   defined(ULONG_ARG1) || defined(ULONG_ARG2)
 #define TWO_ARGS_ALL
@@ -68,7 +65,7 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 #define MAKE_STR(S) STR(S)
 
 /* The (void *) below is needed to avoid a warning with gcc 4.2+ and functions
- * with 2 arguments. See <https://gcc.gnu.org/bugzilla/show_bug.cgi?id=36299>.
+ * with 2 arguments. See <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=36299>.
  */
 #define TGENERIC_FAIL(S, X, U)                                          \
   do                                                                    \
@@ -131,11 +128,6 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 #define REDUCE_EMAX mpfr_get_emax ()
 #endif
 
-/* same for mpfr_get_emin() */
-#ifndef REDUCE_EMIN
-#define REDUCE_EMIN mpfr_get_emin ()
-#endif
-
 static void
 test_generic (mpfr_prec_t p0, mpfr_prec_t p1, unsigned int nmax)
 {
@@ -174,17 +166,11 @@ test_generic (mpfr_prec_t p0, mpfr_prec_t p1, unsigned int nmax)
       mpfr_set_prec (y, yprec);
       mpfr_set_prec (w, yprec);
 
-#if defined(TWO_ARGS) || defined(DOUBLE_ARG1) || defined(DOUBLE_ARG2)
-#define NSPEC 8
-#else
-#define NSPEC 4
-#endif
-
-      /* Note: in precision p1, we test NSPEC special cases. */
-      for (n = 0; n < (prec == p1 ? nmax + NSPEC : nmax); n++)
+      /* Note: in precision p1, we test 4 special cases. */
+      for (n = 0; n < (prec == p1 ? nmax + 4 : nmax); n++)
         {
           int infinite_input = 0;
-          mpfr_flags_t flags;
+          unsigned int flags;
           mpfr_exp_t oemin, oemax;
 
           xprec = prec;
@@ -195,7 +181,7 @@ test_generic (mpfr_prec_t p0, mpfr_prec_t p1, unsigned int nmax)
                  take a larger input precision in general, else
                  take a smaller precision. */
               xprec *= (prec < 16 ? 256.0 : 1.0) *
-                (double) randlimb () / MPFR_LIMB_MAX;
+                (double) randlimb () / MP_LIMB_T_MAX;
               if (xprec < MPFR_PREC_MIN)
                 xprec = MPFR_PREC_MIN;
             }
@@ -208,7 +194,7 @@ test_generic (mpfr_prec_t p0, mpfr_prec_t p1, unsigned int nmax)
           mpfr_set_prec (u, sizeof (unsigned long) * CHAR_BIT);
 #endif
 
-          if (n >= NSPEC || prec < p1)
+          if (n > 3 || prec < p1)
             {
 #if defined(RAND_FUNCTION)
               RAND_FUNCTION (x);
@@ -228,7 +214,7 @@ test_generic (mpfr_prec_t p0, mpfr_prec_t p1, unsigned int nmax)
             }
           else
             {
-              /* Special cases tested in precision p1 if n < NSPEC. They are
+              /* Special cases tested in precision p1 if n <= 3. They are
                  useful really in the extended exponent range. */
 #if (defined(DOUBLE_ARG1) || defined(DOUBLE_ARG2)) && defined(MPFR_ERRDIVZERO)
               goto next_n;
@@ -238,41 +224,23 @@ test_generic (mpfr_prec_t p0, mpfr_prec_t p1, unsigned int nmax)
               if (n <= 1)
                 {
                   mpfr_set_si (x, n == 0 ? 1 : -1, MPFR_RNDN);
-                  mpfr_set_exp (x, REDUCE_EMIN);
+                  mpfr_set_exp (x, mpfr_get_emin ());
 #if defined(TWO_ARGS) || defined(DOUBLE_ARG1) || defined(DOUBLE_ARG2)
                   mpfr_set_si (u, randlimb () % 2 == 0 ? 1 : -1, MPFR_RNDN);
-                  mpfr_set_exp (u, REDUCE_EMIN);
+                  mpfr_set_exp (u, mpfr_get_emin ());
 #endif
                 }
-              else if (n <= 3)
+              else  /* 2 <= n <= 3 */
                 {
-                  mpfr_set_si (x, n == 2 ? 1 : -1, MPFR_RNDN);
+                  if (getenv ("MPFR_CHECK_MAX") == NULL)
+                    goto next_n;
+                  mpfr_set_si (x, n == 0 ? 1 : -1, MPFR_RNDN);
                   mpfr_setmax (x, REDUCE_EMAX);
 #if defined(TWO_ARGS) || defined(DOUBLE_ARG1) || defined(DOUBLE_ARG2)
                   mpfr_set_si (u, randlimb () % 2 == 0 ? 1 : -1, MPFR_RNDN);
-                  mpfr_setmax (u, REDUCE_EMAX);
+                  mpfr_setmax (u, mpfr_get_emax ());
 #endif
                 }
-#if defined(TWO_ARGS) || defined(DOUBLE_ARG1) || defined(DOUBLE_ARG2)
-              else if (n <= 5)
-                {
-                  mpfr_set_si (x, n == 4 ? 1 : -1, MPFR_RNDN);
-                  mpfr_set_exp (x, REDUCE_EMIN);
-#if defined(TWO_ARGS) || defined(DOUBLE_ARG1) || defined(DOUBLE_ARG2)
-                  mpfr_set_si (u, randlimb () % 2 == 0 ? 1 : -1, MPFR_RNDN);
-                  mpfr_setmax (u, REDUCE_EMAX);
-#endif
-                }
-              else
-                {
-                  mpfr_set_si (x, n == 6 ? 1 : -1, MPFR_RNDN);
-                  mpfr_setmax (x, REDUCE_EMAX);
-#if defined(TWO_ARGS) || defined(DOUBLE_ARG1) || defined(DOUBLE_ARG2)
-                  mpfr_set_si (u, randlimb () % 2 == 0 ? 1 : -1, MPFR_RNDN);
-                  mpfr_set_exp (u, REDUCE_EMIN);
-#endif
-                }
-#endif
             }
 
 #if defined(ULONG_ARG1) || defined(ULONG_ARG2)
@@ -323,7 +291,7 @@ test_generic (mpfr_prec_t p0, mpfr_prec_t p1, unsigned int nmax)
 
           /* Tests in a reduced exponent range. */
           {
-            mpfr_flags_t oldflags = flags;
+            unsigned int oldflags = flags;
             mpfr_exp_t e, emin, emax;
 
             /* Determine the smallest exponent range containing the
@@ -354,7 +322,7 @@ test_generic (mpfr_prec_t p0, mpfr_prec_t p1, unsigned int nmax)
                 e = MPFR_GET_EXP (y);
                 if (test_of && e - 1 >= emax)
                   {
-                    mpfr_flags_t ex_flags;
+                    unsigned int ex_flags;
 
                     mpfr_set_emax (e - 1);
                     mpfr_clear_flags ();
@@ -402,7 +370,7 @@ test_generic (mpfr_prec_t p0, mpfr_prec_t p1, unsigned int nmax)
                   }
                 if (test_uf && e + 1 <= emin)
                   {
-                    mpfr_flags_t ex_flags;
+                    unsigned int ex_flags;
 
                     mpfr_set_emin (e + 1);
                     mpfr_clear_flags ();
@@ -693,4 +661,3 @@ test_generic (mpfr_prec_t p0, mpfr_prec_t p1, unsigned int nmax)
 #undef ULONG_ARG2
 #undef TEST_FUNCTION
 #undef test_generic
-#undef NSPEC

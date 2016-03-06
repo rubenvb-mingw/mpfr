@@ -22,37 +22,17 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 
 #if HAVE_STDINT_H
 
+#include <stdlib.h>
+
 #if _MPFR_EXP_FORMAT == 4
 /* If mpfr_exp_t is defined as intmax_t, intmax_t must be defined before
    the inclusion of mpfr.h (this test doesn't use mpfr-impl.h). */
 # include <stdint.h>
 #endif
 
-#ifdef MPFR_USE_MINI_GMP
-#include "mpfr-impl.h"
-#endif
-
-/* One of the goals of this test is to detect potential issues with the
- * following case in user code:
- *
- * #include <some_lib.h>
- * #include <stdint.h>
- * #define MPFR_USE_INTMAX_T
- * #include <mpfr.h>
- *
- * where some_lib.h has "#include <mpfr.h>". So, the mpfr.h header file
- * is included multiple times, a first time without <stdint.h> before,
- * and a second time with <stdint.h> support. We need to make sure that
- * the second inclusion is not a no-op due to some #include guard. This
- * was fixed in r7320.
- *
- * With mini-gmp, mpfr-impl.h is included first, but this should not
- * affect this test.
- *
- * Note: If _MPFR_EXP_FORMAT == 4 (which is never the case by default),
- * a part of the above check is not done because <stdint.h> is included
- * before the first mpfr.h inclusion (see above).
- */
+/* Assume that this is in fact a header inclusion for some library
+   that uses MPFR, i.e. this inclusion is hidden in another one.
+   MPFR currently (rev 6704) fails to handle this case. */
 #include <mpfr.h>
 
 #include <stdint.h>
@@ -75,11 +55,7 @@ main (void)
   mpfr_clear (x);
   if (j != 1)
     {
-#ifdef MPFR_PRINTF_MAXLM
-      printf ("Error: got %" MPFR_PRINTF_MAXLM "d instead of 1.\n", j);
-#else
-      printf ("Error: did not get 1.\n");
-#endif
+      printf ("Error: got %jd instead of 1.\n", j);
       exit (1);
     }
 

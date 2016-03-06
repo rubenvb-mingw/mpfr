@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 #ifdef CHECK_EXTERNAL
@@ -347,7 +350,7 @@ main (int argc, char *argv[])
 
   x_near_one ();
 
-  test_generic (MPFR_PREC_MIN, 100, 40);
+  test_generic (2, 100, 40);
 
   data_check ("data/log", mpfr_log, "mpfr_log");
   bad_cases (mpfr_log, mpfr_exp, "mpfr_log", 256, -30, 30, 4, 128, 800, 50);

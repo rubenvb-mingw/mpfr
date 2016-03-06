@@ -1,5 +1,3 @@
-% see http://hal.inria.fr/hal-00934443 to simplify/improve the ulp calculus
-
 \documentclass[12pt]{amsart}
 
 \usepackage{fullpage}
@@ -1096,7 +1094,7 @@ $t = c^2 + \epsilon_2 = \cos^2 x + 4 \epsilon_3$;
 $u = 1 - t - \epsilon_4 = 1 - \cos^2 x - 5 \epsilon_5$;
 $|s| = \sqrt{u} - \epsilon_6 =
 \sqrt{1 - \cos^2 x - 5 \epsilon_5} - \epsilon_6
-\geq \left|\sin x\right| - \frac{5 \epsilon_5}{2 |s|} + \epsilon_6$
+\geq |\sin x| - \frac{5 \epsilon_5}{2 |s|} + \epsilon_6$
 (by Rolle's theorem,
 $|\sqrt{u} - \sqrt{u'}| \le \frac{1}{2 \sqrt{v}} |u-u'|$ for
 $v \in [u, u']$, we apply it here with $u=1 - \cos^2 x - 5 \epsilon_5$,
@@ -1211,39 +1209,6 @@ giving a total complexity of $\O(n^{1/3} M(n))$.
 This is implemented in the function {\tt mpfr\_exp2\_aux2}.
 (Note: the algorithm from Paterson and Stockmeyer was rediscovered by Smith,
 who named it ``concurrent series'' in \cite{Smith91}.)
-
-\subsection{The logarithm function}
-
-The logarithm function \verb!mpfr_log! is defined using this
-approximated formula~\cite{Muller97} based on the arithmetic-geometric
-mean (denoted by AG):
-$$ \log x \approx \frac{\pi}{\mbox{2~AG(1,4/s)}} - m \log 2  + o(\log x ~2^{-p})$$
-with $ s = x \cdot 2^m > 2^{p/2}$.\\
-
-
-First, the arithmetic-geometric mean $\mbox{AG}(u_0,v_0)$ is computed as in
-mathematics with rounding to nearest:
-$$ {\tilde u_{n+1}} = {\mathcal N} \left( \sqrt{{\mathcal N}({\tilde u_n}~{\tilde v_n})}~\right) \qquad
- {\tilde v_{n+1}} = \frac{{\mathcal N} ({\tilde u_n} + {\tilde v_n})}{2} $$
-
-We denote by $u_n$ and $v_n$ the exact mathematical values. By
-induction, it can be proved that:
-$$ u_n~ {\left(1-\frac{\ulp(1)}{2}\right)}^{\frac{3}{2}n+1} \leq {\tilde u_n} \leq  u_n~ {\left(1+\frac{\ulp(1)}{2}\right)}^{\frac{3}{2}n+1}$$
-$$ v_n~ {\left(1-\frac{\ulp(1)}{2}\right)}^{\frac{3}{2}n+1} \leq {\tilde v_n} \leq  {\tilde v_n}~ {\left(1+\frac{\ulp(1)}{2}\right)}^{\frac{3}{2}n+1}$$
-
-Then, if $n \ge \lceil \log \left( \frac{v_0 - u_0}{2~u_0}\right) \rceil$,
-$$\frac{|{\tilde v_n} - AG(u_0,v_0)|}{v_0} \le n~2^{\frac{3}{2}n+2-p}+8 \cdot 4^{- \frac{2^n~u_0}{v_0 - u_0}}.$$
-Therefore the arithmetic-geometric mean can be computed using the
-previous error bound and the \verb!mpfr_can_round! function. It
-should be noted that the arithmetic-geometric mean of two different
-non-zero floating-point numbers is transcendental, therefore there is
-no table maker's dilemma here.
-
-
-From the arithmetic-geometric mean, we deduce the logarithm, naively
-bounding the round-off errors. The only point is that the subtraction
-may be a cancellation: a maximum of $\log \left(\frac{p \log
-  2}{|x-1|}\right)$ bits can be lost.
 
 \subsection{The error function}
 
@@ -2440,9 +2405,8 @@ a similar way that $z=\circ_{p_z}(x)$, except that we need to add one ulp
 to the result when rounding toward plus infinity and $x$ is exactly
 representable with $p_z$ bits of precision.
 
-When none of the above conditions are satisfied, we use the following
-algorithm, whose precision is guaranteed when
-$\Exp(x) - \Exp(y) \leq e_{max} - 1$:
+When none of the above conditions are satisfied and when $\Exp(x) - \Exp(y)
+\leq e_{max} - 2$, we use the following algorithm:
 
 \begin{quote}
   Algorithm {\tt hypot\_1}\\
@@ -2450,10 +2414,10 @@ $\Exp(x) - \Exp(y) \leq e_{max} - 1$:
   $p$ the working precision with $p \geq p_z$.\\
   Output: $\sqrt{x^2+y^2}$ with $\left\{
   \begin{array}{l}
-    p-4 \textnormal{ bits of precision if } p < \max(p_x, p_y),\\
-    p-2 \textnormal{ bits of precision if } p \geq \max(p_x, p_y).
+    p-4 \textnormal{ bits of precision if } p <\max(p_x, p_y),\\
+    p-2 \textnormal{ bits of precision if } \max(p_x, p_y) \leq p.
   \end{array}\right.$\\
-  $s \leftarrow \lfloor (e_{max}-1)/2 \rfloor - \Exp(x)$\\
+  $s \leftarrow \lfloor e_{max}/2\rfloor - \Exp(x) -1$\\
   $x_s \leftarrow \Z(x\times 2^s)$\\
   $y_s \leftarrow \Z(y\times 2^s)$\\
   $u \leftarrow \Z(x_s^2)$\\
@@ -2464,32 +2428,26 @@ $\Exp(x) - \Exp(y) \leq e_{max} - 1$:
 \end{quote}
 
 In order to avoid undue overflow during computation, we shift inputs'
-exponents by $s = \lfloor\frac{e_{max}-1}{2}\rfloor - \Exp(x)$ before
+exponents by $s = \lfloor\frac{e_{max}}{2}\rfloor -1 -\Exp(x)$ before
 computing squares and shift back the output's exponent by $-s$ using the fact
 that $\sqrt{(x.2^s)^2+(y.2^s)^2}/2^s = \sqrt{x^2+y^2}$. We show below that
-overflow cannot occur, and underflow cannot occur either when
-$\Exp(x) - \Exp(y) \leq e_{max} - 1$.
+neither overflow nor underflow goes on.
 
 We check first that the exponent shift does not cause overflow and, in the
-same time, that the squares of the shifted inputs never overflow.
-For $x$, we have $\Exp(x) + s = \lfloor (e_{max}-1)/2 \rfloor$, so
-$\Exp(x_s^2) \leq e_{max} - 1$ and neither $x_s$ nor $x_s^2$ overflows.
-Therefore we have: $\Z(x_s^2) \leq x_s^2 < 2^{e_{max} - 1}$.
-For $y$, note that we have $y_s \leq x_s$ because $y \leq x$, thus $y_s$
-and $y_s^2$ do not overflow.
+same time, that the squares of the shifted inputs never overflow. For $x$, we
+have $\Exp(x) + s = \lfloor e_{max}/2\rfloor - 1$, so $\Exp(x_s^2) < e_{max} -
+1$ and neither $x_s$ nor $x_s^2$ overflows. For $y$, note that we have $y_s
+\leq x_s$ because $y \leq x$, thus $y_s$ and $y_s^2$ do not overflow.
 
 Secondly, let us see that the exponent shift does not cause underflow. For
 $x$, we know that $0 \leq \Exp(x) + s$, thus neither $x_s$ nor $x_s^2$
-underflows. For $y$, the condition $\Exp(x) - \Exp(y) \leq e_{max} - 1$
-implies that $\lfloor(e_{max}-1)/2\rfloor - s - \Exp(y) \leq e_{max} - 1$,
-and since $e_{max}/2-1 \leq \lfloor(e_{max}-1)/2\rfloor$, we deduce
-$e_{min}/2 = -e_{max}/2 \leq \Exp(y) + s$, which shows that $y_s$ and
-its square do not underflow (even when taking the rounding into account
-since the scaling is exact).
+underflows. For $y$, the condition $\Exp(x) - \Exp(y) \leq e_{max} - 2$
+ensures that $-e_{max}/2 \leq \Exp(y) + s$ which shows that $y_s$ and its
+square do not underflow.
 
 Thirdly, the addition does not overflow because $u + v < 2 x_s^2$ and it was
-shown above that $\Z(x_s^2) < 2^{e_{max} - 1}$. It cannot underflow because
-both operands are positive.
+shown above that $x_s^2 < 2^{e_{max} - 1}$. It cannot underflow because both
+operands are positive.
 
 Fourthly, as $x_s < t$, the square root does not underflow. Due to the
 exponent shift, we have $1 \leq x_s$, then $w$ is greater than 1 and thus
@@ -3074,8 +3032,8 @@ $\sum_{k=1}^{\infty} \frac{x^k}{k \, k!}$, using working precision $w$.
 For any real $v$, we denote by ${\rm trunc}(v)$ the nearest integer
 toward zero.
 \begin{quote}
-Approximate $x$ by  $m\cdot2^e$ with $m$ an integer \\
-having exactly $w$ bits, such that $|x - m\cdot2^e| \leq 2^e$ \\
+Decompose $x$ into  $m\cdot2^e$ with $m$ integer [exact] \\
+If necessary, truncate $m$ to $w$ bits and adjust $e$ \\
 $s \leftarrow 0$ \\ % sum
 $t \leftarrow 2^w$ \\ % current term x^k/k!
 for $k := 1$ do \\
@@ -3093,7 +3051,7 @@ Let $\epsilon_k$ be the absolute difference between $t$ and
 $2^w x^k/k!$ at step $k$.
 We have $\epsilon_0=0$, and $\epsilon_k \leq 1 + \epsilon_{k-1} m 2^e/k
 + t_{k-1} m 2^{e+1-w}/k$, since the error when approximating $x$ by
-$m 2^e$ is less than $2^e \leq m 2^{e+1-w}$.
+$m 2^e$ is less than $m 2^{e+1-w}$.
 Similarly, the absolute error on $u$ at step $k$ is at most
 $\nu_k \leq 1 + \epsilon_k/k$,
 and that on $s$ at most $\tau_k \leq \tau_{k-1} + \nu_k$.
@@ -3104,8 +3062,6 @@ on the error on $s$ made so far.
 At that time, the truncation error when neglecting terms of index $k+1$
 to $\infty$ can be bounded by $(|t| + \epsilon_k)/k (|x|/k + |x|^2/k^2 +
 \cdots) \leq (|t| + \epsilon_k) |x|/k/(k-|x|)$.
-
-\bigskip
 
 \paragraph{Asymptotic Expansion}
 
@@ -3118,14 +3074,6 @@ $k \approx x$, and is of the order of $e^{-x}$. Thus assuming the error
 term is bounded by the first neglected term, we can use that expansion
 as long as $e^{-x} \leq 2^{-p}$ where $p$ is the target precision,
 i.e.~when $x \geq p \log 2$.
-
-\bigskip
-
-For $x < 0$, the function \verb|mpfr_eint| returns the value of 
-$E_1(-x)$, defined by \cite[formula 5.1.11]{AbSt73}:
-\[ E_1(x) = -\gamma - \log(x) - \sum_{k=1}^{\infty} \frac{(-x)^k}{k \, k!}.\]
-We use the very same algorithm and error analysis as above (including the
-asymptotic expansion).
 
 \subsection{The gamma function}
 
@@ -3142,124 +3090,6 @@ Here, we choose the free parameter $a$ to be an integer.
 According to \cite[Section 2.6]{Pugh04}, the relative error is bounded by
 $a^{-1/2} (2\pi)^{-a-1/2}$ for $a \ge 3$ and $\Re(z) \ge 0$.
 See also \cite{Smith01}.
-
-\subsection{The incomplete gamma function}
-
-The incomplete gamma function is defined for $x \geq 0$ as
-(it can be defined by continuity for $a$ being zero or a negative integer):
-\[ \Gamma(a,x) = \int_x^{\infty} t^{a-1} \exp(-t) \, {\rm d}t
-               = \Gamma(a) - \gamma(a,x), \]
-with the complementary incomplete gamma function $\gamma(a,x)$ defined by:
-\[ \gamma(a,x) = \int_0^x t^{a-1} \exp(-t) \, {\rm d}t, \]
-satisfying the two Taylor expansions \cite[formula 6.5.29]{AbSt73}:
-\[
-\gamma(a,x) = x^a \sum_{k=0}^{\infty} \frac{(-x)^k}{(a+k) k!}
-            = x^a \exp(-x) \sum_{k=0}^{\infty} \frac{x^k}{a (a+1) \cdots
-                  (a+k)}.
-\]
-We use the second expansion, and we stop adding terms of the series when the
-current term is less than one ulp of the current sum, and $|x/(a+k)| < 1/2$.
-The last condition ensures that the tail of the series is less than twice the
-current term, thus the approximated sum $s$ satisfies $s = S (1 + \theta)^3$
-with $S$ the exact sum, and $|\theta| < 2^{-w}$ with $w$ the working
-precision. If the series was computed up to index $k$, the error on
-$\gamma(a,x)$ is less than $4k+14$ ulps.
-Subtracting from $\Gamma(a)$ can yield a huge cancellation: we take into
-account the exact error bound, which is deduced from the different exponents
-involved. Further details can be found in the source code.
-
-For negative integers $a$ we use the following formula
-\cite[formula 6.5.19]{AbSt73}:
-\[ \Gamma(-n,x) = \frac{(-1)^n}{n!} [E_1(x) - e^{-x}
-   \sum_{j=0}^{n-1} \frac{(-1)^j \, j!}{x^{j+1}}]. \]
-
-\subsubsection{Legendre's continued fraction}
-
-% see also "Effective Laguerre asymptotics" by Borwein, Borwein and Crandall
-% https://carma.newcastle.edu.au/jon/Laguerre.pdf (in connection with [47])
-% [47] S. Winitzki, Computing the incomplete gamma function to arbitrary
-% precision, LNCS 2667, 290, Springer–Verlag (2003).
-
-In \cite{Gautschi79}, Gautschi discusses the computation of $\Gamma(a,x)$
-with Legendre's continued fraction:
-\[ x^{-a} e^x \Gamma(a,x) = \frac{1}{x+} \frac{1-a}{1+} \frac{1}{x+}
-   \frac{2-a}{x+} \frac{2}{x+} \cdots \]
-where by contracting two consecutive terms we get:
-\begin{equation} \label{eq:legendre_cf}
-x^{-a} e^x \Gamma(a,x) = \sum_{k=0}^{\infty} t_k,
-\end{equation}
-with $t_k = \rho_0 \rho_1 \cdots \rho_k$,
-$\rho_0 = 1$, $\sigma_0 = 1$, and for $k \geq 1$,
-$\rho_k = -a_k \sigma_{k-1} / (1 + a_k \sigma_{k-1})$,
-$\sigma_k = 1 / (1 + a_k \sigma_{k-1})$, and:
-\[ a_k = \frac{k (a-k)}{(x + 2k - 1 - a) (x + 2k + 1 - a)}. \]
-Gautschi proves that when  $x \geq 1/4$ and $a \leq x + 1/4$, then
-$|\rho_k| \leq 1$ for all $k \geq 1$. However this is not enough to bound
-the tail of the above series.
-
-We consider here the case where $a \leq -1$, thus $a_k \leq 0$
-(remember $\Gamma(a,x)$ is only defined for $x \geq 0$).
-When $k$ goes to infinity, $a_k = -1/4 + x/(4k) + O(1/k^2)$.
-We prove that for $k \geq 2 \, {\rm max}(x,|a|)$, we have
-$a_k \geq -1/4 + x/(8k)$. Indeed,
-\[ a_k + \frac{1}{4} - \frac{x}{8k} = 
-% ak:=k*(a-k)/(x+2*k-1-a)/(x+2*k+1-a);
-% e:=normal(ak+1/4-x/8/k);
-% num:=numer(e); den:=denom(e);
-% num2:=x*(4*k^2-2*k*x-x^2+2*x*a+1-a^2)+2*k*(a^2-1);
-   \frac{x(4k^2-2kx+2xa-x^2-a^2+1)+2k(a^2-1)}{8k(x+2k-1-a)(x + 2 k + 1 - a)}. \]
-The denominator is positive for $k \geq 1$ as long as $x-a+1 > 0$,
-which holds since we assumed $a \leq -1$.
-The second term $2k(a^2-1)$ in the numerator is non-negative since $a \leq -1$;
-the factor of $x$ in the first term satisfies since $k \geq x$:
-\[ 4k^2-2kx+2xa-x^2-a^2+1 \geq
-   4k^2-2kx-2k|a|-x^2-a^2+1. \]
-Since the right-hand side is symmetric in $x$ and $|a|$, we can assume
-without loss of generality that $x \geq |a|$.
-Then $4k^2-2kx+2xa-x^2-a^2+1 \geq 4k^2-4kx-2x^2+1
-= (2k-x)^2 -3x^2 + 1$, which is positive when $k \geq 2x$.
-
-Since $a_k \geq -1/4 + x/(8k)$, we have $-1/4 \leq a_k \leq 0$, and
-since $\sigma_k = 1/(1 + a_k \sigma_{k-1})$ with $\sigma_0 = 1$,
-it follows by induction that $1 \leq \sigma_k \leq 2$ for all $k \geq 0$.
-It yields for $a \leq -1$ and $k \geq 2 \, {\rm max}(x,|a|)$:
-\[ \rho_k = \frac{-a_k \sigma_{k-1}}{1 + a_k \sigma_{k-1}} 
-   \leq -4 a_k \leq 1 - x/(2k). \]
-
-Assume now that we stop the series computation in Eq.~(\ref{eq:legendre_cf})
-after $t_k$. The neglected part is:
-\[ t_k (\rho_{k+1} + \rho_{k+1} \rho_{k+2} + \rho_{k+1} \rho_{k+2} \rho_{k+3}
-   + \cdots). \]
-Let $u_{k,\ell} := \rho_{k} \rho_{k+1} \cdots \rho_{\ell}$.
-Since $\rho_j \leq 1 - x/(2j)$ and $\log(1-u) \leq -u$ for $0 < u < 1$:
-\[ \log u_{k,\ell} = \sum_{j=k}^{\ell} \log \rho_j
-   \leq \sum_{j=k}^{\ell} \log (1-\frac{x}{2j})
-   \leq -x \sum_{j=k}^{\ell} \frac{1}{2j}
-   = -\frac{x}{2} (\psi(\ell+1) - \psi(k+1)). \]
-Using $\log(t-1) \leq \psi(t) \leq \log t$ yields:
-\[ \log u_{k,\ell} \leq \frac{x}{2} (\log(k+1) - \log(\ell)). \]
-Now since $\rho_k < 1$:
-\[ \rho_k + \rho_k \rho_{k+1} + \rho_k \rho_{k+1} \rho_{k+2} + \cdots
-   \leq 1 + \sum_{\ell=k+1}^{\infty} u_{k,\ell}
-   \leq 1 + \sum_{j=1}^{\infty} \exp(\frac{x}{2} \log\frac{k+1}{k+j}). \]
-We split the sum into blocks of $k+1$ consecutive terms:
-\begin{eqnarray*}
-\sum_{\ell=k+1}^{\infty} u_{k,\ell}
-   &\leq& \sum_{j=1}^{\infty} \left( \frac{k+1}{k+j} \right)^{x/2} \\
-   &\leq& (k+1) \left( \frac{k+1}{k+1} \right)^{x/2}
-   + (k+1) \left( \frac{k+1}{2k+2} \right)^{x/2}
-   + (k+1) \left( \frac{k+1}{3k+3} \right)^{x/2} + \cdots \\
-   &\leq& (k+1) (1 + (1/2)^{x/2} + (1/3)^{x/2} + \cdots) = (k+1) \zeta(x/2).
-\end{eqnarray*}
-
-\begin{lemma}
-Assume $a \leq -1$,
-and we stop the series computation in Eq.~(\ref{eq:legendre_cf})
-after $t_k$, with $k \geq 2 \, {\rm max}(x,|a|)$.
-Then the error on the sum of the right hand side
-of Eq.~(\ref{eq:legendre_cf}) is bounded by
-\[ t_k (1 + (k+1) \zeta(x/2)). \]
-\end{lemma}
 
 \subsection{The Riemann Zeta function}
 
@@ -3635,7 +3465,7 @@ diverging series:
 % (2*z)^(2*k+1),k=0..4) end:
 % J:=proc(n,z) sqrt(2/Pi/z)*(P(n,z)*cos(z-(n/2+1/4)*Pi)-Q(n,z)*
 % sin(z-(n/2+1/4)*Pi)) end:
-If $n$ is real and nonnegative --- which is the case here ---,
+If $n$ is real and non-negative --- which is the case here ---,
 the remainder of $P(n,z)$ after $k$ terms does not exceed the $(k+1)$th term
 and is of the same sign, provided $k > n/2 - 1/4$; the same holds for
 $Q(n,z)$ as long as $k > n/2 - 3/4$ \cite[9.2.10]{AbSt73}.
@@ -4460,14 +4290,10 @@ $$  \wprec = \precc + 1 + 4 + \lceil \log_2(4\kvar)\rceil + \cond - \Exp(\svar).
 
 The \texttt{mpfr\_get\_str} function with size $0$ and base $b$ chooses an
 output precision of $1 + \lceil e \log(2)/\log(b) \rceil$ for a precision
-of $e$ bits if $b$ is not a power of two \cite{Mat68}.
+of $e$ bits.
 However the code uses instead $1 + \lceil e y \rceil$, where $y$ is
 an upper $76$-bit approximation of $\log(2)/\log(b)$. When do both values
 differ?
-In the case $b=2^k$, the worst case is when the first output digit contains
-only one significant bit, thus
-$1 + \lceil (e-1) \log(2)/\log(b) \rceil$ digits are necessary, and also
-sufficient.
 
 Let $y$ be the $76$-bit upper approximation of $x=\log(2)/\log(b)$.
 Both values differ when there is an integer $n$ such that
@@ -4622,9 +4448,6 @@ $|\epsilon''| \leq 2 \epsilon + \epsilon' \leq (26 + 2^{k+7}) 2^{k-p}
 \leq 2^{2k-p+8}$, assuming $|\epsilon'| \leq 1$.
 
 \subsection{Euler's constant} \label{gamma}
-
-% see the talk "Ramanujan and Euler's constant" by Richard Brent on July 8,
-% 2010 at http://maths-people.anu.edu.au/~brent/talks.html
 
 Euler's constant is computed using the formula $\gamma = S(n) - R(n) - \log n$
 where:

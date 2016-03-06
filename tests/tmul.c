@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 #ifdef CHECK_EXTERNAL
@@ -62,16 +65,24 @@ check (const char *xs, const char *ys, mpfr_rnd_t rnd_mode,
   test_mul(zz, xx, yy, rnd_mode);
   if (mpfr_cmp_str1 (zz, res) )
     {
-      printf ("(1) mpfr_mul failed for x=%s y=%s with rnd=%s\n",
+      printf ("(1)mpfr_mul failed for x=%s y=%s with rnd=%s\n",
               xs, ys, mpfr_print_rnd_mode (rnd_mode));
       printf ("correct is %s, mpfr_mul gives ", res);
-      mpfr_out_str (stdout, 10, 0, zz, MPFR_RNDN);
-      putchar ('\n');
+      mpfr_out_str(stdout, 10, 0, zz, MPFR_RNDN);
+      /*
+        printf("\nBinary forms:\nxx=");
+        mpfr_print_binary (xx);
+        printf("\nyy=");
+        mpfr_print_binary (yy);
+        printf("\nzz=");
+        mpfr_print_binary(zz);
+        printf("\nre=");
+        mpfr_set_str1 (zz, res);
+        mpfr_print_binary(zz);
+        putchar('\n');*/
       exit (1);
     }
-  mpfr_clear (xx);
-  mpfr_clear (yy);
-  mpfr_clear (zz);
+  mpfr_clear(xx); mpfr_clear(yy); mpfr_clear(zz);
 }
 
 static void
@@ -88,8 +99,18 @@ check53 (const char *xs, const char *ys, mpfr_rnd_t rnd_mode, const char *zs)
       printf ("(2) mpfr_mul failed for x=%s y=%s with rnd=%s\n",
               xs, ys, mpfr_print_rnd_mode(rnd_mode));
       printf ("correct result is %s,\n mpfr_mul gives ", zs);
-      mpfr_out_str (stdout, 10, 0, zz, MPFR_RNDN);
-      putchar ('\n');
+      mpfr_out_str(stdout, 10, 0, zz, MPFR_RNDN);
+      /*
+        printf("\nBinary forms:\nxx=");
+        mpfr_print_binary (xx);
+        printf("\nyy=");
+        mpfr_print_binary (yy);
+        printf("\nzz=");
+        mpfr_print_binary(zz);
+        printf("\nre=");
+        mpfr_set_str1 (zz, zs);
+        mpfr_print_binary(zz);
+        putchar('\n'); */
       exit (1);
     }
   mpfr_clears (xx, yy, zz, (mpfr_ptr) 0);
@@ -110,8 +131,8 @@ check24 (const char *xs, const char *ys, mpfr_rnd_t rnd_mode, const char *zs)
       printf ("(3) mpfr_mul failed for x=%s y=%s with "
               "rnd=%s\n", xs, ys, mpfr_print_rnd_mode(rnd_mode));
       printf ("correct result is gives %s, mpfr_mul gives ", zs);
-      mpfr_out_str (stdout, 10, 0, zz, MPFR_RNDN);
-      putchar ('\n');
+      mpfr_out_str(stdout, 10, 0, zz, MPFR_RNDN);
+      putchar('\n');
       exit (1);
     }
   mpfr_clears (xx, yy, zz, (mpfr_ptr) 0);
@@ -177,8 +198,8 @@ check_sign (void)
   if (mpfr_cmp_ui (a, 4) )
     {
       printf ("2.0*2.0 gives \n");
-      mpfr_out_str (stdout, 10, 0, a, MPFR_RNDN);
-      putchar ('\n');
+      mpfr_out_str(stdout, 10, 0, a, MPFR_RNDN);
+      putchar('\n');
       exit (1);
     }
   mpfr_clear(a); mpfr_clear(b);
@@ -209,12 +230,11 @@ check_exact (void)
       exit (1);
     }
 
-  for (prec = MPFR_PREC_MIN; prec < 100; prec++)
+  for (prec = 2; prec < 100; prec++)
     {
       mpfr_set_prec (a, prec);
       mpfr_set_prec (b, prec);
-      /* for prec=1, ensure PREC(c) >= 1 */
-      mpfr_set_prec (c, 2 * prec - 2 + (prec == 1));
+      mpfr_set_prec (c, 2 * prec - 2);
       mpfr_set_prec (d, 2 * prec);
       for (i = 0; i < 1000; i++)
         {
@@ -666,7 +686,7 @@ main (int argc, char *argv[])
   check_min();
 
   check_regression ();
-  test_generic (MPFR_PREC_MIN, 500, 100);
+  test_generic (2, 500, 100);
 
   data_check ("data/mulpi", mpfr_mulpi, "mpfr_mulpi");
 

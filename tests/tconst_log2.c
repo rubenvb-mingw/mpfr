@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 /* tlog2 [prec] [rnd] [0 = no print] */
@@ -28,7 +31,8 @@ static void
 check (mpfr_prec_t p0, mpfr_prec_t p1)
 {
   mpfr_t x, y, z;
-  int i, inex, inex_ref;
+  mpfr_rnd_t rnd;
+  int dif;
 
   mpfr_init (x);
   mpfr_init (y);
@@ -36,28 +40,22 @@ check (mpfr_prec_t p0, mpfr_prec_t p1)
   mpfr_const_log2 (z, MPFR_RNDN);
   mpfr_clear_cache (__gmpfr_cache_const_log2);
 
-  for (; p0 <= p1; p0++)
+  for (; p0<=p1; p0++)
     {
       mpfr_set_prec (x, p0);
       mpfr_set_prec (y, p0);
-      RND_LOOP (i)
         {
-          mpfr_rnd_t rnd = (mpfr_rnd_t) i;
-          inex = mpfr_const_log2 (x, rnd);
-          inex_ref = mpfr_set (y, z, rnd);
-          if (! mpfr_can_round (z, mpfr_get_prec (z), MPFR_RNDN, rnd, p0))
+          rnd = RND_RAND ();
+          mpfr_const_log2 (x, rnd);
+          mpfr_set (y, z, rnd);
+          if ((dif = mpfr_cmp (x, y))
+              && mpfr_can_round (z, mpfr_get_prec(z), MPFR_RNDN,
+                                                 rnd, p0))
             {
-              printf ("increase guard precision in check()\n");
-              exit (1);
-            }
-          if (mpfr_cmp (x, y) || inex != inex_ref)
-            {
-              printf ("mpfr_const_log2 fails for prec=%u, rnd=%s\n",
-                      (unsigned int) p0, mpfr_print_rnd_mode (rnd));
+              printf ("mpfr_const_log2 fails for prec=%u, rnd=%s Diff=%d\n",
+                      (unsigned int) p0, mpfr_print_rnd_mode (rnd), dif);
               printf ("expected "), mpfr_dump (y);
               printf ("got      "), mpfr_dump (x);
-              printf ("expected inex = %d\n", inex_ref);
-              printf ("got      inex = %d\n", inex);
               exit (1);
             }
         }
@@ -71,27 +69,15 @@ check (mpfr_prec_t p0, mpfr_prec_t p1)
 static void
 check_large (void)
 {
-  mpfr_t x, y, z;
-
+  mpfr_t x, y;
   mpfr_init2 (x, 25000);
   mpfr_init2 (y, 26000);
-  mpfr_init2 (z, 26000);
   (mpfr_const_log2) (x, MPFR_RNDN); /* First one ! */
   (mpfr_const_log2) (y, MPFR_RNDN); /* Then the other - cache - */
-  mpfr_set (z, y, MPFR_RNDN);
   mpfr_prec_round (y, 25000, MPFR_RNDN);
-  if (mpfr_cmp (x, y) != 0)
+  if (mpfr_cmp (x, y))
     {
       printf ("const_log2: error for large prec\n");
-      printf ("x = ");
-      mpfr_out_str (stdout, 16, 0, x, MPFR_RNDN);
-      printf ("\n");
-      printf ("y = ");
-      mpfr_out_str (stdout, 16, 0, y, MPFR_RNDN);
-      printf ("\n");
-      printf ("z = ");
-      mpfr_out_str (stdout, 16, 0, z, MPFR_RNDN);
-      printf ("\n");
       exit (1);
     }
 
@@ -100,7 +86,7 @@ check_large (void)
   mpfr_set_prec (x, 26249);
   mpfr_const_log2 (x, MPFR_RNDZ);
 
-  mpfr_clears (x, y, z, (mpfr_ptr) 0);
+  mpfr_clears (x, y, (mpfr_ptr) 0);
 }
 
 static void
@@ -164,9 +150,7 @@ main (int argc, char *argv[])
 
   mpfr_init (x);
 
-  /* increase the 2nd argument to say 300000 to perform the exhaustive search
-     in src/const_log2.c */
-  check (MPFR_PREC_MIN, 1000);
+  check (2, 1000);
 
   /* check precision of 2 bits */
   mpfr_set_prec (x, 2);
@@ -205,12 +189,12 @@ main (int argc, char *argv[])
       exit (1);
     }
 
-  mpfr_clear (x);
+  mpfr_clear(x);
 
-  check_large ();
+  check_large();
   check_cache ();
 
-  test_generic (MPFR_PREC_MIN, 200, 1);
+  test_generic (2, 200, 1);
 
   tests_end_mpfr ();
   return 0;

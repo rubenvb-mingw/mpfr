@@ -21,7 +21,7 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
 #ifdef HAVE_CONFIG_H
-# include "config.h"
+# include "config.h"            /* for a build within gmp */
 #endif
 
 #include "mpfr-intmax.h"
@@ -29,11 +29,11 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 
 #ifdef _MPFR_H_HAVE_INTMAX_T
 
-/* We can't use fits_s.h as it uses mpfr_cmp_si */
+/* We can't use fits_s.h <= mpfr_cmp_ui */
 int
 mpfr_fits_intmax_p (mpfr_srcptr f, mpfr_rnd_t rnd)
 {
-  mpfr_flags_t saved_flags;
+  unsigned int saved_flags;
   mpfr_exp_t e;
   int prec;
   mpfr_t x, y;

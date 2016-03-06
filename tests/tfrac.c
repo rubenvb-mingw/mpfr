@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 #define PIP 70
@@ -291,7 +294,7 @@ main (void)
 
   bug20090918 ();
 
-  test_generic (MPFR_PREC_MIN, 1000, 10);
+  test_generic (2, 1000, 10);
 
   tests_end_mpfr ();
   return 0;

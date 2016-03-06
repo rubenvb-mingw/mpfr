@@ -24,6 +24,8 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 # include "config.h"
 #endif
 
+#include <stdlib.h>
+
 #include "mpfr-intmax.h"
 #include "mpfr-test.h"
 
@@ -68,13 +70,9 @@ main (void)
           __MPIR_VERSION, __MPIR_VERSION_MINOR, __MPIR_VERSION_PATCHLEVEL,
           mpir_version);
 #else
-#ifdef MPFR_USE_MINI_GMP
-  printf ("[tversion] mini-gmp\n");
-#else
   printf ("[tversion] GMP: header %d.%d.%d, library %s\n",
           __GNU_MP_VERSION, __GNU_MP_VERSION_MINOR, __GNU_MP_VERSION_PATCHLEVEL,
           gmp_version);
-#endif
 #endif
 
   if (
@@ -84,17 +82,6 @@ main (void)
       mpfr_buildopt_tls_p ())
     {
       printf ("ERROR! mpfr_buildopt_tls_p() and macros"
-              " do not match!\n");
-      err = 1;
-    }
-
-  if (
-#ifdef MPFR_WANT_FLOAT128
-      !
-#endif
-      mpfr_buildopt_float128_p ())
-    {
-      printf ("ERROR! mpfr_buildopt_float128_p() and macros"
               " do not match!\n");
       err = 1;
     }
@@ -121,10 +108,8 @@ main (void)
       err = 1;
     }
 
-  printf ("[tversion] TLS = %s, float128 = %s, decimal = %s,"
-          " GMP internals = %s\n",
+  printf ("[tversion] TLS = %s, decimal = %s, GMP internals = %s\n",
           mpfr_buildopt_tls_p () ? "yes" : "no",
-          mpfr_buildopt_float128_p () ? "yes" : "no",
           mpfr_buildopt_decimal_p () ? "yes" : "no",
           mpfr_buildopt_gmpinternals_p () ? "yes" : "no");
 
@@ -163,18 +148,14 @@ main (void)
           ", td = "
 #if defined(NPRINTF_T)
           "no"
-#elif defined(PRINTF_T)
-          "yes"
 #else
-          "?"
+          "yes"
 #endif
           ", Ld = "
 #if defined(NPRINTF_L)
           "no"
-#elif defined(PRINTF_L)
-          "yes"
 #else
-          "?"
+          "yes"
 #endif
           "\n");
 
@@ -190,11 +171,6 @@ main (void)
 
   if (strcmp (mpfr_get_patches (), "") != 0)
     printf ("[tversion] MPFR patches: %s\n", mpfr_get_patches ());
-
-  tests_start_mpfr ();
-  if (locale != NULL)
-    printf ("[tversion] Locale: %s\n", locale);
-  tests_end_mpfr ();
 
   return err;
 }

@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 #define TEST_FUNCTION mpfr_lngamma
@@ -258,7 +261,7 @@ main (void)
   tests_start_mpfr ();
 
   special ();
-  test_generic (MPFR_PREC_MIN, 100, 2);
+  test_generic (2, 100, 2);
 
   tests_end_mpfr ();
   return 0;

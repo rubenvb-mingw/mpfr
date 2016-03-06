@@ -1,4 +1,5 @@
 /* mpfr_mul_ui -- multiply a floating-point number by a machine integer
+   mpfr_mul_si -- multiply a floating-point number by a machine integer
 
 Copyright 1999-2016 Free Software Foundation, Inc.
 Contributed by the AriC and Caramba projects, INRIA.
@@ -23,8 +24,7 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 #define MPFR_NEED_LONGLONG_H
 #include "mpfr-impl.h"
 
-#undef mpfr_mul_ui
-MPFR_HOT_FUNCTION_ATTR int
+int
 mpfr_mul_ui (mpfr_ptr y, mpfr_srcptr x, unsigned long int u, mpfr_rnd_t rnd_mode)
 {
   mp_limb_t *yp;
@@ -116,4 +116,19 @@ mpfr_mul_ui (mpfr_ptr y, mpfr_srcptr x, unsigned long int u, mpfr_rnd_t rnd_mode
   MPFR_SET_SAME_SIGN (y, x);
 
   MPFR_RET (inexact);
+}
+
+int mpfr_mul_si (mpfr_ptr y, mpfr_srcptr x, long int u, mpfr_rnd_t rnd_mode)
+{
+  int res;
+
+  if (u >= 0)
+    res = mpfr_mul_ui (y, x, u, rnd_mode);
+  else
+    {
+      res = - mpfr_mul_ui (y, x, - (unsigned long) u,
+                           MPFR_INVERT_RND (rnd_mode));
+      MPFR_CHANGE_SIGN (y);
+    }
+  return res;
 }

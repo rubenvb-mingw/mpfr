@@ -21,9 +21,12 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
 #ifdef HAVE_CONFIG_H
-# include "config.h"
+# if HAVE_CONFIG_H
+#  include "config.h"     /* for a build within gmp */
+# endif
 #endif
 
+#include <stdlib.h>
 #include <float.h>
 #include <errno.h>
 
@@ -31,7 +34,7 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 #include <locale.h>
 #endif
 
-#ifdef MPFR_TESTS_DIVBYZERO
+#ifdef MPFR_TEST_DIVBYZERO
 # include <fenv.h>
 #endif
 
@@ -52,10 +55,6 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 
 #ifdef MPFR_TESTS_TIMEOUT
 #include <sys/resource.h>
-#endif
-
-#if defined(HAVE_SIGNAL) || defined(HAVE_SIGACTION)
-# include <signal.h>
 #endif
 
 #include "mpfr-test.h"
@@ -99,11 +98,6 @@ set_fpu_prec (void)
 
 #endif
 
-char             mpfr_rands_initialized = 0;
-gmp_randstate_t  mpfr_rands;
-
-char *locale = NULL;
-
 static mpfr_exp_t default_emin, default_emax;
 
 static void tests_rand_start (void);
@@ -133,7 +127,6 @@ test_version (void)
   char buffer[256];
   int err = 0;
 
-#ifndef MPFR_USE_MINI_GMP
   sprintf (buffer, "%d.%d.%d", __GNU_MP_VERSION, __GNU_MP_VERSION_MINOR,
            __GNU_MP_VERSION_PATCHLEVEL);
   if (strcmp (buffer, gmp_version) != 0 &&
@@ -141,7 +134,6 @@ test_version (void)
        (sprintf (buffer, "%d.%d", __GNU_MP_VERSION, __GNU_MP_VERSION_MINOR),
         strcmp (buffer, gmp_version) != 0)))
     err = 1;
-#endif
 
   /* In some cases, it may be acceptable to have different versions for
      the header and the library, in particular when shared libraries are
@@ -161,7 +153,7 @@ test_version (void)
       printf ("  * A bad configuration in your include/library search paths.\n"
               "  * An inconsistency in the include/library search paths of\n"
               "    your development environment; an example:\n"
-              "      https://gcc.gnu.org/ml/gcc-help/2010-11/msg00359.html\n"
+              "      http://gcc.gnu.org/ml/gcc-help/2010-11/msg00359.html\n"
               "  * GMP has been upgraded after the first \"make check\".\n"
               "    In such a case, try again after a \"make clean\".\n"
               "  * A new or non-standard version naming is used in GMP.\n"
@@ -175,6 +167,7 @@ test_version (void)
   /* VL: I get the following error on an OpenSUSE machine, and changing
      the value of shlibpath_overrides_runpath in the libtool file from
      'no' to 'yes' fixes the problem. */
+
   version = mpfr_get_version ();
   if (strcmp (MPFR_VERSION_STRING, version) == 0)
     {
@@ -234,22 +227,19 @@ tests_start_mpfr (void)
   /* Added on 2005-07-09. This allows to test MPFR under various
      locales. New bugs will probably be found, in particular with
      LC_ALL="tr_TR.ISO8859-9" because of the i/I character... */
-  locale = setlocale (LC_ALL, "");
+  setlocale (LC_ALL, "");
 #endif
 
 #ifdef MPFR_FPU_PREC
   set_fpu_prec ();
 #endif
 
-#ifdef MPFR_TESTS_DIVBYZERO
+#ifdef MPFR_TEST_DIVBYZERO
   /* Define to test the use of MPFR_ERRDIVZERO */
   feclearexcept (FE_ALL_EXCEPT);
 #endif
 
-#ifndef MPFR_USE_MINI_GMP
-  /* disable since mini-gmp does not keep track of old_size in realloc/free */
   tests_memory_start ();
-#endif
   tests_rand_start ();
   tests_limit_start ();
 
@@ -276,11 +266,9 @@ tests_end_mpfr (void)
 
   mpfr_free_cache ();
   tests_rand_end ();
-#ifndef MPFR_USE_MINI_GMP
   tests_memory_end ();
-#endif
 
-#ifdef MPFR_TESTS_DIVBYZERO
+#ifdef MPFR_TEST_DIVBYZERO
   /* Define to test the use of MPFR_ERRDIVZERO */
   if (fetestexcept (FE_DIVBYZERO|FE_INVALID))
     {
@@ -333,21 +321,21 @@ tests_limit_start (void)
 static void
 tests_rand_start (void)
 {
-  mpfr_gmp_randstate_ptr  rands;
+  gmp_randstate_ptr  rands;
   char           *perform_seed;
   unsigned long  seed;
 
-  if (mpfr_rands_initialized)
+  if (__gmp_rands_initialized)
     {
       printf (
-        "Please let tests_start() initialize the global mpfr_rands, i.e.\n"
+        "Please let tests_start() initialize the global __gmp_rands, i.e.\n"
         "ensure that function is called before the first use of RANDS.\n");
       exit (1);
     }
 
-  gmp_randinit_default (mpfr_rands);
-  mpfr_rands_initialized = 1;
-  rands = mpfr_rands;
+  gmp_randinit_default (__gmp_rands);
+  __gmp_rands_initialized = 1;
+  rands = __gmp_rands;
 
   perform_seed = getenv ("GMP_CHECK_RANDOMIZE");
   if (perform_seed != NULL)
@@ -540,10 +528,7 @@ ld_trace (const char *name, long double ld)
   printf ("] %.20Lg\n", ld);
 }
 
-/* Open a file in the SRCDIR directory, i.e. the "tests" source directory,
-   which is different from the current directory when objdir is different
-   from srcdir. One should generally use this function instead of fopen
-   directly. */
+/* Open a file in the src directory - can't use fopen directly */
 FILE *
 src_fopen (const char *filename, const char *mode)
 {
@@ -602,17 +587,17 @@ tests_default_random (mpfr_ptr x, int pos, mpfr_exp_t emin, mpfr_exp_t emax,
   MPFR_ASSERTN (emax <= MPFR_EMAX_MAX);
   /* but it isn't required that emin and emax are in the current
      exponent range (see below), so that underflow/overflow checks
-     can be done on 64-bit machines without a manual change of the
-     exponent range (well, this is a bit ugly...). */
+     can be done on 64-bit machines. */
 
   mpfr_urandomb (x, RANDS);
   if (MPFR_IS_PURE_FP (x) && (emin >= 1 || always_scale || (randlimb () & 1)))
     {
       mpfr_exp_t e;
-      e = emin + (mpfr_exp_t) (randlimb () % (emax - emin + 1));
+      e = MPFR_GET_EXP (x) +
+        (emin + (mpfr_exp_t) (randlimb () % (emax - emin + 1)));
       /* Note: There should be no overflow here because both terms are
-         between MPFR_EMIN_MIN and MPFR_EMAX_MAX. */
-      MPFR_ASSERTD (e >= emin && e <= emax);
+         between MPFR_EMIN_MIN and MPFR_EMAX_MAX, but the sum e isn't
+         necessarily between MPFR_EMIN_MIN and MPFR_EMAX_MAX. */
       if (mpfr_set_exp (x, e))
         {
           /* The random number doesn't fit in the current exponent range.
@@ -812,8 +797,8 @@ data_check (const char *f, int (*foo) (FLIST), const char *name)
           ungetc (c, fp);
 
           c = fscanf (fp, "%ld %ld %c", &xprec, &yprec, &r);
-          MPFR_ASSERTN (MPFR_PREC_COND (xprec));
-          MPFR_ASSERTN (MPFR_PREC_COND (yprec));
+          MPFR_ASSERTN (xprec >= MPFR_PREC_MIN && xprec <= MPFR_PREC_MAX);
+          MPFR_ASSERTN (yprec >= MPFR_PREC_MIN && yprec <= MPFR_PREC_MAX);
           if (c == EOF)
             {
               perror ("data_check");
@@ -896,11 +881,6 @@ data_check (const char *f, int (*foo) (FLIST), const char *name)
  * mode for some lower precision: see data_check).
  * fct, inv, name: data related to the function.
  * pos, emin, emax: arguments for tests_default_random.
- * For debugging purpose (e.g. in case of crash or infinite loop),
- * you can set the MPFR_DEBUG_BADCASES environment variable to 1 in
- * order to output information about the tested worst cases. You can
- * also enable logging (when supported), but this may give too much
- * information.
  */
 void
 bad_cases (int (*fct)(FLIST), int (*inv)(FLIST), const char *name,
@@ -1040,36 +1020,4 @@ flags_out (unsigned int flags)
   if (none)
     printf (" none");
   printf (" (%u)\n", flags);
-}
-
-static void
-abort_called (int x)
-{
-  /* Ok, abort has been called */
-  exit (0);
-}
-
-/* This function has to be called for a test
-   that will call the abort function */
-void
-tests_expect_abort (void)
-{
-#if defined(HAVE_SIGACTION)
-  struct sigaction act;
-  int ret;
-
-  memset (&act, 0, sizeof act);
-  act.sa_handler = abort_called;
-  ret = sigaction (SIGABRT, &act, NULL);
-  if (ret != 0)
-    {
-      /* Can't register error handler: Skip test */
-      exit (77);
-    }
-#elif defined(HAVE_SIGNAL)
-  signal (SIGABRT, abort_called);
-#else
-  /* Can't register error handler: Skip test */
-  exit (77);
-#endif
 }

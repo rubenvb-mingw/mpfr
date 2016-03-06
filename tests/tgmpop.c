@@ -21,9 +21,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
 #include "mpfr-test.h"
-
-#ifndef MPFR_USE_MINI_GMP
 
 #define CHECK_FOR(str, cond)                                            \
   if ((cond) == 0) {                                                    \
@@ -110,36 +110,36 @@ special (void)
   mpq_set_ui (q, 1, 0);
   mpfr_set_str1 (x, "0.5");
   res = mpfr_add_q (y, x, q, MPFR_RNDN);
-  CHECK_FOR ("0.5+1/0", mpfr_inf_p (y) && MPFR_IS_POS (y) && res == 0);
+  CHECK_FOR ("0.5+1/0", mpfr_inf_p (y) && MPFR_SIGN (y) > 0 && res == 0);
   res = mpfr_sub_q (y, x, q, MPFR_RNDN);
-  CHECK_FOR ("0.5-1/0", mpfr_inf_p (y) && MPFR_IS_NEG (y) && res == 0);
+  CHECK_FOR ("0.5-1/0", mpfr_inf_p (y) && MPFR_SIGN (y) < 0 && res == 0);
   mpq_set_si (q, -1, 0);
   res = mpfr_add_q (y, x, q, MPFR_RNDN);
-  CHECK_FOR ("0.5+ -1/0", mpfr_inf_p (y) && MPFR_IS_NEG (y) && res == 0);
+  CHECK_FOR ("0.5+ -1/0", mpfr_inf_p (y) && MPFR_SIGN (y) < 0 && res == 0);
   res = mpfr_sub_q (y, x, q, MPFR_RNDN);
-  CHECK_FOR ("0.5- -1/0", mpfr_inf_p (y) && MPFR_IS_POS (y) && res == 0);
+  CHECK_FOR ("0.5- -1/0", mpfr_inf_p (y) && MPFR_SIGN (y) > 0 && res == 0);
   res = mpfr_div_q (y, x, q, MPFR_RNDN);
-  CHECK_FOR ("0.5 / (-1/0)", mpfr_zero_p (y) && MPFR_IS_NEG (y) && res == 0);
+  CHECK_FOR ("0.5 / (-1/0)", mpfr_zero_p (y) && MPFR_SIGN (y) < 0 && res == 0);
   mpq_set_ui (q, 1, 0);
   mpfr_set_inf (x, 1);
   res = mpfr_add_q (y, x, q, MPFR_RNDN);
-  CHECK_FOR ("+Inf + +Inf", mpfr_inf_p (y) && MPFR_IS_POS (y) && res == 0);
+  CHECK_FOR ("+Inf + +Inf", mpfr_inf_p (y) && MPFR_SIGN (y) > 0 && res == 0);
   res = mpfr_sub_q (y, x, q, MPFR_RNDN);
   CHECK_FOR ("+Inf - +Inf", MPFR_IS_NAN (y) && res == 0);
   mpfr_set_inf (x, -1);
   res = mpfr_add_q (y, x, q, MPFR_RNDN);
   CHECK_FOR ("-Inf + +Inf", MPFR_IS_NAN (y) && res == 0);
   res = mpfr_sub_q (y, x, q, MPFR_RNDN);
-  CHECK_FOR ("-Inf - +Inf", mpfr_inf_p (y) && MPFR_IS_NEG (y) && res == 0);
+  CHECK_FOR ("-Inf - +Inf", mpfr_inf_p (y) && MPFR_SIGN (y) < 0 && res == 0);
   mpq_set_si (q, -1, 0);
   mpfr_set_inf (x, 1);
   res = mpfr_add_q (y, x, q, MPFR_RNDN);
   CHECK_FOR ("+Inf + -Inf", MPFR_IS_NAN (y) && res == 0);
   res = mpfr_sub_q (y, x, q, MPFR_RNDN);
-  CHECK_FOR ("+Inf - -Inf", mpfr_inf_p (y) && MPFR_IS_POS (y) && res == 0);
+  CHECK_FOR ("+Inf - -Inf", mpfr_inf_p (y) && MPFR_SIGN (y) > 0 && res == 0);
   mpfr_set_inf (x, -1);
   res = mpfr_add_q (y, x, q, MPFR_RNDN);
-  CHECK_FOR ("-Inf + -Inf", mpfr_inf_p (y) && MPFR_IS_NEG (y) && res == 0);
+  CHECK_FOR ("-Inf + -Inf", mpfr_inf_p (y) && MPFR_SIGN (y) < 0 && res == 0);
   res = mpfr_sub_q (y, x, q, MPFR_RNDN);
   CHECK_FOR ("-Inf - -Inf", MPFR_IS_NAN (y) && res == 0);
 
@@ -151,15 +151,15 @@ special (void)
   res = mpfr_sub_q (y, x, q, MPFR_RNDN);
   CHECK_FOR ("42-0/1", mpfr_cmp_ui (y, 42) == 0 && res == 0);
   res = mpfr_mul_q (y, x, q, MPFR_RNDN);
-  CHECK_FOR ("42*0/1", mpfr_zero_p (y) && MPFR_IS_POS (y) && res == 0);
+  CHECK_FOR ("42*0/1", mpfr_zero_p (y) && MPFR_SIGN (y) > 0 && res == 0);
   mpfr_clear_flags ();
   res = mpfr_div_q (y, x, q, MPFR_RNDN);
-  CHECK_FOR ("42/(0/1)", mpfr_inf_p (y) && MPFR_IS_POS (y) && res == 0
+  CHECK_FOR ("42/(0/1)", mpfr_inf_p (y) && MPFR_SIGN (y) > 0 && res == 0
              && mpfr_divby0_p ());
   mpz_set_ui (z, 0);
   mpfr_clear_flags ();
   res = mpfr_div_z (y, x, z, MPFR_RNDN);
-  CHECK_FORZ ("42/0", mpfr_inf_p (y) && MPFR_IS_POS (y) && res == 0
+  CHECK_FORZ ("42/0", mpfr_inf_p (y) && MPFR_SIGN (y) > 0 && res == 0
               && mpfr_divby0_p ());
 
   mpz_clear (z);
@@ -1229,25 +1229,25 @@ main (int argc, char *argv[])
   test_specialz (mpfr_add_z, mpz_add, "add");
   test_specialz (mpfr_sub_z, mpz_sub, "sub");
   test_specialz (mpfr_mul_z, mpz_mul, "mul");
-  test_genericz (MPFR_PREC_MIN, 100, 100, mpfr_add_z, "add");
-  test_genericz (MPFR_PREC_MIN, 100, 100, mpfr_sub_z, "sub");
-  test_genericz (MPFR_PREC_MIN, 100, 100, mpfr_mul_z, "mul");
-  test_genericz (MPFR_PREC_MIN, 100, 100, mpfr_div_z, "div");
+  test_genericz (2, 100, 100, mpfr_add_z, "add");
+  test_genericz (2, 100, 100, mpfr_sub_z, "sub");
+  test_genericz (2, 100, 100, mpfr_mul_z, "mul");
+  test_genericz (2, 100, 100, mpfr_div_z, "div");
   test_special2z (mpfr_z_sub, mpz_sub, "sub");
-  test_generic2z (MPFR_PREC_MIN, 100, 100, mpfr_z_sub, "sub");
+  test_generic2z (2, 100, 100, mpfr_z_sub, "sub");
 
-  test_genericq (MPFR_PREC_MIN, 100, 100, mpfr_add_q, "add");
-  test_genericq (MPFR_PREC_MIN, 100, 100, mpfr_sub_q, "sub");
-  test_genericq (MPFR_PREC_MIN, 100, 100, mpfr_mul_q, "mul");
-  test_genericq (MPFR_PREC_MIN, 100, 100, mpfr_div_q, "div");
-  test_specialq (MPFR_PREC_MIN, 100, 100, mpfr_mul_q, mpq_mul, "mul");
-  test_specialq (MPFR_PREC_MIN, 100, 100, mpfr_div_q, mpq_div, "div");
-  test_specialq (MPFR_PREC_MIN, 100, 100, mpfr_add_q, mpq_add, "add");
-  test_specialq (MPFR_PREC_MIN, 100, 100, mpfr_sub_q, mpq_sub, "sub");
+  test_genericq (2, 100, 100, mpfr_add_q, "add");
+  test_genericq (2, 100, 100, mpfr_sub_q, "sub");
+  test_genericq (2, 100, 100, mpfr_mul_q, "mul");
+  test_genericq (2, 100, 100, mpfr_div_q, "div");
+  test_specialq (2, 100, 100, mpfr_mul_q, mpq_mul, "mul");
+  test_specialq (2, 100, 100, mpfr_div_q, mpq_div, "div");
+  test_specialq (2, 100, 100, mpfr_add_q, mpq_add, "add");
+  test_specialq (2, 100, 100, mpfr_sub_q, mpq_sub, "sub");
 
-  test_cmp_z (MPFR_PREC_MIN, 100, 100);
-  test_cmp_q (MPFR_PREC_MIN, 100, 100);
-  test_cmp_f (MPFR_PREC_MIN, 100, 100);
+  test_cmp_z (2, 100, 100);
+  test_cmp_q (2, 100, 100);
+  test_cmp_f (2, 100, 100);
 
   check_for_zero ();
 
@@ -1263,12 +1263,3 @@ main (int argc, char *argv[])
   return 0;
 }
 
-#else
-
-int
-main (void)
-{
-  return 77;
-}
-
-#endif

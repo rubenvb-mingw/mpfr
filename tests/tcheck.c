@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdlib.h>
+#include <stdio.h>
+
 #include "mpfr-test.h"
 
 #define ERROR(s)                                                      \
@@ -48,8 +51,6 @@ main (void)
       if (!mpfr_check(a)) ERROR("for inf");
       MPFR_SET_ZERO(a);
       if (!mpfr_check(a)) ERROR("for zero");
-      MPFR_EXP (a) = MPFR_EXP_MIN;
-      if (mpfr_check(a))  ERROR("for EXP = MPFR_EXP_MIN");
       /* Check var */
       mpfr_set_ui(a, 2, MPFR_RNDN);
       if (!mpfr_check(a)) ERROR("for set_ui");
@@ -68,7 +69,7 @@ main (void)
       if (mpfr_check(a))  ERROR("sgn");
       MPFR_SET_POS(a);
       /* Check prec */
-      MPFR_PREC(a) = MPFR_PREC_MIN - 1;
+      MPFR_PREC(a) = 1;
       if (mpfr_check(a))  ERROR("precmin");
 #if MPFR_VERSION_MAJOR < 3
       /* Disable the test with MPFR >= 3 since mpfr_prec_t is now signed.

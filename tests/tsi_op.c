@@ -21,11 +21,10 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
-#include "mpfr-test.h"
+#include <stdio.h>
+#include <stdlib.h>
 
-/* TODO: Add generic tests for mpfr_si_sub and mpfr_si_div.
-   tgeneric_ui.c should probably be replaced by tgeneric.c,
-   with some changes, since tgeneric.c does more checks. */
+#include "mpfr-test.h"
 
 #define ERROR1(s, i, z, exp) \
 {\
@@ -58,12 +57,7 @@ check_invert (void)
 
   mpfr_set_ui (x, 0xC, MPFR_RNDN);
   mpfr_si_sub (x, -1, x, MPFR_RNDD); /* -0001 - 1100 = - 1101 --> -1 0000 */
-  /* If MPFR_PREC_MIN = 2, then x is first set to 12 exactly, then we get
-     -13 which is rounded down to -16.
-     If MPFR_PREC_MIN = 1, then x is first set to 16 exactly, then we get
-     -17 which is rounded down to -32. */
-  if ((MPFR_PREC_MIN == 2 && mpfr_cmp_si (x, -0x10)) ||
-      (MPFR_PREC_MIN == 1 && mpfr_cmp_si (x, -0x20)))
+  if (mpfr_cmp_si (x, -0x10) )
     {
       printf ("Special rounding error\n");
       exit (1);
@@ -142,10 +136,10 @@ main (int argc, char *argv[])
 
   check_invert ();
 
-  test_generic_add_si (MPFR_PREC_MIN, 200, 17);
-  test_generic_sub_si (MPFR_PREC_MIN, 200, 17);
-  test_generic_mul_si (MPFR_PREC_MIN, 200, 17);
-  test_generic_div_si (MPFR_PREC_MIN, 200, 17);
+  test_generic_add_si (2, 200, 17);
+  test_generic_sub_si (2, 200, 17);
+  test_generic_mul_si (2, 200, 17);
+  test_generic_div_si (2, 200, 17);
 
   tests_end_mpfr ();
   return 0;

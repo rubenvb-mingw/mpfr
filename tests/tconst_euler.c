@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 /* Wrapper for tgeneric */
@@ -106,7 +109,7 @@ main (int argc, char *argv[])
   mpfr_clear (z);
   mpfr_clear (t);
 
-  test_generic (MPFR_PREC_MIN, 200, 1);
+  test_generic (2, 200, 1);
 
   tests_end_mpfr ();
   return 0;

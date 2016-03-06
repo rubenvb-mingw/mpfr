@@ -20,6 +20,8 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <float.h>
 
 #include "mpfr-test.h"
@@ -135,7 +137,7 @@ main (int argc, char *argv[])
   check3 ("0.9999999999", 1, MPFR_RNDN,
           "-10000000827403709990903735160827636718750e-50");
 
-  test_generic (MPFR_PREC_MIN, 1000, 100);
+  test_generic (2, 1000, 100);
 
   tests_end_mpfr ();
   return 0;

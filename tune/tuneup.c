@@ -30,12 +30,6 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 #define _PROTO __GMP_PROTO
 #include "speed.h"
 
-/* Undefine static assertion system */
-#undef MPFR_DECL_STATIC_ASSERT
-#undef MPFR_STAT_STATIC_ASSERT
-#define MPFR_DECL_STATIC_ASSERT(a) MPFR_ASSERTN(a)
-#define MPFR_STAT_STATIC_ASSERT(a) MPFR_ASSERTN(a)
-
 int verbose;
 
 /* template for an unary function */
@@ -280,12 +274,8 @@ speed_mpfr_sincos (struct speed_params *s)
 }
 
 /* Setup mpfr_mul, mpfr_sqr and mpfr_div */
-/* Since mpfr_mul() deals with both mul and sqr, and contains an assert that
-   the thresholds are >= 1, we initialize both values to 1 to avoid a failed
-   assertion (let's recall that static assertions are replaced by normal
-   dynamic assertions here). */
-mpfr_prec_t mpfr_mul_threshold = 1;
-mpfr_prec_t mpfr_sqr_threshold = 1;
+mpfr_prec_t mpfr_mul_threshold;
+mpfr_prec_t mpfr_sqr_threshold;
 mpfr_prec_t mpfr_div_threshold;
 #undef  MPFR_MUL_THRESHOLD
 #define MPFR_MUL_THRESHOLD mpfr_mul_threshold
@@ -572,7 +562,7 @@ tune_simple_func (mpfr_prec_t *threshold,
    It assumes that for (x,p) close to zero, algo1 is used
    and algo2 is used when (x,p) is far from zero.
    If algo2 is better for low prec, and algo1 better for high prec,
-   the behavior of this function is undefined.
+   the behaviour of this function is undefined.
    This tuning function tries couples (x,p) of the form (ell*dirx, ell*dirp)
    until it finds a point on the boundary. It returns ell.
  */
@@ -963,7 +953,7 @@ tune_div_mulders (FILE *f)
       if (k != MPFR_DIVHIGH_TAB_SIZE - 1)
         fputc (',', f);
       if ((k+1) % 16 == 0)
-        fprintf (f, " /*%zu-%zu*/ \\\n ", (size_t) k - 15, (size_t) k);
+        fprintf (f, " /*%zu-%zu*/ \\\n ", k - 15, k);
       if (verbose)
         putchar ('.');
     }

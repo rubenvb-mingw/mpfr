@@ -21,14 +21,10 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
-/* Include config.h before using ANY configure macros if needed. */
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#if defined(HAVE_STDARG) && !defined(MPFR_USE_MINI_GMP)
+#ifdef HAVE_STDARG
 #include <stdarg.h>
 
+#include <stdlib.h>
 #include <float.h>
 
 #ifdef HAVE_LOCALE_H
@@ -36,6 +32,8 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 #endif
 
 #include "mpfr-test.h"
+
+#if MPFR_VERSION >= MPFR_VERSION_NUM(2,4,0)
 
 const int prec_max_printf = 5000; /* limit for random precision in
                                      random_double() */
@@ -557,9 +555,6 @@ decimal (void)
   mpfr_set_str (x, "-9.996", 10, MPFR_RNDN);
   check_sprintf ("-10.0", "%.1Rf", x);
 
-  /* regression in MPFR 3.1.0 (bug introduced in r7761, fixed in r7931) */
-  check_sprintf ("-10", "%.2Rg", x);
-
   mpfr_clears (x, z, (mpfr_ptr) 0);
   return 0;
 }
@@ -792,7 +787,7 @@ mixed (void)
   int n1;
   int n2;
   int i = 121;
-#ifdef PRINTF_L
+#ifndef NPRINTF_L
   long double d = 1. / 31.;
 #endif
   mpf_t mpf;
@@ -829,9 +824,7 @@ mixed (void)
       exit (1);
     }
 
-#ifdef PRINTF_L
-  /* under MinGW, -D__USE_MINGW_ANSI_STDIO is required to support %Lf
-     see https://gcc.gnu.org/ml/gcc/2013-03/msg00103.html */
+#ifndef NPRINTF_L
   check_vsprintf ("00000010610209857723, -1.2345678875e+07, 0.032258",
                   "%.*Zi, %R*e, %Lf", 20, mpz, rnd, x, d);
 #endif
@@ -1003,7 +996,7 @@ random_double (void)
          the sign of a zero exponent (the C99 rationale says: "The sign
          of a zero exponent in %e format is unspecified.  The committee
          knows of different implementations and choose not to require
-         implementations to document their behavior in this case
+         implementations to document their behaviour in this case
          (by making this be implementation defined behaviour).  Most
          implementations use a "+" sign, e.g., 1.2e+00; but there is at
          least one implementation that uses the sign of the unlimited
@@ -1128,7 +1121,6 @@ bug20111102 (void)
  * for %Ra and %Rb is not done on the MPFR number itself (as it
  * would overflow). Note: it has been reported on comp.std.c that
  * some C libraries behave differently on %a, but this is a bug.
- * FIXME: this function assumes e = 3 mod 4.
  */
 static void
 check_emax_aux (mpfr_exp_t e)
@@ -1137,9 +1129,6 @@ check_emax_aux (mpfr_exp_t e)
   char *s1, s2[256];
   int i;
   mpfr_exp_t emax;
-
-  if ((e % 4) != 3)
-    return;
 
   MPFR_ASSERTN (e <= LONG_MAX);
   emax = mpfr_get_emax ();
@@ -1199,7 +1188,6 @@ check_emax (void)
   check_emax_aux (MPFR_EMAX_MAX);
 }
 
-/* FIXME: this function assumes e = 1 mod 4 */
 static void
 check_emin_aux (mpfr_exp_t e)
 {
@@ -1208,9 +1196,6 @@ check_emin_aux (mpfr_exp_t e)
   int i;
   mpfr_exp_t emin;
   mpz_t ee;
-
-  if ((e % 4) != 1)
-    return;
 
   MPFR_ASSERTN (e >= LONG_MIN);
   emin = mpfr_get_emin ();
@@ -1306,6 +1291,17 @@ main (int argc, char **argv)
   tests_end_mpfr ();
   return 0;
 }
+
+#else  /* MPFR_VERSION */
+
+int
+main (void)
+{
+  printf ("Warning! Test disabled for this MPFR version.\n");
+  return 0;
+}
+
+#endif  /* MPFR_VERSION */
 
 #else  /* HAVE_STDARG */
 

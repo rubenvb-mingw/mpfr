@@ -26,12 +26,12 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 long
 __gmpfr_floor_log2 (double d)
 {
-#if _MPFR_IEEE_FLOATS
-  union mpfr_ieee_double_extract x;
+#if _GMP_IEEE_FLOATS
+  union ieee_double_extract x;
 
   x.d = d;
   return (long) x.s.exp - 1023;
-#else /* _MPFR_IEEE_FLOATS */
+#else
   long exp;
   double m;
 
@@ -49,5 +49,5 @@ __gmpfr_floor_log2 (double d)
         exp--;
     }
   return exp;
-#endif /* _MPFR_IEEE_FLOATS */
+#endif
 }

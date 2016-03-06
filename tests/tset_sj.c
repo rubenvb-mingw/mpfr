@@ -22,9 +22,12 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
 #ifdef HAVE_CONFIG_H
-# include "config.h"
+# include "config.h"       /* for a build within gmp */
 #endif
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
 
 #include "mpfr-intmax.h"
 #include "mpfr-test.h"
