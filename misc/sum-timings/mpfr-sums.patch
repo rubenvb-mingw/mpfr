@@ -1,0 +1,47 @@
+MPFR 3.1.4 patch to add mpfr_sum_new (new algorithm & implementation)
+and mpfr_sum_add (basic implementation with mpfr_add, inaccurate and
+sensitive to the order of the arguments) for timings.
+
+diff -aurd mpfr-3.1.4-a/src/mpfr.h mpfr-3.1.4-b/src/mpfr.h
+--- mpfr-3.1.4-a/src/mpfr.h	2016-03-06 11:33:04.000000000 +0000
++++ mpfr-3.1.4-b/src/mpfr.h	2016-03-15 13:43:28.134479935 +0000
+@@ -704,6 +704,10 @@
+                                            mpfr_srcptr, mpfr_rnd_t));
+ __MPFR_DECLSPEC int mpfr_sum _MPFR_PROTO ((mpfr_ptr, mpfr_ptr *__gmp_const,
+                                            unsigned long, mpfr_rnd_t));
++__MPFR_DECLSPEC int mpfr_sum_new _MPFR_PROTO ((mpfr_ptr, mpfr_ptr *__gmp_const,
++                                               unsigned long, mpfr_rnd_t));
++__MPFR_DECLSPEC int mpfr_sum_add _MPFR_PROTO ((mpfr_ptr, mpfr_ptr *__gmp_const,
++                                               unsigned long, mpfr_rnd_t));
+ 
+ __MPFR_DECLSPEC void mpfr_free_cache _MPFR_PROTO ((void));
+ 
+diff -aurd mpfr-3.1.4-a/src/sum.c mpfr-3.1.4-b/src/sum.c
+--- mpfr-3.1.4-a/src/sum.c	2016-03-06 11:33:04.000000000 +0000
++++ mpfr-3.1.4-b/src/sum.c	2016-03-15 13:44:39.845468956 +0000
+@@ -324,4 +324,25 @@
+   return error_trap; /* It doesn't return the ternary value */
+ }
+ 
++#define mpfr_sum mpfr_sum_new
++#include "sum-new.c"
++
++int
++mpfr_sum_add (mpfr_ptr sum, mpfr_ptr *const x, unsigned long n, mpfr_rnd_t rnd)
++{
++  int ret, i;
++  switch (n)
++    {
++    case 0:
++      return mpfr_set_ui (sum, 0, rnd);
++    case 1:
++      return mpfr_set (sum, x[0], rnd);
++    default:
++      ret = mpfr_add (sum, x[0], x[1], rnd);
++      for (i = 2; i < n; i++)
++        ret = mpfr_add (sum, sum, x[i], rnd);
++      return ret;
++    }
++}
++
+ /* __END__ */
