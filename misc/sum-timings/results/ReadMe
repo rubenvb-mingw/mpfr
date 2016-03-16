@@ -1,0 +1,5 @@
+Timings obtained with all-timings on MPFR 3.1.4 patched as described.
+
+Processors: Intel(R) Xeon(R) CPU E5-2609 v3 @ 1.90GHz
+Compiler: gcc (Debian 5.3.1-11) 5.3.1 20160307
+Compiler options (CFLAGS): -march=native -O3

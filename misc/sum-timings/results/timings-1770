@@ -1,0 +1,481 @@
+nc=0 seed=0 rn=0
+$ ./sum-timings 0 10 0 10000000 10000000 1 200 0
+sum_old took  3.2065 s  (-0.106331)
+sum_new took  1.1807 s  (-0.106331)
+sum_add took  1.2272 s  (-0.106331)
+
+nc=0 seed=0 rn=1
+$ ./sum-timings 1 10 0 10000000 10000000 1 200 0
+sum_old took  2.3332 s  (3.00166)
+sum_new took  1.1637 s  (3.00166)
+sum_add took  1.0485 s  (3.00166)
+
+nc=0 seed=0 rn=2
+$ ./sum-timings 2 10 0 10000000 10000000 1 200 0
+sum_old took  2.2534 s  (3.00166)
+sum_new took  1.1378 s  (3.00166)
+sum_add took  1.1162 s  (3.00166)
+
+nc=0 seed=0 rn=3
+$ ./sum-timings 3 10 0 10000000 10000000 1 200 0
+sum_old took  2.2619 s  (3.00166)
+sum_new took  1.2153 s  (3.00166)
+sum_add took  1.1348 s  (3.00166)
+
+nc=0 seed=0 rn=4
+$ ./sum-timings 4 10 0 10000000 10000000 1 200 0
+sum_old took  2.3276 s  (3.00166)
+sum_new took  1.2055 s  (3.00166)
+sum_add took  1.1395 s  (3.00166)
+
+nc=0 seed=1 rn=0
+$ ./sum-timings 0 10 0 10000000 10000000 1 200 1
+sum_old took  3.6361 s  (0.998964)
+sum_new took  1.1381 s  (0.998964)
+sum_add took  1.1128 s  (0.998964)
+
+nc=0 seed=1 rn=1
+$ ./sum-timings 1 10 0 10000000 10000000 1 200 1
+sum_old took  2.9069 s  (-0.556147)
+sum_new took  1.1614 s  (-0.556147)
+sum_add took  1.2921 s  (-0.556147)
+
+nc=0 seed=1 rn=2
+$ ./sum-timings 2 10 0 10000000 10000000 1 200 1
+sum_old took  2.8254 s  (-0.556147)
+sum_new took  1.1665 s  (-0.556147)
+sum_add took  1.2897 s  (-0.556147)
+
+nc=0 seed=1 rn=3
+$ ./sum-timings 3 10 0 10000000 10000000 1 200 1
+sum_old took  2.8374 s  (-0.556147)
+sum_new took  1.1974 s  (-0.556147)
+sum_add took  1.3318 s  (-0.556147)
+
+nc=0 seed=1 rn=4
+$ ./sum-timings 4 10 0 10000000 10000000 1 200 1
+sum_old took  2.8245 s  (-0.556147)
+sum_new took  1.1886 s  (-0.556147)
+sum_add took  1.3231 s  (-0.556147)
+
+nc=0 seed=2 rn=0
+$ ./sum-timings 0 10 0 10000000 10000000 1 200 2
+sum_old took  2.3812 s  (-2.79467)
+sum_new took  1.1468 s  (-2.79467)
+sum_add took  1.0812 s  (-2.79467)
+
+nc=0 seed=2 rn=1
+$ ./sum-timings 1 10 0 10000000 10000000 1 200 2
+sum_old took  2.6093 s  (2.64571)
+sum_new took  1.1788 s  (2.64571)
+sum_add took  1.2297 s  (2.64571)
+
+nc=0 seed=2 rn=2
+$ ./sum-timings 2 10 0 10000000 10000000 1 200 2
+sum_old took  2.4051 s  (2.64571)
+sum_new took  1.1523 s  (2.64571)
+sum_add took  1.2264 s  (2.64571)
+
+nc=0 seed=2 rn=3
+$ ./sum-timings 3 10 0 10000000 10000000 1 200 2
+sum_old took  2.4661 s  (2.64571)
+sum_new took  1.1609 s  (2.64571)
+sum_add took  1.2327 s  (2.64571)
+
+nc=0 seed=2 rn=4
+$ ./sum-timings 4 10 0 10000000 10000000 1 200 2
+sum_old took  2.4737 s  (2.64571)
+sum_new took  1.1161 s  (2.64571)
+sum_add took  1.1806 s  (2.64571)
+
+nc=0 seed=3 rn=0
+$ ./sum-timings 0 10 0 10000000 10000000 1 200 3
+sum_old took  2.6844 s  (1.30576)
+sum_new took  1.1789 s  (1.30576)
+sum_add took  1.2440 s  (1.30576)
+
+nc=0 seed=3 rn=1
+$ ./sum-timings 1 10 0 10000000 10000000 1 200 3
+sum_old took  2.6273 s  (-0.312349)
+sum_new took  1.1378 s  (-0.312349)
+sum_add took  0.9260 s  (-0.312349)
+
+nc=0 seed=3 rn=2
+$ ./sum-timings 2 10 0 10000000 10000000 1 200 3
+sum_old took  2.5691 s  (-0.312349)
+sum_new took  1.2158 s  (-0.312349)
+sum_add took  0.9752 s  (-0.312349)
+
+nc=0 seed=3 rn=3
+$ ./sum-timings 3 10 0 10000000 10000000 1 200 3
+sum_old took  2.6886 s  (-0.312349)
+sum_new took  1.2009 s  (-0.312349)
+sum_add took  0.9713 s  (-0.312349)
+
+nc=0 seed=3 rn=4
+$ ./sum-timings 4 10 0 10000000 10000000 1 200 3
+sum_old took  2.6266 s  (-0.312349)
+sum_new took  1.1594 s  (-0.312349)
+sum_add took  0.9417 s  (-0.312349)
+
+nc=1 seed=0 rn=0
+$ ./sum-timings 0 10 1 10000000 10000000 1 200 0
+sum_old took  1.8333 s  (0)
+sum_new took  1.1089 s  (0)
+sum_add took  1.2163 s  (5.52497e-3010301)
+
+nc=1 seed=0 rn=1
+$ ./sum-timings 1 10 1 10000000 10000000 1 200 0
+sum_old took  2.2725 s  (-2.0028e-3010300)
+sum_new took  1.2083 s  (-2.0028e-3010300)
+sum_add took  1.1011 s  (4.41998e-3010300)
+
+nc=1 seed=0 rn=2
+$ ./sum-timings 2 10 1 10000000 10000000 1 200 0
+sum_old took  2.2167 s  (6.90622e-3010301)
+sum_new took  1.1305 s  (6.90622e-3010301)
+sum_add took  1.0516 s  (8.83996e-3010300)
+
+nc=1 seed=0 rn=3
+$ ./sum-timings 3 10 1 10000000 10000000 1 200 0
+sum_old took  2.2248 s  (-2.0028e-3010300)
+sum_new took  1.2253 s  (-2.0028e-3010300)
+sum_add took  1.1068 s  (-6.62997e-3010300)
+
+nc=1 seed=0 rn=4
+$ ./sum-timings 4 10 1 10000000 10000000 1 200 0
+sum_old took  2.2401 s  (6.90622e-3010301)
+sum_new took  1.1449 s  (6.90622e-3010301)
+sum_add took  1.0665 s  (-7.73496e-3010300)
+
+nc=1 seed=1 rn=0
+$ ./sum-timings 0 10 1 10000000 10000000 1 200 1
+sum_old took  2.1063 s  (-8.28746e-3010301)
+sum_new took  1.1740 s  (-8.28746e-3010301)
+sum_add took  0.9884 s  (-1.38124e-3010300)
+
+nc=1 seed=1 rn=1
+$ ./sum-timings 1 10 1 10000000 10000000 1 200 1
+sum_old took  1.9327 s  (0)
+sum_new took  1.0872 s  (0)
+sum_add took  1.0776 s  (-1.93374e-3010300)
+
+nc=1 seed=1 rn=2
+$ ./sum-timings 2 10 1 10000000 10000000 1 200 1
+sum_old took  2.4549 s  (1.38124e-3010301)
+sum_new took  1.1421 s  (1.38124e-3010301)
+sum_add took  1.0486 s  (8.28746e-3010301)
+
+nc=1 seed=1 rn=3
+$ ./sum-timings 3 10 1 10000000 10000000 1 200 1
+sum_old took  1.9177 s  (0)
+sum_new took  1.0725 s  (-0)
+sum_add took  1.0634 s  (-1.93374e-3010300)
+
+nc=1 seed=1 rn=4
+$ ./sum-timings 4 10 1 10000000 10000000 1 200 1
+sum_old took  2.3967 s  (1.38124e-3010301)
+sum_new took  1.1819 s  (1.38124e-3010301)
+sum_add took  1.0714 s  (8.28746e-3010301)
+
+nc=1 seed=2 rn=0
+$ ./sum-timings 0 10 1 10000000 10000000 1 200 2
+sum_old took  2.1250 s  (-1.62296e-3010300)
+sum_new took  1.1515 s  (-1.62296e-3010300)
+sum_add took  1.2148 s  (-2.20999e-3010300)
+
+nc=1 seed=2 rn=1
+$ ./sum-timings 1 10 1 10000000 10000000 1 200 2
+sum_old took  2.2367 s  (5.52497e-3010301)
+sum_new took  1.1991 s  (5.52497e-3010301)
+sum_add took  1.2191 s  (-2.20999e-3010300)
+
+nc=1 seed=2 rn=2
+$ ./sum-timings 2 10 1 10000000 10000000 1 200 2
+sum_old took  1.8328 s  (0)
+sum_new took  1.1064 s  (0)
+sum_add took  1.2240 s  (5.52497e-3010300)
+
+nc=1 seed=2 rn=3
+$ ./sum-timings 3 10 1 10000000 10000000 1 200 2
+sum_old took  2.3040 s  (5.52497e-3010301)
+sum_new took  1.1916 s  (5.52497e-3010301)
+sum_add took  1.2520 s  (-2.20999e-3010300)
+
+nc=1 seed=2 rn=4
+$ ./sum-timings 4 10 1 10000000 10000000 1 200 2
+sum_old took  1.8379 s  (0)
+sum_new took  1.0774 s  (0)
+sum_add took  1.1768 s  (5.52497e-3010300)
+
+nc=1 seed=3 rn=0
+$ ./sum-timings 0 10 1 10000000 10000000 1 200 3
+sum_old took  2.4073 s  (-8.28746e-3010301)
+sum_new took  1.2274 s  (-8.28746e-3010301)
+sum_add took  1.1773 s  (-2.20999e-3010300)
+
+nc=1 seed=3 rn=1
+$ ./sum-timings 1 10 1 10000000 10000000 1 200 3
+sum_old took  2.2460 s  (-5.17966e-3010302)
+sum_new took  1.1521 s  (-5.17966e-3010302)
+sum_add took  1.1047 s  (-1.65749e-3010300)
+
+nc=1 seed=3 rn=2
+$ ./sum-timings 2 10 1 10000000 10000000 1 200 3
+sum_old took  2.2489 s  (2.33085e-3010301)
+sum_new took  1.1245 s  (2.33085e-3010301)
+sum_add took  1.0957 s  (1.10499e-3010300)
+
+nc=1 seed=3 rn=3
+$ ./sum-timings 3 10 1 10000000 10000000 1 200 3
+sum_old took  2.4466 s  (-5.17966e-3010302)
+sum_new took  1.2201 s  (-5.17966e-3010302)
+sum_add took  1.1627 s  (-1.65749e-3010300)
+
+nc=1 seed=3 rn=4
+$ ./sum-timings 4 10 1 10000000 10000000 1 200 3
+sum_old took  2.3682 s  (2.33085e-3010301)
+sum_new took  1.1767 s  (2.33085e-3010301)
+sum_add took  1.1153 s  (1.10499e-3010300)
+
+nc=2 seed=0 rn=0
+$ ./sum-timings 0 10 2 10000000 10000000 1 200 0
+sum_old took  1.6653 s  (0)
+sum_new took  1.0433 s  (0)
+sum_add took  1.0113 s  (-5.52497e-3010301)
+
+nc=2 seed=0 rn=1
+$ ./sum-timings 1 10 2 10000000 10000000 1 200 0
+sum_old took  1.7997 s  (0)
+sum_new took  1.1279 s  (0)
+sum_add took  1.0852 s  (-8.83996e-3010300)
+
+nc=2 seed=0 rn=2
+$ ./sum-timings 2 10 2 10000000 10000000 1 200 0
+sum_old took  1.7886 s  (0)
+sum_new took  1.1552 s  (0)
+sum_add took  1.0854 s  (5.80122e-3010300)
+
+nc=2 seed=0 rn=3
+$ ./sum-timings 3 10 2 10000000 10000000 1 200 0
+sum_old took  1.8006 s  (0)
+sum_new took  1.1431 s  (-0)
+sum_add took  1.0789 s  (-8.83996e-3010300)
+
+nc=2 seed=0 rn=4
+$ ./sum-timings 4 10 2 10000000 10000000 1 200 0
+sum_old took  1.7824 s  (0)
+sum_new took  1.1279 s  (0)
+sum_add took  1.0637 s  (5.80122e-3010300)
+
+nc=2 seed=1 rn=0
+$ ./sum-timings 0 10 2 10000000 10000000 1 200 1
+sum_old took  1.9423 s  (0)
+sum_new took  1.1762 s  (0)
+sum_add took  0.9508 s  (6.90622e-3010301)
+
+nc=2 seed=1 rn=1
+$ ./sum-timings 1 10 2 10000000 10000000 1 200 1
+sum_old took  1.9885 s  (0)
+sum_new took  1.1689 s  (0)
+sum_add took  1.0973 s  (-5.52497e-3010301)
+
+nc=2 seed=1 rn=2
+$ ./sum-timings 2 10 2 10000000 10000000 1 200 1
+sum_old took  2.0029 s  (0)
+sum_new took  1.1662 s  (0)
+sum_add took  1.0540 s  (1.10499e-3010300)
+
+nc=2 seed=1 rn=3
+$ ./sum-timings 3 10 2 10000000 10000000 1 200 1
+sum_old took  1.9418 s  (0)
+sum_new took  1.1741 s  (-0)
+sum_add took  1.1282 s  (-5.52497e-3010301)
+
+nc=2 seed=1 rn=4
+$ ./sum-timings 4 10 2 10000000 10000000 1 200 1
+sum_old took  2.0224 s  (0)
+sum_new took  1.1414 s  (0)
+sum_add took  1.0273 s  (1.10499e-3010300)
+
+nc=2 seed=2 rn=0
+$ ./sum-timings 0 10 2 10000000 10000000 1 200 2
+sum_old took  1.8620 s  (0)
+sum_new took  1.1286 s  (0)
+sum_add took  0.9402 s  (-1.10499e-3010300)
+
+nc=2 seed=2 rn=1
+$ ./sum-timings 1 10 2 10000000 10000000 1 200 2
+sum_old took  2.0307 s  (0)
+sum_new took  1.1738 s  (0)
+sum_add took  1.0682 s  (2.20999e-3010300)
+
+nc=2 seed=2 rn=2
+$ ./sum-timings 2 10 2 10000000 10000000 1 200 2
+sum_old took  1.8212 s  (0)
+sum_new took  0.9699 s  (0)
+sum_add took  0.9423 s  (3.31498e-3010300)
+
+nc=2 seed=2 rn=3
+$ ./sum-timings 3 10 2 10000000 10000000 1 200 2
+sum_old took  2.0623 s  (0)
+sum_new took  1.1663 s  (-0)
+sum_add took  1.1026 s  (-2.20999e-3010300)
+
+nc=2 seed=2 rn=4
+$ ./sum-timings 4 10 2 10000000 10000000 1 200 2
+sum_old took  1.8006 s  (0)
+sum_new took  0.9930 s  (0)
+sum_add took  0.9565 s  (3.31498e-3010300)
+
+nc=2 seed=3 rn=0
+$ ./sum-timings 0 10 2 10000000 10000000 1 200 3
+sum_old took  2.1003 s  (0)
+sum_new took  1.1502 s  (0)
+sum_add took  1.1142 s  (1.38124e-3010300)
+
+nc=2 seed=3 rn=1
+$ ./sum-timings 1 10 2 10000000 10000000 1 200 3
+sum_old took  1.9415 s  (0)
+sum_new took  1.1351 s  (0)
+sum_add took  0.9385 s  (-1.10499e-3010300)
+
+nc=2 seed=3 rn=2
+$ ./sum-timings 2 10 2 10000000 10000000 1 200 3
+sum_old took  1.9008 s  (0)
+sum_new took  1.1150 s  (0)
+sum_add took  0.9344 s  (2.20999e-3010300)
+
+nc=2 seed=3 rn=3
+$ ./sum-timings 3 10 2 10000000 10000000 1 200 3
+sum_old took  1.8996 s  (0)
+sum_new took  1.1410 s  (-0)
+sum_add took  0.9452 s  (-1.10499e-3010300)
+
+nc=2 seed=3 rn=4
+$ ./sum-timings 4 10 2 10000000 10000000 1 200 3
+sum_old took  1.7860 s  (0)
+sum_new took  1.1190 s  (0)
+sum_add took  0.9669 s  (1.10499e-3010300)
+
+nc=3 seed=0 rn=0
+$ ./sum-timings 0 10 3 10000000 10000000 1 200 0
+sum_old took  1.5146 s  (0)
+sum_new took  0.8756 s  (0)
+sum_add took  0.9326 s  (0)
+
+nc=3 seed=0 rn=1
+$ ./sum-timings 1 10 3 10000000 10000000 1 200 0
+sum_old took  1.7434 s  (0)
+sum_new took  1.0618 s  (0)
+sum_add took  0.8516 s  (-3.31498e-3010300)
+
+nc=3 seed=0 rn=2
+$ ./sum-timings 2 10 3 10000000 10000000 1 200 0
+sum_old took  1.6454 s  (0)
+sum_new took  1.0229 s  (0)
+sum_add took  0.8280 s  (8.28746e-3010301)
+
+nc=3 seed=0 rn=3
+$ ./sum-timings 3 10 3 10000000 10000000 1 200 0
+sum_old took  1.6426 s  (0)
+sum_new took  1.0258 s  (-0)
+sum_add took  0.8458 s  (-3.31498e-3010300)
+
+nc=3 seed=0 rn=4
+$ ./sum-timings 4 10 3 10000000 10000000 1 200 0
+sum_old took  1.6923 s  (0)
+sum_new took  1.0100 s  (0)
+sum_add took  0.8312 s  (8.28746e-3010301)
+
+nc=3 seed=1 rn=0
+$ ./sum-timings 0 10 3 10000000 10000000 1 200 1
+sum_old took  1.6880 s  (0)
+sum_new took  1.0306 s  (0)
+sum_add took  0.8839 s  (-1.10499e-3010300)
+
+nc=3 seed=1 rn=1
+$ ./sum-timings 1 10 3 10000000 10000000 1 200 1
+sum_old took  1.6579 s  (0)
+sum_new took  1.0235 s  (0)
+sum_add took  0.8763 s  (4.41998e-3010300)
+
+nc=3 seed=1 rn=2
+$ ./sum-timings 2 10 3 10000000 10000000 1 200 1
+sum_old took  1.6331 s  (0)
+sum_new took  1.0672 s  (0)
+sum_add took  0.9302 s  (5.52497e-3010300)
+
+nc=3 seed=1 rn=3
+$ ./sum-timings 3 10 3 10000000 10000000 1 200 1
+sum_old took  1.7669 s  (0)
+sum_new took  1.0649 s  (-0)
+sum_add took  0.9078 s  (-4.41998e-3010300)
+
+nc=3 seed=1 rn=4
+$ ./sum-timings 4 10 3 10000000 10000000 1 200 1
+sum_old took  1.7039 s  (0)
+sum_new took  1.0295 s  (0)
+sum_add took  0.8871 s  (-4.41998e-3010300)
+
+nc=3 seed=2 rn=0
+$ ./sum-timings 0 10 3 10000000 10000000 1 200 2
+sum_old took  1.6686 s  (0)
+sum_new took  1.0444 s  (0)
+sum_add took  0.8833 s  (0)
+
+nc=3 seed=2 rn=1
+$ ./sum-timings 1 10 3 10000000 10000000 1 200 2
+sum_old took  1.7629 s  (0)
+sum_new took  1.0208 s  (0)
+sum_add took  1.1017 s  (-4.41998e-3010300)
+
+nc=3 seed=2 rn=2
+$ ./sum-timings 2 10 3 10000000 10000000 1 200 2
+sum_old took  1.7299 s  (0)
+sum_new took  1.0318 s  (0)
+sum_add took  1.0704 s  (4.41998e-3010300)
+
+nc=3 seed=2 rn=3
+$ ./sum-timings 3 10 3 10000000 10000000 1 200 2
+sum_old took  1.6552 s  (0)
+sum_new took  0.9969 s  (-0)
+sum_add took  1.0359 s  (-4.41998e-3010300)
+
+nc=3 seed=2 rn=4
+$ ./sum-timings 4 10 3 10000000 10000000 1 200 2
+sum_old took  1.7106 s  (0)
+sum_new took  1.0262 s  (0)
+sum_add took  1.0701 s  (4.41998e-3010300)
+
+nc=3 seed=3 rn=0
+$ ./sum-timings 0 10 3 10000000 10000000 1 200 3
+sum_old took  1.7328 s  (0)
+sum_new took  1.0053 s  (0)
+sum_add took  0.9648 s  (2.20999e-3010300)
+
+nc=3 seed=3 rn=1
+$ ./sum-timings 1 10 3 10000000 10000000 1 200 3
+sum_old took  1.7012 s  (0)
+sum_new took  1.0636 s  (0)
+sum_add took  0.8203 s  (0)
+
+nc=3 seed=3 rn=2
+$ ./sum-timings 2 10 3 10000000 10000000 1 200 3
+sum_old took  1.6616 s  (0)
+sum_new took  1.0679 s  (0)
+sum_add took  0.9252 s  (5.52497e-3010301)
+
+nc=3 seed=3 rn=3
+$ ./sum-timings 3 10 3 10000000 10000000 1 200 3
+sum_old took  1.7712 s  (0)
+sum_new took  1.0024 s  (-0)
+sum_add took  0.8604 s  (-1.10499e-3010300)
+
+nc=3 seed=3 rn=4
+$ ./sum-timings 4 10 3 10000000 10000000 1 200 3
+sum_old took  1.7449 s  (0)
+sum_new took  1.0562 s  (0)
+sum_add took  0.9073 s  (-5.52497e-3010301)
+
+OK
