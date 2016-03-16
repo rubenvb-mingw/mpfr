@@ -17,7 +17,7 @@ static char *fn[3] = { "sum_old", "sum_new", "sum_add" };
 
 static void
 check_random (mpfr_rnd_t r, long n, long nc,
-              mpfr_prec_t precx, mpfr_prec_t precs,
+              mpfr_prec_t precx, mpfr_prec_t precy,
               unsigned long emax, long ntests, unsigned long seed)
 {
   mpfr_t *x, s[3];
@@ -30,7 +30,7 @@ check_random (mpfr_rnd_t r, long n, long nc,
   gmp_randseed_ui (state, seed);
 
   for (i = 0; i < 3; i++)
-    mpfr_init2 (s[i], precs);
+    mpfr_init2 (s[i], precy);
 
   x = (mpfr_t *) malloc (n * sizeof (mpfr_t));
   p = (mpfr_ptr *) malloc (n * sizeof (mpfr_ptr));
@@ -96,7 +96,7 @@ int main (int argc, char *argv[])
 
   if (argc != 9)
     {
-      fprintf (stderr, "Usage: %s <rndmode> <size> <nc> <precx> <precs>"
+      fprintf (stderr, "Usage: %s <rndmode> <size> <nc> <precx> <precy>"
                " <emax> <ntests> <seed>\n", argv[0]);
       exit (1);
     }
