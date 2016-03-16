@@ -1,0 +1,25 @@
+#!/bin/sh
+
+set -e
+
+if [ $# -ne 5 ]; then
+  echo "Usage: $0 <size> <precx> <precy> <emax> <ntests>" >&2
+  exit 1
+fi
+
+for nc in `seq 0 3`
+do
+  for seed in `seq 0 3`
+  do
+    for rn in `seq 0 4`
+    do
+      cmd="./sum-timings $rn $1 $nc $2 $3 $4 $5 $seed"
+      echo "nc=$nc seed=$seed rn=$rn"
+      echo "$ $cmd"
+      $cmd
+      echo
+    done
+  done
+done
+
+echo OK
