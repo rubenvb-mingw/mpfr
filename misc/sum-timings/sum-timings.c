@@ -75,7 +75,7 @@ check_random (mpfr_rnd_t r, long n, long nc,
       for (j = 0; j < ntests; j++)
         fp[i] (s[i], p, n, r);
       c = clock () - c;
-      mpfr_printf ("%s took %.3f s  (%Rg)\n", fn[i],
+      mpfr_printf ("%s took %7.4f s  (%Rg)\n", fn[i],
                    (double) c / CLOCKS_PER_SEC, s[i]);
     }
 
