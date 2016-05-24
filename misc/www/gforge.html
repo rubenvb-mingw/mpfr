@@ -30,7 +30,7 @@
 Subversion access. Type the following lines (or something equivalent)
 in a shell:</p>
 
-<pre>svn checkout svn://scm.gforge.inria.fr/svn/mpfr/trunk <var>dirname</var></pre>
+<pre>svn checkout https://scm.gforge.inria.fr/anonscm/svn/mpfr/trunk <var>dirname</var></pre>
 
 <p>This will create a directory <samp><var>dirname</var></samp> with
 the latest version of the source (trunk). <strong>Please, read the
@@ -48,19 +48,14 @@ if you do not want such problems.</p>
 
 <p>You can get a branch with:</p>
 
-<pre>svn co svn://scm.gforge.inria.fr/svn/mpfr/branches/<var>branchname</var> <var>dirname</var></pre>
+<pre>svn co https://scm.gforge.inria.fr/anonscm/svn/mpfr/branches/<var>branchname</var> <var>dirname</var></pre>
 
 <p>And you can get the list of the branch names with:</p>
 
-<pre>svn ls svn://scm.gforge.inria.fr/svn/mpfr/branches</pre>
+<pre>svn ls https://scm.gforge.inria.fr/anonscm/svn/mpfr/branches</pre>
 
 <p>Similarly, the tags (releases, in general) can be found in
-<samp>svn://scm.gforge.inria.fr/svn/mpfr/tags</samp>.</p>
-
-<p>Users registered on InriaForge can access the Subversion tree via
-<acronym>SSH</acronym>; for the <cite><acronym>MPFR</acronym></cite>
-developers, this is necessary to perform commits. In the above lines,
-replace <samp>svn://</samp> by <samp>svn+ssh://<var>user</var>@</samp>.</p>
+<samp>https://scm.gforge.inria.fr/anonscm/svn/mpfr/tags</samp>.</p>
 
 <p>Documentation on
 <a href="http://subversion.apache.org/"><cite>Subversion</cite></a>:</p>
