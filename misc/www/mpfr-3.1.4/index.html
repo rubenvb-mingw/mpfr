@@ -99,7 +99,7 @@ The key fingerprint is:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2016-05-22). The patches are distributed under the same license as
+update: 2016-06-01). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -178,6 +178,30 @@ the <a href="patch02"><samp>add-sub-ui-flags</samp> patch</a>, which
 also provides test cases.<br />
 Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10304&amp;view=revision">10304</a>.</li>
+
+<li id="p3">The code that subtracts two numbers of the same sign,
+called by <code>mpfr_add</code> on numbers of different signs and by
+<code>mpfr_sub</code> on numbers of the same sign, <abbr>i.e.</abbr>
+which does <var>a</var> = <var>b</var> &#8722; <var>c</var> with
+|<var>b</var>| &gt; |<var>c</var>|, is incorrect in the following case:
+<ul>
+<li>the rounding mode is <code>MPFR_RNDN</code> (round-to-nearest mode);</li>
+<li>|<var>b</var>| is the midpoint between the maximum finite number in
+the precision of the target <var>a</var> and 2<sup><var>emax</var></sup>
+(the maximum finite number + 1 ulp), which is possible only if the precision
+of <var>b</var> is strictly larger than the precision of <var>a</var>;</li>
+<li><var>c</var> is small enough so that its significand does not need to
+be read (<abbr>i.e.</abbr> it overlaps neither with <var>a</var>, nor with
+<var>b</var>).</li>
+</ul>
+Here the function returns an infinity with the overflow flag set instead of
+± the maximum number without generating an overflow. The cause is that an
+overflow is generated too early, in an intermediate rounding, before one
+has the chance to correct the intermediate result for midpoint cases. This
+bug is fixed by the <a href="patch03"><samp>sub1-overflow</samp> patch</a>,
+which also provides test cases.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10384&amp;view=revision">10384</a>.</li>
 
 </ol>
 
