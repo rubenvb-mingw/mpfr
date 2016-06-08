@@ -50,6 +50,8 @@ pwd=$(pwd)
 out=$pwd/mpfrtests.$fqdn.out
 rm -f "$out"
 
+dd="------------------------------------------------------------------------"
+ed="========================================================================"
 gmprx='.*gmp.h version and libgmp version are the same... '
 mj="make ${MAKE_JOBS:+-j$MAKE_JOBS}"
 tgz="${1:-mpfr-tests.tar.gz}"
@@ -76,6 +78,11 @@ dotee()
   [ "$st" -eq 0 ] || exit "$st"
 }
 
+lineout()
+{
+  printf "%s %s (%d) $dd\n" "---" "$fqdn" $ntests | cut -b -56 >> "$out"
+}
+
 tst()
 {
   first=1
@@ -87,6 +94,16 @@ tst()
         [ -n "$first" ]
         echo "* $fqdn ($(${1:-.}/config.guess) / ${line#PROC:})" > "$out"
         [ -z "$1" ] || echo "with objdir != srcdir" >> "$out"
+        unset os || true
+        if [ -f /etc/os-release ]; then
+          os1=$(. /etc/os-release; echo "$PRETTY_NAME")
+        elif [ -f /etc/release ]; then
+          os1=$(head -n 1 /etc/release)
+        fi
+        # http://stackoverflow.com/a/3352015/3782797
+        os2="${os1#"${os1%%[![:space:]]*}"}"
+        os3="${os2%"${os2##*[![:space:]]}"}"
+        [ -z "$os3" ] || printf "OS: %s\n" "$os3" >> "$out"
         version=$(cat ${1:-.}/VERSION)
         echo "MPFR version: $version${svnvers:+ [$svnvers]}" >> "$out"
         versnum=$(eval "expr $(echo $version | \
@@ -97,7 +114,7 @@ tst()
         [ -z "$check" ]
         if expr $versnum ${line#CHECK-BEGIN} > /dev/null; then
           check=1
-          echo '----------------------------------------' >> "$out"
+          lineout
           if [ -z "$1" ]; then
             conf="./configure"
           else
@@ -214,6 +231,7 @@ tst()
         fi
         [ -z "$env" ] || eval "$env"
         unset check || true
+        ntests=$((ntests+1))
         ;;
       \#*)
         continue
@@ -250,6 +268,7 @@ mktmpdir()
   [ ! -h "$tmpdir" ]
 }
 
+ntests=0
 svnvers=""
 
 if [ -x configure ]; then
@@ -295,10 +314,10 @@ else
   exit 1
 fi
 
-printf "\n============================================================\n" \
-  >> "$out"
+lineout
+printf "\n$ed\n" >> "$out"
 
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 86810 2016-02-24 13:33:32Z vinc17/cventin $
+# $Id: mpfrtests.sh 88496 2016-04-26 13:07:01Z vinc17/cventin $

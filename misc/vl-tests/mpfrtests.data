@@ -34,24 +34,29 @@ HOST:ypig.lip.ens-lyon.fr
 PROC:Intel Xeon E5520
 EVAL:unset CPATH C_INCLUDE_PATH LIBRARY_PATH LD_LIBRARY_PATH LD_RUN_PATH
 EVAL:cflags1="-O2 -Wall -Wold-style-declaration -Wold-style-definition -Wmissing-parameter-type -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wno-error=unused-function -Werror"
-CHECK-BEGIN >= 30200
-# MPFR 3.2 is needed due to --enable-decimal-float without --with-gmp-build
+CHECK-BEGIN >= 40000
+# MPFR 4.0 is needed due to --enable-decimal-float without --with-gmp-build
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-logging
 CONF:--enable-decimal-float
 CONF:--enable-float128
 CONF:CC=gcc-snapshot
-CONF:CFLAGS=$cflags1
+CONF:CFLAGS=$cflags1 -DMPFR_COV_CHECK
 INFO:CCV:--version
 CHECK-END
-CHECK-BEGIN >= 30200
-# MPFR 3.2 is needed for MPFR_PRINTF_MAXLM.
+CHECK-BEGIN >= 40000
+# MPFR 4.0 is needed for MPFR_PRINTF_MAXLM.
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
-CONF:--enable-float128
 CONF:CC=gcc-snapshot
 CONF:CFLAGS=$cflags1 -std=c90 -pedantic -Wno-error=overlength-strings -DMPFR_TUNE_COVERAGE
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN >= 40000
+# MPFR 4.0 is needed for MPFR_PRINTF_MAXLM.
+# Check if XDEBUG code is valid in C90.
+CONF:CFLAGS=$cflags1 -std=c90 -pedantic -Wno-error=overlength-strings -DXDEBUG
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN > 30103
@@ -60,7 +65,6 @@ ENV:LC_ALL=fr_FR.utf8
 # For MPFR 3.1, changeset r9664 is needed.
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
-CONF:--enable-float128
 CONF:CC=gcc-snapshot
 CONF:CFLAGS=$cflags1 -std=c99 -pedantic
 INFO:CCV:--version
@@ -209,7 +213,7 @@ CONF:CC=gcc-snapshot
 CONF:CFLAGS=-Wall -O3 -march=native -fsanitize=undefined -fno-sanitize-recover
 INFO:CCV:--version
 CHECK-END
-CHECK-BEGIN >= 30200
+CHECK-BEGIN >= 40000
 CONF:CC=gcc-5
 CONF:CFLAGS=-Wall -O3 -march=native -fsanitize=address
 INFO:CCV:--version
@@ -403,15 +407,15 @@ EVAL:cflags1="-O2 -Wall -Wold-style-declaration -Wold-style-definition -Wmissing
 CHECK-BEGIN
 INFO:CCV:--version
 CHECK-END
-CHECK-BEGIN >= 30200
-# MPFR 3.2 is needed due to --enable-decimal-float without --with-gmp-build
+CHECK-BEGIN >= 40000
+# MPFR 4.0 is needed due to --enable-decimal-float without --with-gmp-build
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-logging
 CONF:--enable-decimal-float
 CONF:--enable-float128
 CONF:CC=gcc-snapshot
-CONF:CFLAGS=$cflags1
+CONF:CFLAGS=$cflags1 -DMPFR_COV_CHECK
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -470,15 +474,39 @@ EVAL:cflags1="-O2 -Wall -Wold-style-declaration -Wold-style-definition -Wmissing
 CHECK-BEGIN
 INFO:CCV:--version
 CHECK-END
-CHECK-BEGIN >= 30200
-# MPFR 3.2 is needed due to --enable-decimal-float without --with-gmp-build
+CHECK-BEGIN >= 40000
+# MPFR 4.0 is needed due to --enable-decimal-float without --with-gmp-build
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-logging
 CONF:--enable-decimal-float
 CONF:--enable-float128
 CONF:CC=gcc-snapshot
+CONF:CFLAGS=$cflags1 -DMPFR_COV_CHECK
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN == 30104
+# For later MPFR versions, the above test replaces this one.
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-logging
+CONF:--enable-float128
+CONF:CC=gcc-snapshot
 CONF:CFLAGS=$cflags1
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN >= 40000
+# MPFR 4.0 is needed for MPFR_PRINTF_MAXLM.
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:CC=gcc-6
+CONF:CFLAGS=$cflags1 -std=c90 -pedantic -Wno-error=overlength-strings -DMPFR_TUNE_COVERAGE
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN >= 40000
+# MPFR 4.0 is needed for MPFR_PRINTF_MAXLM.
+# Check if XDEBUG code is valid in C90.
+CONF:CFLAGS=$cflags1 -std=c90 -pedantic -Wno-error=overlength-strings -DXDEBUG
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -501,6 +529,14 @@ CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
+# Assertions generate long strings for ISO C90; not a problem in practice.
+CONF:CFLAGS=-Wall -Wformat=2 -O2 -ansi -pedantic-errors -Wno-error=overlength-strings
+CONF:CC=gcc-5
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
 CONF:CC=g++-4.9
 INFO:CCV:--version
 CHECK-END
@@ -514,7 +550,7 @@ INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:CC=clang-3.6
-CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize-recover
+CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize-recover -DMPFR_COV_CHECK
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -544,12 +580,46 @@ CONF:CC=gcc-5
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+CONF:--enable-float128
+CONF:CFLAGS=-m32 -O3 -march=native -fsanitize=undefined -fno-sanitize-recover
+CONF:CC=gcc-6
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+CONF:--enable-float128
+CONF:CFLAGS=-m32 -O3 -march=native -fsanitize=address
+CONF:CC=gcc-snapshot
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
 CONF:CFLAGS=-O3 -march=native -DMPFR_COV_CHECK -DMPFR_ALLOCA_MAX=0
 CONF:CC=gcc-4.8
 INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+# -DMPFR_TEST_DIVBYZERO should be removed in the future.
+CONF:CFLAGS=-O2 -std=gnu99 -DMPFR_TESTS_DIVBYZERO -DMPFR_TEST_DIVBYZERO -DMPFR_ERRDIVZERO
+CONF:CC=gcc-6
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:CFLAGS=-O2 -std=c99 -D_MPFR_PREC_FORMAT=2 -DMPFR_COV_CHECK
+CONF:CC=gcc-snapshot
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--prefix=$HOME/notgcc
+CONF:--with-gmp=$HOME/wd
+CONF:--disable-shared
+INFO:notgcc --version | sed -n 's/.*\(Id:.*\) \$/\1/p'
+INFO:perl -pi -e 's/^wl=""/wl="-Wl,"/' libtool
 CHECK-END
 CHECK-BEGIN
 CONF:--enable-assert=full
@@ -559,10 +629,37 @@ CONF:CFLAGS=-O2
 INFO:CCV:-version
 CHECK-END
 CHECK-BEGIN
+# GMP has been configured with:
+#   --host=i586-mingw32msvc
+#   --disable-shared
+#   --prefix=/usr/local/gmp-mingw32
+#   CC="i586-mingw32msvc-gcc -D__USE_MINGW_ANSI_STDIO"
+# Here we want to test a thread-safe build. As we cross-compile
+# (use of --host), we need to provide the --enable-thread-safe
+# configure option, since TLS support cannot be tested and TLS
+# is currently assumed not to be supported by default.
 CONF:--host=i586-mingw32msvc
 CONF:--disable-shared
 CONF:--with-gmp=/usr/local/gmp-mingw32
 CONF:--enable-assert=full
+CONF:--enable-thread-safe
+ENV:LOG_COMPILER=wine
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+# GMP has been configured with:
+#   --host=i586-mingw32msvc
+#   --disable-shared
+#   --prefix=/usr/local/gmp-mingw32
+# like above, but without the -D__USE_MINGW_ANSI_STDIO option for gcc.
+# As we cross-compile (use of --host), we need to explicitly disable
+# the printf specifiers that do not work here, as by default, they are
+# assumed to be supported.
+CONF:--host=i586-mingw32msvc
+CONF:--disable-shared
+CONF:--with-gmp=/usr/local/gmp-mingw32b
+CONF:--enable-assert=full
+CONF:CPPFLAGS=-DNPRINTF_J -DNPRINTF_L -DNPRINTF_T
 ENV:LOG_COMPILER=wine
 INFO:CCV:--version
 CHECK-END
@@ -620,6 +717,20 @@ INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--enable-gmp-internals
+INFO:CCV:--version
+CHECK-END
+
+HOST:gcc24.fsffrance.org
+PROC:MIPS Cavium Octeon II V0.1
+CHECK-BEGIN
+CONF:--with-gmp=$HOME/n32
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--with-gmp=$HOME/n32
+CONF:--enable-thread-safe
+CONF:--enable-assert=full
+CONF:CFLAGS=-O2 -mabi=n32 -DMPFR_COV_CHECK
 INFO:CCV:--version
 CHECK-END
 
@@ -749,4 +860,4 @@ CONF:--enable-gmp-internals
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 86149 2016-01-29 15:01:14Z vinc17/cventin $
+# $Id: mpfrtests.data 89573 2016-06-08 13:55:16Z vinc17/cventin $
