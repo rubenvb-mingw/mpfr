@@ -3,13 +3,16 @@
 # Compare the timings from two directories and store the results in
 # a third directory. The names of the timings files must start with
 # "timings-".
+#
+# Differences above some given number of percents can also be output.
 
 require 5.012;  # for readdir in while
 use strict;
 
-@ARGV == 3 or die "Usage: $0 <dir1> <dir2> <dir3>\n";
+@ARGV == 3 || @ARGV == 4
+  or die "Usage: $0 <dir1> <dir2> <dir3> [ <percent> ]\n";
 
-my %h;
+my ($cmd,%h);
 my @mode = qw(< < >);
 my @sign = qw(- = +);
 my $rx = qr/^(.*) took +(\d+\.\d+) s +(\(.*\))$/;
@@ -59,15 +62,22 @@ foreach my $k (sort keys %h)
                 $u[0] eq $v[0] && $u[2] eq $v[2] or die
                   "$0: forbidden differences for file '$k' line $line\n";
                 my $d = $u[1] == 0 && $v[1] == 0 ?
-                  0 : 100 * ($v[1] - $u[1]) / $u[1];
-                printf { $fh[2] } "%s  %s %5.2f %%  %s\n",
-                  $u[0], $sign[($v[1] <=> $u[1]) + 1], abs($d), $u[2];
+                  0 : 100 * abs($v[1] - $u[1]) / $u[1];
+                my $s = sprintf "%s  %s %5.2f %%  %s\n",
+                  $u[0], $sign[($v[1] <=> $u[1]) + 1], $d, $u[2];
+                print { $fh[2] } $s;
+                if (defined($ARGV[3]) && $d > $ARGV[3])
+                  {
+                    print $cmd, $s;
+                    $cmd = '';
+                  }
               }
             else
               {
                 $u eq $v or die
                   "$0: forbidden differences for file '$k' line $line\n";
                 print { $fh[2] } $u;
+                $u =~ s:^\Q$ ./sum-timings \E:: and $cmd = "\n[$k] $u";
               }
           }
 
