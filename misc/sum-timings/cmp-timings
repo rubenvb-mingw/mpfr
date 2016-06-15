@@ -1,0 +1,80 @@
+#!/usr/bin/env perl
+
+# Compare the timings from two directories and store the results in
+# a third directory. The names of the timings files must start with
+# "timings-".
+
+require 5.012;  # for readdir in while
+use strict;
+
+@ARGV == 3 or die "Usage: $0 <dir1> <dir2> <dir3>\n";
+
+my %h;
+my @mode = qw(< < >);
+my @sign = qw(- = +);
+my $rx = qr/^(.*) took +(\d+\.\d+) s +(\(.*\))$/;
+
+foreach my $i (0..2)
+  {
+    my $dir = $ARGV[$i];
+    opendir DIR, $dir or die "$0: can't open directory '$dir' ($!)\n";
+    while (readdir DIR)
+      { /^timings-/ and $h{$_} .= $i + 1 }
+    closedir DIR or die "$0: can't close directory '$dir' ($!)\n";
+  }
+
+foreach my $k (sort keys %h)
+  {
+    if ($h{$k} ne '12')
+      {
+        warn "$0: file '$k' is ignored (in dirs $h{$k} instead of 12)\n";
+      }
+    else
+      {
+        my @fh;
+        foreach my $i (0..2)
+          {
+            open $fh[$i], $mode[$i], "$ARGV[$i]/$k"
+              or die "$0: can't open $mode[$i] '$ARGV[$i]/$k' ($!)\n";
+          }
+
+        my $line = 0;
+        while (1)
+          {
+            my $u = readline $fh[0];
+            my $v = readline $fh[1];
+            if (! defined($u) || ! defined($v))
+              {
+                defined($u)
+                  and die "$0: file '$ARGV[0]/$k' has additional data.\n";
+                defined($v)
+                  and die "$0: file '$ARGV[1]/$k' has additional data.\n";
+                last;
+              }
+            $line++;
+            my (@u) = $u =~ /$rx/;
+            my (@v) = $v =~ /$rx/;
+            if (@u && @v)
+              {
+                $u[0] eq $v[0] && $u[2] eq $v[2] or die
+                  "$0: forbidden differences for file '$k' line $line\n";
+                my $d = $u[1] == 0 && $v[1] == 0 ?
+                  0 : 100 * ($v[1] - $u[1]) / $u[1];
+                printf { $fh[2] } "%s  %s %5.2f %%  %s\n",
+                  $u[0], $sign[($v[1] <=> $u[1]) + 1], abs($d), $u[2];
+              }
+            else
+              {
+                $u eq $v or die
+                  "$0: forbidden differences for file '$k' line $line\n";
+                print { $fh[2] } $u;
+              }
+          }
+
+        foreach my $i (0..2)
+          {
+            close $fh[$i]
+              or die "$0: can't close $mode[$i] '$ARGV[$i]/$k' ($!)\n";
+          }
+      }
+  }
