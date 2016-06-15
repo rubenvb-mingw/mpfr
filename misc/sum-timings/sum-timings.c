@@ -12,15 +12,27 @@
 
 typedef int (*sumf) (mpfr_ptr, mpfr_ptr *const, unsigned long, mpfr_rnd_t);
 
-static sumf fp[3] = { mpfr_sum, mpfr_sum_new, mpfr_sum_add };
-static char *fn[3] = { "sum_old", "sum_new", "sum_add" };
+#ifdef ONLY_SUM
+# define N 1
+# define FP_LIST mpfr_sum
+# define FN_LIST "sum"
+# define sum_ref mpfr_sum
+#else
+# define N 3
+# define FP_LIST mpfr_sum, mpfr_sum_new, mpfr_sum_add
+# define FN_LIST "sum_old", "sum_new", "sum_add"
+# define sum_ref mpfr_sum_new
+#endif
+
+static sumf fp[N] = { FP_LIST };
+static char *fn[N] = { FN_LIST };
 
 static void
 check_random (mpfr_rnd_t r, long n, long nc,
               mpfr_prec_t precx, mpfr_prec_t precy,
               unsigned long emax, long ntests, unsigned long seed)
 {
-  mpfr_t *x, s[3];
+  mpfr_t *x, s[N];
   mpfr_ptr *p;
   long i, j;
   gmp_randstate_t state;
@@ -29,7 +41,7 @@ check_random (mpfr_rnd_t r, long n, long nc,
   gmp_randinit_default (state);
   gmp_randseed_ui (state, seed);
 
-  for (i = 0; i < 3; i++)
+  for (i = 0; i < N; i++)
     mpfr_init2 (s[i], precy);
 
   x = (mpfr_t *) malloc (n * sizeof (mpfr_t));
@@ -46,7 +58,7 @@ check_random (mpfr_rnd_t r, long n, long nc,
         }
       else
         {
-          mpfr_sum_new (x[i], p, i, MPFR_RNDN);
+          sum_ref (x[i], p, i, MPFR_RNDN);
           mpfr_neg (x[i], x[i], MPFR_RNDN);
           if (mpfr_zero_p (x[i]))
             {
@@ -69,7 +81,7 @@ check_random (mpfr_rnd_t r, long n, long nc,
         mpfr_swap (x[i1], x[i2]);
       }
 
-  for (i = 0; i < 3; i++)
+  for (i = 0; i < N; i++)
     {
       c = clock ();
       for (j = 0; j < ntests; j++)
@@ -83,7 +95,7 @@ check_random (mpfr_rnd_t r, long n, long nc,
     mpfr_clear (x[i]);
   free (x);
   free (p);
-  for (i = 0; i < 3; i++)
+  for (i = 0; i < N; i++)
     mpfr_clear (s[i]);
   gmp_randclear (state);
 }

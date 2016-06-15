@@ -1,4 +1,6 @@
-To run the timings:
+To run the timings for the mpfr_sum implementation from MPFR 3.1.4,
+the new mpfr_sum implementation and a basic sum implementation with
+mpfr_add (inaccurate and sensitive to the order of the arguments):
 
 1. Extract the MPFR 3.1.4 tarball.
 
@@ -15,6 +17,14 @@ To run the timings:
 7. Go to the tests directory and run "make sum-timings".
 
 8. Run /path/to/all-timings from the tests directory.
+
+To run the timings only for some mpfr_sum, useful to test various
+changes in the trunk:
+
+1. Configure MPFR with the ONLY_SUM macro defined, e.g. with:
+   ./configure CFLAGS="-march=native -O3 -DONLY_SUM"
+
+2. Follow steps 5-8 above.
 
 Note: Make sure that hyper-threading is not enabled, otherwise
 first remove the "&" at the end of each line of all-timings.
