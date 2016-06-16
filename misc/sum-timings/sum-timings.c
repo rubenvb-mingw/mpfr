@@ -5,6 +5,14 @@
 #include <gmp.h>
 #include <mpfr.h>
 
+/* Warning! These timings are very inaccurate: in practice, one can get
+ * more than a factor 2 (but less than 3) between two invocations. Using
+ * only one core improves a bit, but not much (e.g. 0.1192 -> 0.2324 s).
+ * However, this test can be regarded as sufficient to compare the three
+ * algorithms (sum_old, sum_new, sum_add), because the goal is to detect
+ * factors between them much larger than 2.
+ */
+
 /* Note: It may be useful to check with precy slightly different from precx
  * because mpfr_add has a special optimization when all the precisions are
  * the same.
