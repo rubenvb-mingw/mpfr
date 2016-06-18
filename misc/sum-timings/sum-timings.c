@@ -26,7 +26,8 @@
  * Improvement done on 2016-06-18: Each test is done 5 times and one
  * keeps the median. This allows one to avoid most big differences
  * between two invocations of the same test, but not completely; a
- * factor larger than 3 can still be obtained (see above).
+ * factor larger than 3 can still be obtained (see above). Doing the
+ * tests 7 times instead of 5 does not help at all.
  */
 
 /* Note: It may be useful to check with precy slightly different from precx
