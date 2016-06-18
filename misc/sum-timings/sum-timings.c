@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <assert.h>
 
 #include <gmp.h>
 #include <mpfr.h>
@@ -10,7 +11,7 @@
  * only one core improves a bit, but not much (e.g. 0.1192 -> 0.2324 s).
  * However, this test can be regarded as sufficient to compare the three
  * algorithms (sum_old, sum_new, sum_add), because the goal is to detect
- * factors between them much larger than 2.
+ * factors between them much larger than 3.
  */
 
 /* Minor improvements done on 2016-06-17:
@@ -21,6 +22,11 @@
  *     would take much more time (this is again unlikely).
  * However, these improvements will remain unnoticeable until there is a
  * way to get accurate timings.
+ *
+ * Improvement done on 2016-06-18: Each test is done 5 times and one
+ * keeps the median. This allows one to avoid most big differences
+ * between two invocations of the same test, but not completely; a
+ * factor larger than 3 can still be obtained (see above).
  */
 
 /* Note: It may be useful to check with precy slightly different from precx
@@ -42,8 +48,16 @@ typedef int (*sumf) (mpfr_ptr, mpfr_ptr *const, unsigned long, mpfr_rnd_t);
 # define sum_ref mpfr_sum_new
 #endif
 
+#define K 5  /* odd */
+#define SIZE 64
+
 static sumf fp[N] = { FP_LIST };
 static char *fn[N] = { FN_LIST };
+
+int cmp (const void *a, const void *b)
+{
+  return * (clock_t *) b - * (clock_t *) a;
+}
 
 static void
 check_random (mpfr_rnd_t r, long n, long nc,
@@ -52,9 +66,10 @@ check_random (mpfr_rnd_t r, long n, long nc,
 {
   mpfr_t *x, s;
   mpfr_ptr *p;
-  long i, j;
+  long i, j, k;
   gmp_randstate_t state;
-  clock_t c;
+  clock_t c, t[N][K];
+  char str[N][SIZE];
 
   gmp_randinit_default (state);
   gmp_randseed_ui (state, seed);
@@ -102,14 +117,23 @@ check_random (mpfr_rnd_t r, long n, long nc,
   for (i = 0; i < N; i++)
     fp[i] (s, p, n, r);
 
+  for (k = 0; k < K; k++)
+    for (i = 0; i < N; i++)
+      {
+        c = clock ();
+        for (j = 0; j < ntests; j++)
+          fp[i] (s, p, n, r);
+        t[i][k] = clock () - c;
+        if (k == 0)
+          mpfr_snprintf (str[i], SIZE, "%Rg", s);
+      }
+
   for (i = 0; i < N; i++)
     {
-      c = clock ();
-      for (j = 0; j < ntests; j++)
-        fp[i] (s, p, n, r);
-      c = clock () - c;
-      mpfr_printf ("%s took %7.4f s  (%Rg)\n", fn[i],
-                   (double) c / CLOCKS_PER_SEC, s);
+      /* The simplest way to get the median in C is to sort... */
+      qsort (t[i], K, sizeof t[0][0], cmp);
+      printf ("%s took %7.4f s  (%s)\n", fn[i],
+              (double) t[i][(K-1)/2] / CLOCKS_PER_SEC, str[i]);
     }
 
   for (i = 0; i < n; i++)
@@ -125,6 +149,8 @@ int main (int argc, char *argv[])
   int r;
   long n, nc, precx, precy, emax, ntests;
   unsigned long seed;
+
+  assert ((K & 1) != 0);
 
   if (argc != 9)
     {
