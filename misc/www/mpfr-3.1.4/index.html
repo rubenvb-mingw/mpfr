@@ -99,7 +99,7 @@ The key fingerprint is:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2016-06-01). The patches are distributed under the same license as
+update: 2016-08-04). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -202,6 +202,18 @@ bug is fixed by the <a href="patch03"><samp>sub1-overflow</samp> patch</a>,
 which also provides test cases.<br />
 Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10384&amp;view=revision">10384</a>.</li>
+
+<li id="p4">The build of some tests fails with C++11 compilers
+(<abbr>e.g.</abbr> <samp>g++</samp> with the <samp>-std=c++11</samp>
+option, and just <samp>g++</samp> as of
+<acronym title="GNU Compiler Collection">GCC</acronym> 6) due to a change
+in the parsing behavior in C++11. This incompatibility issue is fixed by
+the <a href="patch04"><samp>c++11-compat</samp> patch</a>.<br />
+Corresponding changesets in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10720&amp;view=revision">10720</a>
+(the only one which actually fixes the incompatibility issue),
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10722&amp;view=revision">10722</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10728&amp;view=revision">10728</a>.</li>
 
 </ol>
 
