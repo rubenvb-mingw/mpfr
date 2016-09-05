@@ -99,7 +99,7 @@ The key fingerprint is:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2016-08-04). The patches are distributed under the same license as
+update: 2016-09-05). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -216,6 +216,24 @@ Corresponding changesets in the 3.1 branch:
 (the only one which actually fixes the incompatibility issue),
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10722&amp;view=revision">10722</a>,
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10728&amp;view=revision">10728</a>.</li>
+
+<li id="p5">The <code>mpfr_can_round_raw</code> internal rounding-test
+function, used by the <code>mpfr_can_round</code> public function, is still
+buggy: there had already been a patch for <acronym>MPFR</acronym> 3.1.3,
+applied in <acronym>MPFR</acronym> 3.1.4, which fixed some particular
+cases, but new bugs have recently been found. This function still has
+false positives in some cases, <abbr>i.e.</abbr> it can return true
+(meaning that correct rounding is possible) instead of false (meaning
+that correct rounding is not guaranteed). It also has false negatives,
+some of which can yield infinite Ziv loops in user code in practice.
+Some <acronym>MPFR</acronym> math functions might be affected by
+false positives, but most of them use other internal methods
+instead of this function. This bug is fixed by the
+<a href="patch05"><samp>can_round2</samp> patch</a>, which also
+provides test cases (in particular a comprehensive test against
+a naive implementation).<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10792&amp;view=revision">10792</a>.</li>
 
 </ol>
 
