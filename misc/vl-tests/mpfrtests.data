@@ -1,6 +1,19 @@
 # TODO: test with gcc -mpc64 under Linux to simulate the FreeBSD/NetBSD
 # behavior (problems may appear with mpfr_get_ld and mpfr_set_ld).
 
+# Note: When -fsanitize=address is used with GCC, LD_PRELOAD needs to be
+# unset, otherwise the configure script fails with:
+#   checking whether we are cross compiling... configure: error: in ...
+#   configure: error: cannot run C compiled programs.
+#   If you meant to cross compile, use `--host'.
+#   See `config.log' for more details
+# because ASan runtime does not come first in initial library list.
+# Ideally, in case LD_PRELOAD would be needed, -static-libasan could
+# be used to avoid the above error instead of unsetting LD_PRELOAD.
+# But -static-libasan does not work with Debian's gcc-snapshot
+# (Debian bug 836855), and even with GCC 6, it fails with MPFR
+# (Debian bug 836864).
+
 HOST:orge.lip.ens-lyon.fr
 PROC:Intel Xeon E5310 [32 bits]
 CHECK-BEGIN
@@ -32,7 +45,7 @@ CHECK-END
 
 HOST:ypig.lip.ens-lyon.fr
 PROC:Intel Xeon E5520
-EVAL:unset CPATH C_INCLUDE_PATH LIBRARY_PATH LD_LIBRARY_PATH LD_RUN_PATH
+EVAL:unset CPATH C_INCLUDE_PATH LIBRARY_PATH LD_LIBRARY_PATH LD_RUN_PATH LD_PRELOAD
 EVAL:cflags1="-O2 -Wall -Wold-style-declaration -Wold-style-definition -Wmissing-parameter-type -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wno-error=unused-function -Wno-error=deprecated-declarations -Werror"
 CHECK-BEGIN >= 40000
 # MPFR 4.0 is needed due to --enable-decimal-float without --with-gmp-build
@@ -224,14 +237,14 @@ CONF:CC=gcc-snapshot
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
+CONF:CC=gcc-snapshot
 # -DMPFR_TEST_DIVBYZERO should be removed in the future.
 CONF:CFLAGS=-O2 -std=gnu99 -DMPFR_TESTS_DIVBYZERO -DMPFR_TEST_DIVBYZERO -DMPFR_ERRDIVZERO
-CONF:CC=gcc-snapshot
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
-CONF:CFLAGS=-O2 -std=c99 -D_MPFR_PREC_FORMAT=2 -DMPFR_COV_CHECK
 CONF:CC=gcc-snapshot
+CONF:CFLAGS=-O2 -std=c99 -D_MPFR_PREC_FORMAT=2 -DMPFR_COV_CHECK
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -261,16 +274,16 @@ CHECK-END
 CHECK-BEGIN
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
-CONF:CFLAGS=-m32 -O2 -DMPFR_COV_CHECK -DMPFR_ALLOCA_MAX=0
 CONF:CC=gcc-4.7
+CONF:CFLAGS=-m32 -O2 -DMPFR_COV_CHECK -DMPFR_ALLOCA_MAX=0
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
-CONF:CFLAGS=-O3 -march=native -DMPFR_COV_CHECK -DMPFR_ALLOCA_MAX=0
 CONF:CC=gcc-5
+CONF:CFLAGS=-O3 -march=native -DMPFR_COV_CHECK -DMPFR_ALLOCA_MAX=0
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -455,8 +468,8 @@ CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
-CONF:CFLAGS=-O3 -march=native -DMPFR_COV_CHECK -DMPFR_ALLOCA_MAX=0
 CONF:CC=gcc-5
+CONF:CFLAGS=-O3 -march=native -DMPFR_COV_CHECK -DMPFR_ALLOCA_MAX=0
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -469,7 +482,7 @@ CHECK-END
 
 HOST:cventin.lip.ens-lyon.fr
 PROC:Intel Xeon E5-2609 v3
-EVAL:unset CPATH C_INCLUDE_PATH LIBRARY_PATH LD_LIBRARY_PATH LD_RUN_PATH
+EVAL:unset CPATH C_INCLUDE_PATH LIBRARY_PATH LD_LIBRARY_PATH LD_RUN_PATH LD_PRELOAD
 EVAL:cflags1="-O2 -Wall -Wold-style-declaration -Wold-style-definition -Wmissing-parameter-type -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wno-error=unused-function -Wno-error=deprecated-declarations -Werror"
 CHECK-BEGIN
 INFO:CCV:--version
@@ -529,9 +542,9 @@ CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
+CONF:CC=gcc-5
 # Assertions generate long strings for ISO C90; not a problem in practice.
 CONF:CFLAGS=-Wall -Wformat=2 -O2 -ansi -pedantic-errors -Wno-error=overlength-strings
-CONF:CC=gcc-5
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -575,43 +588,43 @@ CHECK-END
 CHECK-BEGIN
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
-CONF:CFLAGS=-m32 -O2 -DMPFR_COV_CHECK -DMPFR_ALLOCA_MAX=0
 CONF:CC=gcc-5
+CONF:CFLAGS=$cflags1 -m32 -DMPFR_COV_CHECK -DMPFR_ALLOCA_MAX=0
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
 CONF:--enable-float128
-CONF:CFLAGS=-m32 -O3 -march=native -fsanitize=undefined -fno-sanitize-recover
 CONF:CC=gcc-6
+CONF:CFLAGS=-m32 -O3 -march=native -fsanitize=undefined -fno-sanitize-recover
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
 CONF:--enable-float128
-CONF:CFLAGS=-m32 -O3 -march=native -fsanitize=address
 CONF:CC=gcc-snapshot
+CONF:CFLAGS=-m32 -O3 -march=native -fsanitize=address
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
-CONF:CFLAGS=-O3 -march=native -DMPFR_COV_CHECK -DMPFR_ALLOCA_MAX=0
 CONF:CC=gcc-4.8
+CONF:CFLAGS=-O3 -march=native -DMPFR_COV_CHECK -DMPFR_ALLOCA_MAX=0
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
+CONF:CC=gcc-6
 # -DMPFR_TEST_DIVBYZERO should be removed in the future.
 CONF:CFLAGS=-O2 -std=gnu99 -DMPFR_TESTS_DIVBYZERO -DMPFR_TEST_DIVBYZERO -DMPFR_ERRDIVZERO
-CONF:CC=gcc-6
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
-CONF:CFLAGS=-O2 -std=c99 -D_MPFR_PREC_FORMAT=2 -DMPFR_COV_CHECK
 CONF:CC=gcc-snapshot
+CONF:CFLAGS=-O2 -std=c99 -D_MPFR_PREC_FORMAT=2 -DMPFR_COV_CHECK
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -860,4 +873,4 @@ CONF:--enable-gmp-internals
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 90961 2016-08-02 10:46:03Z vinc17/zira $
+# $Id: mpfrtests.data 91869 2016-09-07 00:15:16Z vinc17/cventin $
