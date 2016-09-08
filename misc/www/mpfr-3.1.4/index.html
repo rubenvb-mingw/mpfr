@@ -233,7 +233,27 @@ instead of this function. This bug is fixed by the
 provides test cases (in particular a comprehensive test against
 a naive implementation).<br />
 Corresponding changeset in the 3.1 branch:
-<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10792&amp;view=revision">10792</a>.</li>
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10792&amp;view=revision">10792</a>.<br />
+An example of false positive is given by the following code.
+<pre>#include &lt;stdio.h&gt;
+#include &lt;mpfr.h&gt;
+
+int main (void)
+{
+  mpfr_t x;
+  int r;
+
+  mpfr_init2 (x, 3);
+  mpfr_set_ui (x, 5, MPFR_RNDN);
+  r = mpfr_can_round (x, 4, MPFR_RNDN, MPFR_RNDN, 3);
+  printf ("%d\n", r);
+  return 0;
+}</pre>
+Here, the number 5 is an approximation to an unknown number in the interval
+[5 &#8722; 1/2, 5 + 1/2]. In round-to-nearest (with the even rounding rule)
+and the target precision 3, the number 5 &#8722; 1/2 rounds to 4, while
+the number 5 + 1/2 rounds to 6. Thus the program should output 0, but with
+<acronym>MPFR</acronym> 3.1.4, one gets 1.</li>
 
 </ol>
 
