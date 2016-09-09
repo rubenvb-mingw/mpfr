@@ -247,6 +247,7 @@ int main (void)
   mpfr_set_ui (x, 5, MPFR_RNDN);
   r = mpfr_can_round (x, 4, MPFR_RNDN, MPFR_RNDN, 3);
   printf ("%d\n", r);
+  mpfr_clear (x);
   return 0;
 }</pre>
 Here, the number 5 is an approximation to an unknown number in the interval
