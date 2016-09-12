@@ -1,0 +1,141 @@
+diff -Naurd mpfr-3.1.4-a/PATCHES mpfr-3.1.4-b/PATCHES
+--- mpfr-3.1.4-a/PATCHES	2016-09-12 12:26:10.701857133 +0000
++++ mpfr-3.1.4-b/PATCHES	2016-09-12 12:26:10.725856705 +0000
+@@ -0,0 +1 @@
++get_ld
+diff -Naurd mpfr-3.1.4-a/VERSION mpfr-3.1.4-b/VERSION
+--- mpfr-3.1.4-a/VERSION	2016-09-05 13:38:17.105214559 +0000
++++ mpfr-3.1.4-b/VERSION	2016-09-12 12:26:10.725856705 +0000
+@@ -1 +1 @@
+-3.1.4-p5
++3.1.4-p6
+diff -Naurd mpfr-3.1.4-a/src/get_ld.c mpfr-3.1.4-b/src/get_ld.c
+--- mpfr-3.1.4-a/src/get_ld.c	2016-03-06 11:33:05.000000000 +0000
++++ mpfr-3.1.4-b/src/get_ld.c	2016-09-12 12:26:10.717856848 +0000
+@@ -122,7 +122,7 @@
+   mpfr_init2 (tmp, MPFR_LDBL_MANT_DIG);
+   inex = mpfr_set (tmp, x, rnd_mode);
+ 
+-  mpfr_set_emin (-16382-63);
++  mpfr_set_emin (-16381-63); /* emin=-16444 */
+   mpfr_set_emax (16384);
+   mpfr_subnormalize (tmp, mpfr_check_range (tmp, inex, rnd_mode), rnd_mode);
+   mpfr_prec_round (tmp, 64, MPFR_RNDZ); /* exact */
+diff -Naurd mpfr-3.1.4-a/src/mpfr.h mpfr-3.1.4-b/src/mpfr.h
+--- mpfr-3.1.4-a/src/mpfr.h	2016-09-05 13:38:17.101214525 +0000
++++ mpfr-3.1.4-b/src/mpfr.h	2016-09-12 12:26:10.725856705 +0000
+@@ -27,7 +27,7 @@
+ #define MPFR_VERSION_MAJOR 3
+ #define MPFR_VERSION_MINOR 1
+ #define MPFR_VERSION_PATCHLEVEL 4
+-#define MPFR_VERSION_STRING "3.1.4-p5"
++#define MPFR_VERSION_STRING "3.1.4-p6"
+ 
+ /* Macros dealing with MPFR VERSION */
+ #define MPFR_VERSION_NUM(a,b,c) (((a) << 16L) | ((b) << 8) | (c))
+diff -Naurd mpfr-3.1.4-a/src/version.c mpfr-3.1.4-b/src/version.c
+--- mpfr-3.1.4-a/src/version.c	2016-09-05 13:38:17.101214525 +0000
++++ mpfr-3.1.4-b/src/version.c	2016-09-12 12:26:10.725856705 +0000
+@@ -25,5 +25,5 @@
+ const char *
+ mpfr_get_version (void)
+ {
+-  return "3.1.4-p5";
++  return "3.1.4-p6";
+ }
+diff -Naurd mpfr-3.1.4-a/tests/tset_ld.c mpfr-3.1.4-b/tests/tset_ld.c
+--- mpfr-3.1.4-a/tests/tset_ld.c	2016-03-06 11:33:03.000000000 +0000
++++ mpfr-3.1.4-b/tests/tset_ld.c	2016-09-12 12:26:10.717856848 +0000
+@@ -193,6 +193,67 @@
+   mpfr_clear (x);
+ }
+ 
++/* bug reported by Walter Mascarenhas
++   https://sympa.inria.fr/sympa/arc/mpfr/2016-09/msg00005.html */
++static void
++bug_20160907 (void)
++{
++#if HAVE_LDOUBLE_IEEE_EXT_LITTLE
++  long double dn, ld;
++  mpfr_t mp;
++  long e;
++  mpfr_long_double_t x;
++
++  /* the following is the encoding of the smallest subnormal number
++     for HAVE_LDOUBLE_IEEE_EXT_LITTLE */
++  x.s.manl = 1;
++  x.s.manh = 0;
++  x.s.expl = 0;
++  x.s.exph = 0;
++  x.s.sign= 0;
++  dn = x.ld;
++  e = -16445;
++  /* dn=2^e is now the smallest subnormal. */
++
++  mpfr_init2 (mp, 64);
++  mpfr_set_ui_2exp (mp, 1, e - 1, MPFR_RNDN);
++  ld = mpfr_get_ld (mp, MPFR_RNDU);
++  /* since mp = 2^(e-1) and ld is rounded upwards, we should have
++     ld = 2^e */
++  if (ld != dn)
++    {
++      printf ("Error, ld = %Le <> dn = %Le\n", ld, dn);
++      printf ("mp=");
++      mpfr_out_str (stdout, 10, 0, mp, MPFR_RNDN);
++      printf ("\n");
++      exit (1);
++    }
++
++  /* check a few more numbers */
++  for (e = -16446; e <= -16381; e++)
++    {
++      mpfr_set_ui_2exp (mp, 1, e, MPFR_RNDN);
++      ld = mpfr_get_ld (mp, MPFR_RNDU);
++      mpfr_set_ld (mp, ld, MPFR_RNDU);
++      /* mp is 2^e rounded up, thus should be >= 2^e */
++      MPFR_ASSERTN(mpfr_cmp_ui_2exp (mp, 1, e) >= 0);
++
++      mpfr_set_ui_2exp (mp, 1, e, MPFR_RNDN);
++      ld = mpfr_get_ld (mp, MPFR_RNDD);
++      mpfr_set_ld (mp, ld, MPFR_RNDD);
++      /* mp is 2^e rounded down, thus should be <= 2^e */
++      if (mpfr_cmp_ui_2exp (mp, 3, e) > 0)
++        {
++          printf ("Error, expected value <= 2^%ld\n", e);
++          printf ("got "); mpfr_dump (mp);
++          exit (1);
++        }
++    }
++
++  mpfr_clear (mp);
++#endif
++}
++
+ int
+ main (int argc, char *argv[])
+ {
+@@ -211,12 +272,12 @@
+     }
+ #endif
+ 
+-  check_gcc33_bug ();
+-  test_fixed_bugs ();
+-
+   tests_start_mpfr ();
+   mpfr_test_init ();
+ 
++  check_gcc33_bug ();
++  test_fixed_bugs ();
++
+   mpfr_init2 (x, MPFR_LDBL_MANT_DIG);
+ 
+ #if !defined(MPFR_ERRDIVZERO)
+@@ -309,6 +370,8 @@
+ 
+   test_small ();
+ 
++  bug_20160907 ();
++
+   tests_end_mpfr ();
+ 
+   return 0;

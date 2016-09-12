@@ -99,7 +99,7 @@ The key fingerprint is:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2016-09-05). The patches are distributed under the same license as
+update: 2016-09-12). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -255,6 +255,29 @@ Here, the number 5 is an approximation to an unknown number in the interval
 and the target precision 3, the number 5 &#8722; 1/2 rounds to 4, while
 the number 5 + 1/2 rounds to 6. Thus the program should output 0, but with
 <acronym>MPFR</acronym> 3.1.4, one gets 1.</li>
+
+<li id="p6">On platforms with little-endian x86 extended precision,
+the <code>mpfr_get_ld</code> function does not round correctly in the
+subnormal range due to an incorrect value of the minimum exponent. This
+is fixed by the <a href="patch06"><samp>get_ld</samp> patch</a>.<br />
+Corresponding changesets in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10815&amp;view=revision">10815</a> (main one),
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10852&amp;view=revision">10852</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10853&amp;view=revision">10853</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10855&amp;view=revision">10855</a> (main fix of the test),
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10856&amp;view=revision">10856</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10857&amp;view=revision">10857</a>.<br />
+Note: This bug has always been present since the introduction of the
+code for x86 extended precision in
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=3226&amp;view=revision">r3226</a>
+(before, this was not supported). The maximum exponent was incorrect too,
+but had been fixed in
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=6101&amp;view=revision">r6101</a>
+(<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=6204&amp;view=revision">r6204</a>
+for the 2.4 branch and <acronym>MPFR</acronym> 2.4.2).
+Note also that for these conversion functions with native floating-point
+types, correct rounding is not guaranteed in general, but we try to do
+our best when the native format can be recognized.</li>
 
 </ol>
 
