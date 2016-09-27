@@ -2,7 +2,7 @@
 
 # Run this script on the list of tarballs to prepare the FTP upload
 # to ftp.gnu.org. See:
-#   http://www.gnu.org/prep/maintain/maintain.html#Automated-FTP-Uploads
+#   https://www.gnu.org/prep/maintain/maintain.html#Automated-FTP-Uploads
 
 set -e
 for i in $@
