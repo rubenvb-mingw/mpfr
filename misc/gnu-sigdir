@@ -3,19 +3,30 @@
 # Run this script on the list of tarballs to prepare the FTP upload
 # for ftp.gnu.org. See:
 #   https://www.gnu.org/prep/maintain/maintain.html#Automated-FTP-Uploads
+#
+# Usage: gnu-sigdir <release>
 
 set -e
 
 ftpcmd="open ftp-upload.gnu.org:/incoming/ftp; mput"
 
-for i in $@
+ok=""
+for ext in tar.bz2 tar.gz tar.xz zip
 do
-  gpg -b "$i"
-  dir="$i.directive"
-  printf "version: 1.1\ndirectory: mpfr\nfilename: %s\n" "$i" > "$dir"
-  gpg --clearsign "$dir"
-  rm -f "$dir"
-  ftpcmd="$ftpcmd $i $i.sig $i.directive.asc"
+  i="mpfr-$1.$ext"
+  if [ -r "$i" ]; then
+    gpg -b "$i"
+    dir="$i.directive"
+    printf "version: 1.1\ndirectory: mpfr\nfilename: %s\n" "$i" > "$dir"
+    gpg --clearsign "$dir"
+    rm -f "$dir"
+    ftpcmd="$ftpcmd $i $i.sig $i.directive.asc"
+    ok=1
+  else
+    printf "Warning! File %s does not exist or is not readable.\n" "$i"
+  fi
 done
 
-printf "Upload files with:\nlftp -c '%s'\n" "$ftpcmd"
+if [ -n "$ok" ]; then
+  printf "Upload files with:\nlftp -c '%s'\n" "$ftpcmd"
+fi
