@@ -1,10 +1,13 @@
 #!/bin/sh
 
 # Run this script on the list of tarballs to prepare the FTP upload
-# to ftp.gnu.org. See:
+# for ftp.gnu.org. See:
 #   https://www.gnu.org/prep/maintain/maintain.html#Automated-FTP-Uploads
 
 set -e
+
+ftpcmd="open ftp-upload.gnu.org:/incoming/ftp; mput"
+
 for i in $@
 do
   gpg -b "$i"
@@ -12,4 +15,7 @@ do
   printf "version: 1.1\ndirectory: mpfr\nfilename: %s\n" "$i" > "$dir"
   gpg --clearsign "$dir"
   rm -f "$dir"
+  ftpcmd="$ftpcmd $i $i.sig $i.directive.asc"
 done
+
+printf "Upload files with:\nlftp -c '%s'\n" "$ftpcmd"
