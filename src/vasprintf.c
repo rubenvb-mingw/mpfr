@@ -22,12 +22,11 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
 #ifdef HAVE_CONFIG_H
-# include "config.h"
+#include "config.h"
 #endif
 
-/* The mpfr_printf-like functions are defined only if <stdarg.h> exists.
-   Since they use mpf_t, they cannot be defined with mini-gmp. */
-#if defined(HAVE_STDARG) && !defined(MPFR_USE_MINI_GMP)
+/* The mpfr_printf-like functions are defined only if <stdarg.h> exists */
+#ifdef HAVE_STDARG
 
 #include <stdarg.h>
 
@@ -275,10 +274,14 @@ parse_arg_type (const char *format, struct printf_spec *specinfo)
       break;
     case 'h':
       if (*++format == 'h')
+#ifndef NPRINTF_HH
         {
           ++format;
           specinfo->arg_type = CHAR_ARG;
         }
+#else
+        specinfo->arg_type = UNSUPPORTED;
+#endif
       else
         specinfo->arg_type = SHORT_ARG;
       break;
@@ -286,7 +289,7 @@ parse_arg_type (const char *format, struct printf_spec *specinfo)
       if (*++format == 'l')
         {
           ++format;
-#if defined (HAVE_LONG_LONG)
+#if defined (HAVE_LONG_LONG) && !defined(NPRINTF_LL)
           specinfo->arg_type = LONG_LONG_ARG;
 #else
           specinfo->arg_type = UNSUPPORTED;
@@ -300,7 +303,7 @@ parse_arg_type (const char *format, struct printf_spec *specinfo)
         }
     case 'j':
       ++format;
-#if defined(_MPFR_H_HAVE_INTMAX_T)
+#if defined(_MPFR_H_HAVE_INTMAX_T) && !defined(NPRINTF_J)
       specinfo->arg_type = INTMAX_ARG;
 #else
       specinfo->arg_type = UNSUPPORTED;
@@ -312,11 +315,19 @@ parse_arg_type (const char *format, struct printf_spec *specinfo)
       break;
     case 't':
       ++format;
+#ifndef NPRINTF_T
       specinfo->arg_type = PTRDIFF_ARG;
+#else
+      specinfo->arg_type = UNSUPPORTED;
+#endif
       break;
     case 'L':
       ++format;
+#ifndef NPRINTF_L
       specinfo->arg_type = LONG_DOUBLE_ARG;
+#else
+      specinfo->arg_type = UNSUPPORTED;
+#endif
       break;
     case 'F':
       ++format;
@@ -577,7 +588,7 @@ buffer_pad (struct string_buffer *b, const char c, const size_t n)
 
 /* Form a string by concatenating the first LEN characters of STR to TZ
    zero(s), insert into one character C each 3 characters starting from end
-   to beginning and concatenate the result to the buffer B. */
+   to begining and concatenate the result to the buffer B. */
 static void
 buffer_sandwich (struct string_buffer *b, char *str, size_t len,
                  const size_t tz, const char c)
@@ -663,7 +674,7 @@ struct string_list
   struct string_list *next; /* NULL in last node */
 };
 
-/* initialization */
+/* initialisation */
 static void
 init_string_list (struct string_list *sl)
 {
@@ -1223,25 +1234,18 @@ regular_fg (struct number_parts *np, mpfr_srcptr p,
                 case MPFR_RNDA:
                   round_away = 1;
                   break;
-                case MPFR_RNDZ:
-                  round_away = 0;
-                  break;
                 case MPFR_RNDD:
                   round_away = MPFR_IS_NEG (p);
                   break;
                 case MPFR_RNDU:
                   round_away = MPFR_IS_POS (p);
                   break;
-                default:
+                case MPFR_RNDN:
                   {
                     /* compare |p| to y = 0.5*10^(-spec.prec) */
                     mpfr_t y;
                     mpfr_exp_t e = MAX (MPFR_PREC (p), 56);
-                    int cmp;
-
-                    MPFR_ASSERTN (spec.rnd_mode == MPFR_RNDN);
                     mpfr_init2 (y, e + 8);
-
                     do
                       {
                         /* find a lower approximation of
@@ -1251,14 +1255,14 @@ regular_fg (struct number_parts *np, mpfr_srcptr p,
                         mpfr_set_si (y, -spec.prec, MPFR_RNDN);
                         mpfr_exp10 (y, y, MPFR_RNDD);
                         mpfr_div_2ui (y, y, 1, MPFR_RNDN);
-                        cmp = mpfr_cmpabs (y, p);
-                      }
-                    while (cmp == 0);
+                      } while (mpfr_cmpabs (y, p) == 0);
 
-                    round_away = cmp < 0;
+                    round_away = mpfr_cmpabs (y, p) < 0;
                     mpfr_clear (y);
                   }
                   break;
+                default:
+                  round_away = 0;
                 }
 
               if (round_away)
@@ -1441,7 +1445,7 @@ regular_fg (struct number_parts *np, mpfr_srcptr p,
    partition_number initializes the given structure np, so all previous
    information in that variable is lost.
    return the total number of characters to be written.
-   return -1 if an error occurred, in that case np's fields are in an undefined
+   return -1 if an error occured, in that case np's fields are in an undefined
    state but all string buffers have been freed. */
 static int
 partition_number (struct number_parts *np, mpfr_srcptr p,
@@ -1484,10 +1488,20 @@ partition_number (struct number_parts *np, mpfr_srcptr p,
                with left spaces instead */
             np->pad_type = LEFT;
 
-          np->ip_size = MPFR_NAN_STRING_LENGTH;
-          str = (char *) (*__gmp_allocate_func) (1 + np->ip_size);
-          strcpy (str, uppercase ? MPFR_NAN_STRING_UC : MPFR_NAN_STRING_LC);
-          np->ip_ptr = register_string (np->sl, str);
+          if (uppercase)
+            {
+              np->ip_size = MPFR_NAN_STRING_LENGTH;
+              str = (char *) (*__gmp_allocate_func) (1 + np->ip_size);
+              strcpy (str, MPFR_NAN_STRING_UC);
+              np->ip_ptr = register_string (np->sl, str);
+            }
+          else
+            {
+              np->ip_size = MPFR_NAN_STRING_LENGTH;
+              str = (char *) (*__gmp_allocate_func) (1 + np->ip_size);
+              strcpy (str, MPFR_NAN_STRING_LC);
+              np->ip_ptr = register_string (np->sl, str);
+            }
         }
       else if (MPFR_IS_INF (p))
         {
@@ -1499,14 +1513,24 @@ partition_number (struct number_parts *np, mpfr_srcptr p,
           if (MPFR_IS_NEG (p))
             np->sign = '-';
 
-          np->ip_size = MPFR_INF_STRING_LENGTH;
-          str = (char *) (*__gmp_allocate_func) (1 + np->ip_size);
-          strcpy (str, uppercase ? MPFR_INF_STRING_UC : MPFR_INF_STRING_LC);
-          np->ip_ptr = register_string (np->sl, str);
+          if (uppercase)
+            {
+              np->ip_size = MPFR_INF_STRING_LENGTH;
+              str = (char *) (*__gmp_allocate_func) (1 + np->ip_size);
+              strcpy (str, MPFR_INF_STRING_UC);
+              np->ip_ptr = register_string (np->sl, str);
+            }
+          else
+            {
+              np->ip_size = MPFR_INF_STRING_LENGTH;
+              str = (char *) (*__gmp_allocate_func) (1 + np->ip_size);
+              strcpy (str, MPFR_INF_STRING_LC);
+              np->ip_ptr = register_string (np->sl, str);
+            }
         }
       else
+        /* p == 0 */
         {
-          MPFR_ASSERTD (MPFR_IS_ZERO (p));
           /* note: for 'g' spec, zero is always displayed with 'f'-style with
              precision spec.prec - 1 and the trailing zeros are removed unless
              the flag '#' is used. */
@@ -1559,27 +1583,9 @@ partition_number (struct number_parts *np, mpfr_srcptr p,
             }
         }
     }
-  else if (MPFR_UNLIKELY (MPFR_IS_UBF (p)))
-    {
-      /* mpfr_get_str does not support UBF, so that UBF numbers are regarded
-         as special cases here. This is not much a problem since UBF numbers
-         are internal to MPFR and here, they only for logging. */
-      if (np->pad_type == LEADING_ZEROS)
-        /* change to right justification padding with left spaces */
-        np->pad_type = LEFT;
-
-      if (MPFR_IS_NEG (p))
-        np->sign = '-';
-
-      np->ip_size = 3;
-      str = (char *) (*__gmp_allocate_func) (1 + np->ip_size);
-      strcpy (str, uppercase ? "UBF" : "ubf");
-      np->ip_ptr = register_string (np->sl, str);
-      /* TODO: output more information (e.g. the exponent) if need be. */
-    }
   else
+    /* regular p, p != 0 */
     {
-      MPFR_ASSERTD (MPFR_IS_PURE_FP (p));
       if (spec.spec == 'a' || spec.spec == 'A' || spec.spec == 'b')
         {
           if (regular_ab (np, p, spec) == -1)
@@ -1753,7 +1759,7 @@ sprnt_fp (struct string_buffer *buf, mpfr_srcptr p,
   if (np.exp_ptr)
     buffer_cat (buf, np.exp_ptr, np.exp_size);
 
-  /* left justification padding with right spaces */
+  /* left justication padding with right spaces */
   if (np.pad_type == RIGHT && np.pad_size != 0)
     buffer_pad (buf, ' ', np.pad_size);
 
@@ -1831,12 +1837,10 @@ mpfr_vasprintf (char **ptr, const char *fmt, va_list ap)
 
       fmt = parse_arg_type (fmt, &spec);
       if (spec.arg_type == UNSUPPORTED)
-        /* the current architecture doesn't support the type corresponding to
-           the format specifier; according to the ISO C99 standard, the
-           behavior is undefined. We choose to print the format specifier as a
-           literal string, what may be printed after this string is
-           undefined. */
-        continue;
+        /* the current architecture doesn't support this type */
+        {
+          goto error;
+        }
       else if (spec.arg_type == MPFR_ARG)
         {
           switch (*fmt)
@@ -1872,11 +1876,7 @@ mpfr_vasprintf (char **ptr, const char *fmt, va_list ap)
 
       spec.spec = *fmt;
       if (!specinfo_is_valid (spec))
-        /* the format specifier is invalid; according to the ISO C99 standard,
-           the behavior is undefined. We choose to print the invalid format
-           specifier as a literal string, what may be printed after this
-           string is undefined. */
-        continue;
+        goto error;
 
       if (*fmt)
         fmt++;
@@ -1951,7 +1951,7 @@ mpfr_vasprintf (char **ptr, const char *fmt, va_list ap)
                 while (--n != 0)
                   {
                     q++;
-                    *q = MPFR_LIMB_ZERO;
+                    *q = (mp_limb_t) 0;
                   }
               }
               break;
@@ -2010,16 +2010,6 @@ mpfr_vasprintf (char **ptr, const char *fmt, va_list ap)
         {
           mpfr_srcptr p;
 
-          if (spec.spec != 'a' && spec.spec != 'A'
-              && spec.spec != 'b'
-              && spec.spec != 'e' && spec.spec != 'E'
-              && spec.spec != 'f' && spec.spec != 'F'
-              && spec.spec != 'g' && spec.spec != 'G')
-            /* the format specifier is invalid; skip the invalid format
-           specifier so as to print it as a literal string. What may be
-           printed after this string is undefined. */
-            continue;
-
           p = va_arg (ap, mpfr_srcptr);
 
           FLUSH (xgmp_fmt_flag, start, end, ap2, &buf);
@@ -2027,8 +2017,25 @@ mpfr_vasprintf (char **ptr, const char *fmt, va_list ap)
           va_copy (ap2, ap);
           start = fmt;
 
-          if (sprnt_fp (&buf, p, spec) < 0)
-            goto overflow_error;
+          switch (spec.spec)
+            {
+            case 'a':
+            case 'A':
+            case 'b':
+            case 'e':
+            case 'E':
+            case 'f':
+            case 'F':
+            case 'g':
+            case 'G':
+              if (sprnt_fp (&buf, p, spec) < 0)
+                goto overflow_error;
+              break;
+
+            default:
+              /* unsupported specifier */
+              goto error;
+            }
         }
       else
         /* gmp_printf specification, step forward in the va_list */
@@ -2079,10 +2086,5 @@ mpfr_vasprintf (char **ptr, const char *fmt, va_list ap)
 
   return -1;
 }
-
-#else /* HAVE_STDARG */
-
-/* Avoid an empty translation unit (see ISO C99, 6.9) */
-typedef int foo;
 
 #endif /* HAVE_STDARG */

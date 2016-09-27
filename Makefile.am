@@ -18,22 +18,16 @@ AUTOMAKE_OPTIONS = gnu
 # old Automake version.
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = doc src tests tune tools/bench
-
-pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = mpfr.pc
+SUBDIRS = doc src tests tune
 
 nobase_dist_doc_DATA = AUTHORS BUGS COPYING COPYING.LESSER NEWS TODO \
   examples/ReadMe examples/divworst.c examples/rndo-add.c examples/sample.c \
-  examples/version.c examples/can_round.c
+  examples/version.c
 
-EXTRA_DIST = PATCHES VERSION doc/check-typography tools/ck-clz_tab \
+EXTRA_DIST = PATCHES VERSION \
   tools/ck-copyright-notice tools/ck-news tools/ck-version-info \
   tools/get_patches.sh \
   $(DATAFILES)
-
-bench:
-	cd tools/bench && $(MAKE) $(AM_MAKEFLAGS) bench
 
 # Various checks for "make dist".
 # * Check consistency concerning -version-info. Moreover if the VERSION
@@ -45,5 +39,3 @@ dist-hook:
 	cd $(srcdir) && tools/ck-version-info
 	cd $(srcdir) && tools/ck-copyright-notice
 	cd $(srcdir) && tools/ck-news
-	cd $(srcdir) && tools/ck-clz_tab
-	cd $(srcdir)/doc && ./check-typography

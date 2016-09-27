@@ -20,6 +20,10 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
 #include "mpfr-test.h"
 
 static void
@@ -133,9 +137,9 @@ check1 (mpfr_ptr x, mpfr_prec_t prec, unsigned long nt, mpfr_rnd_t rnd)
         {
           printf ("Wrong inexact flag for rnd=%s: expected %d, got %d\n",
                   mpfr_print_rnd_mode (rnd), compare, inexact);
-          printf ("x="); mpfr_dump (x);
-          printf ("y="); mpfr_dump (y);
-          printf ("t="); mpfr_dump (t);
+          printf ("x="); mpfr_print_binary (x); puts ("");
+          printf ("y="); mpfr_print_binary (y); puts ("");
+          printf ("t="); mpfr_print_binary (t); puts ("");
           exit (1);
         }
     }
@@ -156,13 +160,13 @@ main (int argc, char *argv[])
   mpfr_init (x);
   mpfr_init (y);
 
-  do n = randlimb (); while (n <= 1);
+  n = randlimb ();
 
   MPFR_SET_INF(x);
   mpfr_ui_pow (y, n, x, MPFR_RNDN);
   if(!MPFR_IS_INF(y))
     {
-      printf ("evaluation of function at INF does not return INF\n");
+      printf ("evaluation of function in INF does not return INF\n");
       exit (1);
     }
 

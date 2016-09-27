@@ -22,37 +22,27 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 
 #include "mpfr-impl.h"
 
-/* compute sign(b) * (|b| + |c|), assuming that b and c
-   are not NaN, Inf, nor zero. Assumes EXP(b) >= EXP(c).
-*/
-MPFR_HOT_FUNCTION_ATTR int
+/* compute sign(b) * (|b| + |c|), assuming b and c have same sign,
+   and are not NaN, Inf, nor zero. */
+int
 mpfr_add1 (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
 {
   mp_limb_t *ap, *bp, *cp;
   mpfr_prec_t aq, bq, cq, aq2;
   mp_size_t an, bn, cn;
-  mpfr_exp_t difw, exp, diff_exp;
+  mpfr_exp_t difw, exp;
   int sh, rb, fb, inex;
+  mpfr_uexp_t diff_exp;
   MPFR_TMP_DECL(marker);
 
-  MPFR_ASSERTD (MPFR_IS_PURE_UBF (b));
-  MPFR_ASSERTD (MPFR_IS_PURE_UBF (c));
-  MPFR_ASSERTD (! MPFR_UBF_EXP_LESS_P (b, c));
-
-  if (MPFR_UNLIKELY (MPFR_IS_UBF (b)))
-    {
-      exp = mpfr_ubf_zexp2exp (MPFR_ZEXP (b));
-      if (exp > __gmpfr_emax)
-        return mpfr_overflow (a, rnd_mode, MPFR_SIGN (b));;
-    }
-  else
-    exp = MPFR_GET_EXP (b);
+  MPFR_ASSERTD(MPFR_IS_PURE_FP(b));
+  MPFR_ASSERTD(MPFR_IS_PURE_FP(c));
 
   MPFR_TMP_MARK(marker);
 
-  aq = MPFR_GET_PREC (a);
-  bq = MPFR_GET_PREC (b);
-  cq = MPFR_GET_PREC (c);
+  aq = MPFR_PREC(a);
+  bq = MPFR_PREC(b);
+  cq = MPFR_PREC(c);
 
   an = MPFR_PREC2LIMBS (aq); /* number of limbs of a */
   aq2 = (mpfr_prec_t) an * GMP_NUMB_BITS;
@@ -72,24 +62,19 @@ mpfr_add1 (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
       if (ap == cp)
         { cp = bp; }
     }
-  else if (ap == cp)
+  else if (MPFR_UNLIKELY(ap == cp))
     {
       cp = MPFR_TMP_LIMBS_ALLOC (cn);
       MPN_COPY(cp, ap, cn);
     }
 
+  exp = MPFR_GET_EXP (b);
   MPFR_SET_SAME_SIGN(a, b);
   MPFR_UPDATE2_RND_MODE(rnd_mode, MPFR_SIGN(b));
   /* now rnd_mode is either MPFR_RNDN, MPFR_RNDZ or MPFR_RNDA */
-  if (MPFR_UNLIKELY (MPFR_IS_UBF (c)))
-    {
-      MPFR_STAT_STATIC_ASSERT (MPFR_EXP_MAX > MPFR_PREC_MAX);
-      diff_exp = mpfr_ubf_diff_exp (b, c);
-    }
-  else
-    diff_exp = exp - MPFR_GET_EXP (c);
-
-  MPFR_ASSERTD (diff_exp >= 0);
+  /* Note: exponents can be negative, but the unsigned subtraction is
+     a modular subtraction, so that one gets the correct result. */
+  diff_exp = (mpfr_uexp_t) exp - MPFR_GET_EXP(c);
 
   /*
    * 1. Compute the significant part A', the non-significant bits of A
@@ -168,7 +153,7 @@ mpfr_add1 (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
         MPN_COPY(a2p - difn, cp + (cn - difn), difn);
 
       /* add b to a */
-      cc = an > bn
+      cc = MPFR_UNLIKELY(an > bn)
         ? mpn_add_n(ap + (an - bn), ap + (an - bn), bp, bn)
         : mpn_add_n(ap, ap, bp + (bn - an), an);
 
@@ -249,8 +234,12 @@ mpfr_add1 (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
           MPFR_ASSERTD(fb != 0);
           if (fb > 0)
             {
-              if (bb != MPFR_LIMB_MAX)
-                goto rounding;
+              if (bb != MP_LIMB_T_MAX)
+                {
+                  fb = 1; /* c hasn't been taken into account
+                             ==> sticky bit != 0 */
+                  goto rounding;
+                }
             }
           else /* fb not initialized yet */
             {
@@ -260,7 +249,7 @@ mpfr_add1 (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
                   bb |= MPFR_LIMB_HIGHBIT;
                 }
               fb = 1;
-              if (bb != MPFR_LIMB_MAX)
+              if (bb != MP_LIMB_T_MAX)
                 goto rounding;
             }
 
@@ -329,7 +318,7 @@ mpfr_add1 (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
                 }
 
               fb = bb != 0;
-              if (fb && bb != MPFR_LIMB_MAX)
+              if (fb && bb != MP_LIMB_T_MAX)
                 goto rounding;
             } /* fb < 0 */
 
@@ -379,7 +368,7 @@ mpfr_add1 (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
                   fb = 1;
                   goto rounding;
                 }
-              if (fb && bb != MPFR_LIMB_MAX)
+              if (fb && bb != MP_LIMB_T_MAX)
                 goto rounding;
             } /* while */
 

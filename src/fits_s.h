@@ -29,7 +29,7 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 int
 FUNCTION (mpfr_srcptr f, mpfr_rnd_t rnd)
 {
-  mpfr_flags_t saved_flags;
+  unsigned int saved_flags;
   mpfr_exp_t e;
   int prec;
   mpfr_t x;
@@ -37,7 +37,7 @@ FUNCTION (mpfr_srcptr f, mpfr_rnd_t rnd)
   int res;
 
   if (MPFR_UNLIKELY (MPFR_IS_SINGULAR (f)))
-    /* Zero always fits */
+    /* Zero always fit */
     return MPFR_IS_ZERO (f) ? 1 : 0;
 
   /* now it fits if either

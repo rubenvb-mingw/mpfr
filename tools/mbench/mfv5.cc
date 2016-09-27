@@ -27,8 +27,8 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 
 #define USAGE                                                           \
  "Bench functions for Pentium (V5++).\n"                                \
- __FILE__ " " __DATE__ " " __TIME__ " GCC " __VERSION__ "\n"		\
- "Usage: mfv5 [-pPREC] [-sSEED] [-mSIZE] [-iPRIO] [-lLIST] [-xEXPORT_BASE] [-XIMPORT_BASE] [-rROUNDING_MODE] tests ...\n"
+ __FILE__" " __DATE__" " __TIME__" GCC "__VERSION__ "\n"                \
+ "Usage: mfv5 [-pPREC] [-sSEED] [-mSIZE] [-iPRIO] [-lLIST] [-xEXPORT_BASE] tests ...\n"
 
 using namespace std;
 
@@ -81,8 +81,8 @@ build_base (vector<string> &base, const option_test &opt)
 
   for (i = 0 ; i < n ; i++) {
     mpfr_urandomb (x, state);
-    mpfr_mul_2si  (x, x, (rand()%GMP_NUMB_BITS)-(GMP_NUMB_BITS/2), MPFR_RNDN);
-    str = mpfr_get_str (NULL, &e, 10, 0, x, MPFR_RNDN);
+    mpfr_mul_2si  (x, x, (rand()%GMP_NUMB_BITS)-(GMP_NUMB_BITS/2), GMP_RNDN);
+    str = mpfr_get_str (NULL, &e, 10, 0, x, GMP_RNDN);
     if (str == 0)
       abort ();
     buffer = (char *) malloc (strlen(str)+50);
@@ -102,20 +102,6 @@ build_base (vector<string> &base, const option_test &opt)
 
   gmp_randclear(state);
   mpfr_clear (x);
-}
-
-void
-read_base (vector<string> &base, const option_test &opt)
-{
-  unsigned long i, n = opt.stat;
-  std::string x;
-  std::ifstream f(opt.import_base.c_str());
-  std::cout << "Read data from " << opt.import_base << std::endl;
-
-  for (i = 0 ; i < n ; i++) {
-    getline(f, x);
-    base.push_back (x.c_str());
-  }
 }
 
 
@@ -152,50 +138,12 @@ int main (int argc, const char *argv[])
 	    case 'i':
 	      prio = atol (argv[i]+2);
 	      break;
-            case 'r':
-              {
-                switch (argv[i][2])
-		  {
-		  case 'n':
-		  case 'N':
-		    options.rnd = MPFR_RNDN;
-		    break;
-		  case 'z':
-		  case 'Z':
-		    options.rnd = MPFR_RNDZ;
-		    break;
-		  case 'u':
-		  case 'U':
-		    options.rnd = MPFR_RNDU;
-		    break;
-		  case 'd':
-		  case 'D':
-		    options.rnd = MPFR_RNDD;
-		    break;
-		  case 'f':
-		  case 'F':
-		    options.rnd = MPFR_RNDF;
-		    break;
-		  case 'a':
-		  case 'A':
-		    options.rnd = MPFR_RNDA;
-		    break;
-		  default:
-		    cerr << "Unknown rounding mode." << endl;
-		    exit(1);
-		    break;
-		  }
-              }
-              break;
 	    case 'l':
 	      list_test ();
 	      exit (0);
 	      break;
 	    case 'x':
 	      options.export_base = (argv[i]+2);
-	      break;
-	    case 'X':
-	      options.import_base = (argv[i]+2);
 	      break;
 	    default:
 	      cerr <<  "Unkwown option:" << argv[i] << endl;
@@ -215,15 +163,7 @@ int main (int argc, const char *argv[])
   if (options.verbose)
     cout << "Building DATA Base\n";
   mp_set_memory_functions (NULL, NULL, NULL);
-
-
-  cout << "GMP VERSION HEADER= " << __GNU_MP_VERSION  << "." << __GNU_MP_VERSION_MINOR << "." << __GNU_MP_VERSION_PATCHLEVEL << " LIB=" << gmp_version << endl;
-  cout << "MPFR VERSION HEADER= " << MPFR_VERSION_STRING << " LIB=" << mpfr_get_version() << endl;
-
-  if (options.import_base != "")
-    read_base (base, options);
-  else
-    build_base (base, options);
+  build_base (base, options);
 
   /* Do test */
   for (j = 1, cont = 5 ; cont ; j++, cont--) {

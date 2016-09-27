@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 /* set bit n of x to b, where bit 0 is the most significant one */
@@ -34,9 +37,9 @@ set_bit (mpfr_t x, unsigned int n, int b)
   n %= mp_bits_per_limb;
   n = mp_bits_per_limb - 1 - n;
   if (b)
-    MPFR_MANT(x)[xn - l] |= MPFR_LIMB_ONE << n;
+    MPFR_MANT(x)[xn - l] |= (mp_limb_t) 1 << n;
   else
-    MPFR_MANT(x)[xn - l] &= ~(MPFR_LIMB_ONE << n);
+    MPFR_MANT(x)[xn - l] &= ~((mp_limb_t) 1 << n);
 }
 
 /* check that for x = 1.u 1 v 0^k low(x)
@@ -212,8 +215,8 @@ special (void)
   if (mpfr_cmp2(x, y, &j) <= 0 || j != 32)
     {
       printf ("Error in mpfr_cmp2:\n");
-      printf ("x="); mpfr_dump (x);
-      printf ("y="); mpfr_dump (y);
+      printf ("x="); mpfr_print_binary(x); puts ("");
+      printf ("y="); mpfr_print_binary(y); puts ("");
       printf ("got %lu, expected 32\n", (unsigned long) j);
       exit (1);
     }
@@ -225,8 +228,8 @@ special (void)
   if (mpfr_cmp2(x, y, &j) <= 0 || j != 164)
     {
       printf ("Error in mpfr_cmp2:\n");
-      printf ("x="); mpfr_dump (x);
-      printf ("y="); mpfr_dump (y);
+      printf ("x="); mpfr_print_binary(x); puts ("");
+      printf ("y="); mpfr_print_binary(y); puts ("");
       printf ("got %lu, expected 164\n", (unsigned long) j);
       exit (1);
     }
@@ -239,8 +242,8 @@ special (void)
   if (mpfr_cmp2(x, y, &j) <= 0 || j != 127)
     {
       printf ("Error in mpfr_cmp2:\n");
-      printf ("x="); mpfr_dump (x);
-      printf ("y="); mpfr_dump (y);
+      printf ("x="); mpfr_print_binary(x); puts ("");
+      printf ("y="); mpfr_print_binary(y); puts ("");
       printf ("got %lu, expected 127\n", (unsigned long) j);
       exit (1);
     }
@@ -253,8 +256,8 @@ special (void)
   if (mpfr_cmp2(x, y, &j) <= 0 || j != 63)
     {
       printf ("Error in mpfr_cmp2:\n");
-      printf ("x="); mpfr_dump (x);
-      printf ("y="); mpfr_dump (y);
+      printf ("x="); mpfr_print_binary(x); puts ("");
+      printf ("y="); mpfr_print_binary(y); puts ("");
       printf ("got %lu, expected 63\n", (unsigned long) j);
       exit (1);
     }
@@ -267,8 +270,8 @@ special (void)
   if (mpfr_cmp2(x, y, &j) <= 0 || j != 63)
     {
       printf ("Error in mpfr_cmp2:\n");
-      printf ("x="); mpfr_dump (x);
-      printf ("y="); mpfr_dump (y);
+      printf ("x="); mpfr_print_binary(x); puts ("");
+      printf ("y="); mpfr_print_binary(y); puts ("");
       printf ("got %lu, expected 63\n", (unsigned long) j);
       exit (1);
     }

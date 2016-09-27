@@ -21,9 +21,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
 #include "mpfr-test.h"
-
-#ifndef MPFR_USE_MINI_GMP
 
 #define CHECK_FOR(str, cond)                                            \
   if ((cond) == 0) {                                                    \
@@ -110,36 +110,36 @@ special (void)
   mpq_set_ui (q, 1, 0);
   mpfr_set_str1 (x, "0.5");
   res = mpfr_add_q (y, x, q, MPFR_RNDN);
-  CHECK_FOR ("0.5+1/0", mpfr_inf_p (y) && MPFR_IS_POS (y) && res == 0);
+  CHECK_FOR ("0.5+1/0", mpfr_inf_p (y) && MPFR_SIGN (y) > 0 && res == 0);
   res = mpfr_sub_q (y, x, q, MPFR_RNDN);
-  CHECK_FOR ("0.5-1/0", mpfr_inf_p (y) && MPFR_IS_NEG (y) && res == 0);
+  CHECK_FOR ("0.5-1/0", mpfr_inf_p (y) && MPFR_SIGN (y) < 0 && res == 0);
   mpq_set_si (q, -1, 0);
   res = mpfr_add_q (y, x, q, MPFR_RNDN);
-  CHECK_FOR ("0.5+ -1/0", mpfr_inf_p (y) && MPFR_IS_NEG (y) && res == 0);
+  CHECK_FOR ("0.5+ -1/0", mpfr_inf_p (y) && MPFR_SIGN (y) < 0 && res == 0);
   res = mpfr_sub_q (y, x, q, MPFR_RNDN);
-  CHECK_FOR ("0.5- -1/0", mpfr_inf_p (y) && MPFR_IS_POS (y) && res == 0);
+  CHECK_FOR ("0.5- -1/0", mpfr_inf_p (y) && MPFR_SIGN (y) > 0 && res == 0);
   res = mpfr_div_q (y, x, q, MPFR_RNDN);
-  CHECK_FOR ("0.5 / (-1/0)", mpfr_zero_p (y) && MPFR_IS_NEG (y) && res == 0);
+  CHECK_FOR ("0.5 / (-1/0)", mpfr_zero_p (y) && MPFR_SIGN (y) < 0 && res == 0);
   mpq_set_ui (q, 1, 0);
   mpfr_set_inf (x, 1);
   res = mpfr_add_q (y, x, q, MPFR_RNDN);
-  CHECK_FOR ("+Inf + +Inf", mpfr_inf_p (y) && MPFR_IS_POS (y) && res == 0);
+  CHECK_FOR ("+Inf + +Inf", mpfr_inf_p (y) && MPFR_SIGN (y) > 0 && res == 0);
   res = mpfr_sub_q (y, x, q, MPFR_RNDN);
   CHECK_FOR ("+Inf - +Inf", MPFR_IS_NAN (y) && res == 0);
   mpfr_set_inf (x, -1);
   res = mpfr_add_q (y, x, q, MPFR_RNDN);
   CHECK_FOR ("-Inf + +Inf", MPFR_IS_NAN (y) && res == 0);
   res = mpfr_sub_q (y, x, q, MPFR_RNDN);
-  CHECK_FOR ("-Inf - +Inf", mpfr_inf_p (y) && MPFR_IS_NEG (y) && res == 0);
+  CHECK_FOR ("-Inf - +Inf", mpfr_inf_p (y) && MPFR_SIGN (y) < 0 && res == 0);
   mpq_set_si (q, -1, 0);
   mpfr_set_inf (x, 1);
   res = mpfr_add_q (y, x, q, MPFR_RNDN);
   CHECK_FOR ("+Inf + -Inf", MPFR_IS_NAN (y) && res == 0);
   res = mpfr_sub_q (y, x, q, MPFR_RNDN);
-  CHECK_FOR ("+Inf - -Inf", mpfr_inf_p (y) && MPFR_IS_POS (y) && res == 0);
+  CHECK_FOR ("+Inf - -Inf", mpfr_inf_p (y) && MPFR_SIGN (y) > 0 && res == 0);
   mpfr_set_inf (x, -1);
   res = mpfr_add_q (y, x, q, MPFR_RNDN);
-  CHECK_FOR ("-Inf + -Inf", mpfr_inf_p (y) && MPFR_IS_NEG (y) && res == 0);
+  CHECK_FOR ("-Inf + -Inf", mpfr_inf_p (y) && MPFR_SIGN (y) < 0 && res == 0);
   res = mpfr_sub_q (y, x, q, MPFR_RNDN);
   CHECK_FOR ("-Inf - -Inf", MPFR_IS_NAN (y) && res == 0);
 
@@ -151,15 +151,15 @@ special (void)
   res = mpfr_sub_q (y, x, q, MPFR_RNDN);
   CHECK_FOR ("42-0/1", mpfr_cmp_ui (y, 42) == 0 && res == 0);
   res = mpfr_mul_q (y, x, q, MPFR_RNDN);
-  CHECK_FOR ("42*0/1", mpfr_zero_p (y) && MPFR_IS_POS (y) && res == 0);
+  CHECK_FOR ("42*0/1", mpfr_zero_p (y) && MPFR_SIGN (y) > 0 && res == 0);
   mpfr_clear_flags ();
   res = mpfr_div_q (y, x, q, MPFR_RNDN);
-  CHECK_FOR ("42/(0/1)", mpfr_inf_p (y) && MPFR_IS_POS (y) && res == 0
+  CHECK_FOR ("42/(0/1)", mpfr_inf_p (y) && MPFR_SIGN (y) > 0 && res == 0
              && mpfr_divby0_p ());
   mpz_set_ui (z, 0);
   mpfr_clear_flags ();
   res = mpfr_div_z (y, x, z, MPFR_RNDN);
-  CHECK_FORZ ("42/0", mpfr_inf_p (y) && MPFR_IS_POS (y) && res == 0
+  CHECK_FORZ ("42/0", mpfr_inf_p (y) && MPFR_SIGN (y) > 0 && res == 0
               && mpfr_divby0_p ());
 
   mpz_clear (z);
@@ -444,10 +444,10 @@ test_specialz (int (*mpfr_func)(mpfr_ptr, mpfr_srcptr, mpz_srcptr, mpfr_rnd_t),
   if (mpfr_cmp(x1, x2))
     {
       printf("Specialz %s: results differ.\nx1=", op);
-      mpfr_dump (x1);
-      printf ("x2=");
-      mpfr_dump (x2);
-      printf ("Z2=");
+      mpfr_print_binary(x1);
+      printf("\nx2=");
+      mpfr_print_binary(x2);
+      printf ("\nZ2=");
       mpz_out_str (stdout, 2, z1);
       putchar('\n');
       exit(1);
@@ -462,9 +462,10 @@ test_specialz (int (*mpfr_func)(mpfr_ptr, mpfr_srcptr, mpz_srcptr, mpfr_rnd_t),
   if (mpfr_cmp(x1, x2))
     {
       printf("Specialz %s: results differ(2).\nx1=", op);
-      mpfr_dump (x1);
-      printf ("x2=");
-      mpfr_dump (x2);
+      mpfr_print_binary(x1);
+      printf("\nx2=");
+      mpfr_print_binary(x2);
+      putchar('\n');
       exit(1);
     }
 
@@ -518,10 +519,10 @@ test_special2z (int (*mpfr_func)(mpfr_ptr, mpz_srcptr, mpfr_srcptr, mpfr_rnd_t),
   if (mpfr_cmp(x1, x2))
     {
       printf("Special2z %s: results differ.\nx1=", op);
-      mpfr_dump (x1);
-      printf ("x2=");
-      mpfr_dump (x2);
-      printf ("Z2=");
+      mpfr_print_binary(x1);
+      printf("\nx2=");
+      mpfr_print_binary(x2);
+      printf ("\nZ2=");
       mpz_out_str (stdout, 2, z1);
       putchar('\n');
       exit(1);
@@ -536,9 +537,10 @@ test_special2z (int (*mpfr_func)(mpfr_ptr, mpz_srcptr, mpfr_srcptr, mpfr_rnd_t),
   if (mpfr_cmp(x1, x2))
     {
       printf("Special2z %s: results differ(2).\nx1=", op);
-      mpfr_dump (x1);
-      printf ("x2=");
-      mpfr_dump (x2);
+      mpfr_print_binary(x1);
+      printf("\nx2=");
+      mpfr_print_binary(x2);
+      putchar('\n');
       exit(1);
     }
 
@@ -583,8 +585,8 @@ test_genericz (mpfr_prec_t p0, mpfr_prec_t p1, unsigned int N,
                   printf ("Results differ for prec=%u rnd_mode=%s and %s_z:\n"
                           "arg1=",
                           (unsigned) prec, mpfr_print_rnd_mode (rnd), op);
-                  mpfr_dump (arg1);
-                  printf ("arg2=");
+                  mpfr_print_binary (arg1);
+                  printf("\narg2=");
                   mpz_out_str (stdout, 10, arg2);
                   printf ("\ngot      ");
                   mpfr_dump (dst_small);
@@ -608,11 +610,11 @@ test_genericz (mpfr_prec_t p0, mpfr_prec_t p1, unsigned int N,
                   printf ("Wrong inexact flag for rnd=%s and %s_z:\n"
                           "expected %d, got %d\n",
                           mpfr_print_rnd_mode (rnd), op, compare, inexact);
-                  printf ("arg1="); mpfr_dump (arg1);
-                  printf ("arg2="); mpz_out_str(stdout, 2, arg2);
-                  printf ("\ndstl="); mpfr_dump (dst_big);
-                  printf ("dsts="); mpfr_dump (dst_small);
-                  printf ("tmp ="); mpfr_dump (tmp);
+                  printf ("\narg1="); mpfr_print_binary (arg1);
+                  printf ("\narg2="); mpz_out_str(stdout, 2, arg2);
+                  printf ("\ndstl="); mpfr_print_binary (dst_big);
+                  printf ("\ndsts="); mpfr_print_binary (dst_small);
+                  printf ("\ntmp ="); mpfr_dump (tmp);
                   exit (1);
                 }
             }
@@ -660,8 +662,8 @@ test_generic2z (mpfr_prec_t p0, mpfr_prec_t p1, unsigned int N,
                   printf ("Results differ for prec=%u rnd_mode=%s and %s_z:\n"
                           "arg1=",
                           (unsigned) prec, mpfr_print_rnd_mode (rnd), op);
-                  mpfr_dump (arg1);
-                  printf ("arg2=");
+                  mpfr_print_binary (arg1);
+                  printf("\narg2=");
                   mpz_out_str (stdout, 10, arg2);
                   printf ("\ngot      ");
                   mpfr_dump (dst_small);
@@ -685,11 +687,11 @@ test_generic2z (mpfr_prec_t p0, mpfr_prec_t p1, unsigned int N,
                   printf ("Wrong inexact flag for rnd=%s and %s_z:\n"
                           "expected %d, got %d\n",
                           mpfr_print_rnd_mode (rnd), op, compare, inexact);
-                  printf ("arg1="); mpfr_dump (arg1);
-                  printf ("arg2="); mpz_out_str(stdout, 2, arg2);
-                  printf ("\ndstl="); mpfr_dump (dst_big);
-                  printf ("dsts="); mpfr_dump (dst_small);
-                  printf ("tmp ="); mpfr_dump (tmp);
+                  printf ("\narg1="); mpfr_print_binary (arg1);
+                  printf ("\narg2="); mpz_out_str(stdout, 2, arg2);
+                  printf ("\ndstl="); mpfr_print_binary (dst_big);
+                  printf ("\ndsts="); mpfr_print_binary (dst_small);
+                  printf ("\ntmp ="); mpfr_dump (tmp);
                   exit (1);
                 }
             }
@@ -738,15 +740,16 @@ test_genericq (mpfr_prec_t p0, mpfr_prec_t p1, unsigned int N,
                   printf ("Results differ for prec=%u rnd_mode=%s and %s_q:\n"
                           "arg1=",
                           (unsigned) prec, mpfr_print_rnd_mode (rnd), op);
-                  mpfr_dump (arg1);
-                  printf  ("arg2=");
+                  mpfr_print_binary (arg1);
+                  printf("\narg2=");
                   mpq_out_str(stdout, 2, arg2);
                   printf ("\ngot      ");
-                  mpfr_dump (dst_small);
-                  printf ("expected ");
-                  mpfr_dump (tmp);
-                  printf ("approx  ");
-                  mpfr_dump (dst_big);
+                  mpfr_print_binary (dst_small);
+                  printf ("\nexpected ");
+                  mpfr_print_binary (tmp);
+                  printf ("\napprox  ");
+                  mpfr_print_binary (dst_big);
+                  putchar('\n');
                   exit (1);
                 }
               compare2 = mpfr_cmp (tmp, dst_big);
@@ -763,11 +766,12 @@ test_genericq (mpfr_prec_t p0, mpfr_prec_t p1, unsigned int N,
                   printf ("Wrong inexact flag for rnd=%s and %s_q:\n"
                           "expected %d, got %d",
                           mpfr_print_rnd_mode (rnd), op, compare, inexact);
-                  printf ("arg1="); mpfr_dump (arg1);
-                  printf ("arg2="); mpq_out_str(stdout, 2, arg2);
-                  printf ("\ndstl="); mpfr_dump (dst_big);
-                  printf ("dsts="); mpfr_dump (dst_small);
-                  printf ("tmp ="); mpfr_dump (tmp);
+                  printf ("\narg1="); mpfr_print_binary (arg1);
+                  printf ("\narg2="); mpq_out_str(stdout, 2, arg2);
+                  printf ("\ndstl="); mpfr_print_binary (dst_big);
+                  printf ("\ndsts="); mpfr_print_binary (dst_small);
+                  printf ("\ntmp ="); mpfr_print_binary (tmp);
+                  putchar('\n');
                   exit (1);
                 }
             }
@@ -813,9 +817,10 @@ test_specialq (mpfr_prec_t p0, mpfr_prec_t p1, unsigned int N,
                      (unsigned long) prec, op);
               printf ("\nq1="); mpq_out_str(stdout, 2, q1);
               printf ("\nq2="); mpq_out_str(stdout, 2, q2);
-              printf ("\nfr_dn="); mpfr_dump (fra);
-              printf ("fr_q ="); mpfr_dump (frq);
-              printf ("fr_up="); mpfr_dump (frb);
+              printf ("\nfr_dn="); mpfr_print_binary (fra);
+              printf ("\nfr_q ="); mpfr_print_binary (frq);
+              printf ("\nfr_up="); mpfr_print_binary (frb);
+              putchar('\n');
               exit (1);
             }
         }
@@ -1185,9 +1190,10 @@ coverage_mpfr_mul_q_20110218 (void)
   if ((status != 0) || (mpfr_cmp (cmp, res) != 0))
     {
       printf ("Results differ %d.\nres=", status);
-      mpfr_dump (res);
-      printf ("cmp=");
-      mpfr_dump (cmp);
+      mpfr_print_binary (res);
+      printf ("\ncmp=");
+      mpfr_print_binary (cmp);
+      putchar ('\n');
       exit (1);
     }
 
@@ -1202,8 +1208,8 @@ coverage_mpfr_mul_q_20110218 (void)
       printf ("mpfr_mul_q 1 * (-1/0) returned a wrong value :\n waiting for ");
       mpfr_print_binary (cmp);
       printf (" got ");
-      mpfr_dump (res);
-      printf ("ternary value is %d\n", status);
+      mpfr_print_binary (res);
+      printf ("\n trinary value is %d\n", status);
       exit (1);
     }
 
@@ -1223,25 +1229,25 @@ main (int argc, char *argv[])
   test_specialz (mpfr_add_z, mpz_add, "add");
   test_specialz (mpfr_sub_z, mpz_sub, "sub");
   test_specialz (mpfr_mul_z, mpz_mul, "mul");
-  test_genericz (MPFR_PREC_MIN, 100, 100, mpfr_add_z, "add");
-  test_genericz (MPFR_PREC_MIN, 100, 100, mpfr_sub_z, "sub");
-  test_genericz (MPFR_PREC_MIN, 100, 100, mpfr_mul_z, "mul");
-  test_genericz (MPFR_PREC_MIN, 100, 100, mpfr_div_z, "div");
+  test_genericz (2, 100, 100, mpfr_add_z, "add");
+  test_genericz (2, 100, 100, mpfr_sub_z, "sub");
+  test_genericz (2, 100, 100, mpfr_mul_z, "mul");
+  test_genericz (2, 100, 100, mpfr_div_z, "div");
   test_special2z (mpfr_z_sub, mpz_sub, "sub");
-  test_generic2z (MPFR_PREC_MIN, 100, 100, mpfr_z_sub, "sub");
+  test_generic2z (2, 100, 100, mpfr_z_sub, "sub");
 
-  test_genericq (MPFR_PREC_MIN, 100, 100, mpfr_add_q, "add");
-  test_genericq (MPFR_PREC_MIN, 100, 100, mpfr_sub_q, "sub");
-  test_genericq (MPFR_PREC_MIN, 100, 100, mpfr_mul_q, "mul");
-  test_genericq (MPFR_PREC_MIN, 100, 100, mpfr_div_q, "div");
-  test_specialq (MPFR_PREC_MIN, 100, 100, mpfr_mul_q, mpq_mul, "mul");
-  test_specialq (MPFR_PREC_MIN, 100, 100, mpfr_div_q, mpq_div, "div");
-  test_specialq (MPFR_PREC_MIN, 100, 100, mpfr_add_q, mpq_add, "add");
-  test_specialq (MPFR_PREC_MIN, 100, 100, mpfr_sub_q, mpq_sub, "sub");
+  test_genericq (2, 100, 100, mpfr_add_q, "add");
+  test_genericq (2, 100, 100, mpfr_sub_q, "sub");
+  test_genericq (2, 100, 100, mpfr_mul_q, "mul");
+  test_genericq (2, 100, 100, mpfr_div_q, "div");
+  test_specialq (2, 100, 100, mpfr_mul_q, mpq_mul, "mul");
+  test_specialq (2, 100, 100, mpfr_div_q, mpq_div, "div");
+  test_specialq (2, 100, 100, mpfr_add_q, mpq_add, "add");
+  test_specialq (2, 100, 100, mpfr_sub_q, mpq_sub, "sub");
 
-  test_cmp_z (MPFR_PREC_MIN, 100, 100);
-  test_cmp_q (MPFR_PREC_MIN, 100, 100);
-  test_cmp_f (MPFR_PREC_MIN, 100, 100);
+  test_cmp_z (2, 100, 100);
+  test_cmp_q (2, 100, 100);
+  test_cmp_f (2, 100, 100);
 
   check_for_zero ();
 
@@ -1257,12 +1263,3 @@ main (int argc, char *argv[])
   return 0;
 }
 
-#else
-
-int
-main (void)
-{
-  return 77;
-}
-
-#endif

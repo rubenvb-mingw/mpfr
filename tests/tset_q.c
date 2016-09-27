@@ -20,9 +20,10 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
-#include "mpfr-test.h"
+#include <stdio.h>
+#include <stdlib.h>
 
-#ifndef MPFR_USE_MINI_GMP
+#include "mpfr-test.h"
 
 static void
 check (long int n, long int d, mpfr_rnd_t rnd, const char *ys)
@@ -30,7 +31,7 @@ check (long int n, long int d, mpfr_rnd_t rnd, const char *ys)
   mpq_t q;
   mpfr_t x, t;
   int inexact, compare;
-  mpfr_flags_t flags, ex_flags;
+  unsigned int flags, ex_flags;
 
   mpfr_init2 (x, 53);
   mpfr_init2 (t, mpfr_get_prec (x) + mp_bits_per_limb);
@@ -134,7 +135,7 @@ check_nan_inf_mpq (void)
       mpfr_print_binary (mpfr_cmp);
       printf (" got ");
       mpfr_print_binary (mpfr_value);
-      printf ("\n ternary value is %d\n", status);
+      printf ("\n trinary value is %d\n", status);
       exit (1);
     }
 
@@ -153,7 +154,7 @@ check_nan_inf_mpq (void)
       mpfr_print_binary (mpfr_cmp);
       printf (" got ");
       mpfr_print_binary (mpfr_value);
-      printf ("\n ternary value is %d\n", status);
+      printf ("\n trinary value is %d\n", status);
       exit (1);
     }
 
@@ -183,13 +184,3 @@ main (void)
   tests_end_mpfr ();
   return 0;
 }
-
-#else
-
-int
-main (void)
-{
-  return 77;
-}
-
-#endif

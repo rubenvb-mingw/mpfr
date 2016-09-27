@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 int
@@ -31,36 +34,32 @@ main (void)
   tests_start_mpfr ();
   emin = mpfr_get_emin ();
 
-  mpfr_init2 (x, IEEE_DBL_MANT_DIG);
+  mpfr_init2(x, IEEE_DBL_MANT_DIG);
 
   mpfr_set_d (x, 2.34763465, MPFR_RNDN);
-  if (mpfr_cmp_d (x, 2.34763465) != 0)
-    {
-      printf ("Error in mpfr_cmp_d 2.34763465 and ");
-      mpfr_out_str (stdout, 10, 0, x, MPFR_RNDN); putchar('\n');
-      exit (1);
-    }
-  if (mpfr_cmp_d (x, 2.345) <= 0)
-    {
-      printf ("Error in mpfr_cmp_d 2.345 and ");
-      mpfr_out_str (stdout, 10, 0, x, MPFR_RNDN); putchar('\n');
-      exit (1);
-    }
-  if (mpfr_cmp_d (x, 2.4) >= 0)
-    {
-      printf ("Error in mpfr_cmp_d 2.4 and ");
-      mpfr_out_str (stdout, 10, 0, x, MPFR_RNDN); putchar('\n');
-      exit (1);
-    }
+  if (mpfr_cmp_d(x, 2.34763465)!=0) {
+    printf("Error in mpfr_cmp_d 2.34763465 and ");
+    mpfr_out_str(stdout, 10, 0, x, MPFR_RNDN); putchar('\n');
+    exit(1);
+  }
+  if (mpfr_cmp_d(x, 2.345)<=0) {
+    printf("Error in mpfr_cmp_d 2.345 and ");
+    mpfr_out_str(stdout, 10, 0, x, MPFR_RNDN); putchar('\n');
+    exit(1);
+  }
+  if (mpfr_cmp_d(x, 2.4)>=0) {
+    printf("Error in mpfr_cmp_d 2.4 and ");
+    mpfr_out_str(stdout, 10, 0, x, MPFR_RNDN); putchar('\n');
+    exit(1);
+  }
 
   mpfr_set_ui (x, 0, MPFR_RNDZ);
   mpfr_neg (x, x, MPFR_RNDZ);
-  if (mpfr_cmp_d (x, 0.0))
-    {
-      printf ("Error in mpfr_cmp_d 0.0 and ");
-      mpfr_out_str (stdout, 10, 0, x, MPFR_RNDN); putchar('\n');
-      exit (1);
-    }
+  if (mpfr_cmp_d (x, 0.0)) {
+    printf("Error in mpfr_cmp_d 0.0 and ");
+    mpfr_out_str(stdout, 10, 0, x, MPFR_RNDN); putchar('\n');
+    exit(1);
+  }
 
   mpfr_set_ui (x, 0, MPFR_RNDN);
   mpfr_ui_div (x, 1, x, MPFR_RNDU);
@@ -124,7 +123,7 @@ main (void)
   }
 #endif  /* MPFR_ERRDIVZERO */
 
-  mpfr_clear (x);
+  mpfr_clear(x);
 
   tests_end_mpfr ();
   return 0;

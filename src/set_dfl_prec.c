@@ -36,7 +36,7 @@ mpfr_prec_t * __gmpfr_default_fp_bit_precision_f()
 void
 mpfr_set_default_prec (mpfr_prec_t prec)
 {
-  MPFR_ASSERTN (MPFR_PREC_COND (prec));
+  MPFR_ASSERTN (prec >= MPFR_PREC_MIN && prec <= MPFR_PREC_MAX);
   __gmpfr_default_fp_bit_precision = prec;
 }
 

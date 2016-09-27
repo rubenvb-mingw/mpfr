@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 #ifdef CHECK_EXTERNAL
@@ -217,7 +220,7 @@ overflowed_cos0 (void)
                           i, mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
                   err = 1;
                 }
-              if (! (mpfr_inf_p (x) && MPFR_IS_POS (x)))
+              if (! (mpfr_inf_p (x) && MPFR_SIGN (x) > 0))
                 {
                   printf ("Error in overflowed_cos0 (i = %d, rnd = %s):\n"
                           "  Got ", i, mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
@@ -276,8 +279,8 @@ main (int argc, char *argv[])
   if (mpfr_cmp (y, x))
     {
       printf ("Error for prec=30, rnd=MPFR_RNDU\n");
-      printf ("expected "); mpfr_dump (x);
-      printf ("     got "); mpfr_dump (y);
+      printf ("expected "); mpfr_print_binary (x); puts ("");
+      printf ("     got "); mpfr_print_binary (y); puts ("");
       exit (1);
     }
 
@@ -289,8 +292,8 @@ main (int argc, char *argv[])
   if (mpfr_cmp (y, x))
     {
       printf ("Error for prec=59, rnd=MPFR_RNDU\n");
-      printf ("expected "); mpfr_dump (x);
-      printf ("     got "); mpfr_dump (y);
+      printf ("expected "); mpfr_print_binary (x); puts ("");
+      printf ("     got "); mpfr_print_binary (y); puts ("");
       exit (1);
     }
 
@@ -302,7 +305,7 @@ main (int argc, char *argv[])
   if (mpfr_cmp (y, x))
     {
       printf ("Error for x=1.1100e-2, rnd=MPFR_RNDD\n");
-      printf ("expected 1.1100e-1, got "); mpfr_dump (y);
+      printf ("expected 1.1100e-1, got "); mpfr_print_binary (y); puts ("");
       exit (1);
     }
 
@@ -356,7 +359,7 @@ main (int argc, char *argv[])
   check53 ("1.00591265847407274059", "0.53531755997839769456",  MPFR_RNDN);
 
   overflowed_cos0 ();
-  test_generic (MPFR_PREC_MIN, 100, 15);
+  test_generic (2, 100, 15);
 
   /* check inexact flag */
   mpfr_set_prec (x, 3);

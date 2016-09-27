@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 static void
@@ -63,14 +66,14 @@ test_urandom (long nbtests, mpfr_prec_t prec, mpfr_rnd_t rnd, long bit_index,
       if (MPFR_MANT(x)[0] & MPFR_LIMB_MASK(sh) && !MPFR_IS_ZERO (x))
         {
           printf ("Error: mpfr_urandom() returns invalid numbers:\n");
-          mpfr_dump (x);
+          mpfr_print_binary (x); puts ("");
           exit (1);
         }
       /* check that the value is in [0,1] */
       if (mpfr_cmp_ui (x, 0) < 0 || mpfr_cmp_ui (x, 1) > 0)
         {
           printf ("Error: mpfr_urandom() returns number outside [0, 1]:\n");
-          mpfr_dump (x);
+          mpfr_print_binary (x); puts ("");
           exit (1);
         }
 
@@ -104,11 +107,10 @@ test_urandom (long nbtests, mpfr_prec_t prec, mpfr_rnd_t rnd, long bit_index,
               && (k > 0 || mpfr_cmp_ui (x, 1 << k) != 0 || inex != +1)
               && (!MPFR_IS_ZERO (x) || inex != -1)))
         {
-          printf ("Error: mpfr_urandom() does not handle correctly"
-                  " a restricted exponent range.\nemin = %d\n"
-                  "rounding mode: %s\nternary value: %d\nrandom value: ",
-                  k+1, mpfr_print_rnd_mode (rnd), inex);
-          mpfr_dump (x);
+          printf ("Error: mpfr_urandom() do not handle correctly a restricted"
+                  " exponent range.\nrounding mode: %s\nternary value: %d\n"
+                  "random value: ", mpfr_print_rnd_mode (rnd), inex);
+          mpfr_print_binary (x); puts ("");
           exit (1);
         }
     }
@@ -151,9 +153,7 @@ test_urandom (long nbtests, mpfr_prec_t prec, mpfr_rnd_t rnd, long bit_index,
   return;
 }
 
-/* Problem reported by Carl Witty. This test assumes the random generator
-   used by GMP is deterministic (for a given seed). We need to distinguish
-   two cases since the random generator changed after GMP 4.2.0. */
+/* problem reported by Carl Witty */
 static void
 bug20100914 (void)
 {
@@ -238,15 +238,11 @@ main (int argc, char *argv[])
 
       if (argc == 1)  /* check also small precision */
         {
-          test_urandom (nbtests, MPFR_PREC_MIN, (mpfr_rnd_t) rnd, -1, 0);
+          test_urandom (nbtests, 2, (mpfr_rnd_t) rnd, -1, 0);
         }
     }
 
-#ifndef MPFR_USE_MINI_GMP
-  /* since this test assumes a deterministic random generator, and this is not
-     implemented in mini-gmp, we omit it with mini-gmp */
   bug20100914 ();
-#endif
 
   tests_end_mpfr ();
   return 0;

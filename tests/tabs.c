@@ -20,6 +20,8 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <float.h>
 
 #include "mpfr-test.h"
@@ -61,9 +63,9 @@ check_inexact (void)
                 {
                   printf ("Wrong inexact flag: expected %d, got %d\n",
                           cmp, inexact);
-                  printf ("x="); mpfr_dump (x);
-                  printf ("absx="); mpfr_dump (absx);
-                  printf ("y="); mpfr_dump (y);
+                  printf ("x="); mpfr_print_binary (x); puts ("");
+                  printf ("absx="); mpfr_print_binary (absx); puts ("");
+                  printf ("y="); mpfr_print_binary (y); puts ("");
                   exit (1);
                 }
             }
@@ -166,7 +168,7 @@ main (int argc, char *argv[])
   check_inexact ();
   check_cmp (argc, argv);
 
-  test_generic (MPFR_PREC_MIN, 1000, 10);
+  test_generic (2, 1000, 10);
 
   tests_end_mpfr ();
   return 0;

@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 #define TEST_FUNCTION mpfr_cot
@@ -134,7 +137,7 @@ main (int argc, char *argv[])
   two2emin (MPFR_EMAX_DEFAULT);
   if (MPFR_EMAX_MAX != MPFR_EMAX_DEFAULT)
     two2emin (MPFR_EMAX_MAX);
-  test_generic (MPFR_PREC_MIN, 200, 5);
+  test_generic (2, 200, 5);
 
   tests_end_mpfr ();
   return 0;

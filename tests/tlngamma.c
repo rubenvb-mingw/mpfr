@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 #define TEST_FUNCTION mpfr_lngamma
@@ -143,9 +146,9 @@ special (void)
     {
       printf ("mpfr_lngamma("CHECK_X1") is wrong:\n"
               "expected ");
-      mpfr_dump (x);
+      mpfr_print_binary (x); putchar ('\n');
       printf ("got      ");
-      mpfr_dump (y);
+      mpfr_print_binary (y); putchar ('\n');
       exit (1);
     }
 
@@ -158,9 +161,9 @@ special (void)
     {
       printf ("mpfr_lngamma("CHECK_X2") is wrong:\n"
               "expected ");
-      mpfr_dump (x);
+      mpfr_print_binary (x); putchar ('\n');
       printf ("got      ");
-      mpfr_dump (y);
+      mpfr_print_binary (y); putchar ('\n');
       exit (1);
     }
 
@@ -185,8 +188,8 @@ special (void)
   if (mpfr_cmp0 (x, y))
     {
       printf ("Error in mpfr_lngamma (120)\n");
-      printf ("Expected "); mpfr_dump (y);
-      printf ("Got      "); mpfr_dump (x);
+      printf ("Expected "); mpfr_print_binary (y); puts ("");
+      printf ("Got      "); mpfr_print_binary (x); puts ("");
       exit (1);
     }
 
@@ -258,7 +261,7 @@ main (void)
   tests_start_mpfr ();
 
   special ();
-  test_generic (MPFR_PREC_MIN, 100, 2);
+  test_generic (2, 100, 2);
 
   tests_end_mpfr ();
   return 0;

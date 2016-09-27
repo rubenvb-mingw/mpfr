@@ -23,8 +23,12 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
 #ifdef HAVE_CONFIG_H
-# include "config.h"
+# include "config.h"       /* for a build within gmp */
 #endif
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
 
 #include "mpfr-intmax.h"
 #include "mpfr-test.h"
@@ -43,7 +47,7 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
         }                                                       \
       if (__gmpfr_flags != ex_flags)                            \
         {                                                       \
-          mpfr_flags_t flags = __gmpfr_flags;                   \
+          unsigned int flags = __gmpfr_flags;                   \
           printf ("Flags error %d for %s, rnd = %s and x = ",   \
                   N, #FCT,                                      \
                   mpfr_print_rnd_mode ((mpfr_rnd_t) r));        \
@@ -119,7 +123,7 @@ main (void)
 {
   mpfr_exp_t emin, emax;
   mpfr_t x, y;
-  mpfr_flags_t flags[2] = { 0, MPFR_FLAGS_ALL }, ex_flags;
+  unsigned int flags[2] = { 0, MPFR_FLAGS_ALL }, ex_flags;
   int i, r, fi;
 
   tests_start_mpfr ();

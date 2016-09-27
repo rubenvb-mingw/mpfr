@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 #define check(a,b,r) check4(a,b,r,0.0)
@@ -205,7 +208,7 @@ check_eq (void)
 }
 
 static void
-check_special (void)
+check_nans (void)
 {
   mpfr_t  x, y, m;
 
@@ -213,21 +216,16 @@ check_special (void)
   mpfr_init2 (y, 123L);
   mpfr_init2 (m, 123L);
 
-  /* agm(1,nan) is NaN */
+  /* agm(1,nan) == nan */
   mpfr_set_ui (x, 1L, MPFR_RNDN);
   mpfr_set_nan (y);
   mpfr_agm (m, x, y, MPFR_RNDN);
-  MPFR_ASSERTN (mpfr_nan_p (m));
-  mpfr_agm (m, y, x, MPFR_RNDN);
   MPFR_ASSERTN (mpfr_nan_p (m));
 
   /* agm(1,+inf) == +inf */
   mpfr_set_ui (x, 1L, MPFR_RNDN);
   mpfr_set_inf (y, 1);
   mpfr_agm (m, x, y, MPFR_RNDN);
-  MPFR_ASSERTN (mpfr_inf_p (m));
-  MPFR_ASSERTN (mpfr_sgn (m) > 0);
-  mpfr_agm (m, y, x, MPFR_RNDN);
   MPFR_ASSERTN (mpfr_inf_p (m));
   MPFR_ASSERTN (mpfr_sgn (m) > 0);
 
@@ -238,54 +236,22 @@ check_special (void)
   MPFR_ASSERTN (mpfr_inf_p (m));
   MPFR_ASSERTN (mpfr_sgn (m) > 0);
 
-  /* agm(-inf,+inf) is NaN */
+  /* agm(-inf,+inf) == nan */
   mpfr_set_inf (x, -1);
   mpfr_set_inf (y, 1);
   mpfr_agm (m, x, y, MPFR_RNDN);
   MPFR_ASSERTN (mpfr_nan_p (m));
-  mpfr_agm (m, y, x, MPFR_RNDN);
-  MPFR_ASSERTN (mpfr_nan_p (m));
 
-  /* agm(+0,+inf) is NaN */
+  /* agm(+0,+inf) == nan */
   mpfr_set_ui (x, 0, MPFR_RNDN);
   mpfr_set_inf (y, 1);
   mpfr_agm (m, x, y, MPFR_RNDN);
-  MPFR_ASSERTN (mpfr_nan_p (m));
-  mpfr_agm (m, y, x, MPFR_RNDN);
-  MPFR_ASSERTN (mpfr_nan_p (m));
-
-  /* agm(-0,+inf) is NaN */
-  mpfr_set_ui (x, 0, MPFR_RNDN);
-  mpfr_neg (x, x, MPFR_RNDN);
-  mpfr_set_inf (y, 1);
-  mpfr_agm (m, x, y, MPFR_RNDN);
-  MPFR_ASSERTN (mpfr_nan_p (m));
-  mpfr_agm (m, y, x, MPFR_RNDN);
-  MPFR_ASSERTN (mpfr_nan_p (m));
-
-  /* agm(+0,-inf) is NaN */
-  mpfr_set_ui (x, 0, MPFR_RNDN);
-  mpfr_set_inf (y, -1);
-  mpfr_agm (m, x, y, MPFR_RNDN);
-  MPFR_ASSERTN (mpfr_nan_p (m));
-  mpfr_agm (m, y, x, MPFR_RNDN);
-  MPFR_ASSERTN (mpfr_nan_p (m));
-
-  /* agm(-0,-inf) is NaN */
-  mpfr_set_ui (x, 0, MPFR_RNDN);
-  mpfr_neg (x, x, MPFR_RNDN);
-  mpfr_set_inf (y, -1);
-  mpfr_agm (m, x, y, MPFR_RNDN);
-  MPFR_ASSERTN (mpfr_nan_p (m));
-  mpfr_agm (m, y, x, MPFR_RNDN);
   MPFR_ASSERTN (mpfr_nan_p (m));
 
   /* agm(+0,1) == +0 */
   mpfr_set_ui (x, 0, MPFR_RNDN);
   mpfr_set_ui (y, 1, MPFR_RNDN);
   mpfr_agm (m, x, y, MPFR_RNDN);
-  MPFR_ASSERTN (MPFR_IS_ZERO (m) && MPFR_IS_POS(m));
-  mpfr_agm (m, y, x, MPFR_RNDN);
   MPFR_ASSERTN (MPFR_IS_ZERO (m) && MPFR_IS_POS(m));
 
   /* agm(-0,1) == +0 */
@@ -294,33 +260,12 @@ check_special (void)
   mpfr_set_ui (y, 1, MPFR_RNDN);
   mpfr_agm (m, x, y, MPFR_RNDN);
   MPFR_ASSERTN (MPFR_IS_ZERO (m) && MPFR_IS_POS(m));
-  mpfr_agm (m, y, x, MPFR_RNDN);
-  MPFR_ASSERTN (MPFR_IS_ZERO (m) && MPFR_IS_POS(m));
-
-  /* agm(+0,-1) == +0 */
-  mpfr_set_ui (x, 0, MPFR_RNDN);
-  mpfr_set_si (y, -1, MPFR_RNDN);
-  mpfr_agm (m, x, y, MPFR_RNDN);
-  MPFR_ASSERTN (MPFR_IS_ZERO (m) && MPFR_IS_POS(m));
-  mpfr_agm (m, y, x, MPFR_RNDN);
-  MPFR_ASSERTN (MPFR_IS_ZERO (m) && MPFR_IS_POS(m));
-
-  /* agm(-0,-1) == +0 */
-  mpfr_set_ui (x, 0, MPFR_RNDN);
-  mpfr_neg (x, x, MPFR_RNDN);
-  mpfr_set_si (y, -1, MPFR_RNDN);
-  mpfr_agm (m, x, y, MPFR_RNDN);
-  MPFR_ASSERTN (MPFR_IS_ZERO (m) && MPFR_IS_POS(m));
-  mpfr_agm (m, y, x, MPFR_RNDN);
-  MPFR_ASSERTN (MPFR_IS_ZERO (m) && MPFR_IS_POS(m));
 
   /* agm(-0,+0) == +0 */
   mpfr_set_ui (x, 0, MPFR_RNDN);
   mpfr_neg (x, x, MPFR_RNDN);
   mpfr_set_ui (y, 0, MPFR_RNDN);
   mpfr_agm (m, x, y, MPFR_RNDN);
-  MPFR_ASSERTN (MPFR_IS_ZERO (m) && MPFR_IS_POS(m));
-  mpfr_agm (m, y, x, MPFR_RNDN);
   MPFR_ASSERTN (MPFR_IS_ZERO (m) && MPFR_IS_POS(m));
 
   /* agm(1,1) == 1 */
@@ -329,12 +274,10 @@ check_special (void)
   mpfr_agm (m, x, y, MPFR_RNDN);
   MPFR_ASSERTN (mpfr_cmp_ui (m ,1) == 0);
 
-  /* agm(-1,-2) is NaN */
+  /* agm(-1,-2) == NaN */
   mpfr_set_si (x, -1, MPFR_RNDN);
   mpfr_set_si (y, -2, MPFR_RNDN);
   mpfr_agm (m, x, y, MPFR_RNDN);
-  MPFR_ASSERTN (mpfr_nan_p (m));
-  mpfr_agm (m, y, x, MPFR_RNDN);
   MPFR_ASSERTN (mpfr_nan_p (m));
 
   mpfr_clear (x);
@@ -353,7 +296,7 @@ main (int argc, char* argv[])
 {
   tests_start_mpfr ();
 
-  check_special ();
+  check_nans ();
 
   check_large ();
   check_eq ();
@@ -367,7 +310,7 @@ main (int argc, char* argv[])
   check4 ("1.0", "44.0", MPFR_RNDU, "13.3658354512981243907", 1);
   check4 ("1.0", "3.7252902984619140625e-9", MPFR_RNDU,
           "0.07553933569711989657765", 1);
-  test_generic (MPFR_PREC_MIN, 300, 17);
+  test_generic (2, 300, 17);
 
   tests_end_mpfr ();
   return 0;

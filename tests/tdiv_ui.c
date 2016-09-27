@@ -20,6 +20,8 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <float.h>
 
 #include "mpfr-test.h"
@@ -95,8 +97,6 @@ special (void)
   mpfr_nextabove (x);
   mpfr_div_ui (y, x, 2, MPFR_RNDN); /* exactly in the middle */
   MPFR_ASSERTN(mpfr_cmp_ui (y, 2) == 0);
-  (mpfr_div_ui) (y, x, 2, MPFR_RNDN); /* exactly in the middle */
-  MPFR_ASSERTN(mpfr_cmp_ui (y, 2) == 0);
 
   mpfr_set_prec (x, 3 * mp_bits_per_limb);
   mpfr_set_prec (y, 2);
@@ -104,16 +104,12 @@ special (void)
   mpfr_nextabove (x);
   mpfr_div_ui (y, x, 2, MPFR_RNDN);
   MPFR_ASSERTN(mpfr_cmp_ui (y, 1) == 0);
-  (mpfr_div_ui) (y, x, 2, MPFR_RNDN);
-  MPFR_ASSERTN(mpfr_cmp_ui (y, 1) == 0);
 
   mpfr_set_prec (x, 3 * mp_bits_per_limb);
   mpfr_set_prec (y, 2);
   mpfr_set_si (x, -4, MPFR_RNDN);
   mpfr_nextbelow (x);
   mpfr_div_ui (y, x, 2, MPFR_RNDD);
-  MPFR_ASSERTN(mpfr_cmp_si (y, -3) == 0);
-  (mpfr_div_ui) (y, x, 2, MPFR_RNDD);
   MPFR_ASSERTN(mpfr_cmp_si (y, -3) == 0);
 
   for (xprec = 53; xprec <= 128; xprec++)
@@ -127,8 +123,8 @@ special (void)
           if (mpfr_cmp(x,y))
             {
               printf ("division by 1.0 fails for xprec=%u, yprec=%u\n", xprec, yprec);
-              printf ("expected "); mpfr_dump (x);
-              printf ("got      "); mpfr_dump (y);
+              printf ("expected "); mpfr_print_binary (x); puts ("");
+              printf ("got      "); mpfr_print_binary (y); puts ("");
               exit (1);
             }
         }
@@ -138,8 +134,6 @@ special (void)
   mpfr_set_si (x, 0, MPFR_RNDN);
   mpfr_set_si (y, -1, MPFR_RNDN);
   mpfr_div_ui (y, x, 4, MPFR_RNDN);
-  MPFR_ASSERTN(MPFR_IS_ZERO(y) && MPFR_IS_POS(y));
-  (mpfr_div_ui) (y, x, 4, MPFR_RNDN);
   MPFR_ASSERTN(MPFR_IS_ZERO(y) && MPFR_IS_POS(y));
 
   mpfr_clear (x);
@@ -178,8 +172,8 @@ check_inexact (void)
               if (mpfr_mul_ui (z, y, u, (mpfr_rnd_t) rnd))
                 {
                   printf ("z <- y * u should be exact for u=%lu\n", u);
-                  printf ("y="); mpfr_dump (y);
-                  printf ("z="); mpfr_dump (z);
+                  printf ("y="); mpfr_print_binary (y); puts ("");
+                  printf ("z="); mpfr_print_binary (z); puts ("");
                   exit (1);
                 }
               cmp = mpfr_cmp (z, x);
@@ -189,8 +183,8 @@ check_inexact (void)
                 {
                   printf ("Wrong inexact flag for u=%lu, rnd=%s\n", u,
                           mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
-                  printf ("x="); mpfr_dump (x);
-                  printf ("y="); mpfr_dump (y);
+                  printf ("x="); mpfr_print_binary (x); puts ("");
+                  printf ("y="); mpfr_print_binary (y); puts ("");
                   exit (1);
                 }
             }
@@ -236,7 +230,7 @@ main (int argc, char **argv)
     }
   mpfr_clear (x);
 
-  test_generic (MPFR_PREC_MIN, 200, 100);
+  test_generic (2, 200, 100);
 
   tests_end_mpfr ();
   return 0;

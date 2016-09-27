@@ -25,16 +25,14 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 #include "mpfr-impl.h"
 
 /* Check if we have to check the result of mpfr_add1sp with mpfr_add1 */
-#if MPFR_WANT_ASSERT >= 2
+#ifdef MPFR_WANT_ASSERT
+# if MPFR_WANT_ASSERT >= 2
 
-int mpfr_add1sp_ref (mpfr_ptr, mpfr_srcptr, mpfr_srcptr, mpfr_rnd_t);
+int mpfr_add1sp2 (mpfr_ptr, mpfr_srcptr, mpfr_srcptr, mpfr_rnd_t);
 int mpfr_add1sp (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
 {
-  mpfr_t tmpa, tmpb, tmpc, tmpd;
-  mpfr_flags_t old_flags, flags, flags2;
+  mpfr_t tmpa, tmpb, tmpc;
   int inexb, inexc, inexact, inexact2;
-
-  old_flags = __gmpfr_flags;
 
   mpfr_init2 (tmpa, MPFR_PREC (a));
   mpfr_init2 (tmpb, MPFR_PREC (b));
@@ -46,26 +44,10 @@ int mpfr_add1sp (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
   inexc = mpfr_set (tmpc, c, MPFR_RNDN);
   MPFR_ASSERTN (inexc == 0);
 
-  MPFR_ASSERTN (__gmpfr_flags == old_flags);
+  inexact2 = mpfr_add1 (tmpa, tmpb, tmpc, rnd_mode);
+  inexact  = mpfr_add1sp2 (a, b, c, rnd_mode);
 
-  if (MPFR_GET_EXP (tmpb) < MPFR_GET_EXP (tmpc))
-    {
-      /* The sign for the result will be taken from the second argument
-         (= first input value, which is tmpb). */
-      MPFR_ALIAS (tmpd, tmpc, MPFR_SIGN (tmpb), MPFR_EXP (tmpc));
-      inexact2 = mpfr_add1 (tmpa, tmpd, tmpb, rnd_mode);
-    }
-  else
-    {
-      inexact2 = mpfr_add1 (tmpa, tmpb, tmpc, rnd_mode);
-    }
-  flags2 = __gmpfr_flags;
-
-  __gmpfr_flags = old_flags;
-  inexact = mpfr_add1sp_ref (a, b, c, rnd_mode);
-  flags = __gmpfr_flags;
-
-  if (! mpfr_equal_p (tmpa, a) || inexact != inexact2 || flags != flags2)
+  if (mpfr_cmp (tmpa, a) || inexact != inexact2)
     {
       fprintf (stderr, "add1 & add1sp return different values for %s\n"
                "Prec_a = %lu, Prec_b = %lu, Prec_c = %lu\nB = ",
@@ -80,16 +62,16 @@ int mpfr_add1sp (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
       mpfr_fprint_binary (stderr, tmpa);
       fprintf (stderr, "\nadd1sp: ");
       mpfr_fprint_binary (stderr, a);
-      fprintf (stderr, "\nInexact sp = %d | Inexact = %d\n"
-               "Flags sp = %u | Flags = %u\n",
-               inexact, inexact2, flags, flags2);
+      fprintf (stderr, "\nInexact sp = %d | Inexact = %d\n",
+               inexact, inexact2);
       MPFR_ASSERTN (0);
     }
   mpfr_clears (tmpa, tmpb, tmpc, (mpfr_ptr) 0);
   return inexact;
 }
-# define mpfr_add1sp mpfr_add1sp_ref
-#endif  /* MPFR_WANT_ASSERT >= 2 */
+#  define mpfr_add1sp mpfr_add1sp2
+# endif
+#endif
 
 /* Debugging support */
 #ifdef DEBUG
@@ -99,249 +81,11 @@ int mpfr_add1sp (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
 # define DEBUG(x) /**/
 #endif
 
-/* same as mpfr_add1sp, but for p < GMP_NUMB_BITS */
-static int
-mpfr_add1sp1 (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode,
-              mpfr_prec_t p)
-{
-  mpfr_exp_t bx = MPFR_GET_EXP (b);
-  mpfr_exp_t cx = MPFR_GET_EXP (c);
-  mp_limb_t *ap = MPFR_MANT(a);
-  mp_limb_t *bp = MPFR_MANT(b);
-  mp_limb_t *cp = MPFR_MANT(c);
-  mpfr_prec_t sh = GMP_NUMB_BITS - p;
-  mp_limb_t rb; /* round bit */
-  mp_limb_t sb; /* sticky bit */
-  mp_limb_t mask;
-  mpfr_uexp_t d;
-
-  MPFR_ASSERTD(p < GMP_NUMB_BITS);
-
-  if (bx == cx)
-    {
-      /* since bp[0], cp[0] >= MPFR_LIMB_HIGHBIT, a carry always occurs */
-      ap[0] = MPFR_LIMB_HIGHBIT | ((bp[0] + cp[0]) >> 1);
-      bx ++;
-      rb = ap[0] & (MPFR_LIMB_ONE << (sh - 1));
-      ap[0] ^= rb;
-      sb = 0; /* since b + c fits on p+1 bits, the sticky bit is zero */
-    }
-  else if (bx > cx)
-    {
-    BGreater1:
-      d = (mpfr_uexp_t) bx - cx;
-      mask = MPFR_LIMB_MASK(sh);
-      if (d < sh)
-        {
-          /* we can shift c by d bits to the right without losing any bit,
-             moreover we can shift one more if there is an exponent increase */
-          rb = bp[0];
-          ap[0] = rb + (cp[0] >> d);
-          if (ap[0] < rb) /* carry */
-            {
-              ap[0] = MPFR_LIMB_HIGHBIT | (ap[0] >> 1);
-              bx ++;
-            }
-          rb = ap[0] & (MPFR_LIMB_ONE << (sh - 1));
-          sb = (ap[0] & mask) ^ rb;
-          ap[0] = ap[0] & ~mask;
-        }
-      else if (d < GMP_NUMB_BITS) /* sh <= d < GMP_NUMB_BITS */
-        {
-          rb = bp[0];
-          sb = cp[0] << (GMP_NUMB_BITS - d); /* bits from cp[-1] after shift */
-          ap[0] = rb + (cp[0] >> d);
-          if (ap[0] < rb)
-            {
-              sb |= ap[0] & 1;
-              ap[0] = MPFR_LIMB_HIGHBIT | (ap[0] >> 1);
-              bx ++;
-            }
-          rb = ap[0] & (MPFR_LIMB_ONE << (sh - 1));
-          sb |= (ap[0] & mask) ^ rb;
-          ap[0] = ap[0] & ~mask;
-        }
-      else /* d >= GMP_NUMB_BITS */
-        {
-          ap[0] = bp[0];
-          rb = 0; /* since p < GMP_NUMB_BITS */
-          sb = 1; /* since c <> 0 */
-        }
-    }
-  else /* bx < cx: swap b and c */
-    {
-      mpfr_exp_t tx;
-      mp_limb_t *tp;
-      tx = bx; bx = cx; cx = tx;
-      tp = bp; bp = cp; cp = tp;
-      goto BGreater1;
-    }
-
-  /* now perform rounding */
-  if (MPFR_UNLIKELY(bx > __gmpfr_emax))
-    return mpfr_overflow (a, rnd_mode, MPFR_SIGN(a));
-
-  MPFR_SET_EXP (a, bx);
-  if (rb == 0 && sb == 0)
-    return 0; /* idem than MPFR_RET(0) and faster */
-  else if (rnd_mode == MPFR_RNDN)
-    {
-      if (rb == 0 || (rb && sb == 0 &&
-                      (ap[0] & (MPFR_LIMB_ONE << sh)) == 0))
-        goto truncate;
-      else
-        goto add_one_ulp;
-    }
-  else if (MPFR_IS_LIKE_RNDZ(rnd_mode, MPFR_IS_NEG(a)))
-    {
-    truncate:
-      MPFR_RET(-MPFR_SIGN(a));
-    }
-  else /* round away from zero */
-    {
-    add_one_ulp:
-      ap[0] += MPFR_LIMB_ONE << sh;
-      if (ap[0] == 0)
-        {
-          ap[0] = MPFR_LIMB_HIGHBIT;
-          if (MPFR_LIKELY(bx + 1 <= __gmpfr_emax))
-            MPFR_SET_EXP (a, bx + 1);
-          else /* overflow */
-            return mpfr_overflow (a, rnd_mode, MPFR_SIGN(a));
-        }
-      MPFR_RET(MPFR_SIGN(a));
-    }
-}
-
-/* same as mpfr_add1sp, but for GMP_NUMB_BITS < p < 2*GMP_NUMB_BITS */
-static int
-mpfr_add1sp2 (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode,
-              mpfr_prec_t p)
-{
-  mpfr_exp_t bx = MPFR_GET_EXP (b);
-  mpfr_exp_t cx = MPFR_GET_EXP (c);
-  mp_limb_t *ap = MPFR_MANT(a);
-  mp_limb_t *bp = MPFR_MANT(b);
-  mp_limb_t *cp = MPFR_MANT(c);
-  mpfr_prec_t sh = 2*GMP_NUMB_BITS - p;
-  mp_limb_t rb; /* round bit */
-  mp_limb_t sb; /* sticky bit */
-  mp_limb_t a1, a0;
-  mp_limb_t mask;
-  mpfr_uexp_t d;
-
-  MPFR_ASSERTD(GMP_NUMB_BITS < p && p < 2 * GMP_NUMB_BITS);
-
-  if (bx == cx)
-    {
-      /* since bp[1], cp[1] >= MPFR_LIMB_HIGHBIT, a carry always occurs */
-      a0 = bp[0] + cp[0];
-      a1 = bp[1] + cp[1] + (a0 < bp[0]);
-      ap[0] = (a0 >> 1) | (a1 << (GMP_NUMB_BITS - 1));
-      ap[1] = MPFR_LIMB_HIGHBIT | (a1 >> 1);
-      bx ++;
-      rb = ap[0] & (MPFR_LIMB_ONE << (sh - 1));
-      ap[0] ^= rb;
-      sb = 0; /* since b + c fits on p+1 bits, the sticky bit is zero */
-    }
-  else if (bx > cx)
-    {
-    BGreater2:
-      d = (mpfr_uexp_t) bx - cx;
-      mask = MPFR_LIMB_MASK(sh);
-      if (d < GMP_NUMB_BITS) /* 0 < d < GMP_NUMB_BITS */
-        {
-          a0 = bp[0];
-          a1 = bp[1];
-          sb = cp[0] << (GMP_NUMB_BITS - d); /* bits from cp[-1] after shift */
-          a0 += (cp[1] << (GMP_NUMB_BITS - d)) | (cp[0] >> d);
-          ap[1] = a1 + (cp[1] >> d);
-          if (a0 < bp[0]) /* carry in low word */
-            ap[1] ++;
-          if (ap[1] < a1) /* carry in high word */
-            {
-            exponent_shift:
-              sb |= a0 & 1;
-              /* shift a by 1 */
-              a0 = (ap[1] << (GMP_NUMB_BITS - 1)) | (a0 >> 1);
-              ap[1] = MPFR_LIMB_HIGHBIT | (ap[1] >> 1);
-              bx ++;
-            }
-          rb = a0 & (MPFR_LIMB_ONE << (sh - 1));
-          sb |= (a0 & mask) ^ rb;
-          ap[0] = a0 & ~mask;
-        }
-      else if (d < 2*GMP_NUMB_BITS) /* GMP_NUMB_BITS <= d < 2*GMP_NUMB_BITS */
-        {
-          sb = (d == GMP_NUMB_BITS) ? cp[0]
-            : cp[0] | (cp[1] << (2*GMP_NUMB_BITS-d));
-          a0 = bp[0] + (cp[1] >> (d - GMP_NUMB_BITS));
-          ap[1] = bp[1] + (a0 < bp[0]);
-          if (ap[1] == 0)
-            goto exponent_shift;
-          rb = a0 & (MPFR_LIMB_ONE << (sh - 1));
-          sb |= (a0 & mask) ^ rb;
-          ap[0] = a0 & ~mask;
-        }
-      else /* d >= 2*GMP_NUMB_BITS */
-        {
-          ap[0] = bp[0];
-          ap[1] = bp[1];
-          rb = 0; /* since p < 2*GMP_NUMB_BITS */
-          sb = 1; /* since c <> 0 */
-        }
-    }
-  else /* bx < cx: swap b and c */
-    {
-      mpfr_exp_t tx;
-      mp_limb_t *tp;
-      tx = bx; bx = cx; cx = tx;
-      tp = bp; bp = cp; cp = tp;
-      goto BGreater2;
-    }
-
-  /* now perform rounding */
-  if (MPFR_UNLIKELY(bx > __gmpfr_emax))
-    return mpfr_overflow (a, rnd_mode, MPFR_SIGN(a));
-
-  MPFR_SET_EXP (a, bx);
-  if (rb == 0 && sb == 0)
-    return 0; /* idem than MPFR_RET(0) and faster */
-  else if (rnd_mode == MPFR_RNDN)
-    {
-      if (rb == 0 || (rb && sb == 0 &&
-                      (ap[0] & (MPFR_LIMB_ONE << sh)) == 0))
-        goto truncate;
-      else
-        goto add_one_ulp;
-    }
-  else if (MPFR_IS_LIKE_RNDZ(rnd_mode, MPFR_IS_NEG(a)))
-    {
-    truncate:
-      MPFR_RET(-MPFR_SIGN(a));
-    }
-  else /* round away from zero */
-    {
-    add_one_ulp:
-      ap[0] += MPFR_LIMB_ONE << sh;
-      ap[1] += (ap[0] == 0);
-      if (ap[1] == 0)
-        {
-          ap[1] = MPFR_LIMB_HIGHBIT;
-          if (MPFR_LIKELY(bx + 1 <= __gmpfr_emax))
-            MPFR_SET_EXP (a, bx + 1);
-          else /* overflow */
-            return mpfr_overflow (a, rnd_mode, MPFR_SIGN(a));
-        }
-      MPFR_RET(MPFR_SIGN(a));
-    }
-}
-
-/* compute sign(b) * (|b| + |c|).
+/* compute sign(b) * (|b| + |c|)
    Returns 0 iff result is exact,
    a negative value when the result is less than the exact value,
    a positive value otherwise. */
-MPFR_HOT_FUNCTION_ATTR int
+int
 mpfr_add1sp (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
 {
   mpfr_uexp_t d;
@@ -352,7 +96,6 @@ mpfr_add1sp (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
   mpfr_exp_t bx;
   mp_limb_t limb;
   int inexact;
-  int neg;
   MPFR_TMP_DECL(marker);
 
   MPFR_TMP_MARK(marker);
@@ -360,65 +103,45 @@ mpfr_add1sp (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
   MPFR_ASSERTD(MPFR_PREC(a) == MPFR_PREC(b) && MPFR_PREC(b) == MPFR_PREC(c));
   MPFR_ASSERTD(MPFR_IS_PURE_FP(b));
   MPFR_ASSERTD(MPFR_IS_PURE_FP(c));
-
-  MPFR_SET_SAME_SIGN (a, b);
+  MPFR_ASSERTD(MPFR_GET_EXP(b) >= MPFR_GET_EXP(c));
 
   /* Read prec and num of limbs */
-  p = MPFR_GET_PREC (b);
-  if (p < GMP_NUMB_BITS)
-    return mpfr_add1sp1 (a, b, c, rnd_mode, p);
-
-  if (GMP_NUMB_BITS < p && p < 2 * GMP_NUMB_BITS)
-    return mpfr_add1sp2 (a, b, c, rnd_mode, p);
-
-  /* We need to get the sign before the possible exchange. */
-  neg = MPFR_IS_NEG (b);
-
-  bx = MPFR_GET_EXP(b);
-  if (bx < MPFR_GET_EXP(c))
-    {
-      mpfr_srcptr t = b;
-      bx = MPFR_GET_EXP(c);
-      b = c;
-      c = t;
-    }
-  MPFR_ASSERTD(bx >= MPFR_GET_EXP(c));
-
+  p = MPFR_PREC(b);
   n = MPFR_PREC2LIMBS (p);
   MPFR_UNSIGNED_MINUS_MODULO(sh, p);
+  bx = MPFR_GET_EXP(b);
   d = (mpfr_uexp_t) (bx - MPFR_GET_EXP(c));
 
   DEBUG (printf ("New add1sp with diff=%lu\n", (unsigned long) d));
 
-  if (d == 0)
+  if (MPFR_UNLIKELY(d == 0))
     {
       /* d==0 */
       DEBUG( mpfr_print_mant_binary("C= ", MPFR_MANT(c), p) );
       DEBUG( mpfr_print_mant_binary("B= ", MPFR_MANT(b), p) );
       bx++;                                /* exp + 1 */
       ap = MPFR_MANT(a);
-      limb = mpn_add_n (ap, MPFR_MANT(b), MPFR_MANT(c), n);
+      limb = mpn_add_n(ap, MPFR_MANT(b), MPFR_MANT(c), n);
       DEBUG( mpfr_print_mant_binary("A= ", ap, p) );
       MPFR_ASSERTD(limb != 0);             /* There must be a carry */
       limb = ap[0];                        /* Get LSB (In fact, LSW) */
-      mpn_rshift (ap, ap, n, 1);           /* Shift mantissa A */
+      mpn_rshift(ap, ap, n, 1);            /* Shift mantissa A */
       ap[n-1] |= MPFR_LIMB_HIGHBIT;        /* Set MSB */
       ap[0]   &= ~MPFR_LIMB_MASK(sh);      /* Clear LSB bit */
-
-      if ((limb & (MPFR_LIMB_ONE << sh)) == 0) /* Check exact case */
+      if (MPFR_LIKELY((limb&(MPFR_LIMB_ONE<<sh)) == 0)) /* Check exact case */
         { inexact = 0; goto set_exponent; }
       /* Zero: Truncate
          Nearest: Even Rule => truncate or add 1
          Away: Add 1 */
-      if (MPFR_LIKELY (rnd_mode == MPFR_RNDN))
+      if (MPFR_LIKELY(rnd_mode==MPFR_RNDN))
         {
-          if ((ap[0] & (MPFR_LIMB_ONE << sh)) == 0)
+          if (MPFR_LIKELY((ap[0]&(MPFR_LIMB_ONE<<sh))==0))
             { inexact = -1; goto set_exponent; }
           else
             goto add_one_ulp;
         }
-      MPFR_UPDATE_RND_MODE(rnd_mode, neg);
-      if (rnd_mode == MPFR_RNDZ)
+      MPFR_UPDATE_RND_MODE(rnd_mode, MPFR_IS_NEG(b));
+      if (rnd_mode==MPFR_RNDZ)
         { inexact = -1; goto set_exponent; }
       else
         goto add_one_ulp;
@@ -431,7 +154,8 @@ mpfr_add1sp (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
           /* Away:    Add 1
              Nearest: Trunc
              Zero:    Trunc */
-          if (rnd_mode == MPFR_RNDN || MPFR_IS_LIKE_RNDZ (rnd_mode, neg))
+          if (MPFR_LIKELY (rnd_mode==MPFR_RNDN
+                           || MPFR_IS_LIKE_RNDZ (rnd_mode, MPFR_IS_NEG (b))))
             {
             copy_set_exponent:
               ap = MPFR_MANT (a);
@@ -453,25 +177,25 @@ mpfr_add1sp (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
           /* Away:    Add 1
              Nearest: Even Rule if C is a power of 2, else Add 1
              Zero:    Trunc */
-          if (MPFR_LIKELY (rnd_mode == MPFR_RNDN))
+          if (MPFR_LIKELY(rnd_mode==MPFR_RNDN))
             {
               /* Check if C was a power of 2 */
               cp = MPFR_MANT(c);
-              if (MPFR_UNLIKELY (cp[n-1] == MPFR_LIMB_HIGHBIT))
+              if (MPFR_UNLIKELY(cp[n-1] == MPFR_LIMB_HIGHBIT))
                 {
                   mp_size_t k = n-1;
-                  do
+                  do {
                     k--;
-                  while (k >= 0 && cp[k] == 0);
-                  if (MPFR_UNLIKELY (k < 0))
+                  } while (k>=0 && cp[k]==0);
+                  if (MPFR_UNLIKELY(k<0))
                     /* Power of 2: Even rule */
-                    if (((MPFR_MANT (b))[0] & (MPFR_LIMB_ONE << sh)) == 0)
+                    if ((MPFR_MANT (b)[0]&(MPFR_LIMB_ONE<<sh))==0)
                       goto copy_set_exponent;
                 }
               /* Not a Power of 2 */
               goto copy_add_one_ulp;
             }
-          else if (MPFR_IS_LIKE_RNDZ (rnd_mode, neg))
+          else if (MPFR_IS_LIKE_RNDZ (rnd_mode, MPFR_IS_NEG (b)))
             goto copy_set_exponent;
           else
             goto copy_add_one_ulp;
@@ -492,10 +216,10 @@ mpfr_add1sp (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
 
         dm = d % GMP_NUMB_BITS;
         m = d / GMP_NUMB_BITS;
-        if (MPFR_UNLIKELY (dm == 0))
+        if (MPFR_UNLIKELY(dm == 0))
           {
             /* dm = 0 and m > 0: Just copy */
-            MPFR_ASSERTD (m != 0);
+            MPFR_ASSERTD(m!=0);
             MPN_COPY(cp, MPFR_MANT(c)+m, n-m);
             MPN_ZERO(cp+n-m, m);
           }
@@ -517,29 +241,27 @@ mpfr_add1sp (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
       DEBUG( mpfr_print_mant_binary("B=    ", MPFR_MANT(b), p) );
       DEBUG( mpfr_print_mant_binary("After ", cp, p) );
 
-      /* Compute bcp=Cp and bcp1=C'p+1: bcp is the first neglected bit
-         (round bit), and bcp1 corresponds to the remaining bits (sticky bit).
-      */
-      if (sh > 0)
+      /* Compute bcp=Cp and bcp1=C'p+1 */
+      if (MPFR_LIKELY (sh > 0))
         {
           /* Try to compute them from C' rather than C */
-          bcp = (cp[0] & (MPFR_LIMB_ONE<<(sh-1)));
-          if (MPFR_LIKELY (cp[0] & MPFR_LIMB_MASK (sh - 1)))
+          bcp = (cp[0] & (MPFR_LIMB_ONE<<(sh-1))) ;
+          if (MPFR_LIKELY(cp[0]&MPFR_LIMB_MASK(sh-1)))
             bcp1 = 1;
           else
             {
               /* We can't compute C'p+1 from C'. Compute it from C */
               /* Start from bit x=p-d+sh in mantissa C
                  (+sh since we have already looked sh bits in C'!) */
-              mpfr_prec_t x = p - d + sh - 1;
-              if (MPFR_LIKELY (x > p))
+              mpfr_prec_t x = p-d+sh-1;
+              if (MPFR_LIKELY(x>p))
                 /* We are already looked at all the bits of c, so C'p+1 = 0*/
                 bcp1 = 0;
               else
                 {
                   mp_limb_t *tp = MPFR_MANT(c);
-                  mp_size_t kx = n - 1 - (x / GMP_NUMB_BITS);
-                  mpfr_prec_t sx = GMP_NUMB_BITS - 1 - (x % GMP_NUMB_BITS);
+                  mp_size_t kx = n-1 - (x / GMP_NUMB_BITS);
+                  mpfr_prec_t sx = GMP_NUMB_BITS-1-(x%GMP_NUMB_BITS);
                   DEBUG (printf ("(First) x=%lu Kx=%ld Sx=%lu\n",
                                  (unsigned long) x, (long) kx,
                                  (unsigned long) sx));
@@ -550,9 +272,9 @@ mpfr_add1sp (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
                     {
                       /*kx += (sx==0);*/
                       /*If sx==0, tp[kx] hasn't been checked*/
-                      do
+                      do {
                         kx--;
-                      while (kx >= 0 && tp[kx] == 0);
+                      } while (kx>=0 && tp[kx]==0);
                       bcp1 = (kx >= 0);
                     }
                 }
@@ -563,20 +285,20 @@ mpfr_add1sp (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
           /* Compute Cp and C'p+1 from C with sh=0 */
           mp_limb_t *tp = MPFR_MANT(c);
           /* Start from bit x=p-d in mantissa C */
-          mpfr_prec_t  x = p - d;
-          mp_size_t   kx = n - 1 - (x / GMP_NUMB_BITS);
-          mpfr_prec_t sx = GMP_NUMB_BITS - 1 - (x % GMP_NUMB_BITS);
-          MPFR_ASSERTD (p >= d);
-          bcp = tp[kx] & (MPFR_LIMB_ONE << sx);
+          mpfr_prec_t  x = p-d;
+          mp_size_t   kx = n-1 - (x / GMP_NUMB_BITS);
+          mpfr_prec_t sx = GMP_NUMB_BITS-1-(x%GMP_NUMB_BITS);
+          MPFR_ASSERTD(p >= d);
+          bcp = tp[kx] & (MPFR_LIMB_ONE<<sx);
           /* Looks at the last bits of limb kx (If sx=0, does nothing)*/
-          if (tp[kx] & MPFR_LIMB_MASK(sx))
+          if (tp[kx]&MPFR_LIMB_MASK(sx))
             bcp1 = 1;
           else
             {
-              do
+              do {
                 kx--;
-              while (kx >= 0 && tp[kx] == 0);
-              bcp1 = (kx >= 0);
+              } while (kx>=0 && tp[kx]==0);
+              bcp1 = (kx>=0);
             }
         }
       DEBUG (printf("sh=%u Cp=%lu C'p+1=%lu\n", sh,
@@ -595,7 +317,7 @@ mpfr_add1sp (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
       if (MPFR_UNLIKELY (limb))
         {
           limb = ap[0] & (MPFR_LIMB_ONE<<sh); /* Get LSB */
-          mpn_rshift (ap, ap, n, 1);          /* Shift mantissa */
+          mpn_rshift (ap, ap, n, 1);          /* Shift mantissa*/
           bx++;                               /* Fix exponent */
           ap[n-1] |= MPFR_LIMB_HIGHBIT;       /* Set MSB */
           ap[0]   &= mask;                    /* Clear LSB bit */
@@ -614,22 +336,28 @@ mpfr_add1sp (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
                    Even rule else */
       if (MPFR_LIKELY(rnd_mode == MPFR_RNDN))
         {
-          inexact = - (bcp1 != 0);
-          if (bcp == 0)
-            goto set_exponent;
+          if (MPFR_LIKELY(bcp == 0))
+            { inexact = MPFR_LIKELY(bcp1) ? -1 : 0; goto set_exponent; }
           else if (MPFR_UNLIKELY(bcp1==0) && (ap[0]&(MPFR_LIMB_ONE<<sh))==0)
             { inexact = -1; goto set_exponent; }
           else
             goto add_one_ulp;
         }
-      MPFR_UPDATE_RND_MODE(rnd_mode, neg);
-      inexact = -(bcp != 0 || bcp1 != 0);
-      if (rnd_mode == MPFR_RNDZ || inexact == 0)
-        goto set_exponent;
+      MPFR_UPDATE_RND_MODE(rnd_mode, MPFR_IS_NEG(b));
+      if (rnd_mode == MPFR_RNDZ)
+        {
+          inexact = MPFR_LIKELY(bcp || bcp1) ? -1 : 0;
+          goto set_exponent;
+        }
       else
-        goto add_one_ulp;
+        {
+          if (MPFR_UNLIKELY(bcp==0 && bcp1==0))
+            { inexact = 0; goto set_exponent; }
+          else
+            goto add_one_ulp;
+        }
     }
-  MPFR_RET_NEVER_GO_HERE();
+  MPFR_ASSERTN(0);
 
  add_one_ulp:
   /* add one unit in last place to a */
@@ -648,9 +376,11 @@ mpfr_add1sp (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
     {
       DEBUG( printf("Overflow\n") );
       MPFR_TMP_FREE(marker);
-      return mpfr_overflow (a, rnd_mode, MPFR_SIGN(a));
+      MPFR_SET_SAME_SIGN(a,b);
+      return mpfr_overflow(a, rnd_mode, MPFR_SIGN(a));
     }
   MPFR_SET_EXP (a, bx);
+  MPFR_SET_SAME_SIGN(a,b);
 
   MPFR_TMP_FREE(marker);
   MPFR_RET (inexact * MPFR_INT_SIGN (a));

@@ -21,6 +21,8 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "mpfr-test.h"
 
@@ -233,7 +235,7 @@ special_erf (void)
   if (mpfr_cmp (x, y))
     {
       printf ("Error: erf for prec=32 (2)\n");
-      mpfr_dump (x);
+      mpfr_print_binary (x); printf ("\n");
       exit (1);
     }
 
@@ -649,8 +651,8 @@ main (int argc, char *argv[])
   test_erfc ();
   reduced_expo_range ();
 
-  test_generic_erf (MPFR_PREC_MIN, 100, 15);
-  test_generic_erfc (MPFR_PREC_MIN, 100, 15);
+  test_generic_erf (2, 100, 15);
+  test_generic_erfc (2, 100, 15);
 
   data_check ("data/erf",  mpfr_erf,  "mpfr_erf");
   data_check ("data/erfc", mpfr_erfc, "mpfr_erfc");
