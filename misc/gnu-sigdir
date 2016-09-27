@@ -1,10 +1,12 @@
 #!/bin/sh
 
-# Run this script on the list of tarballs to prepare the FTP upload
-# for ftp.gnu.org. See:
-#   https://www.gnu.org/prep/maintain/maintain.html#Automated-FTP-Uploads
-#
 # Usage: gnu-sigdir <release>
+#
+# To be run from the directory containing the tarballs to prepare
+# the FTP upload for ftp.gnu.org.
+#
+# Details about the FTP upload:
+#   https://www.gnu.org/prep/maintain/maintain.html#Automated-FTP-Uploads
 
 set -e
 
