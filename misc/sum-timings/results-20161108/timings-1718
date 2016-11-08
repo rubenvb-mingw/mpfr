@@ -1,0 +1,481 @@
+nc=0 seed=0 rn=0
+$ ./sum-timings 0 10 0 10000000 10 100000000 200 0
+sum_old took  0.8582 s  (6.84935e+24155188)
+sum_new took  0.0000 s  (6.84935e+24155188)
+sum_add took  0.0385 s  (6.84935e+24155188)
+
+nc=0 seed=0 rn=1
+$ ./sum-timings 1 10 0 10000000 10 100000000 200 0
+sum_old took  0.7007 s  (-1.60733e+23929300)
+sum_new took  0.0000 s  (-1.60733e+23929300)
+sum_add took  0.0384 s  (-1.60533e+23929300)
+
+nc=0 seed=0 rn=2
+$ ./sum-timings 2 10 0 10000000 10 100000000 200 0
+sum_old took  0.7101 s  (-1.60733e+23929300)
+sum_new took  0.0000 s  (-1.60733e+23929300)
+sum_add took  0.0385 s  (-1.60533e+23929300)
+
+nc=0 seed=0 rn=3
+$ ./sum-timings 3 10 0 10000000 10 100000000 200 0
+sum_old took  0.7862 s  (-1.60934e+23929300)
+sum_new took  0.0000 s  (-1.60934e+23929300)
+sum_add took  0.0404 s  (-1.61135e+23929300)
+
+nc=0 seed=0 rn=4
+$ ./sum-timings 4 10 0 10000000 10 100000000 200 0
+sum_old took  0.7708 s  (-1.60934e+23929300)
+sum_new took  0.0000 s  (-1.60934e+23929300)
+sum_add took  0.0385 s  (-1.61135e+23929300)
+
+nc=0 seed=1 rn=0
+$ ./sum-timings 0 10 0 10000000 10 100000000 200 1
+sum_old took  0.8116 s  (-4.37987e+29112482)
+sum_new took  0.0000 s  (-4.37987e+29112482)
+sum_add took  0.0001 s  (-4.37987e+29112482)
+
+nc=0 seed=1 rn=1
+$ ./sum-timings 1 10 0 10000000 10 100000000 200 1
+sum_old took  0.5867 s  (-5.82646e+23986860)
+sum_new took  0.0000 s  (-5.82646e+23986860)
+sum_add took  0.0001 s  (-5.79814e+23986860)
+
+nc=0 seed=1 rn=2
+$ ./sum-timings 2 10 0 10000000 10 100000000 200 1
+sum_old took  0.5884 s  (-5.82646e+23986860)
+sum_new took  0.0000 s  (-5.82646e+23986860)
+sum_add took  0.0001 s  (-5.79814e+23986860)
+
+nc=0 seed=1 rn=3
+$ ./sum-timings 3 10 0 10000000 10 100000000 200 1
+sum_old took  0.6556 s  (-5.83354e+23986860)
+sum_new took  0.0000 s  (-5.83354e+23986860)
+sum_add took  0.0001 s  (-5.86185e+23986860)
+
+nc=0 seed=1 rn=4
+$ ./sum-timings 4 10 0 10000000 10 100000000 200 1
+sum_old took  0.6200 s  (-5.83354e+23986860)
+sum_new took  0.0000 s  (-5.83354e+23986860)
+sum_add took  0.0001 s  (-5.86185e+23986860)
+
+nc=0 seed=2 rn=0
+$ ./sum-timings 0 10 0 10000000 10 100000000 200 2
+sum_old took  1.1132 s  (-2.06734e+24169908)
+sum_new took  0.0000 s  (-2.06734e+24169908)
+sum_add took  0.0001 s  (-2.06734e+24169908)
+
+nc=0 seed=2 rn=1
+$ ./sum-timings 1 10 0 10000000 10 100000000 200 2
+sum_old took  0.6606 s  (-2.90559e+27324524)
+sum_new took  0.0000 s  (-2.90559e+27324524)
+sum_add took  0.0001 s  (-2.89753e+27324524)
+
+nc=0 seed=2 rn=2
+$ ./sum-timings 2 10 0 10000000 10 100000000 200 2
+sum_old took  0.6324 s  (-2.90559e+27324524)
+sum_new took  0.0000 s  (-2.90559e+27324524)
+sum_add took  0.0001 s  (-2.89753e+27324524)
+
+nc=0 seed=2 rn=3
+$ ./sum-timings 3 10 0 10000000 10 100000000 200 2
+sum_old took  0.6344 s  (-2.90962e+27324524)
+sum_new took  0.0000 s  (-2.90962e+27324524)
+sum_add took  0.0001 s  (-2.9338e+27324524)
+
+nc=0 seed=2 rn=4
+$ ./sum-timings 4 10 0 10000000 10 100000000 200 2
+sum_old took  0.6336 s  (-2.90962e+27324524)
+sum_new took  0.0000 s  (-2.90962e+27324524)
+sum_add took  0.0001 s  (-2.9338e+27324524)
+
+nc=0 seed=3 rn=0
+$ ./sum-timings 0 10 0 10000000 10 100000000 200 3
+sum_old took  0.5923 s  (-5.43233e+28301163)
+sum_new took  0.0000 s  (-5.43233e+28301163)
+sum_add took  0.0001 s  (-5.43233e+28301163)
+
+nc=0 seed=3 rn=1
+$ ./sum-timings 1 10 0 10000000 10 100000000 200 3
+sum_old took  1.1146 s  (-1.62653e+23552115)
+sum_new took  0.0000 s  (-1.62653e+23552115)
+sum_add took  0.0001 s  (-1.62106e+23552115)
+
+nc=0 seed=3 rn=2
+$ ./sum-timings 2 10 0 10000000 10 100000000 200 3
+sum_old took  1.0063 s  (-1.62653e+23552115)
+sum_new took  0.0000 s  (-1.62653e+23552115)
+sum_add took  0.0001 s  (-1.62106e+23552115)
+
+nc=0 seed=3 rn=3
+$ ./sum-timings 3 10 0 10000000 10 100000000 200 3
+sum_old took  1.0328 s  (-1.62927e+23552115)
+sum_new took  0.0000 s  (-1.62927e+23552115)
+sum_add took  0.0001 s  (-1.63201e+23552115)
+
+nc=0 seed=3 rn=4
+$ ./sum-timings 4 10 0 10000000 10 100000000 200 3
+sum_old took  1.0447 s  (-1.62927e+23552115)
+sum_new took  0.0000 s  (-1.62927e+23552115)
+sum_add took  0.0001 s  (-1.63201e+23552115)
+
+nc=1 seed=0 rn=0
+$ ./sum-timings 0 10 1 10000000 10 100000000 200 0
+sum_old took  1.0430 s  (-5.43505e+21144888)
+sum_new took  4.8327 s  (-5.43505e+21144888)
+sum_add took  0.0412 s  (1.90728e+24155185)
+
+nc=1 seed=0 rn=1
+$ ./sum-timings 1 10 1 10000000 10 100000000 200 0
+sum_old took  0.6310 s  (-6.16207e+9867228)
+sum_new took  3.5853 s  (-6.16207e+9867228)
+sum_add took  0.0404 s  (3.22163e+23929297)
+
+nc=1 seed=0 rn=2
+$ ./sum-timings 2 10 1 10000000 10 100000000 200 0
+sum_old took  0.5656 s  (-6.16207e+9867228)
+sum_new took  3.2450 s  (-6.16207e+9867228)
+sum_add took  0.0379 s  (3.23731e+23929297)
+
+nc=1 seed=0 rn=3
+$ ./sum-timings 3 10 1 10000000 10 100000000 200 0
+sum_old took  0.5459 s  (-6.17038e+9867228)
+sum_new took  3.2513 s  (-6.17038e+9867228)
+sum_add took  0.0379 s  (-6.81951e+23929297)
+
+nc=1 seed=0 rn=4
+$ ./sum-timings 4 10 1 10000000 10 100000000 200 0
+sum_old took  0.5957 s  (-6.17038e+9867228)
+sum_new took  3.3299 s  (-6.17038e+9867228)
+sum_add took  0.0384 s  (-6.81951e+23929297)
+
+nc=1 seed=1 rn=0
+$ ./sum-timings 0 10 1 10000000 10 100000000 200 1
+sum_old took  1.3289 s  (1.75754e+26102182)
+sum_new took  4.4174 s  (1.75754e+26102182)
+sum_add took  0.0385 s  (1.86893e+29112479)
+
+nc=1 seed=1 rn=1
+$ ./sum-timings 1 10 1 10000000 10 100000000 200 1
+sum_old took  0.3904 s  (-9.02027e+17992231)
+sum_new took  3.2929 s  (-9.02027e+17992231)
+sum_add took  0.0380 s  (1.40899e+23986858)
+
+nc=1 seed=1 rn=2
+$ ./sum-timings 2 10 1 10000000 10 100000000 200 1
+sum_old took  0.4134 s  (-9.02027e+17992231)
+sum_new took  3.4588 s  (-9.02027e+17992231)
+sum_add took  0.0387 s  (1.41867e+23986858)
+
+nc=1 seed=1 rn=3
+$ ./sum-timings 3 10 1 10000000 10 100000000 200 1
+sum_old took  0.3941 s  (-9.03024e+17992231)
+sum_new took  3.3284 s  (-9.03024e+17992231)
+sum_add took  0.0383 s  (-7.14867e+23986857)
+
+nc=1 seed=1 rn=4
+$ ./sum-timings 4 10 1 10000000 10 100000000 200 1
+sum_old took  0.3752 s  (-9.03024e+17992231)
+sum_new took  3.2973 s  (-9.03024e+17992231)
+sum_add took  0.0379 s  (-7.14867e+23986857)
+
+nc=1 seed=2 rn=0
+$ ./sum-timings 0 10 1 10000000 10 100000000 200 2
+sum_old took  1.1880 s  (6.40592e+21159605)
+sum_new took  4.6627 s  (6.40592e+21159605)
+sum_add took  0.0388 s  (-5.5336e+24169904)
+
+nc=1 seed=2 rn=1
+$ ./sum-timings 1 10 1 10000000 10 100000000 200 2
+sum_old took  0.3316 s  (6.65109e+23533963)
+sum_new took  3.3699 s  (6.65109e+23533963)
+sum_add took  0.0380 s  (1.26408e+27324522)
+
+nc=1 seed=2 rn=2
+$ ./sum-timings 2 10 1 10000000 10 100000000 200 2
+sum_old took  0.3261 s  (6.65962e+23533963)
+sum_new took  3.3680 s  (6.65962e+23533963)
+sum_add took  0.0382 s  (1.26723e+27324522)
+
+nc=1 seed=2 rn=3
+$ ./sum-timings 3 10 1 10000000 10 100000000 200 2
+sum_old took  0.3308 s  (6.65109e+23533963)
+sum_new took  3.3774 s  (6.65109e+23533963)
+sum_add took  0.0382 s  (-1.55688e+27324522)
+
+nc=1 seed=2 rn=4
+$ ./sum-timings 4 10 1 10000000 10 100000000 200 2
+sum_old took  0.3334 s  (6.65962e+23533963)
+sum_new took  3.3497 s  (6.65962e+23533963)
+sum_add took  0.0380 s  (-1.55688e+27324522)
+
+nc=1 seed=3 rn=0
+$ ./sum-timings 0 10 1 10000000 10 100000000 200 3
+sum_old took  0.3201 s  (-5.66741e+19841698)
+sum_new took  3.2273 s  (-5.66741e+19841698)
+sum_add took  0.0377 s  (1.80098e+28301160)
+
+nc=1 seed=3 rn=1
+$ ./sum-timings 1 10 1 10000000 10 100000000 200 3
+sum_old took  1.0412 s  (7.88215e+20541814)
+sum_new took  5.1071 s  (7.88215e+20541814)
+sum_add took  0.0382 s  (2.15265e+23552112)
+
+nc=1 seed=3 rn=2
+$ ./sum-timings 2 10 1 10000000 10 100000000 200 3
+sum_old took  1.0547 s  (7.89728e+20541814)
+sum_new took  5.2570 s  (7.89728e+20541814)
+sum_add took  0.0381 s  (2.17404e+23552112)
+
+nc=1 seed=3 rn=3
+$ ./sum-timings 3 10 1 10000000 10 100000000 200 3
+sum_old took  1.0785 s  (7.88215e+20541814)
+sum_new took  5.2154 s  (7.88215e+20541814)
+sum_add took  0.0384 s  (-5.77604e+23552111)
+
+nc=1 seed=3 rn=4
+$ ./sum-timings 4 10 1 10000000 10 100000000 200 3
+sum_old took  1.0863 s  (7.89728e+20541814)
+sum_new took  5.1503 s  (7.89728e+20541814)
+sum_add took  0.0381 s  (-5.77604e+23552111)
+
+nc=2 seed=0 rn=0
+$ ./sum-timings 0 10 2 10000000 10 100000000 200 0
+sum_old took  0.9150 s  (-6.68527e+9867228)
+sum_new took  7.4990 s  (-6.68527e+9867228)
+sum_add took  0.0387 s  (-1.90728e+24155185)
+
+nc=2 seed=0 rn=1
+$ ./sum-timings 1 10 2 10000000 10 100000000 200 0
+sum_old took  1.2096 s  (-5.09877e+6856927)
+sum_new took  7.0297 s  (-5.09877e+6856927)
+sum_add took  0.0885 s  (-1.82638e+9867226)
+
+nc=2 seed=0 rn=2
+$ ./sum-timings 2 10 2 10000000 10 100000000 200 0
+sum_old took  1.2125 s  (-5.09877e+6856927)
+sum_new took  7.0933 s  (-5.09877e+6856927)
+sum_add took  0.0905 s  (2.32596e+9867226)
+
+nc=2 seed=0 rn=3
+$ ./sum-timings 3 10 2 10000000 10 100000000 200 0
+sum_old took  1.3132 s  (-5.1045e+6856927)
+sum_new took  7.1874 s  (-5.1045e+6856927)
+sum_add took  0.1017 s  (-1.82963e+9867226)
+
+nc=2 seed=0 rn=4
+$ ./sum-timings 4 10 2 10000000 10 100000000 200 0
+sum_old took  1.2634 s  (-5.1045e+6856927)
+sum_new took  7.2618 s  (-5.1045e+6856927)
+sum_add took  0.0934 s  (2.32596e+9867226)
+
+nc=2 seed=1 rn=0
+$ ./sum-timings 0 10 2 10000000 10 100000000 200 1
+sum_old took  1.3006 s  (1.73216e+17580186)
+sum_new took  9.1045 s  (1.73216e+17580186)
+sum_add took  0.0393 s  (-1.86893e+29112479)
+
+nc=2 seed=1 rn=1
+$ ./sum-timings 1 10 2 10000000 10 100000000 200 1
+sum_old took  1.1155 s  (-8.85222e+14981930)
+sum_new took  6.5811 s  (-8.85222e+14981930)
+sum_add took  0.0388 s  (7.01731e+23986857)
+
+nc=2 seed=1 rn=2
+$ ./sum-timings 2 10 2 10000000 10 100000000 200 1
+sum_old took  1.1840 s  (-8.85222e+14981930)
+sum_new took  6.7779 s  (-8.85222e+14981930)
+sum_add took  0.0391 s  (7.05188e+23986857)
+
+nc=2 seed=1 rn=3
+$ ./sum-timings 3 10 2 10000000 10 100000000 200 1
+sum_old took  1.1887 s  (-8.86599e+14981930)
+sum_new took  6.6372 s  (-8.86599e+14981930)
+sum_add took  0.0387 s  (-7.1625e+23986857)
+
+nc=2 seed=1 rn=4
+$ ./sum-timings 4 10 2 10000000 10 100000000 200 1
+sum_old took  1.1381 s  (-8.86599e+14981930)
+sum_new took  6.5928 s  (-8.86599e+14981930)
+sum_add took  0.0387 s  (-7.1625e+23986857)
+
+nc=2 seed=2 rn=0
+$ ./sum-timings 0 10 2 10000000 10 100000000 200 2
+sum_old took  1.4522 s  (-4.43439e+18149305)
+sum_new took  8.2626 s  (-4.43439e+18149305)
+sum_add took  0.0390 s  (-5.5336e+24169904)
+
+nc=2 seed=2 rn=1
+$ ./sum-timings 1 10 2 10000000 10 100000000 200 2
+sum_old took  0.5425 s  (-8.23884e+17130697)
+sum_new took  6.5760 s  (-8.23884e+17130697)
+sum_add took  0.0384 s  (-8.61086e+27324521)
+
+nc=2 seed=2 rn=2
+$ ./sum-timings 2 10 2 10000000 10 100000000 200 2
+sum_old took  0.5434 s  (-8.23884e+17130697)
+sum_new took  6.8009 s  (-8.23884e+17130697)
+sum_add took  0.0383 s  (7.50105e+27324521)
+
+nc=2 seed=2 rn=3
+$ ./sum-timings 3 10 2 10000000 10 100000000 200 2
+sum_old took  0.5420 s  (-8.2488e+17130697)
+sum_new took  6.6048 s  (-8.2488e+17130697)
+sum_add took  0.0382 s  (-8.68957e+27324521)
+
+nc=2 seed=2 rn=4
+$ ./sum-timings 4 10 2 10000000 10 100000000 200 2
+sum_old took  0.5431 s  (-8.2488e+17130697)
+sum_new took  7.2695 s  (-8.2488e+17130697)
+sum_add took  0.0384 s  (7.50105e+27324521)
+
+nc=2 seed=3 rn=0
+$ ./sum-timings 0 10 2 10000000 10 100000000 200 3
+sum_old took  1.2966 s  (5.95074e+13341445)
+sum_new took  7.6263 s  (5.95074e+13341445)
+sum_add took  0.0391 s  (-3.32893e+19841694)
+
+nc=2 seed=3 rn=1
+$ ./sum-timings 1 10 2 10000000 10 100000000 200 3
+sum_old took  1.3489 s  (-3.06077e+14368877)
+sum_new took  8.7320 s  (-3.06077e+14368877)
+sum_add took  0.0390 s  (-1.03541e+23552113)
+
+nc=2 seed=3 rn=2
+$ ./sum-timings 2 10 2 10000000 10 100000000 200 3
+sum_old took  1.3343 s  (-3.06077e+14368877)
+sum_new took  8.8235 s  (-3.06077e+14368877)
+sum_add took  0.0391 s  (5.76267e+23552111)
+
+nc=2 seed=3 rn=3
+$ ./sum-timings 3 10 2 10000000 10 100000000 200 3
+sum_old took  1.3458 s  (-3.06418e+14368877)
+sum_new took  8.9630 s  (-3.06418e+14368877)
+sum_add took  0.0386 s  (-1.03969e+23552113)
+
+nc=2 seed=3 rn=4
+$ ./sum-timings 4 10 2 10000000 10 100000000 200 3
+sum_old took  1.3209 s  (-3.06418e+14368877)
+sum_new took  8.6136 s  (-3.06418e+14368877)
+sum_add took  0.0387 s  (5.76267e+23552111)
+
+nc=3 seed=0 rn=0
+$ ./sum-timings 0 10 3 10000000 10 100000000 200 0
+sum_old took  1.2741 s  (2.2461e+5598229)
+sum_new took 10.5477 s  (2.2461e+5598229)
+sum_add took  0.0394 s  (1.90728e+24155185)
+
+nc=3 seed=0 rn=1
+$ ./sum-timings 1 10 3 10000000 10 100000000 200 0
+sum_old took  1.9707 s  (-6.76664e+836326)
+sum_new took 14.8064 s  (-6.76664e+836326)
+sum_add took  0.0392 s  (-1.81665e+9867226)
+
+nc=3 seed=0 rn=2
+$ ./sum-timings 2 10 3 10000000 10 100000000 200 0
+sum_old took  1.9703 s  (-6.76664e+836326)
+sum_new took 14.8257 s  (-6.76664e+836326)
+sum_add took  0.0393 s  (1.49874e+9867226)
+
+nc=3 seed=0 rn=3
+$ ./sum-timings 3 10 3 10000000 10 100000000 200 0
+sum_old took  1.9665 s  (-6.77539e+836326)
+sum_new took 15.5789 s  (-6.77539e+836326)
+sum_add took  0.0392 s  (-1.83287e+9867226)
+
+nc=3 seed=0 rn=4
+$ ./sum-timings 4 10 3 10000000 10 100000000 200 0
+sum_old took  1.9713 s  (-6.77539e+836326)
+sum_new took 14.8553 s  (-6.77539e+836326)
+sum_add took  0.0393 s  (1.49874e+9867226)
+
+nc=3 seed=1 rn=0
+$ ./sum-timings 0 10 3 10000000 10 100000000 200 1
+sum_old took  1.4064 s  (1.04333e+14569886)
+sum_new took 11.6962 s  (1.04333e+14569886)
+sum_add took  0.0391 s  (-7.89996e+28133179)
+
+nc=3 seed=1 rn=1
+$ ./sum-timings 1 10 3 10000000 10 100000000 200 1
+sum_old took  1.1775 s  (-1.3839e+11935352)
+sum_new took 10.5836 s  (-1.3839e+11935352)
+sum_add took  0.0392 s  (1.40623e+23986858)
+
+nc=3 seed=1 rn=2
+$ ./sum-timings 2 10 3 10000000 10 100000000 200 1
+sum_old took  1.1753 s  (-1.3839e+11935352)
+sum_new took 10.5422 s  (-1.3839e+11935352)
+sum_add took  0.0392 s  (1.41314e+23986858)
+
+nc=3 seed=1 rn=3
+$ ./sum-timings 3 10 3 10000000 10 100000000 200 1
+sum_old took  1.1797 s  (-1.38569e+11935352)
+sum_new took 10.3553 s  (-1.38569e+11935352)
+sum_add took  0.0391 s  (-4.51005e+23986855)
+
+nc=3 seed=1 rn=4
+$ ./sum-timings 4 10 3 10000000 10 100000000 200 1
+sum_old took  1.1820 s  (-1.38569e+11935352)
+sum_new took 10.4256 s  (-1.38569e+11935352)
+sum_add took  0.0392 s  (-4.51005e+23986855)
+
+nc=3 seed=2 rn=0
+$ ./sum-timings 0 10 3 10000000 10 100000000 200 2
+sum_old took  1.1392 s  (3.96914e+10418403)
+sum_new took 10.8144 s  (3.96914e+10418403)
+sum_add took  0.0392 s  (-5.5336e+24169904)
+
+nc=3 seed=2 rn=1
+$ ./sum-timings 1 10 3 10000000 10 100000000 200 2
+sum_old took  1.0645 s  (-2.7796e+14120396)
+sum_new took 10.7410 s  (-2.7796e+14120396)
+sum_add took  0.0393 s  (4.58879e+27324521)
+
+nc=3 seed=2 rn=2
+$ ./sum-timings 2 10 3 10000000 10 100000000 200 2
+sum_old took  1.0435 s  (-2.7796e+14120396)
+sum_new took 10.4615 s  (-2.7796e+14120396)
+sum_add took  0.0389 s  (4.60453e+27324521)
+
+nc=3 seed=2 rn=3
+$ ./sum-timings 3 10 3 10000000 10 100000000 200 2
+sum_old took  1.0288 s  (-2.78304e+14120396)
+sum_new took 10.5019 s  (-2.78304e+14120396)
+sum_add took  0.0390 s  (-1.96145e+27324522)
+
+nc=3 seed=2 rn=4
+$ ./sum-timings 4 10 3 10000000 10 100000000 200 2
+sum_old took  1.0878 s  (-2.78304e+14120396)
+sum_new took 10.7058 s  (-2.78304e+14120396)
+sum_add took  0.0393 s  (-1.96145e+27324522)
+
+nc=3 seed=3 rn=0
+$ ./sum-timings 0 10 3 10000000 10 100000000 200 3
+sum_old took  1.4269 s  (3.15133e+10331145)
+sum_new took 12.5631 s  (3.15133e+10331145)
+sum_add took  0.0396 s  (3.32893e+19841694)
+
+nc=3 seed=3 rn=1
+$ ./sum-timings 1 10 3 10000000 10 100000000 200 3
+sum_old took  1.3966 s  (-1.67226e+11358577)
+sum_new took 12.0425 s  (-1.67226e+11358577)
+sum_add took  0.0776 s  (2.15532e+23552112)
+
+nc=3 seed=3 rn=2
+$ ./sum-timings 2 10 3 10000000 10 100000000 200 3
+sum_old took  1.3985 s  (-1.67226e+11358577)
+sum_new took 12.1882 s  (-1.67226e+11358577)
+sum_add took  0.0776 s  (2.17136e+23552112)
+
+nc=3 seed=3 rn=3
+$ ./sum-timings 3 10 3 10000000 10 100000000 200 3
+sum_old took  1.3825 s  (-1.67414e+11358577)
+sum_new took 12.0705 s  (-1.67414e+11358577)
+sum_add took  0.0780 s  (-3.33192e+23552112)
+
+nc=3 seed=3 rn=4
+$ ./sum-timings 4 10 3 10000000 10 100000000 200 3
+sum_old took  1.3757 s  (-1.67414e+11358577)
+sum_new took 12.0754 s  (-1.67414e+11358577)
+sum_add took  0.0779 s  (-3.33192e+23552112)
+
+OK
