@@ -10,13 +10,17 @@ mpfr_add (inaccurate and sensitive to the order of the arguments):
 
 4. Configure, e.g. with: ./configure CFLAGS="-march=native -O3"
 
-5. make && make check
+5. Run: make && make check
+   Or with parallel jobs: make -j && make -j check
 
 6. Copy sum-timings.c to the tests directory.
 
 7. Go to the tests directory and run "make sum-timings".
 
 8. Run /path/to/all-timings from the tests directory.
+
+Note: Steps 1-7 are automated by the "prepare" script, which can be
+modified to fit your needs.
 
 To run the timings only for some mpfr_sum, useful to test various
 changes in the trunk:

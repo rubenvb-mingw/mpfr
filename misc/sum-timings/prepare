@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# Run this script from the sum-timings directory. The MPFR tarball
+# will be extracted in a directory named "tmpdir", which must not
+# exist yet.
+
+if [ $# -ne 1 ]; then
+  echo "Usage: $0 <mpfr-tarball>" >&2
+  exit 1
+fi
+
+set -ex
+
+dir=tmpdir
+mkdir "$dir"
+tar -C "$dir" -xf "$1"
+cd "$dir"/mpfr-*
+cp ../../sum-new.c src/
+patch -p1 < ../../mpfr-sums.patch
+./configure CFLAGS="-march=native -O3"
+make -j
+make -j check
+cp ../../sum-timings.c tests/
+cd tests
+make sum-timings
