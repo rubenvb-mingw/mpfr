@@ -26,7 +26,7 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 /* *** NOTE ***
    This file is based on trunk/src/sum.c r10944 of the MPFR repository.
    It has been slightly modified just below to be able to use it as a
-   replacement for the MPFR 3.1.5 src/sum.c file. For the tests, the
+   replacement for the MPFR 3.1.x src/sum.c file. For the tests, the
    now useless test_sort test should be removed. */
 
 #ifndef MPFR_LIMB_MAX
@@ -49,7 +49,9 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 #define MPFR_COV_SET(X) ((void) 0)
 #endif
 
-/* Below is a fix of macros from mpfr-impl.h (not done in MPFR 3.1.x). */
+/* Below is a fix of macros from mpfr-impl.h (they got fixed in MPFR 3.1.5,
+   but the replacement is provided in case this code would be tested with
+   previous MPFR versions). */
 
 #undef MPFR_IS_POS_SIGN
 #define MPFR_IS_POS_SIGN(s1) ((s1) > 0)
@@ -69,7 +71,7 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
    ((rnd) == MPFR_RNDZ && MPFR_IS_POS_SIGN (sign)) ||   \
    ((rnd) == MPFR_RNDA && MPFR_IS_NEG_SIGN (sign)))
 
-/* End of the modifications for MPFR 3.1.5 (in particular). */
+/* End of the modifications for MPFR 3.1.x (in particular). */
 
 /* See the doc/sum.txt file for the algorithm and a part of its proof
 (this will later go into algorithms.tex).
