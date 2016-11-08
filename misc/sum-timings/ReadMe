@@ -1,8 +1,8 @@
-To run the timings for the mpfr_sum implementation from MPFR 3.1.4,
+To run the timings for the mpfr_sum implementation from MPFR 3.1.5,
 the new mpfr_sum implementation and a basic sum implementation with
 mpfr_add (inaccurate and sensitive to the order of the arguments):
 
-1. Extract the MPFR 3.1.4 tarball.
+1. Extract the MPFR 3.1.5 tarball (MPFR 3.1.4 will work too).
 
 2. Copy sum-new.c to the src directory.
 
