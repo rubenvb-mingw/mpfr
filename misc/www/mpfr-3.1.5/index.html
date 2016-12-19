@@ -99,7 +99,7 @@ The key fingerprint is:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2016-12-15). The patches are distributed under the same license as
+update: 2016-12-19). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -168,6 +168,13 @@ bug is fixed by the <a href="patch01"><samp>vasprintf</samp> patch</a>,
 which also provides test cases.<br />
 Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11043&amp;view=revision">11043</a>.</li>
+
+<li id="p2">The function <code>mpfr_strtofr</code> can return an incorrect
+ternary value in the round-to-nearest mode (<code>MPFR_RNDN</code>). This
+bug is fixed by the <a href="patch02"><samp>strtofr</samp> patch</a>,
+which also provides a test case.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11069&amp;view=revision">11069</a>.</li>
 
 </ol>
 
