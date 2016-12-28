@@ -28,6 +28,10 @@
  * between two invocations of the same test, but not completely; a
  * factor larger than 3 can still be obtained (see above). Doing the
  * tests 7 times instead of 5 does not help at all.
+ *
+ * The pseudo-random numbers have changed on 2016-12-28. The rounding mode
+ * was previously used to determine them, but for no good reason; this was
+ * a mistake.
  */
 
 /* Note: It may be useful to check with precy slightly different from precx
@@ -42,11 +46,15 @@ typedef int (*sumf) (mpfr_ptr, mpfr_ptr *const, unsigned long, mpfr_rnd_t);
 # define FP_LIST mpfr_sum
 # define FN_LIST "sum"
 # define sum_ref mpfr_sum
+# define RND_MAX 5
+/* 5 can only be used in the faithful branch or once this branch
+   has been merged in the trunk. */
 #else
 # define N 3
 # define FP_LIST mpfr_sum, mpfr_sum_new, mpfr_sum_add
 # define FN_LIST "sum_old", "sum_new", "sum_add"
 # define sum_ref mpfr_sum_new
+# define RND_MAX 4
 #endif
 
 #define K 5  /* odd */
@@ -84,7 +92,7 @@ check_random (mpfr_rnd_t r, long n, long nc,
       mpfr_init2 (x[i], precx);
       if (i < n - nc)
         {
-          mpfr_urandom (x[i], state, r);
+          mpfr_urandom (x[i], state, MPFR_RNDN);
           if (gmp_urandomm_ui (state, 2))
             mpfr_neg (x[i], x[i], MPFR_RNDN);
           mpfr_mul_2ui (x[i], x[i], gmp_urandomm_ui (state, emax), MPFR_RNDN);
@@ -161,7 +169,7 @@ int main (int argc, char *argv[])
     }
 
   r = atoi (argv[1]);
-  if (r < 0 || r > 4)
+  if (r < 0 || r > RND_MAX)
     {
       fprintf (stderr, "%s: invalid rounding mode = %d\n", argv[0], r);
       exit (1);
