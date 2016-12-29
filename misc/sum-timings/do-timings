@@ -7,11 +7,18 @@ if [ $# -ne 5 ]; then
   exit 1
 fi
 
+case $(sed -n 's/.*MPFR_RND_MAX.*(MPFR_RND\(.\)).*/\1/p' ../src/mpfr-impl.h) in
+  A) rmax=4;;
+  F) rmax=5;;
+  *) echo "$0: can't find MPFR_RND_MAX information" >&2
+     exit 2;;
+esac
+
 for nc in `seq 0 3`
 do
   for seed in `seq 0 3`
   do
-    for rn in `seq 0 4`
+    for rn in `seq 0 $rmax`
     do
       cmd="./sum-timings $rn $1 $nc $2 $3 $4 $5 $seed"
       echo "nc=$nc seed=$seed rn=$rn"
