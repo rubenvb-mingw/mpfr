@@ -6,6 +6,19 @@
 #include <gmp.h>
 #include <mpfr.h>
 
+#ifdef USE_TIMP
+
+#include <timp.h>
+typedef unsigned long long st_time_t;
+#define K 5  /* odd */
+
+#else
+
+typedef clock_t st_time_t;
+#define K 5  /* odd */
+
+#endif
+
 /* Warning! These timings are very inaccurate: in practice, one can get
  * more than a factor 3 (but less than 4) between two invocations. Using
  * only one core improves a bit, but not much (e.g. 0.1192 -> 0.2324 s).
@@ -32,6 +45,9 @@
  * The pseudo-random numbers have changed on 2016-12-28. The rounding mode
  * was previously used to determine them, but for no good reason; this was
  * a mistake.
+ *
+ * Support for timp.h (from tools/mbench) added on 2017-01-02. Compile
+ * with -DUSE_TIMP to use it. But timings are still inaccurate.
  */
 
 /* Note: It may be useful to check with precy slightly different from precx
@@ -57,7 +73,6 @@ typedef int (*sumf) (mpfr_ptr, mpfr_ptr *const, unsigned long, mpfr_rnd_t);
 # define RND_MAX 4
 #endif
 
-#define K 5  /* odd */
 #define SIZE 64
 
 static sumf fp[N] = { FP_LIST };
@@ -65,7 +80,7 @@ static char *fn[N] = { FN_LIST };
 
 int cmp (const void *a, const void *b)
 {
-  return * (clock_t *) b - * (clock_t *) a;
+  return * (st_time_t *) b - * (st_time_t *) a;
 }
 
 static void
@@ -77,7 +92,7 @@ check_random (mpfr_rnd_t r, long n, long nc,
   mpfr_ptr *p;
   long i, j, k;
   gmp_randstate_t state;
-  clock_t c, t[N][K];
+  st_time_t t[N][K];
   char str[N][SIZE];
 
   gmp_randinit_default (state);
@@ -129,10 +144,17 @@ check_random (mpfr_rnd_t r, long n, long nc,
   for (k = 0; k < K; k++)
     for (i = 0; i < N; i++)
       {
+#ifdef USE_TIMP
+        TIMP_OVERHEAD ();
+        t[i][k] = TIMP_MEASURE (fp[i] (s, p, n, r));
+#else
+        st_time_t c;
+
         c = clock ();
         for (j = 0; j < ntests; j++)
           fp[i] (s, p, n, r);
         t[i][k] = clock () - c;
+#endif
         if (k == 0)
           mpfr_snprintf (str[i], SIZE, "%Rg", s);
       }
@@ -141,8 +163,12 @@ check_random (mpfr_rnd_t r, long n, long nc,
     {
       /* The simplest way to get the median in C is to sort... */
       qsort (t[i], K, sizeof t[0][0], cmp);
+#ifdef USE_TIMP
+      printf ("%s took %llu cycles (%s)\n", fn[i], t[i][(K-1)/2], str[i]);
+#else
       printf ("%s took %7.4f s  (%s)\n", fn[i],
               (double) t[i][(K-1)/2] / CLOCKS_PER_SEC, str[i]);
+#endif
     }
 
   for (i = 0; i < n; i++)
