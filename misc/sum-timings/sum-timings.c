@@ -80,7 +80,11 @@ static char *fn[N] = { FN_LIST };
 
 int cmp (const void *a, const void *b)
 {
-  return * (st_time_t *) b - * (st_time_t *) a;
+  st_time_t u, v;
+
+  u = * (st_time_t *) a;
+  v = * (st_time_t *) b;
+  return u < v ? -1 : u > v;
 }
 
 static void
