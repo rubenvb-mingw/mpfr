@@ -141,11 +141,14 @@ check_random (mpfr_rnd_t r, long n, long nc,
   for (i = 0; i < N; i++)
     fp[i] (s, p, n, r);
 
+#ifdef USE_TIMP
+  TIMP_OVERHEAD ();
+#endif
+
   for (k = 0; k < K; k++)
     for (i = 0; i < N; i++)
       {
 #ifdef USE_TIMP
-        TIMP_OVERHEAD ();
         t[i][k] = TIMP_MEASURE (fp[i] (s, p, n, r));
 #else
         st_time_t c;
