@@ -94,7 +94,7 @@ check_random (mpfr_rnd_t r, long n, long nc,
 {
   mpfr_t *x, s;
   mpfr_ptr *p;
-  long i, j, k;
+  long i, k;
   gmp_randstate_t state;
   st_time_t t[N][K];
   char str[N][SIZE];
@@ -156,6 +156,7 @@ check_random (mpfr_rnd_t r, long n, long nc,
         t[i][k] = TIMP_MEASURE (fp[i] (s, p, n, r));
 #else
         st_time_t c;
+        long j;
 
         c = clock ();
         for (j = 0; j < ntests; j++)
