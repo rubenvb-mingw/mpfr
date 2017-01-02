@@ -10,7 +10,7 @@
 
 #include <timp.h>
 typedef unsigned long long st_time_t;
-#define K 5  /* odd */
+#define K 7  /* odd */
 
 #else
 
@@ -172,7 +172,9 @@ check_random (mpfr_rnd_t r, long n, long nc,
       /* The simplest way to get the median in C is to sort... */
       qsort (t[i], K, sizeof t[0][0], cmp);
 #ifdef USE_TIMP
-      printf ("%s took %llu cycles (%s)\n", fn[i], t[i][(K-1)/2], str[i]);
+      /* Let's remove the first and the last measurements. */
+      printf ("%s took %llu to %llu cycles (%s)\n",
+              fn[i], t[i][1], t[i][K-2], str[i]);
 #else
       printf ("%s took %7.4f s  (%s)\n", fn[i],
               (double) t[i][(K-1)/2] / CLOCKS_PER_SEC, str[i]);
