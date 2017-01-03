@@ -10,7 +10,7 @@
 
 #include <timp.h>
 typedef unsigned long long st_time_t;
-#define K 52
+#define K 55  /* odd */
 
 #else
 
@@ -177,10 +177,10 @@ check_random (mpfr_rnd_t r, long n, long nc,
       qsort (t[i], K, sizeof t[0][0], cmp);
 #ifdef USE_TIMP
       /* Let's remove the first and the last measurements. */
-      printf ("%s took %llu to %llu cycles (%s)\n",
-              fn[i], t[i][1], t[i][K-2], str[i]);
+      printf ("%s took %llu cycles [%llu to %llu (+%.1f%%)] (%s)\n",
+              fn[i], t[i][(K-1)/2], t[i][1], t[i][K-2],
+              100.0 * (t[i][K-2] - t[i][1]) / t[i][1], str[i]);
 #else
-      assert ((K & 1) != 0);
       printf ("%s took %7.4f s  (%s)\n", fn[i],
               (double) t[i][(K-1)/2] / CLOCKS_PER_SEC, str[i]);
 #endif
@@ -199,6 +199,8 @@ int main (int argc, char *argv[])
   int r;
   long n, nc, precx, precy, emax, ntests;
   unsigned long seed;
+
+  assert ((K & 1) != 0);
 
   if (argc != 9)
     {
