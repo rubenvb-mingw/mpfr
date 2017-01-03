@@ -10,7 +10,7 @@
 
 #include <timp.h>
 typedef unsigned long long st_time_t;
-#define K 55  /* odd */
+#define K 17  /* odd */
 
 #else
 
@@ -51,7 +51,9 @@ typedef clock_t st_time_t;
  * intervals are now output to try to avoid a bad interpretation, but
  * even with K = 25, for two fixed tests A and B and two runs 1 and 2,
  * one can get A1 < B1 and B2 < A2, where I < J means that interval I
- * strictly precedes interval J, i.e. sup(I) < inf(J).
+ * strictly precedes interval J, i.e. sup(I) < inf(J). So, it does not
+ * make much sense to have a large value of K. To get more meaningful
+ * timings, tests should be run several times as different processes.
  */
 
 /* Note: It may be useful to check with precy slightly different from precx
