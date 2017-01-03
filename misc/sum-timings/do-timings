@@ -23,7 +23,7 @@ do
       cmd="./sum-timings $rn $1 $nc $2 $3 $4 $5 $seed"
       echo "nc=$nc seed=$seed rn=$rn"
       echo "$ $cmd"
-      $cmd
+      $cmd | sed "s/^/<$nc$seed$rn> /"
       echo
     done
   done
