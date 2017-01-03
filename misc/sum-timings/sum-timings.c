@@ -10,7 +10,7 @@
 
 #include <timp.h>
 typedef unsigned long long st_time_t;
-#define K 7  /* odd */
+#define K 52
 
 #else
 
@@ -47,7 +47,11 @@ typedef clock_t st_time_t;
  * a mistake.
  *
  * Support for timp.h (from tools/mbench) added on 2017-01-02. Compile
- * with -DUSE_TIMP to use it. But timings are still inaccurate.
+ * with -DUSE_TIMP to use it. But timings are still inaccurate. Timing
+ * intervals are now output to try to avoid a bad interpretation, but
+ * even with K = 25, for two fixed tests A and B and two runs 1 and 2,
+ * one can get A1 < B1 and B2 < A2, where I < J means that interval I
+ * strictly precedes interval J, i.e. sup(I) < inf(J).
  */
 
 /* Note: It may be useful to check with precy slightly different from precx
