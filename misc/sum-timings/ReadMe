@@ -32,3 +32,6 @@ changes in the trunk:
 
 Note: Make sure that hyper-threading is not enabled, otherwise
 first remove the "&" at the end of each line of all-timings.
+
+Timings in cycles can be done with timp.h from tools/mbench by providing
+the options -DUSE_TIMP -I/path/to/timp/directory in CFLAGS.
