@@ -170,8 +170,12 @@ Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11043&amp;view=revision">11043</a>.</li>
 
 <li id="p2">The function <code>mpfr_strtofr</code> can return an incorrect
-ternary value in the round-to-nearest mode (<code>MPFR_RNDN</code>). This
-bug is fixed by the <a href="patch02"><samp>strtofr</samp> patch</a>,
+ternary value in the round-to-nearest mode (<code>MPFR_RNDN</code>). As a
+consequence, the value can also be incorrect if the current exponent range
+is not the maximum one (since the maximum exponent range is used internally
+and the ternary value is used to resolve double rounding when reducing the
+exponent range to the current one).
+This bug is fixed by the <a href="patch02"><samp>strtofr</samp> patch</a>,
 which also provides a test case.<br />
 Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11069&amp;view=revision">11069</a>.</li>
