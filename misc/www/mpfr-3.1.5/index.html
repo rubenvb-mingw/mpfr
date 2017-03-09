@@ -174,7 +174,8 @@ ternary value in the round-to-nearest mode (<code>MPFR_RNDN</code>). As a
 consequence, the value can also be incorrect if the current exponent range
 is not the maximum one (since the maximum exponent range is used internally
 and the ternary value is used to resolve double rounding when reducing the
-exponent range to the current one).
+exponent range to the current one); this can happen only if the value is a
+midpoint between 0 and the minimum positive number or the opposite.
 This bug is fixed by the <a href="patch02"><samp>strtofr</samp> patch</a>,
 which also provides a test case.<br />
 Corresponding changeset in the 3.1 branch:
