@@ -40,7 +40,9 @@ set -e
 # Avoid errors due to missing locales (e.g. from ICC).
 export LC_ALL=C
 
-# Additional tests
+# Additional tests.
+# Test MPFR_FOO can be disabled for a particular "make check"
+# with "ENV:MPFR_FOO" (which unsets MPFR_FOO for this run).
 export MPFR_CHECK_LIBC_PRINTF=1
 export MPFR_CHECK_MAX=1
 export MPFR_SUSPICIOUS_OVERFLOW=1
@@ -335,4 +337,4 @@ printf "\n$ed\n" >> "$out"
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 98741 2017-05-24 14:21:11Z vinc17/cventin $
+# $Id: mpfrtests.sh 98747 2017-05-24 17:17:55Z vinc17/zira $
