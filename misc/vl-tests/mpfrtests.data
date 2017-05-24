@@ -58,6 +58,14 @@ CONF:CFLAGS=$cflags1 -DMPFR_COV_CHECK
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN >= 40000
+# Test not needed before MPFR 4.0 (MPFR_GENERIC_ABI is new in MPFR 4.0).
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:CC=gcc-snapshot
+CONF:CFLAGS=$cflags1 -DMPFR_GENERIC_ABI
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN >= 40000
 # MPFR 4.0 is needed for MPFR_PRINTF_MAXLM.
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
@@ -238,7 +246,7 @@ CHECK-END
 CHECK-BEGIN
 CONF:CC=gcc-snapshot
 # -DMPFR_TEST_DIVBYZERO should be removed in the future.
-CONF:CFLAGS=-O2 -std=gnu99 -DMPFR_TESTS_DIVBYZERO -DMPFR_TEST_DIVBYZERO -DMPFR_ERRDIVZERO
+CONF:CFLAGS=-O2 -std=gnu99 -DMPFR_TESTS_FPE_DIV -DMPFR_TEST_DIVBYZERO -DMPFR_ERRDIVZERO -DXDEBUG
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -396,6 +404,14 @@ CONF:CFLAGS=$cflags1
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN >= 40000
+# Test not needed before MPFR 4.0 (MPFR_GENERIC_ABI is new in MPFR 4.0).
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:CC=gcc-snapshot
+CONF:CFLAGS=$cflags1 -DMPFR_GENERIC_ABI
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN >= 40000
 # MPFR 4.0 is needed for MPFR_PRINTF_MAXLM.
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
@@ -475,6 +491,19 @@ CONF:CC=clang-3.8
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:CC=clang-3.9
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:CC=clang-4.0
+CONF:CFLAGS=-O2 -D_MPFR_PREC_FORMAT=2
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
 CONF:CC=gcc-5
@@ -508,7 +537,7 @@ CHECK-END
 CHECK-BEGIN
 CONF:CC=gcc-6
 # -DMPFR_TEST_DIVBYZERO should be removed in the future.
-CONF:CFLAGS=-O2 -std=gnu99 -DMPFR_TESTS_DIVBYZERO -DMPFR_TEST_DIVBYZERO -DMPFR_ERRDIVZERO
+CONF:CFLAGS=-O2 -std=gnu99 -DMPFR_TESTS_FPE_DIV -DMPFR_TEST_DIVBYZERO -DMPFR_ERRDIVZERO -DXDEBUG
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -517,11 +546,54 @@ CONF:CFLAGS=-O2 -std=c99 -D_MPFR_PREC_FORMAT=2 -DMPFR_COV_CHECK
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
+ENV:MPFR_CHECK_LARGEMEM=1
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-logging
+CONF:CC=gcc-snapshot
+CONF:CFLAGS=-Wall -O3 -march=native -fsanitize=undefined -fno-sanitize-recover
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+# GMP should be compiled with "--disable-alloca ABI=32" to be able to detect
+# a buffer overflow due to incorrect GMP documentation for mpn_set_str.
+# See discussion:
+#   https://gmplib.org/list-archives/gmp-bugs/2013-December/003267.html
+# and the first fix in the GMP documentation:
+#   https://gmplib.org/repo/gmp-5.1/raw-rev/d19172622a74
+# This bug is present in MPFR versions from 2.1.0 (adding mpfr_strtofr)
+# to 3.1.2; it is fixed in r8722 (trunk) and r9243 (3.1 branch).
+ENV:GMPDIR=$HOME/software/gmp-6.1.1-32
+CONF:--with-gmp-build=$GMPDIR
+CONF:--enable-assert=full
+CONF:--enable-decimal-float
+CONF:--enable-logging
+INFO:CCV:--version
+INFO:$GMPDIR/config.status -V | sed -n 's/^ *with options/GMP configure options:/p'
+CHECK-END
+CHECK-BEGIN
+ENV:GMPDIR=$HOME/software/gmp-6.1.1-64
+CONF:--with-gmp-build=$GMPDIR
+CONF:--enable-assert=full
+CONF:--enable-decimal-float
+CONF:--enable-logging
+INFO:CCV:--version
+INFO:$GMPDIR/config.status -V | sed -n 's/^ *with options/GMP configure options:/p'
+CHECK-END
+CHECK-BEGIN
 CONF:--prefix=$HOME/notgcc
 CONF:--with-gmp=$HOME/wd
 CONF:--disable-shared
 INFO:notgcc --version | sed -n 's/.*\(Id:.*\) \$/\1/p'
 INFO:perl -pi -e 's/^wl=""/wl="-Wl,"/' libtool
+CHECK-END
+CHECK-BEGIN
+ENV:C_INCLUDE_PATH=$tmpdir/include
+EVAL:mkdir $C_INCLUDE_PATH
+EVAL:echo invalid > $C_INCLUDE_PATH/stdint.h
+CONF:CFLAGS=-O2 -std=c99 -pedantic-errors
+INFO:CCV:--version
+INFO:echo "#include <stdint.h>" | gcc -H -E - 2>&1 >/dev/null | head -n 1
 CHECK-END
 CHECK-BEGIN
 CONF:--enable-assert=full
@@ -546,6 +618,7 @@ CONF:--with-gmp=/usr/local/gmp-mingw32
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
 ENV:LOG_COMPILER=wine
+ENV:MPFR_CHECK_LIBC_PRINTF
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -563,6 +636,7 @@ CONF:--with-gmp=/usr/local/gmp-mingw32b
 CONF:--enable-assert=full
 CONF:CPPFLAGS=-DNPRINTF_J -DNPRINTF_L -DNPRINTF_T
 ENV:LOG_COMPILER=wine
+ENV:MPFR_CHECK_LIBC_PRINTF
 INFO:CCV:--version
 CHECK-END
 
@@ -598,7 +672,7 @@ INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 # -DMPFR_TEST_DIVBYZERO should be removed in the future.
-CONF:CFLAGS=-O2 -DMPFR_TESTS_DIVBYZERO -DMPFR_TEST_DIVBYZERO -DMPFR_ERRDIVZERO
+CONF:CFLAGS=-O2 -DMPFR_TESTS_FPE_DIV -DMPFR_TEST_DIVBYZERO -DMPFR_ERRDIVZERO -DXDEBUG
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -660,6 +734,19 @@ CHECK-END
 CHECK-BEGIN
 CONF:CC=clang-3.6
 CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover -DMPFR_MY_MPZ_INIT=0
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:CC=clang-3.9
+CONF:CFLAGS=-O2 -D_MPFR_PREC_FORMAT=2
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:CC=clang-4.0
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -874,4 +961,4 @@ CONF:--enable-gmp-internals
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 92526 2016-09-30 13:10:12Z vinc17/cventin $
+# $Id: mpfrtests.data 98740 2017-05-24 13:32:52Z vinc17/cventin $

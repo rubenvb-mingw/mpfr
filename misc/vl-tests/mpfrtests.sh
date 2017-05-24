@@ -2,7 +2,7 @@
 
 # Test of MPFR tarballs with various options.
 #
-# Written in 2011-2016 by Vincent Lefevre <vincent@vinc17.net>.
+# Written in 2011-2017 by Vincent Lefevre <vincent@vinc17.net>.
 # This script is free software; you can copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
 #
@@ -39,6 +39,11 @@ set -e
 
 # Avoid errors due to missing locales (e.g. from ICC).
 export LC_ALL=C
+
+# Additional tests
+export MPFR_CHECK_LIBC_PRINTF=1
+export MPFR_CHECK_MAX=1
+export MPFR_SUSPICIOUS_OVERFLOW=1
 
 case "$1" in
   +*) fqdn=${1#+}; shift ;;
@@ -128,6 +133,7 @@ tst()
             if [ "$line" = CHECK-END ]; then break; fi
           done
         fi
+        env=""
         ;;
       ENV:*)
         [ -n "$check" ]
@@ -138,10 +144,19 @@ tst()
         if [ -z "$val" ]; then
           env="$env unset $var;"
         else
-          env="$env $var=\"${val#*=}\";"
+          env="$env export $var=\"${val#*=}\";"
         fi
         printf "ENV: %s\n" "$v" >> "$out"
-        eval "export $v"
+        # Unset the variable for the case "ENV:VAR"; this is different
+        # from setting it to null. Since the variable may reference to
+        # itself, it would be incorrect to do an unconditional "unset"
+        # followed by the "export" (for the PATH variable, this would
+        # also be incorrect).
+        if [ "$v" = "$var" ]; then
+          eval "unset $var || true"
+        else
+          eval "export $v"
+        fi
         ;;
       EVAL:*)
         [ -z "$first" ]
@@ -320,4 +335,4 @@ printf "\n$ed\n" >> "$out"
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 88496 2016-04-26 13:07:01Z vinc17/cventin $
+# $Id: mpfrtests.sh 98741 2017-05-24 14:21:11Z vinc17/cventin $
