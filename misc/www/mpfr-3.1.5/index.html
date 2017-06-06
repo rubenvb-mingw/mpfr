@@ -99,7 +99,7 @@ The key fingerprint is:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2016-12-19). The patches are distributed under the same license as
+update: 2017-06-06). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -180,6 +180,68 @@ This bug is fixed by the <a href="patch02"><samp>strtofr</samp> patch</a>,
 which also provides a test case.<br />
 Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11069&amp;view=revision">11069</a>.</li>
+
+<li id="p3">With <acronym>GCC</acronym> 7 and later, the build of
+<acronym>MPFR</acronym> fails when the <samp>-Wall -Werror</samp> options
+are both used, due to the new <samp>-Wint-in-bool-context</samp> option
+enabled by <samp>-Wall</samp>. This is not a bug in <acronym>MPFR</acronym>,
+but this failure prevents one from using such options to detect potential
+bugs and it affects the usual tests done before a release, the publication
+of the following patches, <abbr>etc.</abbr> It is due to the fact that the
+<em>ternary value</em> may also be regarded as a Boolean value signaling
+inexactness. This failure is avoided by the
+<a href="patch03"><samp>ret-macro</samp> patch</a>.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11536&amp;view=revision">11536</a>.</li>
+
+<li id="p4">With <acronym>GCC</acronym> 7 and later, the build of
+<acronym>MPFR</acronym> may fail with some combination of options due to
+<a href="https://gcc.gnu.org/bugzilla/show_bug.cgi?id=79257"><acronym>GCC</acronym> bug 79257</a>.
+This bug is avoided by the
+<a href="patch04"><samp>tests-buffer-size</samp> patch</a>.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11537&amp;view=revision">11537</a>.</li>
+
+<li id="p5">The formatted output functions (<samp>mpfr_*printf</samp>)
+have issues in overflow checking (<samp>vasprintf.c</samp>, function
+<code>partition_number</code>) for the return value:
+<ul>
+<li>The computation of the number of characters to be written can be
+incorrect by 1 with locales where the thousands separator is not empty.
+In this version of <acronym>MPFR</acronym>, this value is only used for
+overflow checking, so that this bug can have only very little effect.</li>
+<li>When the <code>int</code> and <code>long</code> types have the same size,
+the code assumes wrapping behavior in two's complement. But this is actually
+undefined behavior in <acronym>ISO</acronym> C, and in practice, a smart
+compiler may ignore some tests.</li>
+</ul>
+These issues are fixed by the
+<a href="patch05"><samp>vasprintf-overflow-check</samp> patch</a>.<br />
+Corresponding changesets in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11538&amp;view=revision">11538</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11541&amp;view=revision">11541</a>.</li>
+
+<li id="p6">In case of overflow for the return value of the formatted output
+functions (<samp>mpfr_*printf</samp>), <code>errno</code> is no longer set
+to <code>EOVERFLOW</code> when supported. This bug is fixed by the
+<a href="patch06"><samp>printf-errno</samp> patch</a>.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11539&amp;view=revision">11539</a>.</li>
+
+<li id="p7">In the <samp>tsprintf</samp> test, the <code>setlocale</code>
+standard function is used incorrectly. This bug is fixed by the
+<a href="patch07"><samp>tsprintf-setlocale</samp> patch</a>.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11540&amp;view=revision">11540</a>.</li>
+
+<li id="p8">Some of the <samp>mpf2mpfr.h</samp> macros dealing with
+signed integers are incorrect. This bug is fixed by the
+<a href="patch08"><samp>mpf-compat-signed</samp> patch</a>, which also
+provides non-regression tests (at the same time, some macros needed to
+be fixed for C++ compatibility).<br />
+Corresponding changesets in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11579&amp;view=revision">11579</a> (the fix and non-regression tests),
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11580&amp;view=revision">11580</a> (fix of macros for C++ compatibility, needed by the previous changeset).</li>
 
 </ol>
 
