@@ -1,0 +1,201 @@
+#!/usr/bin/env perl
+
+# MPFR versions found on the web
+
+# Usage: versions [ <site> ... ]
+
+use strict;
+use LWP::UserAgent;
+
+my ($oldurl,$file);
+
+sub getvers ($$$;$)
+  {
+    my ($site,$url,$getv,$sep) = @_;
+    @ARGV == 0 or grep { $site eq $_ } @ARGV or return;
+    print "$site: ";
+
+    if ($url ne $oldurl)
+      {
+        my $ua = LWP::UserAgent->new;
+        $ua->timeout(30);
+        my $response = $ua->get($url);
+        unless ($response->is_success)
+          {
+            print "fetch error\n".$response->message."\n";
+            return;
+          }
+        $oldurl = $url;
+        $file = $response->headers->header("Content-Encoding") eq 'gzip' ?
+          eval {
+            require Compress::Zlib;
+            Compress::Zlib::memGunzip($response->content);
+          } : $response->content;
+      }
+
+    if (ref($getv) =~ /^regexp$/i)
+      {
+        my @m = $file =~ /$getv/;
+        print @m ? join($sep, grep /./, @m)."\n" : "regex doesn't match\n";
+        return;
+      }
+    if (ref($getv) =~ /^code$/i)
+      {
+        print &$getv, "\n";
+        return;
+      }
+  }
+
+$| = 1;
+
+my @t = gmtime;
+printf "%d-%02d-%02d\n", $t[5] + 1900, $t[4] + 1, $t[3];
+
+getvers "MPFR.org",
+  "http://www.mpfr.org/mpfr-current/",
+  qr!<title>.*?MPFR version ([0-9.]+)</title>(?:.*<li id="(p\d+)">)?!s, '-';
+
+getvers "InriaForge",
+  "https://gforge.inria.fr/frs/?group_id=136",
+  qr!<a href="/frs/.*release_id=\E\d+">mpfr ([0-9.]+) !;
+
+getvers "InriaForge News",
+ "https://gforge.inria.fr/news/?group_id=136",
+ qr!MPFR ([0-9.]+) is released!;
+
+getvers "GNU FTP",
+  "https://ftp.gnu.org/gnu/mpfr/?C=N;O=D",
+  qr!mpfr-([0-9.]+)\.tar!;
+
+getvers "Wikipedia (en)",
+  "https://en.wikipedia.org/wiki/GNU_MPFR",
+  qr!Stable release</a>\s*</th>\s*<td[^>]*>\s*<div[^>]*>\s*([0-9.]+) /!;
+
+getvers "Wikipedia (fr)",
+  "https://fr.wikipedia.org/wiki/GNU_MPFR",
+  qr!re version</a></th>\s*<td><span[^>]*>\s*([0-9.]+) !s;
+# Note: The version is obtained from <https://www.wikidata.org/wiki/Q1881759>.
+# To update it, add the new version to the "software version" statement with
+# "preferred" rank and lower the rank of the previous version to "normal".
+
+getvers "Free Software Directory",
+  "http://directory.fsf.org/project/MPFR/",
+  qr!version ([0-9.]{5,})\s!;
+
+# Kept for the moment, but this project will be stopped in Q3 2015.
+getvers "PLUME",
+  "http://www.projet-plume.org/fr/fiche/mpfr",
+  qr!<li>Version \&eacute;valu\&eacute;e : ([0-9.]+)</li>!;
+
+getvers "Linux From Scratch",
+  "http://www.linuxfromscratch.org/lfs/view/development/chapter06/mpfr.html",
+  qr!<title>.*?MPFR-([0-9.]+)\s*</title>!s;
+
+getvers "Debian",
+  "http://packages.qa.debian.org/m/mpfr4.html",
+  qr!<span id="latest_version">([^<]+)</span>!;
+
+#getvers "Debian (experimental)",
+#  "http://packages.qa.debian.org/m/mpfr.html",
+#  qr!<span class="srcversion" title="experimental">([^<]+)</span>!;
+
+getvers "Ubuntu",
+  "http://changelogs.ubuntu.com/changelogs/pool/main/m/mpfr4/?C=M;O=D",
+  qr!mpfr\d+_([^/\s]+)/!;
+
+getvers "Gentoo",
+  "https://packages.gentoo.org/packages/dev-libs/mpfr",
+  qr!<td class="kk-version.*?"><strong><a[^>]*>([^<]+)</a></strong>!;
+
+getvers "Arch Linux (i686)",
+  "http://archlinux.org/packages/core/i686/mpfr/",
+  qr!<title>Arch Linux - mpfr ([-0-9p.]+) \(i686\)!s;
+
+getvers "Arch Linux (x86_64)",
+  "http://archlinux.org/packages/core/x86_64/mpfr/",
+  qr!<title>Arch Linux - mpfr ([-0-9p.]+) \(x86_64\)!s;
+
+getvers "openSUSE Factory (x86_64)",
+  "http://download.opensuse.org/tumbleweed/repo/oss/suse/x86_64/",
+  qr!"mpfr-devel-([-0-9.]+)\.x86_64\.rpm"!s;
+
+getvers "SourceArchive.com",
+  "http://mpfr4.sourcearchive.com/",
+  qr!.*<td[^>]*>([0-9][-0-9.]+)</td>!;
+
+getvers "FreshPorts (FreeBSD)",
+  "http://www.freshports.org/math/mpfr",
+  qr!<b>mpfr</b>.*<br>\n<b> *(\d[^<]+?) *</b>!i;
+
+getvers "NetBSD (pkgsrc)",
+  "http://ftp.netbsd.org/pub/pkgsrc/current/pkgsrc/math/mpfr/README.html",
+  qr!The current source version of the package is\s+"mpfr-([-0-9a-z.]+)"!s;
+
+getvers "MacPorts",
+  "https://trac.macports.org/browser/trunk/dports/devel/mpfr/Portfile?format=txt",
+  sub
+    { my ($v) = $file =~ qr!^\s*set base_version\s+(\S+)\n!m;
+      $file =~ qr!^\s*set patch_level\s+(\d+)\n!m and $v .= "-p$1";
+      $v; };
+
+#getvers "Fink",
+#  "http://fink.cvs.sourceforge.net/viewvc/fink/dists/10.7/stable/main/finkinfo/libs/libmpfr4.info",
+#  qr!^Version:\s*([-0-9a-z.]+)\nRevision:\s*(\d+)!ms, '-';
+
+getvers "Fink",
+  "http://pdb.finkproject.org/pdb/package.php/libmpfr4",
+  qr!<h1>Package libmpfr4-([^<]+)</h1>!;
+#
+# Note that http://pdb.finkproject.org/pdb/package.php/libmpfr4 has often
+# been unavailable in the past; see <http://finkers.wordpress.com/>.
+# It has been down for 3 weeks in 2012-10, 17 days in 2012-11, 10 weeks
+# from 2013-02 to 2013-04, and at least 3 months from 2013-06 to 2013-09.
+# Use the SourceForge version above if this occurs again.
+
+### OpenPKG no longer works.
+#getvers "OpenPKG",
+#  "http://www.openpkg.org/product/packages/?package=mpfr",
+#  qr!Vendor Software Version</td>\s*<td class="value">(\S+)</td>!m;
+
+0 and  # disable blastwave (no longer works)
+getvers "Solaris (i386)",
+  "http://www.blastwave.org/pkg/pkgcontents.ftd?software=libmpfr&style=brief&state=5&arch=i386",
+  qr!<td>version</td><td>(\S+?)</td>!i;
+
+0 and  # disable blastwave (no longer works)
+getvers "Solaris (sparc)",
+  "http://www.blastwave.org/pkg/pkgcontents.ftd?software=libmpfr&style=brief&state=5&arch=sparc",
+  qr!<td>version</td><td>(\S+?)</td>!i;
+
+getvers "Solaris (GAR)",
+  "https://sourceforge.net/p/gar/code/HEAD/tree/csw/mgar/pkg/libmpfr/trunk/Makefile?format=raw",
+  qr!^VERSION\s*=\s*([0-9.]+)$!m;
+
+# This page has several MPFR versions. Take the last one.
+getvers "HP-UX",
+  "http://hpux.connect.org.uk/hppd/hpux/Maths/LinAlgebra/",
+  qr!>.*mpfr-([0-9a-z.]+)</a>!s;
+
+0 and  # disable Microsoft Visual Studio (no longer works)
+getvers "Microsoft Visual Studio",
+  "http://brgladman.org/oldsite/computing/gmp4win.php",
+  qr!mpfr[-.](\d\S+)\.build\.vc!s;
+
+getvers "DJGPP",
+  "http://www.delorie.com/pub/djgpp/current/v2gnu/?M=D",
+  qr!>mpfr(\d)(\d)(\d)b\.zip!, '.';
+
+getvers "Cygwin",
+  "http://cygwin.com/packages/x86/mpfr/?C=N;O=D",
+  qr!href="mpfr-([-0-9.]+)"!s;
+
+getvers "MinGW",
+  "https://sourceforge.net/projects/mingw/files/MinGW/Base/mpfr/",
+  qr!title="mpfr-(2\.[-0-9.]+|3\.[01]\.[-0-9.]+)"!;
+# It currently has MPFR 3.2.1 with no files (not released yet!).
+
+getvers "SAGE",
+  "http://www-ftp.lip6.fr/pub/math/sagemath/spkg/upstream/mpfr/index.html",
+  qr!=== mpfr-(\S+) !;
+
+# $Id: versions 98909 2017-05-31 13:38:53Z vinc17/zira $
