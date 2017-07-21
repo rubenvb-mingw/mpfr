@@ -99,7 +99,7 @@ The key fingerprint is:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2017-06-06). The patches are distributed under the same license as
+update: 2017-07-21). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -242,6 +242,22 @@ be fixed for C++ compatibility).<br />
 Corresponding changesets in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11579&amp;view=revision">11579</a> (the fix and non-regression tests),
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11580&amp;view=revision">11580</a> (fix of macros for C++ compatibility, needed by the previous changeset).</li>
+
+<li id="p9">On platforms with a 32-bit <code>unsigned long</code> type
+(32-bit ABI or Microsoft Windows), computations in <samp>sin_cos.c</samp>
+suffer from overflows in high precisions (more than about 1,000,000 bits).
+In practice, this introduces an error of up to 2<sup>&#8722;1019574</sup>
+approximately, so that the trigonometric functions (<code>mpfr_sin</code>,
+<code>mpfr_cos</code>, <code>mpfr_sin_cos</code>, <code>mpfr_tan</code>) and
+functions that call them can be very inaccurate (limiting the overall accuracy
+to about one million bits for these functions on such platforms). This bug
+is fixed by the <a href="patch09"><samp>sincos-overflow</samp> patch</a>
+(no test cases are provided due to the high precisions needed to reproduce
+the bug, but the behavior can be tested with <a href="sin-tst.c">this small
+C program <samp>sin-tst.c</samp></a>, for instance with the argument
+<samp>1.0</samp>).<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11591&amp;view=revision">11591</a>.</li>
 
 </ol>
 

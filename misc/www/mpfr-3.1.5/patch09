@@ -1,0 +1,51 @@
+diff -Naurd mpfr-3.1.5-a/PATCHES mpfr-3.1.5-b/PATCHES
+--- mpfr-3.1.5-a/PATCHES	2017-07-21 09:17:42.675157685 +0000
++++ mpfr-3.1.5-b/PATCHES	2017-07-21 09:17:42.699157421 +0000
+@@ -0,0 +1 @@
++sincos-overflow
+diff -Naurd mpfr-3.1.5-a/VERSION mpfr-3.1.5-b/VERSION
+--- mpfr-3.1.5-a/VERSION	2017-06-06 20:31:35.943341213 +0000
++++ mpfr-3.1.5-b/VERSION	2017-07-21 09:17:42.699157421 +0000
+@@ -1 +1 @@
+-3.1.5-p8
++3.1.5-p9
+diff -Naurd mpfr-3.1.5-a/src/mpfr.h mpfr-3.1.5-b/src/mpfr.h
+--- mpfr-3.1.5-a/src/mpfr.h	2017-06-06 20:31:35.939341259 +0000
++++ mpfr-3.1.5-b/src/mpfr.h	2017-07-21 09:17:42.699157421 +0000
+@@ -27,7 +27,7 @@
+ #define MPFR_VERSION_MAJOR 3
+ #define MPFR_VERSION_MINOR 1
+ #define MPFR_VERSION_PATCHLEVEL 5
+-#define MPFR_VERSION_STRING "3.1.5-p8"
++#define MPFR_VERSION_STRING "3.1.5-p9"
+ 
+ /* Macros dealing with MPFR VERSION */
+ #define MPFR_VERSION_NUM(a,b,c) (((a) << 16L) | ((b) << 8) | (c))
+diff -Naurd mpfr-3.1.5-a/src/sin_cos.c mpfr-3.1.5-b/src/sin_cos.c
+--- mpfr-3.1.5-a/src/sin_cos.c	2016-09-27 07:58:15.000000000 +0000
++++ mpfr-3.1.5-b/src/sin_cos.c	2017-07-21 09:17:42.691157510 +0000
+@@ -350,10 +350,12 @@
+          which reduces to T[k] = (2*i+2)*(2*i+3)*2^r-pp,
+          Q[k] = (2*i)*(2*i+1)*(2*i+2)*(2*i+3). */
+       log2_nb_terms[k] = 1;
+-      mpz_set_ui (Q[k], (2 * i + 2) * (2 * i + 3));
++      mpz_set_ui (Q[k], 2 * i + 2);
++      mpz_mul_ui (Q[k], Q[k], 2 * i + 3);
+       mpz_mul_2exp (T[k], Q[k], r);
+       mpz_sub (T[k], T[k], pp);
+-      mpz_mul_ui (Q[k], Q[k], (2 * i) * (2 * i + 1));
++      mpz_mul_ui (Q[k], Q[k], 2 * i);
++      mpz_mul_ui (Q[k], Q[k], 2 * i + 1);
+       /* the next term of the series is divided by Q[k] and multiplied
+          by pp^2/2^(2r), thus the mult. factor < 1/2^mult[k] */
+       mult[k] = mpz_sizeinbase (Q[k], 2) + 2 * r - size_ptoj[1] - 1;
+diff -Naurd mpfr-3.1.5-a/src/version.c mpfr-3.1.5-b/src/version.c
+--- mpfr-3.1.5-a/src/version.c	2017-06-06 20:31:35.943341213 +0000
++++ mpfr-3.1.5-b/src/version.c	2017-07-21 09:17:42.699157421 +0000
+@@ -25,5 +25,5 @@
+ const char *
+ mpfr_get_version (void)
+ {
+-  return "3.1.5-p8";
++  return "3.1.5-p9";
+ }
