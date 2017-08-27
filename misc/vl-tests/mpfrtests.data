@@ -86,7 +86,7 @@ ENV:LC_ALL=fr_FR.utf8
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:CC=gcc-snapshot
-CONF:CFLAGS=$cflags1 -std=c99 -pedantic
+CONF:CFLAGS=$cflags1 -std=c99 -pedantic -Wno-error=overlength-strings
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -100,7 +100,7 @@ CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
-CONF:CFLAGS=-Wall -std=c99 -O3 -D_XOPEN_SOURCE=500 -ftrapv -pedantic-errors
+CONF:CFLAGS=-Wall -std=c99 -O3 -D_XOPEN_SOURCE=500 -ftrapv -pedantic-errors -Wno-error=overlength-strings
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -369,7 +369,6 @@ CHECK-BEGIN == 30103
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-logging
-CONF:--enable-float128
 CONF:CC=gcc-snapshot
 CONF:CFLAGS=-O2 -Wall -Wold-style-declaration -Wold-style-definition -Wmissing-parameter-type -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wno-error=unused-function -Werror
 INFO:CCV:--version
@@ -398,7 +397,6 @@ CHECK-BEGIN < 40000
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-logging
-CONF:--enable-float128
 CONF:CC=gcc-snapshot
 CONF:CFLAGS=$cflags1
 INFO:CCV:--version
@@ -439,7 +437,7 @@ CHECK-BEGIN
 ENV:LC_ALL=fr_FR.utf8
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
-CONF:CFLAGS=-Wall -std=c99 -O3 -D_XOPEN_SOURCE=500 -ftrapv -pedantic-errors
+CONF:CFLAGS=-Wall -std=c99 -O3 -D_XOPEN_SOURCE=500 -ftrapv -pedantic-errors -Wno-error=overlength-strings
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -717,7 +715,7 @@ CHECK-BEGIN
 ENV:LC_ALL=fr_FR.utf8
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
-CONF:CFLAGS=-Wall -std=c99 -O3 -D_XOPEN_SOURCE=500 -ftrapv -pedantic-errors
+CONF:CFLAGS=-Wall -std=c99 -O3 -D_XOPEN_SOURCE=500 -ftrapv -pedantic-errors -Wno-error=overlength-strings
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -846,6 +844,13 @@ CONF:--enable-gmp-internals
 INFO:CCV:--version
 CHECK-END
 
+HOST:gcc202.fsffrance.org
+PROC:UltraSparc T5 (Niagara5)
+CHECK-BEGIN
+CONF:--enable-assert=full
+INFO:CCV:--version
+CHECK-END
+
 HOST:n810.vinc17.org
 PROC:OMAP 2420
 CHECK-BEGIN
@@ -961,4 +966,4 @@ CONF:--enable-gmp-internals
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 98740 2017-05-24 13:32:52Z vinc17/cventin $
+# $Id: mpfrtests.data 101270 2017-08-25 15:35:57Z vinc17/zira $
