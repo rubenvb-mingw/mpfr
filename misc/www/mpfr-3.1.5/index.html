@@ -244,7 +244,8 @@ Corresponding changesets in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11580&amp;view=revision">11580</a> (fix of macros for C++ compatibility, needed by the previous changeset).</li>
 
 <li id="p9">On platforms with a 32-bit <code>unsigned long</code> type
-(32-bit ABI or Microsoft Windows), computations in <samp>sin_cos.c</samp>
+(32-bit <acronym title="Application Binary Interface">ABI</acronym> or
+Microsoft Windows), computations in <samp>sin_cos.c</samp>
 suffer from overflows in high precisions (more than about 1,000,000 bits).
 In practice, this introduces an error of up to 2<sup>&#8722;1019574</sup>
 approximately, so that the trigonometric functions (<code>mpfr_sin</code>,
@@ -272,6 +273,18 @@ Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11606&amp;view=revision">11606</a>.</li>
 
 </ol>
+
+<p>Moreover, in <code>mpfr_urandom</code>, the generation of the exception
+flags was not consistent. This has been partially fixed in the 3.1 branch
+(for the future <acronym>MPFR</acronym> 3.1.6 release): here we consider
+<em>underflow before rounding</em>, while the normal rule in
+<acronym>MPFR</acronym> is <em>underflow after rounding</em>. This is not
+fixable in this branch since the significand is not drawn if the drawn
+exponent is smaller than the minimum one before rounding, and drawing the
+significand to determine whether there is an underflow would change the
+state of the random generator at the end of the function, breaking the
+<acronym title="Application Binary Interface">ABI</acronym> and the users'
+expectations.</p>
 
 <!-- For BUGS, it's better to point to HEAD, as changes will be noted above. -->
 <p>See the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr/trunk/BUGS?view=markup"><samp>BUGS</samp></a> file.</p>
