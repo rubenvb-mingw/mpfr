@@ -274,8 +274,17 @@ Corresponding changeset in the 3.1 branch:
 
 </ol>
 
-<p>Moreover, in <code>mpfr_urandom</code>, the generation of the exception
-flags was not consistent. This has been partially fixed in the 3.1 branch
+<p>Moreover, <code>mpfr_urandom</code> has several issues:</p>
+
+<ul>
+
+<li>A bug in round-to-nearest when the drawn exponent is the minimum exponent
+± 1.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11648&amp;view=revision">11648</a>.</li>
+
+<li>The generation of the exception flags is not consistent.
+This has been partially fixed in the 3.1 branch
 (for the future <acronym>MPFR</acronym> 3.1.6 release): here we consider
 <em>underflow before rounding</em>, while the normal rule in
 <acronym>MPFR</acronym> is <em>underflow after rounding</em>. This is not
@@ -284,10 +293,16 @@ exponent is smaller than the minimum one before rounding, and drawing the
 significand to determine whether there is an underflow would change the
 state of the random generator at the end of the function, breaking the
 <acronym title="Application Binary Interface">ABI</acronym> and the users'
-expectations.</p>
+expectations.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11649&amp;view=revision">11649</a>.</li>
+
+</ul>
 
 <p>Some cleanup concerning thread-safe <acronym>DLL</acronym> on Windows
-had also been added, in particular to avoid compiler warnings.</p>
+has also been added, in particular to avoid compiler warnings.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=10917&amp;view=revision">10917</a>.</p>
 
 <!-- For BUGS, it's better to point to HEAD, as changes will be noted above. -->
 <p>Other bugs: See the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr/trunk/BUGS?view=markup"><samp>BUGS</samp></a> file.</p>
