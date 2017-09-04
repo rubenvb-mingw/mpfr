@@ -247,7 +247,7 @@ tst()
         echo "*** Cleaning up ***"
         if [ -z "$1" ]; then
           rm mpfrtests.makeout
-          $MAKE distclean
+          ${MAKE:-make} distclean
         else
           cd ..
           rm -rf obj
@@ -343,4 +343,4 @@ printf "\n$ed\n" >> "$out"
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 101520 2017-09-04 15:01:48Z vinc17/cventin $
+# $Id: mpfrtests.sh 101522 2017-09-04 15:23:58Z vinc17/cventin $
