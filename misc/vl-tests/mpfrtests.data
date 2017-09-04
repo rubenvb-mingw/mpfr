@@ -791,10 +791,17 @@ INFO:CCV:--version
 CHECK-END
 
 HOST:gcc110.fsffrance.org
-PROC:POWER7
+PROC:IBM POWER7
 CHECK-BEGIN
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
+INFO:CCV:--version
+CHECK-END
+
+HOST:gcc112.fsffrance.org
+PROC:IBM POWER8
+CHECK-BEGIN
+CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
@@ -901,6 +908,7 @@ CONF:CFLAGS=-Wall -O3 -mpa-risc-1-1 -std=gnu99
 INFO:CCV:--version
 CHECK-END
 
+# Solaris
 HOST:allo-psmn
 PROC:x86
 CHECK-BEGIN
@@ -910,6 +918,7 @@ CONF:--enable-assert=full
 INFO:CCV:-V
 CHECK-END
 
+# Mac OS X
 HOST:prunille.vinc17.org
 PROC:PowerPC G5
 CHECK-BEGIN
@@ -929,6 +938,7 @@ CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
+# FreeBSD
 HOST:gcc101.fsffrance.org
 PROC:AMD Opteron 252
 CHECK-BEGIN
@@ -937,6 +947,7 @@ CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
+# FreeBSD
 HOST:freebsd-83-amd64.gcc76.fsffrance.org
 PROC:Intel Core i7-2600
 CHECK-BEGIN
@@ -945,6 +956,7 @@ CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
+# NetBSD
 HOST:gcc70.fsffrance.org
 PROC:Intel Xeon 3.2E Irwindale
 CHECK-BEGIN
@@ -953,6 +965,7 @@ CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
+# OpenBSD
 HOST:gcc64.fsffrance.org
 PROC:Sun UltraSPARC-IIIi
 CHECK-BEGIN
@@ -966,4 +979,17 @@ CONF:--enable-gmp-internals
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 101270 2017-08-25 15:35:57Z vinc17/zira $
+# AIX
+HOST:gcc119.fsffrance.org
+PROC:IBM POWER8
+# Use gmake as parallel make with /usr/bin/make is broken.
+EVAL:export MAKE=gmake
+# For GMP built with the 64-bit ABI (see MPFR's INSTALL file)...
+EVAL:export OBJECT_MODE=64
+CHECK-BEGIN
+CONF:--with-gmp=/opt/cfarm/gmp-latest
+CONF:--enable-assert=full
+INFO:CCV:--version
+CHECK-END
+
+# $Id: mpfrtests.data 101521 2017-09-04 15:15:11Z vinc17/cventin $

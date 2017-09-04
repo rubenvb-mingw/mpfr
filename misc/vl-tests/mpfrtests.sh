@@ -22,6 +22,10 @@
 #   Clean-up: Any temporary mpfrtests directory is removed (such
 #   a directory isn't removed automatically in case of abnormal
 #   termination, in order to be able to debug).
+#
+# Environment variables MAKE (default: "make") and MAKE_JOBS (an integer)
+# can be provided either via mpfrtests.data (preferred for MAKE) or via
+# the command line (preferred for MAKE_JOBS).
 
 # For the Solaris /bin/sh
 { a=a; : ${a%b}; } 2> /dev/null || test ! -x /usr/xpg4/bin/sh || \
@@ -60,7 +64,7 @@ rm -f "$out"
 dd="------------------------------------------------------------------------"
 ed="========================================================================"
 gmprx='.*gmp.h version and libgmp version are the same... '
-mj="make ${MAKE_JOBS:+-j$MAKE_JOBS}"
+mj='${MAKE:-make} ${MAKE_JOBS:+-j$MAKE_JOBS}'
 tgz="${1:-mpfr-tests.tar.gz}"
 cr="$(printf \\r)"
 
@@ -101,6 +105,7 @@ tst()
         [ -n "$first" ]
         echo "* $fqdn ($(${1:-.}/config.guess) / ${line#PROC:})" > "$out"
         [ -z "$1" ] || echo "with objdir != srcdir" >> "$out"
+        uname -a >> "$out"
         unset os || true
         if [ -f /etc/os-release ]; then
           os1=$(. /etc/os-release; echo "$PRETTY_NAME")
@@ -218,7 +223,8 @@ tst()
         [ -n "$check" ]
         [ -z "$conf" ]
         echo "*** Running make ***"
-        eval $mj
+        dotee "$mj" mpfrtests.makeout
+        rm mpfrtests.makeout
         echo "*** Running make check ***"
         dotee "$mj check" mpfrtests.makeout
         # Note: We need to remove the possible CR characters, as produced
@@ -241,7 +247,7 @@ tst()
         echo "*** Cleaning up ***"
         if [ -z "$1" ]; then
           rm mpfrtests.makeout
-          make distclean
+          $MAKE distclean
         else
           cd ..
           rm -rf obj
@@ -292,7 +298,7 @@ if [ -x configure ]; then
   # Here the temporary directory is not used by the script itself;
   # it is created in case it is used by mpfrtests.data commands.
   mktmpdir
-  [ ! -f Makefile ] || make distclean
+  [ ! -f Makefile ] || ${MAKE:-make} distclean
   if [ -d .svn ]; then
     svnvers=r$(svnversion)
     [ "$svnvers" != "rUnversioned directory" ] || svnvers=""
@@ -337,4 +343,4 @@ printf "\n$ed\n" >> "$out"
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 98747 2017-05-24 17:17:55Z vinc17/zira $
+# $Id: mpfrtests.sh 101520 2017-09-04 15:01:48Z vinc17/cventin $
