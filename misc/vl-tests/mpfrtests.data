@@ -986,10 +986,12 @@ PROC:IBM POWER8
 EVAL:export MAKE=gmake
 # For GMP built with the 64-bit ABI (see MPFR's INSTALL file)...
 EVAL:export OBJECT_MODE=64
+# On AIX 7.2, printf() with a large precision field is broken.
+EVAL:unset MPFR_CHECK_LIBC_PRINTF
 CHECK-BEGIN
 CONF:--with-gmp=/opt/cfarm/gmp-latest
 CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 101521 2017-09-04 15:15:11Z vinc17/cventin $
+# $Id: mpfrtests.data 101580 2017-09-06 15:02:45Z vinc17/cventin $
