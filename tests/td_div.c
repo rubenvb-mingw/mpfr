@@ -20,9 +20,13 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <float.h>
 
 #include "mpfr-test.h"
+
+#if MPFR_VERSION >= MPFR_VERSION_NUM(2,4,0)
 
 static void
 check_nans (void)
@@ -187,8 +191,19 @@ main (void)
 
   check_nans ();
 
-  test_generic (MPFR_PREC_MIN, 1000, 100);
+  test_generic (2, 1000, 100);
 
   tests_end_mpfr ();
   return 0;
 }
+
+#else
+
+int
+main (void)
+{
+  printf ("Warning! Test disabled for this MPFR version.\n");
+  return 0;
+}
+
+#endif

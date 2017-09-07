@@ -20,6 +20,8 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 #define BUFFER_SIZE 250
@@ -193,24 +195,24 @@ test_nan_inf_zero (void)
   sign = 1;
   mpfr_set_inf (val, sign);
   kind = (mpfr_custom_get_kind) (val);
-  if ((ABS (kind) != MPFR_INF_KIND) || (VSIGN (kind) != VSIGN (sign)))
+  if ((ABS (kind) != MPFR_INF_KIND) || (SIGN (kind) != SIGN (sign)))
     {
       printf ("mpfr_custom_get_kind error: ");
       mpfr_dump (val);
       printf (" is kind %d instead of %d\n", kind, (int) MPFR_INF_KIND);
-      printf (" have sign %d instead of %d\n", VSIGN (kind), VSIGN (sign));
+      printf (" have sign %d instead of %d\n", SIGN (kind), SIGN (sign));
       exit (1);
     }
 
   sign = -1;
   mpfr_set_zero (val, sign);
   kind = (mpfr_custom_get_kind) (val);
-  if ((ABS (kind) != MPFR_ZERO_KIND) || (VSIGN (kind) != VSIGN (sign)))
+  if ((ABS (kind) != MPFR_ZERO_KIND) || (SIGN (kind) != SIGN (sign)))
     {
       printf ("mpfr_custom_get_kind error: ");
       mpfr_dump (val);
       printf (" is kind %d instead of %d\n", kind, (int) MPFR_ZERO_KIND);
-      printf (" have sign %d instead of %d\n", VSIGN (kind), VSIGN (sign));
+      printf (" have sign %d instead of %d\n", SIGN (kind), SIGN (sign));
       exit (1);
     }
 

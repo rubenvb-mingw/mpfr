@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 #define TEST_FUNCTION mpfr_tan
@@ -150,7 +153,7 @@ main (int argc, char *argv[])
 
   mpfr_clear (x);
 
-  test_generic (MPFR_PREC_MIN, 100, 10);
+  test_generic (2, 100, 10);
 
   data_check ("data/tan", mpfr_tan, "mpfr_tan");
   bad_cases (mpfr_tan, mpfr_atan, "mpfr_tan", 256, -256, 255, 4, 128, 800, 40);

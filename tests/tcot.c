@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 #define TEST_FUNCTION mpfr_cot
@@ -107,7 +110,7 @@ two2emin (mpfr_exp_t e)
         mpfr_div (y, y, x, (mpfr_rnd_t) rnd);  /* 1/x - SIGN(x).epsilon */
         mpfr_set_si_2exp (x, i, -e, MPFR_RNDN);
         mpfr_cot (x, x, (mpfr_rnd_t) rnd);
-        if (! mpfr_equal_p (x, y) && rnd != MPFR_RNDF)
+        if (! mpfr_equal_p (x, y))
           {
             printf ("Error in two2emin for i = %d and rnd = %s\n",
                     i, mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
@@ -134,7 +137,7 @@ main (int argc, char *argv[])
   two2emin (MPFR_EMAX_DEFAULT);
   if (MPFR_EMAX_MAX != MPFR_EMAX_DEFAULT)
     two2emin (MPFR_EMAX_MAX);
-  test_generic (MPFR_PREC_MIN, 200, 5);
+  test_generic (2, 200, 5);
 
   tests_end_mpfr ();
   return 0;

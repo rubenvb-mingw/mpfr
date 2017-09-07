@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 #define TEST_FUNCTION mpfr_asinh
@@ -147,7 +150,7 @@ main (int argc, char *argv[])
 
   special ();
 
-  test_generic (MPFR_PREC_MIN, 100, 25);
+  test_generic (2, 100, 25);
 
   data_check ("data/asinh", mpfr_asinh, "mpfr_asinh");
   bad_cases (mpfr_asinh, mpfr_sinh, "mpfr_asinh", 256, -128, 29,

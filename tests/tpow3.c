@@ -20,6 +20,10 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <limits.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 
@@ -61,7 +65,7 @@ main (int argc, char *argv[])
           mpfr_urandomb (s, RANDS);
           if (randlimb () % 2)
             mpfr_neg (s, s, MPFR_RNDN);
-          rnd = RND_RAND_NO_RNDF ();
+          rnd = RND_RAND ();
           mpfr_set_prec (y, yprec);
           compare = mpfr_pow (y, x, s, rnd);
           err = (rnd == MPFR_RNDN) ? yprec + 1 : yprec;
@@ -101,9 +105,9 @@ main (int argc, char *argv[])
                 {
                   printf ("Wrong inexact flag for rnd=%s: expected %d, got %d"
                           "\n", mpfr_print_rnd_mode (rnd), compare, inexact);
-                  printf ("x="); mpfr_dump (x);
-                  printf ("y="); mpfr_dump (y);
-                  printf ("t="); mpfr_dump (t);
+                  printf ("x="); mpfr_print_binary (x); puts ("");
+                  printf ("y="); mpfr_print_binary (y); puts ("");
+                  printf ("t="); mpfr_print_binary (t); puts ("");
                   exit (1);
                 }
             }

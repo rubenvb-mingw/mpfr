@@ -20,6 +20,8 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <float.h>
 
 #include "mpfr-test.h"
@@ -51,7 +53,7 @@ check_inexact (void)
       for (q=2; q<2*p; q++)
         {
           mpfr_set_prec (y, q);
-          RND_LOOP_NO_RNDF (rnd)
+          RND_LOOP (rnd)
             {
               inexact = mpfr_abs (y, x, (mpfr_rnd_t) rnd);
               cmp = mpfr_cmp (y, absx);
@@ -59,12 +61,11 @@ check_inexact (void)
                   ((inexact > 0) && (cmp <= 0)) ||
                   ((inexact < 0) && (cmp >= 0)))
                 {
-                  printf ("Wrong inexact flag for %s: expected %d, got %d\n",
-                          mpfr_print_rnd_mode ((mpfr_rnd_t) rnd), cmp,
-                          inexact);
-                  printf ("x="); mpfr_dump (x);
-                  printf ("absx="); mpfr_dump (absx);
-                  printf ("y="); mpfr_dump (y);
+                  printf ("Wrong inexact flag: expected %d, got %d\n",
+                          cmp, inexact);
+                  printf ("x="); mpfr_print_binary (x); puts ("");
+                  printf ("absx="); mpfr_print_binary (absx); puts ("");
+                  printf ("y="); mpfr_print_binary (y); puts ("");
                   exit (1);
                 }
             }
@@ -135,7 +136,7 @@ check_cmp (int argc, char *argv[])
   for (k = 1; k <= n; k++)
     {
       mpfr_rnd_t rnd;
-      int sign = RAND_SIGN ();
+      int sign = SIGN_RAND ();
 
       mpfr_urandomb (x, RANDS);
       MPFR_SET_SIGN (x, sign);
@@ -167,7 +168,7 @@ main (int argc, char *argv[])
   check_inexact ();
   check_cmp (argc, argv);
 
-  test_generic (MPFR_PREC_MIN, 1000, 10);
+  test_generic (2, 1000, 10);
 
   tests_end_mpfr ();
   return 0;

@@ -21,6 +21,8 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "mpfr-test.h"
 
@@ -233,7 +235,7 @@ special_erf (void)
   if (mpfr_cmp (x, y))
     {
       printf ("Error: erf for prec=32 (2)\n");
-      mpfr_dump (x);
+      mpfr_print_binary (x); printf ("\n");
       exit (1);
     }
 
@@ -621,7 +623,7 @@ reduced_expo_range (void)
   mpfr_set_str (ex_y, "1.fffffffffffffffffffffe607440", 16, MPFR_RNDN);
   ex_inex = -1;
   ex_flags = MPFR_FLAGS_INEXACT;
-  if (VSIGN (inex) != ex_inex || flags != ex_flags ||
+  if (SIGN (inex) != ex_inex || flags != ex_flags ||
       ! mpfr_equal_p (y, ex_y))
     {
       printf ("Error in reduced_expo_range\non x = ");
@@ -631,7 +633,7 @@ reduced_expo_range (void)
       printf ("\n         inex = %d, flags = %u\n", ex_inex, ex_flags);
       printf ("Got      y = ");
       mpfr_out_str (stdout, 16, 0, y, MPFR_RNDN);
-      printf ("\n         inex = %d, flags = %u\n", VSIGN (inex), flags);
+      printf ("\n         inex = %d, flags = %u\n", SIGN (inex), flags);
       exit (1);
     }
   mpfr_clears (x, y, ex_y, (mpfr_ptr) 0);
@@ -649,8 +651,8 @@ main (int argc, char *argv[])
   test_erfc ();
   reduced_expo_range ();
 
-  test_generic_erf (MPFR_PREC_MIN, 100, 15);
-  test_generic_erfc (MPFR_PREC_MIN, 100, 15);
+  test_generic_erf (2, 100, 15);
+  test_generic_erfc (2, 100, 15);
 
   data_check ("data/erf",  mpfr_erf,  "mpfr_erf");
   data_check ("data/erfc", mpfr_erfc, "mpfr_erfc");

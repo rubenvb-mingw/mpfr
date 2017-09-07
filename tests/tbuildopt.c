@@ -21,6 +21,7 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdlib.h>
 #include "mpfr-test.h"
 
 static void
@@ -80,12 +81,9 @@ check_gmpinternals_p (void)
 int
 main (void)
 {
-  tests_start_mpfr ();
-
   check_tls_p();
   check_decimal_p();
   check_gmpinternals_p();
 
-  tests_end_mpfr ();
   return 0;
 }

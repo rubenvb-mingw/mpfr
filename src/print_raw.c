@@ -32,7 +32,7 @@ mpfr_fprint_binary (FILE *stream, mpfr_srcptr x)
       return;
     }
 
-  if (MPFR_IS_NEG (x))
+  if (MPFR_SIGN (x) < 0)
     fprintf (stream, "-");
 
   if (MPFR_IS_INF (x))
@@ -49,22 +49,26 @@ mpfr_fprint_binary (FILE *stream, mpfr_srcptr x)
       px = MPFR_PREC (x);
 
       fprintf (stream, "0.");
-      for (n = (px - 1) / GMP_NUMB_BITS; n >= 0; n--)
+      for (n = (px - 1) / GMP_NUMB_BITS; ; n--)
         {
           mp_limb_t wd, t;
 
+          MPFR_ASSERTN (n >= 0);
           wd = mx[n];
           for (t = MPFR_LIMB_HIGHBIT; t != 0; t >>= 1)
             {
               putc ((wd & t) == 0 ? '0' : '1', stream);
               if (--px == 0)
-                break;
+                {
+                  mpfr_exp_t ex;
+
+                  ex = MPFR_GET_EXP (x);
+                  MPFR_ASSERTN (ex >= LONG_MIN && ex <= LONG_MAX);
+                  fprintf (stream, "E%ld", (long) ex);
+                  return;
+                }
             }
         }
-      if (MPFR_IS_UBF (x))
-        gmp_fprintf (stream, "E%Zd", MPFR_ZEXP (x));
-      else
-        fprintf (stream, "E%" MPFR_EXP_FSPEC "d", (mpfr_eexp_t) MPFR_EXP (x));
     }
 }
 
@@ -87,10 +91,36 @@ mpfr_print_mant_binary(const char *str, const mp_limb_t *p, mpfr_prec_t r)
     {
       for(i = GMP_NUMB_BITS-1 ; i >=0 ; i--)
         {
-          c = (p[n] & (MPFR_LIMB_ONE << i)) ? '1' : '0';
+          c = (p[n] & (((mp_limb_t)1L)<<i)) ? '1' : '0';
           putchar(c);
           count++;
           if (count == r)
+            putchar('[');
+        }
+      putchar('.');
+    }
+  putchar('\n');
+}
+
+void
+mpfr_dump_mant (const mp_limb_t *p, mpfr_prec_t r, mpfr_prec_t precx,
+                mpfr_prec_t error)
+{
+  int i;
+  mpfr_prec_t count = 0;
+  char c;
+  mp_size_t n = MPFR_PREC2LIMBS (r);
+
+  for(n-- ; n>=0 ; n--)
+    {
+      for(i = GMP_NUMB_BITS-1 ; i >=0 ; i--)
+        {
+          c = (p[n] & (((mp_limb_t)1L)<<i)) ? '1' : '0';
+          putchar(c);
+          count++;
+          if (count == precx)
+            putchar (',');
+          if (count == error)
             putchar('[');
         }
       putchar('.');

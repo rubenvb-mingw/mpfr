@@ -33,7 +33,7 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 # define MPFR_DEFAULT_RND mpfr_get_default_rounding_mode ()
 #endif
 
-/* mpf_init initializes at 0 */
+/* mpf_init initalizes at 0 */
 #undef mpf_init
 #define mpf_init(x) mpfr_init_set_ui ((x), 0, MPFR_DEFAULT_RND)
 #undef mpf_init2
@@ -52,11 +52,6 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 #define mpf_cmp_ui mpfr_cmp_ui
 #undef mpf_cmp_d
 #define mpf_cmp_d mpfr_cmp_d
-/* mpf_cmp_z appeared in GMP 6.1.0 */
-#if __GNU_MP_VERSION > 6 || (__GNU_MP_VERSION == 6 && __GNU_MP_VERSION_MINOR >= 1)
-#undef mpf_cmp_z
-#define mpf_cmp_z mpfr_cmp_z
-#endif
 #undef mpf_eq
 #define mpf_eq mpfr_eq
 #undef mpf_floor
@@ -176,7 +171,5 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 
 #undef mpz_set_f
 #define mpz_set_f(z,f) mpfr_get_z(z,f,MPFR_DEFAULT_RND)
-#undef mpq_set_f
-#define mpq_set_f(q,f) mpfr_get_q(q,f)
 
 #endif /* __MPFR_FROM_MPF__ */

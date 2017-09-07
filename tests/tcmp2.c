@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 /* set bit n of x to b, where bit 0 is the most significant one */
@@ -34,9 +37,9 @@ set_bit (mpfr_t x, unsigned int n, int b)
   n %= mp_bits_per_limb;
   n = mp_bits_per_limb - 1 - n;
   if (b)
-    MPFR_MANT(x)[xn - l] |= MPFR_LIMB_ONE << n;
+    MPFR_MANT(x)[xn - l] |= (mp_limb_t) 1 << n;
   else
-    MPFR_MANT(x)[xn - l] &= ~(MPFR_LIMB_ONE << n);
+    MPFR_MANT(x)[xn - l] &= ~((mp_limb_t) 1 << n);
 }
 
 /* check that for x = 1.u 1 v 0^k low(x)
@@ -212,8 +215,8 @@ special (void)
   if (mpfr_cmp2(x, y, &j) <= 0 || j != 32)
     {
       printf ("Error in mpfr_cmp2:\n");
-      printf ("x="); mpfr_dump (x);
-      printf ("y="); mpfr_dump (y);
+      printf ("x="); mpfr_print_binary(x); puts ("");
+      printf ("y="); mpfr_print_binary(y); puts ("");
       printf ("got %lu, expected 32\n", (unsigned long) j);
       exit (1);
     }
@@ -225,8 +228,8 @@ special (void)
   if (mpfr_cmp2(x, y, &j) <= 0 || j != 164)
     {
       printf ("Error in mpfr_cmp2:\n");
-      printf ("x="); mpfr_dump (x);
-      printf ("y="); mpfr_dump (y);
+      printf ("x="); mpfr_print_binary(x); puts ("");
+      printf ("y="); mpfr_print_binary(y); puts ("");
       printf ("got %lu, expected 164\n", (unsigned long) j);
       exit (1);
     }
@@ -239,8 +242,8 @@ special (void)
   if (mpfr_cmp2(x, y, &j) <= 0 || j != 127)
     {
       printf ("Error in mpfr_cmp2:\n");
-      printf ("x="); mpfr_dump (x);
-      printf ("y="); mpfr_dump (y);
+      printf ("x="); mpfr_print_binary(x); puts ("");
+      printf ("y="); mpfr_print_binary(y); puts ("");
       printf ("got %lu, expected 127\n", (unsigned long) j);
       exit (1);
     }
@@ -253,8 +256,8 @@ special (void)
   if (mpfr_cmp2(x, y, &j) <= 0 || j != 63)
     {
       printf ("Error in mpfr_cmp2:\n");
-      printf ("x="); mpfr_dump (x);
-      printf ("y="); mpfr_dump (y);
+      printf ("x="); mpfr_print_binary(x); puts ("");
+      printf ("y="); mpfr_print_binary(y); puts ("");
       printf ("got %lu, expected 63\n", (unsigned long) j);
       exit (1);
     }
@@ -267,8 +270,8 @@ special (void)
   if (mpfr_cmp2(x, y, &j) <= 0 || j != 63)
     {
       printf ("Error in mpfr_cmp2:\n");
-      printf ("x="); mpfr_dump (x);
-      printf ("y="); mpfr_dump (y);
+      printf ("x="); mpfr_print_binary(x); puts ("");
+      printf ("y="); mpfr_print_binary(y); puts ("");
       printf ("got %lu, expected 63\n", (unsigned long) j);
       exit (1);
     }
@@ -297,51 +300,6 @@ special (void)
 
   mpfr_clear (x);
   mpfr_clear (y);
-}
-
-/* Compare (m,kx) and (m,ky), where (m,k) means m fixed limbs followed by
-   k zero limbs. */
-static void
-test_equal (void)
-{
-  mpfr_t w, x, y;
-  int m, kx, ky, inex;
-  mpfr_prec_t j;
-
-  for (m = 1; m <= 4; m++)
-    {
-      mpfr_init2 (w, m * GMP_NUMB_BITS);
-      for (kx = 0; kx <= 4; kx++)
-        for (ky = 0; ky <= 4; ky++)
-          {
-            do mpfr_urandomb (w, RANDS); while (mpfr_zero_p (w));
-            mpfr_init2 (x, (m + kx) * GMP_NUMB_BITS
-                        - (kx == 0 ? 0 : randlimb () % GMP_NUMB_BITS));
-            mpfr_init2 (y, (m + ky) * GMP_NUMB_BITS
-                        - (ky == 0 ? 0 : randlimb () % GMP_NUMB_BITS));
-            inex = mpfr_set (x, w, MPFR_RNDN);
-            MPFR_ASSERTN (inex == 0);
-            inex = mpfr_set (y, w, MPFR_RNDN);
-            MPFR_ASSERTN (inex == 0);
-            MPFR_ASSERTN (mpfr_equal_p (x, y));
-            if (randlimb () & 1)
-              mpfr_neg (x, x, MPFR_RNDN);
-            if (randlimb () & 1)
-              mpfr_neg (y, y, MPFR_RNDN);
-            if (mpfr_cmp2 (x, y, &j) != 0)
-              {
-                printf ("Error in test_equal for m = %d, kx = %d, ky = %d\n",
-                        m, kx, ky);
-                printf ("  x = ");
-                mpfr_dump (x);
-                printf ("  y = ");
-                mpfr_dump (y);
-                exit (1);
-              }
-            mpfr_clears (x, y, (mpfr_ptr) 0);
-          }
-      mpfr_clear (w);
-    }
 }
 
 int
@@ -383,8 +341,6 @@ main (void)
       if (y != 0.0)
         tcmp2 (x, y, -1);
     }
-
-  test_equal ();
 
   tests_end_mpfr ();
 

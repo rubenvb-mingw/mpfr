@@ -20,6 +20,10 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
 #include "mpfr-test.h"
 
 #define TEST_FUNCTION mpfr_exp2
@@ -185,7 +189,7 @@ overflowed_exp2_0 (void)
                     err = 1;
                   }
               }
-            else if (rnd != MPFR_RNDF)
+            else
               {
                 if (inex <= 0)
                   {
@@ -194,7 +198,7 @@ overflowed_exp2_0 (void)
                             i, mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
                     err = 1;
                   }
-                if (! (mpfr_inf_p (x) && MPFR_IS_POS (x)))
+                if (! (mpfr_inf_p (x) && MPFR_SIGN (x) > 0))
                   {
                     printf ("Error in overflowed_exp2_0 (i = %d, rnd = %s):\n"
                             "  Got ", i, mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
@@ -290,7 +294,7 @@ main (int argc, char *argv[])
     {
       printf ("Error for x=emin-2, RNDN\n");
       printf ("Expected +0\n");
-      printf ("Got      "); mpfr_dump (y);
+      printf ("Got      "); mpfr_print_binary (y); puts ("");
       exit (1);
     }
   /* restore emin */
@@ -361,7 +365,7 @@ main (int argc, char *argv[])
       exit (1);
     }
 
-  test_generic (MPFR_PREC_MIN, 100, 100);
+  test_generic (2, 100, 100);
 
   mpfr_clear (x);
   mpfr_clear (y);

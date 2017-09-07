@@ -45,9 +45,6 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 #define use_inexp 0
 #include "round_raw_generic.c"
 
-/* Note: if the new prec is lower than the current one, a reallocation
-   must not be done (see exp_2.c). */
-
 int
 mpfr_prec_round (mpfr_ptr x, mpfr_prec_t prec, mpfr_rnd_t rnd_mode)
 {
@@ -56,7 +53,7 @@ mpfr_prec_round (mpfr_ptr x, mpfr_prec_t prec, mpfr_rnd_t rnd_mode)
   mpfr_prec_t nw, ow;
   MPFR_TMP_DECL(marker);
 
-  MPFR_ASSERTN (MPFR_PREC_COND (prec));
+  MPFR_ASSERTN(prec >= MPFR_PREC_MIN && prec <= MPFR_PREC_MAX);
 
   nw = MPFR_PREC2LIMBS (prec); /* needed allocated limbs */
 
@@ -64,17 +61,15 @@ mpfr_prec_round (mpfr_ptr x, mpfr_prec_t prec, mpfr_rnd_t rnd_mode)
   /* Get the number of limbs from the precision.
      (Compatible with all allocation methods) */
   ow = MPFR_LIMB_SIZE (x);
-  if (MPFR_UNLIKELY (nw > ow))
+  if (nw > ow)
     {
       /* FIXME: Variable can't be created using custom allocation,
          MPFR_DECL_INIT or GROUP_ALLOC: How to detect? */
       ow = MPFR_GET_ALLOC_SIZE(x);
       if (nw > ow)
        {
-         mpfr_size_limb_t *tmpx;
-
          /* Realloc significand */
-         tmpx = (mpfr_size_limb_t *) (*__gmp_reallocate_func)
+         mpfr_limb_ptr tmpx = (mpfr_limb_ptr) (*__gmp_reallocate_func)
            (MPFR_GET_REAL_PTR(x), MPFR_MALLOC_SIZE(ow), MPFR_MALLOC_SIZE(nw));
          MPFR_SET_MANT_PTR(x, tmpx); /* mant ptr must be set
                                         before alloc size */
@@ -127,32 +122,8 @@ mpfr_prec_round (mpfr_ptr x, mpfr_prec_t prec, mpfr_rnd_t rnd_mode)
 /* assuming b is an approximation to x in direction rnd1 with error at
    most 2^(MPFR_EXP(b)-err), returns 1 if one is able to round exactly
    x to precision prec with direction rnd2, and 0 otherwise.
+
    Side effects: none.
-
-   rnd1 = RNDN and RNDF are similar: the sign of the error is unknown.
-
-   rnd2 = RNDF: assume that the user will round the approximation b
-   toward the direction of x, i.e. the opposite of rnd1 in directed
-   rounding modes, otherwise RNDN. Some details:
-
-                u   xinf        v xsup          w
-           -----|----+----------|--+------------|-----
-                     [----- x -----]
-     rnd1 = RNDD     b             |
-     rnd1 = RNDU                   b
-
-   where u, v and w are consecutive machine numbers.
-
-   * If [xinf,xsup] contains no machine numbers, then return 1.
-
-   * If [xinf,xsup] contains 2 machine numbers, then return 0.
-
-   * If [xinf,xsup] contains a single machine number, then return 1 iff
-     the rounding of b is this machine number.
-     With the above choice for the rounding of b, this will always be
-     the case if rnd1 is a directed rounding mode; said otherwise, for
-     rnd2 = RNDF and rnd1 being a directed rounding mode, return 1 iff
-     [xinf,xsup] contains at most 1 machine number.
 */
 
 int
@@ -165,13 +136,6 @@ mpfr_can_round (mpfr_srcptr b, mpfr_exp_t err, mpfr_rnd_t rnd1,
     return mpfr_can_round_raw (MPFR_MANT(b), MPFR_LIMB_SIZE(b),
                                MPFR_SIGN(b), err, rnd1, rnd2, prec);
 }
-
-/* TODO: mpfr_can_round_raw currently does a memory allocation and some
-   mpn operations. A bit inspection like for mpfr_round_p (round_p.c) may
-   be sufficient, though this would be more complex than the one done in
-   mpfr_round_p, and in particular, for some rnd1/rnd2 combinations, one
-   needs to take care of changes of binade when the value is close to a
-   power of 2. */
 
 int
 mpfr_can_round_raw (const mp_limb_t *bp, mp_size_t bn, int neg, mpfr_exp_t err,
@@ -197,14 +161,8 @@ mpfr_can_round_raw (const mp_limb_t *bp, mp_size_t bn, int neg, mpfr_exp_t err,
 
   /* Transform RNDD and RNDU to Zero / Away */
   MPFR_ASSERTD (neg == 0 || neg == 1);
-  /* transform RNDF to RNDN */
-  if (rnd1 == MPFR_RNDF)
-    rnd1 = MPFR_RNDN;
   if (rnd1 != MPFR_RNDN)
     rnd1 = MPFR_IS_LIKE_RNDZ(rnd1, neg) ? MPFR_RNDZ : MPFR_RNDA;
-  if (rnd2 == MPFR_RNDF)
-    rnd2 = (rnd1 == MPFR_RNDN) ? MPFR_RNDN :
-      MPFR_IS_LIKE_RNDZ(rnd2, neg) ? MPFR_RNDA : MPFR_RNDZ;
   if (rnd2 != MPFR_RNDN)
     rnd2 = MPFR_IS_LIKE_RNDZ(rnd2, neg) ? MPFR_RNDZ : MPFR_RNDA;
 

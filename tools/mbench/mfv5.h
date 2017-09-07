@@ -31,24 +31,17 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 #include <cstddef>
 #include <vector>
 #include <string>
-#include <fstream>
 
-#include <assert.h>
 #include <sys/time.h>
 #include <sys/resource.h>
-
-#include "mpfr.h"
 
 struct option_test {
   unsigned long prec;
   unsigned long seed;
   unsigned long stat;
-  long max_exp;
   bool verbose;
-  mpfr_rnd_t rnd;
   std::string export_base;
-  std::string import_base;
-  option_test () : prec (53), seed (14528596), stat (100), verbose (false), rnd(MPFR_RNDN), export_base("") {}
+  option_test () : prec (53), seed (14528596), stat (100), verbose (false), export_base("") {}
 };
 
 class registered_test;
@@ -87,7 +80,7 @@ class timming {
   timming (unsigned long s) : size (s) {
     besttime = new unsigned long long[size];
     for (unsigned long i = 0 ; i < size ; i++) 
-      besttime[i] = 0xFFFFFFFFFFFFFFFFLL;
+      besttime[i] = 0xFFFFFFFFFFFFFFFLL;
   }
 
   ~timming () {
@@ -107,7 +100,7 @@ class timming {
   void print (const char *name, const option_test &opt) {
     unsigned long long min, max, moy;
     unsigned long imin = 0, imax = 0;
-    min = 0xFFFFFFFFFFFFFFFFLL;
+    min = 0xFFFFFFFFFFFFFFFLL;
     max = moy = 0;
     for(unsigned long i = 0 ; i < (size-1) ; i++) {
       if (besttime[i] < min) 

@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 /* When a * b is exact, the FMA is equivalent to the separate operations. */
@@ -28,7 +31,7 @@ test_exact (void)
 {
   const char *val[] =
     { "@NaN@", "-@Inf@", "-2", "-1", "-0", "0", "1", "2", "@Inf@" };
-  int sv = numberof (val);
+  int sv = sizeof (val) / sizeof (*val);
   int i, j, k;
   int rnd;
   mpfr_t a, b, c, r1, r2;
@@ -124,7 +127,7 @@ test_overflow2 (void)
   /* The intermediate multiplication x * y will overflow. */
 
   for (i = -9; i <= 9; i++)
-    RND_LOOP_NO_RNDF (rnd)
+    RND_LOOP (rnd)
       {
         int inf, overflow;
 
@@ -156,7 +159,7 @@ test_overflow2 (void)
                     i, mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
             err = 1;
           }
-        else if (MPFR_IS_POS (r))
+        else if (MPFR_SIGN (r) >= 0)
           {
             printf ("Error in test_overflow2 (i = %d, %s): wrong sign "
                     "(+ instead of -)\n", i,
@@ -217,10 +220,10 @@ test_underflow1 (void)
               /* |z| = 1 or 2^emax - ulp */
               mpfr_clear_flags ();
               inex = mpfr_fma (r, x, y, z, (mpfr_rnd_t) rnd);
-#define STRTU1 "Error in test_underflow1 (signy = %d, signz = %d, %s)\n  "
+#define ERRTU1 "Error in test_underflow1 (signy = %d, signz = %d, %s)\n  "
               if (mpfr_nanflag_p ())
                 {
-                  printf (STRTU1 "NaN flag is set\n", signy, signz,
+                  printf (ERRTU1 "NaN flag is set\n", signy, signz,
                           mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
                   err = 1;
                 }
@@ -230,19 +233,19 @@ test_underflow1 (void)
                 mpfr_nextabove (z);
               if ((mpfr_overflow_p () != 0) ^ (mpfr_inf_p (z) != 0))
                 {
-                  printf (STRTU1 "wrong overflow flag\n", signy, signz,
+                  printf (ERRTU1 "wrong overflow flag\n", signy, signz,
                           mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
                   err = 1;
                 }
               if (mpfr_underflow_p ())
                 {
-                  printf (STRTU1 "underflow flag is set\n", signy, signz,
+                  printf (ERRTU1 "underflow flag is set\n", signy, signz,
                           mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
                   err = 1;
                 }
               if (! mpfr_equal_p (r, z))
                 {
-                  printf (STRTU1 "got ", signy, signz,
+                  printf (ERRTU1 "got ", signy, signz,
                           mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
                   mpfr_print_binary (r);
                   printf (" instead of ");
@@ -254,7 +257,7 @@ test_underflow1 (void)
                                 (rnd == MPFR_RNDZ && signz > 0) ||
                                 (rnd == MPFR_RNDN && signy > 0)))
                 {
-                  printf (STRTU1 "ternary value = %d instead of < 0\n",
+                  printf (ERRTU1 "ternary value = %d instead of < 0\n",
                           signy, signz, mpfr_print_rnd_mode ((mpfr_rnd_t) rnd),
                           inex);
                   err = 1;
@@ -263,7 +266,7 @@ test_underflow1 (void)
                                 (rnd == MPFR_RNDZ && signz < 0) ||
                                 (rnd == MPFR_RNDN && signy < 0)))
                 {
-                  printf (STRTU1 "ternary value = %d instead of > 0\n",
+                  printf (ERRTU1 "ternary value = %d instead of > 0\n",
                           signy, signz, mpfr_print_rnd_mode ((mpfr_rnd_t) rnd),
                           inex);
                   err = 1;
@@ -300,18 +303,17 @@ test_underflow2 (void)
            */
           mpfr_clear_flags ();
           inex = mpfr_fma (r, x, y, z, MPFR_RNDN);
-#define STRTU2 "Error in test_underflow2 (b = %d, i = %d)\n  "
+#define ERRTU2 "Error in test_underflow2 (b = %d, i = %d)\n  "
           if (__gmpfr_flags != MPFR_FLAGS_INEXACT)
             {
-              printf (STRTU2 "flags = %u instead of %u\n", b, i,
-                      (unsigned int) __gmpfr_flags,
-                      (unsigned int) MPFR_FLAGS_INEXACT);
+              printf (ERRTU2 "flags = %u instead of %u\n", b, i,
+                      __gmpfr_flags, (unsigned int) MPFR_FLAGS_INEXACT);
               err = 1;
             }
           same = i == 15 || (i == 16 && b == 0);
           if (same ? (inex >= 0) : (inex <= 0))
             {
-              printf (STRTU2 "incorrect ternary value (%d instead of %c 0)\n",
+              printf (ERRTU2 "incorrect ternary value (%d instead of %c 0)\n",
                       b, i, inex, same ? '<' : '>');
               err = 1;
             }
@@ -320,7 +322,7 @@ test_underflow2 (void)
             mpfr_nextabove (y);
           if (! mpfr_equal_p (r, y))
             {
-              printf (STRTU2 "expected ", b, i);
+              printf (ERRTU2 "expected ", b, i);
               mpfr_dump (y);
               printf ("  got      ");
               mpfr_dump (r);
@@ -341,7 +343,7 @@ test_underflow3 (int n)
   mpfr_t x, y, z, t1, t2;
   int sign, k, s, rnd, inex1, inex2;
   mpfr_exp_t e;
-  mpfr_flags_t flags1, flags2;
+  unsigned int flags1, flags2;
 
   mpfr_inits2 (4, x, z, t1, t2, (mpfr_ptr) 0);
   mpfr_init2 (y, 6);
@@ -511,12 +513,10 @@ main (int argc, char *argv[])
   mpfr_set_str (y, "0.5", 10, MPFR_RNDN);
   mpfr_set_str (z, "0.375", 10, MPFR_RNDN);
   mpfr_fma (s, x, y, z, MPFR_RNDU); /* result is 0 */
-  if (mpfr_cmp_ui (s, 0))
+  if (mpfr_cmp_ui(s, 0))
     {
-      printf ("Error: -0.75 * 0.5 + 0.375 should be equal to 0 for prec=2\n");
-      printf ("got instead ");
-      mpfr_dump (s);
-      exit (1);
+      printf("Error: -0.75 * 0.5 + 0.375 should be equal to 0 for prec=2\n");
+      exit(1);
     }
 
   mpfr_set_prec (x, 27);
@@ -538,7 +538,7 @@ main (int argc, char *argv[])
   mpfr_fma (s, x, y, z, MPFR_RNDN);
   if (!mpfr_nan_p (s))
     {
-      printf ("evaluation of function in x=NAN does not return NAN\n");
+      printf ("evaluation of function in x=NAN does not return NAN");
       exit (1);
     }
 
@@ -548,7 +548,7 @@ main (int argc, char *argv[])
   mpfr_fma (s, x, y, z, MPFR_RNDN);
   if (!mpfr_nan_p(s))
     {
-      printf ("evaluation of function in y=NAN does not return NAN\n");
+      printf ("evaluation of function in y=NAN does not return NAN");
       exit (1);
     }
 
@@ -558,7 +558,7 @@ main (int argc, char *argv[])
   mpfr_fma (s, x, y, z, MPFR_RNDN);
   if (!mpfr_nan_p (s))
     {
-      printf ("evaluation of function in z=NAN does not return NAN\n");
+      printf ("evaluation of function in z=NAN does not return NAN");
       exit (1);
     }
 
@@ -608,7 +608,7 @@ main (int argc, char *argv[])
   mpfr_fma (s, x, y, z, MPFR_RNDN);
   if (!mpfr_nan_p (s))
     {
-      printf ("evaluation of function in x=INF y=0  does not return NAN\n");
+      printf ("evaluation of function in x=INF y=0  does not return NAN");
       exit (1);
     }
 
@@ -618,7 +618,7 @@ main (int argc, char *argv[])
   mpfr_fma (s, x, y, z, MPFR_RNDN);
   if (!mpfr_nan_p (s))
     {
-      printf ("evaluation of function in x=0 y=INF does not return NAN\n");
+      printf ("evaluation of function in x=0 y=INF does not return NAN");
       exit (1);
     }
 
@@ -628,7 +628,7 @@ main (int argc, char *argv[])
   mpfr_fma (s, x, y, z, MPFR_RNDN);
   if (!mpfr_nan_p (s))
     {
-      printf ("evaluation of function in x=INF y>0 z=-INF does not return NAN\n");
+      printf ("evaluation of function in x=INF y>0 z=-INF does not return NAN");
       exit (1);
     }
 
@@ -638,27 +638,27 @@ main (int argc, char *argv[])
   mpfr_fma (s, x, y, z, MPFR_RNDN);
   if (!mpfr_nan_p (s))
     {
-      printf ("evaluation of function in x>0 y=INF z=-INF does not return NAN\n");
+      printf ("evaluation of function in x>0 y=INF z=-INF does not return NAN");
       exit (1);
     }
 
   mpfr_set_inf (x, 1);
-  do mpfr_urandomb (y, RANDS); while (MPFR_IS_ZERO(y));
+  mpfr_urandomb (y, RANDS);
   mpfr_urandomb (z, RANDS);
   mpfr_fma (s, x, y, z, MPFR_RNDN);
   if (!mpfr_inf_p (s) || mpfr_sgn (s) < 0)
     {
-      printf ("evaluation of function in x=INF does not return INF\n");
+      printf ("evaluation of function in x=INF does not return INF");
       exit (1);
     }
 
   mpfr_set_inf (y, 1);
-  do mpfr_urandomb (x, RANDS); while (MPFR_IS_ZERO(x));
+  mpfr_urandomb (x, RANDS);
   mpfr_urandomb (z, RANDS);
   mpfr_fma (s, x, y, z, MPFR_RNDN);
   if (!mpfr_inf_p (s) || mpfr_sgn (s) < 0)
     {
-      printf ("evaluation of function at y=INF does not return INF\n");
+      printf ("evaluation of function in y=INF does not return INF");
       exit (1);
     }
 
@@ -668,7 +668,7 @@ main (int argc, char *argv[])
   mpfr_fma (s, x, y, z, MPFR_RNDN);
   if (!mpfr_inf_p (s) || mpfr_sgn (s) < 0)
     {
-      printf ("evaluation of function in z=INF does not return INF\n");
+      printf ("evaluation of function in z=INF does not return INF");
       exit (1);
     }
 
@@ -727,7 +727,7 @@ main (int argc, char *argv[])
             if (randlimb () % 2)
               mpfr_neg (z, z, MPFR_RNDN);
 
-            rnd = RND_RAND_NO_RNDF ();
+            rnd = RND_RAND ();
             mpfr_set_prec (slong, 2 * prec);
             if (mpfr_mul (slong, x, y, rnd))
               {

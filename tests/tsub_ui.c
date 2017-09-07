@@ -20,6 +20,8 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <float.h>
 
 #include "mpfr-test.h"
@@ -74,10 +76,10 @@ check_two_sum (mpfr_prec_t p)
       printf ("Wrong inexact flag for prec=%u, rnd=%s\n",
               (unsigned int) p, mpfr_print_rnd_mode (rnd));
       printf ("x=%u\n", x);
-      printf ("y="); mpfr_dump (y);
-      printf ("u="); mpfr_dump (u);
-      printf ("v="); mpfr_dump (v);
-      printf ("w="); mpfr_dump (w);
+      printf ("y="); mpfr_print_binary(y); puts ("");
+      printf ("u="); mpfr_print_binary(u); puts ("");
+      printf ("v="); mpfr_print_binary(v); puts ("");
+      printf ("w="); mpfr_print_binary(w); puts ("");
       printf ("inexact = %d\n", inexact);
       exit (1);
     }
@@ -137,7 +139,7 @@ main (int argc, char *argv[])
   check3 ("0.9999999999", 1, MPFR_RNDN,
           "-10000000827403709990903735160827636718750e-50");
 
-  test_generic (MPFR_PREC_MIN, 1000, 100);
+  test_generic (2, 1000, 100);
 
   tests_end_mpfr ();
   return 0;

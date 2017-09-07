@@ -20,6 +20,9 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mpfr-test.h"
 
 #ifdef CHECK_EXTERNAL
@@ -66,20 +69,20 @@ check3 (const char *as, mpfr_rnd_t rnd_mode, const char *qs)
 }
 
 static void
-check4 (const char *as, mpfr_rnd_t rnd_mode, const char *qs)
+check4 (const char *as, mpfr_rnd_t rnd_mode, const char *Qs)
 {
   mpfr_t q;
 
   mpfr_init2 (q, 53);
   mpfr_set_str1 (q, as);
   test_sqrt (q, q, rnd_mode);
-  if (mpfr_cmp_str (q, qs, 16, MPFR_RNDN))
+  if (mpfr_cmp_str (q, Qs, 16, MPFR_RNDN))
     {
       printf ("mpfr_sqrt failed for a=%s, rnd_mode=%s\n",
-              as, mpfr_print_rnd_mode (rnd_mode));
-      printf ("expected %s\ngot      ", qs);
+              as, mpfr_print_rnd_mode(rnd_mode));
+      printf ("expected ");
       mpfr_out_str (stdout, 16, 0, q, MPFR_RNDN);
-      printf ("\n");
+      printf ("\ngot      %s\n", Qs);
       mpfr_clear (q);
       exit (1);
     }
@@ -252,7 +255,7 @@ special (void)
         {
           printf ("Error: sqrt(1+ulp(1), up) should give 1.5 (prec=%u)\n",
                   (unsigned int) p);
-          printf ("got "); mpfr_dump (x);
+          printf ("got "); mpfr_print_binary (x); puts ("");
           exit (1);
         }
     }
@@ -320,7 +323,7 @@ special (void)
 
   /* case prec(result) << prec(input) */
   mpfr_set_prec (z, 2);
-  for (p = mpfr_get_prec (z); p < 1000; p++)
+  for (p = 2; p < 1000; p++)
     {
       mpfr_set_prec (x, p);
       mpfr_set_ui (x, 1, MPFR_RNDN);
@@ -351,13 +354,11 @@ special (void)
       mpfr_set_exp (x, GMP_NUMB_BITS);
       mpfr_add_ui (x, x, 1, MPFR_RNDN);
       /* now x = 2^(GMP_NUMB_BITS - 1) + 1 (GMP_NUMB_BITS bits) */
-      inexact = mpfr_mul (x, x, x, MPFR_RNDN);
-      MPFR_ASSERTN (inexact == 0); /* exact */
+      MPFR_ASSERTN (mpfr_mul (x, x, x, MPFR_RNDN) == 0); /* exact */
       inexact = test_sqrt (z, x, MPFR_RNDN);
       /* even rule: z should be 2^(GMP_NUMB_BITS - 1) */
       MPFR_ASSERTN (inexact < 0);
-      inexact = mpfr_cmp_ui_2exp (z, 1, GMP_NUMB_BITS - 1);
-      MPFR_ASSERTN (inexact == 0);
+      MPFR_ASSERTN (mpfr_cmp_ui_2exp (z, 1, GMP_NUMB_BITS - 1) == 0);
       mpfr_nextbelow (x);
       /* now x is just below [2^(GMP_NUMB_BITS - 1) + 1]^2 */
       inexact = test_sqrt (z, x, MPFR_RNDN);
@@ -428,7 +429,7 @@ check_inexact (mpfr_prec_t p)
   mpfr_init2 (y, p);
   mpfr_init2 (z, 2*p);
   mpfr_urandomb (x, RANDS);
-  rnd = RND_RAND_NO_RNDF ();
+  rnd = RND_RAND ();
   inexact = test_sqrt (y, x, rnd);
   if (mpfr_mul (z, y, y, rnd)) /* exact since prec(z) = 2*prec(y) */
     {
@@ -446,7 +447,7 @@ check_inexact (mpfr_prec_t p)
       printf ("x=");
       mpfr_print_binary (x);
       printf (" rnd=%s\n", mpfr_print_rnd_mode (rnd));
-      printf ("y="); mpfr_dump (y);
+      printf ("y="); mpfr_print_binary (y); puts ("");
       exit (1);
     }
   mpfr_clear (x);
@@ -597,99 +598,6 @@ bug20160120 (void)
   mpfr_clear(y);
 }
 
-/* Bug in mpfr_sqrt2 when prec(u) = 2*GMP_NUMB_BITS and the exponent of u is
-   odd: the last bit of u is lost. */
-static void
-bug20160908 (void)
-{
-  mpfr_t r, u;
-  int n = GMP_NUMB_BITS, ret;
-
-  mpfr_init2 (r, 2*n - 1);
-  mpfr_init2 (u, 2 * n);
-  mpfr_set_ui_2exp (u, 1, 2*n-2, MPFR_RNDN); /* u=2^(2n-2) with exp(u)=2n-1 */
-  mpfr_nextabove (u);
-  /* now u = 2^(2n-2) + 1/2 */
-  ret = mpfr_sqrt (r, u, MPFR_RNDZ);
-  MPFR_ASSERTN(ret == -1 && mpfr_cmp_ui_2exp (r, 1, n-1) == 0);
-  mpfr_clear (r);
-  mpfr_clear (u);
-}
-
-static void
-testall_rndf (mpfr_prec_t pmax)
-{
-  mpfr_t a, b, d;
-  mpfr_prec_t pa, pb;
-
-  for (pa = MPFR_PREC_MIN; pa <= pmax; pa++)
-    {
-      mpfr_init2 (a, pa);
-      mpfr_init2 (d, pa);
-      for (pb = MPFR_PREC_MIN; pb <= pmax; pb++)
-        {
-          mpfr_init2 (b, pb);
-          mpfr_set_ui (b, 1, MPFR_RNDN);
-          while (mpfr_cmp_ui (b, 4) < 0)
-            {
-              mpfr_sqrt (a, b, MPFR_RNDF);
-              mpfr_sqrt (d, b, MPFR_RNDD);
-              if (!mpfr_equal_p (a, d))
-                {
-                  mpfr_sqrt (d, b, MPFR_RNDU);
-                  if (!mpfr_equal_p (a, d))
-                    {
-                      printf ("Error: mpfr_sqrt(a,b,RNDF) does not "
-                              "match RNDD/RNDU\n");
-                      printf ("b="); mpfr_dump (b);
-                      printf ("a="); mpfr_dump (a);
-                      exit (1);
-                    }
-                }
-              mpfr_nextabove (b);
-            }
-          mpfr_clear (b);
-        }
-      mpfr_clear (a);
-      mpfr_clear (d);
-    }
-}
-
-/* test the case prec = GMP_NUMB_BITS */
-static void
-test_sqrt1n (void)
-{
-  mpfr_t r, u;
-  int inex;
-
-  mpfr_init2 (r, GMP_NUMB_BITS);
-  mpfr_init2 (u, GMP_NUMB_BITS);
-
-  inex = mpfr_set_ui_2exp (u, 17 * 17, 2 * GMP_NUMB_BITS - 10, MPFR_RNDN);
-  MPFR_ASSERTN(inex == 0);
-  inex = mpfr_sqrt (r, u, MPFR_RNDN);
-  MPFR_ASSERTN(inex == 0);
-  MPFR_ASSERTN(mpfr_cmp_ui_2exp (r, 17, GMP_NUMB_BITS - 5) == 0);
-
-  inex = mpfr_set_ui_2exp (u, 1, GMP_NUMB_BITS - 2, MPFR_RNDN);
-  MPFR_ASSERTN(inex == 0);
-  inex = mpfr_add_ui (u, u, 1, MPFR_RNDN);
-  MPFR_ASSERTN(inex == 0);
-  inex = mpfr_mul_2exp (u, u, GMP_NUMB_BITS, MPFR_RNDN);
-  MPFR_ASSERTN(inex == 0);
-  /* u = 2^(2*GMP_NUMB_BITS-2) + 2^GMP_NUMB_BITS, thus
-     u = r^2 + 2^GMP_NUMB_BITS with r = 2^(GMP_NUMB_BITS-1).
-     Should round to r+1 to nearest. */
-  inex = mpfr_sqrt (r, u, MPFR_RNDN);
-  MPFR_ASSERTN(inex > 0);
-  inex = mpfr_sub_ui (r, r, 1, MPFR_RNDN);
-  MPFR_ASSERTN(inex == 0);
-  MPFR_ASSERTN(mpfr_cmp_ui_2exp (r, 1, GMP_NUMB_BITS - 1) == 0);
-
-  mpfr_clear (r);
-  mpfr_clear (u);
-}
-
 #define TEST_FUNCTION test_sqrt
 #define TEST_RANDOM_POS 8
 #include "tgeneric.c"
@@ -702,7 +610,6 @@ main (void)
 
   tests_start_mpfr ();
 
-  testall_rndf (16);
   for (p = MPFR_PREC_MIN; p <= 128; p++)
     {
       test_property1 (p, MPFR_RNDN, 0);
@@ -822,13 +729,11 @@ main (void)
   check4 ("72154663483843080704304789585920.0", MPFR_RNDA,
           "1.e2d9a51977e6e@13");
 
-  test_generic (MPFR_PREC_MIN, 300, 15);
+  test_generic (2, 300, 15);
   data_check ("data/sqrt", mpfr_sqrt, "mpfr_sqrt");
   bad_cases (mpfr_sqrt, mpfr_sqr, "mpfr_sqrt", 8, -256, 255, 4, 128, 800, 50);
 
   bug20160120 ();
-  bug20160908 ();
-  test_sqrt1n ();
 
   tests_end_mpfr ();
   return 0;

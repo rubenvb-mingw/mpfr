@@ -20,6 +20,10 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
 #include "mpfr-test.h"
 
 #ifdef CHECK_EXTERNAL
@@ -361,7 +365,7 @@ check_special (void)
     {
       printf ("Error for exp(-9) for emin=-10\n");
       printf ("Expected +0\n");
-      printf ("Got      "); mpfr_dump (y);
+      printf ("Got      "); mpfr_print_binary (y); puts ("");
       exit (1);
     }
   set_emin (emin);
@@ -546,57 +550,55 @@ overflowed_exp0 (void)
       /* and if emax < 0, 1 - eps is not representable either. */
       for (i = -1; i <= 1; i++)
         RND_LOOP (rnd)
-          {
-            mpfr_set_si_2exp (x, i, -512 * ABS (i), MPFR_RNDN);
-            mpfr_clear_flags ();
-            inex = mpfr_exp (x, x, (mpfr_rnd_t) rnd);
-            if ((i >= 0 || emax < 0 || rnd == MPFR_RNDN || rnd == MPFR_RNDU) &&
-                ! mpfr_overflow_p ())
-              {
-                printf ("Error in overflowed_exp0 (i = %d, rnd = %s):\n"
-                        "  The overflow flag is not set.\n",
-                        i, mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
-                err = 1;
-              }
-            if (rnd == MPFR_RNDZ || rnd == MPFR_RNDD)
-              {
-                if (inex >= 0)
-                  {
-                    printf ("Error in overflowed_exp0 (i = %d, rnd = %s):\n"
-                            "  The inexact value must be negative.\n",
-                            i, mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
-                    err = 1;
-                  }
-                if (! mpfr_equal_p (x, y))
-                  {
-                    printf ("Error in overflowed_exp0 (i = %d, rnd = %s):\n"
-                            "  Got ", i,
-                            mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
-                    mpfr_print_binary (x);
-                    printf (" instead of 0.11111111E%d.\n", emax);
-                    err = 1;
-                  }
-              }
-            else if (rnd != MPFR_RNDF)
-              {
-                if (inex <= 0)
-                  {
-                    printf ("Error in overflowed_exp0 (i = %d, rnd = %s):\n"
-                            "  The inexact value must be positive.\n",
-                            i, mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
-                    err = 1;
-                  }
-                if (! (mpfr_inf_p (x) && MPFR_IS_POS (x)))
-                  {
-                    printf ("Error in overflowed_exp0 (i = %d, rnd = %s):\n"
-                            "  Got ", i,
-                            mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
-                    mpfr_print_binary (x);
-                    printf (" instead of +Inf.\n");
-                    err = 1;
-                  }
-              }
-          }
+        {
+          mpfr_set_si_2exp (x, i, -512 * ABS (i), MPFR_RNDN);
+          mpfr_clear_flags ();
+          inex = mpfr_exp (x, x, (mpfr_rnd_t) rnd);
+          if ((i >= 0 || emax < 0 || rnd == MPFR_RNDN || rnd == MPFR_RNDU) &&
+              ! mpfr_overflow_p ())
+            {
+              printf ("Error in overflowed_exp0 (i = %d, rnd = %s):\n"
+                      "  The overflow flag is not set.\n",
+                      i, mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
+              err = 1;
+            }
+          if (rnd == MPFR_RNDZ || rnd == MPFR_RNDD)
+            {
+              if (inex >= 0)
+                {
+                  printf ("Error in overflowed_exp0 (i = %d, rnd = %s):\n"
+                          "  The inexact value must be negative.\n",
+                          i, mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
+                  err = 1;
+                }
+              if (! mpfr_equal_p (x, y))
+                {
+                  printf ("Error in overflowed_exp0 (i = %d, rnd = %s):\n"
+                          "  Got ", i, mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
+                  mpfr_print_binary (x);
+                  printf (" instead of 0.11111111E%d.\n", emax);
+                  err = 1;
+                }
+            }
+          else
+            {
+              if (inex <= 0)
+                {
+                  printf ("Error in overflowed_exp0 (i = %d, rnd = %s):\n"
+                          "  The inexact value must be positive.\n",
+                          i, mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
+                  err = 1;
+                }
+              if (! (mpfr_inf_p (x) && MPFR_SIGN (x) > 0))
+                {
+                  printf ("Error in overflowed_exp0 (i = %d, rnd = %s):\n"
+                          "  Got ", i, mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
+                  mpfr_print_binary (x);
+                  printf (" instead of +Inf.\n");
+                  err = 1;
+                }
+            }
+        }
       set_emax (old_emax);
     }
 
@@ -722,8 +724,7 @@ underflow_up (int extended_emin)
                   mpfr_clear_flags ();
                   inex = e3 ? exp_3 (y, x, (mpfr_rnd_t) rnd)
                     : mpfr_exp (y, x, (mpfr_rnd_t) rnd);
-                  /* for MPFR_RNDF, the inexact flag is undefined */
-                  if (__gmpfr_flags != MPFR_FLAGS_INEXACT && rnd != MPFR_RNDF)
+                  if (__gmpfr_flags != MPFR_FLAGS_INEXACT)
                     {
                       printf ("Incorrect flags in underflow_up, eps > 0, %s",
                               mpfr_print_rnd_mode ((mpfr_rnd_t) rnd));
@@ -731,10 +732,7 @@ underflow_up (int extended_emin)
                         printf (" and extended emin");
                       printf ("\nfor precx = %d, precy = %d, %s\n",
                               precx, precy, e3 ? "mpfr_exp_3" : "mpfr_exp");
-                      printf ("x="); mpfr_dump (x);
-                      printf ("y="); mpfr_dump (y);
-                      printf ("Got %u instead of %u.\n",
-                              (unsigned int) __gmpfr_flags,
+                      printf ("Got %u instead of %u.\n", __gmpfr_flags,
                               (unsigned int) MPFR_FLAGS_INEXACT);
                       err = 1;
                     }
@@ -749,9 +747,7 @@ underflow_up (int extended_emin)
                       mpfr_dump (y);
                       err = 1;
                     }
-                  /* for MPFR_RNDF, the ternary value is undefined */
-                  if (rnd != MPFR_RNDF)
-                    MPFR_ASSERTN (inex != 0);
+                  MPFR_ASSERTN (inex != 0);
                   if (rnd == MPFR_RNDD || rnd == MPFR_RNDZ)
                     MPFR_ASSERTN (inex < 0);
                   if (rnd == MPFR_RNDU)
@@ -860,12 +856,9 @@ underflow_up (int extended_emin)
                                   precy + i, 1 - 2 * (precy + i));
                         printf (", %s\n", e3 ? "mpfr_exp_3" : "mpfr_exp");
                         printf ("Got %u instead of %u.\n",
-                                (unsigned int) __gmpfr_flags, flags);
+                                __gmpfr_flags, flags);
                         err = 1;
                       }
-                    if (rnd == MPFR_RNDF)
-                      continue; /* the test below makes no sense, since RNDF
-                                   does not give a deterministic result */
                     if (rnd == MPFR_RNDU || rnd == MPFR_RNDA || rnd == MPFR_RNDN ?
                         mpfr_cmp0 (y, minpos) != 0 : MPFR_NOTZERO (y))
                       {
@@ -986,7 +979,7 @@ main (int argc, char *argv[])
   check_inexact ();
   check_special ();
 
-  test_generic (MPFR_PREC_MIN, 100, 100);
+  test_generic (2, 100, 100);
 
   compare_exp2_exp3 (20, 1000);
   check_worst_cases();

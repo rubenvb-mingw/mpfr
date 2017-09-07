@@ -1,5 +1,5 @@
 /*
-Copyright 2005-2017 Free Software Foundation, Inc.
+Copyright 2005-2009 Free Software Foundation, Inc.
 Contributed by Patrick Pelissier, INRIA.
 
 This file is part of the MPFR Library.
@@ -28,7 +28,7 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
  *  to measure the # of cycles taken by the call to f(x).
  */
 
-#define TIMP_VERSION 1*100+1*10+0
+#define TIMP_VERSION 1*100+0*10+0
 
 #ifndef __GNUC__
 # error  CC != GCC 
@@ -51,9 +51,6 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 
 #elif defined (__i386__) || defined(__amd64__)
 
-#if !defined(corei7) && !defined(__core_avx2__)
-
-/* the following implements Section 3.2.3 of the article cited below */
 #define timp_rdtsc_before(time)           \
         __asm__ __volatile__(             \
                 ".align 64\n\t"           \
@@ -80,34 +77,6 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
                 : /* no output */         \
                 : "S"(&time)              \
                 : "eax", "ebx", "ecx", "edx", "memory")
-#else
-
-/* corei7 and corei5 offer newer instruction rdtscp, which should be better,
-   see https://www.intel.com/content/dam/www/public/us/en/documents/white-papers/ia-32-ia-64-benchmark-code-execution-paper.pdf */
-#define timp_rdtsc_before(time)           \
-        __asm__ __volatile__(             \
-                ".align 64\n\t"           \
-                "xorl %%eax,%%eax\n\t"    \
-                "cpuid\n\t"               \
-                "rdtsc\n\t"               \
-                "movl %%eax,(%0)\n\t"     \
-                "movl %%edx,4(%0)\n\t"    \
-                : /* no output */         \
-                : "S"(&time)              \
-                : "eax", "ebx", "ecx", "edx", "memory")
-
-#define timp_rdtsc_after(time)            \
-        __asm__ __volatile__(             \
-                "rdtscp\n\t"               \
-                "movl %%eax,(%0)\n\t"     \
-                "movl %%edx,4(%0)\n\t"    \
-                "xorl %%eax,%%eax\n\t"    \
-                "cpuid\n\t"               \
-                : /* no output */         \
-                : "S"(&time)              \
-                : "eax", "ebx", "ecx", "edx", "memory")
-
-#endif
 
 #elif defined (__ia64)
 
@@ -124,19 +93,19 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 ({ unsigned long long int x;                      \
    __asm__ volatile ("rpcc %0\n\t" : "=r" (x));   \
    x; })
-#define timp_rdtsc_before(time) (time = timp_rdtsc())
-#define timp_rdtsc_after(time)  (time = timp_rdtsc())
+#define timp_rdtsc_before(time) (time = tpp_rdtsc())
+#define timp_rdtsc_after(time)  (time = tpp_rdtsc())
 
 #else
 # error Unsupported CPU
 #endif
 
 /* We do several measures and keep the minimum to avoid counting
- * hardware interrupt cycles.
+ * hardware interruption cycles.
  * The filling of the CPU cache is done because we do several loops,
  * and get the minimum.
- * Declaring num_cycle as "volatile" is to avoid optimization when it is
- * possible (to properly compute overhead).
+ * Declaring num_cycle as "volatile" is to avoid optimisation when it is
+ * possible (To properly calcul overhead).
  * overhead is calculated outside by a call to:
  *   overhead = MEASURE("overhead", ;)
  * Use a lot the preprocessor.
@@ -147,10 +116,10 @@ static unsigned long long int timp_overhead = 0;
 #define TIMP_NUM_TRY  4327
 #define TIMP_MAX_WAIT_FOR_MEASURE 10000000ULL
 
-#define TIMP_MEASURE_AUX(CODE)                                        \
+#define TIMP_MEASURE(CODE)                                            \
   ({                                                                  \
   volatile unsigned long long int num_cycle, num_cycle2;              \
-  unsigned long long int min_num_cycle, start_num_cycle;              \
+  unsigned long long min_num_cycle, start_num_cycle;                  \
   int _i;                                                             \
   timp_rdtsc_before (start_num_cycle);                                \
   min_num_cycle = 0xFFFFFFFFFFFFFFFFLL;                               \
@@ -158,27 +127,15 @@ static unsigned long long int timp_overhead = 0;
     timp_rdtsc_before(num_cycle);                                     \
     CODE;                                                             \
     timp_rdtsc_after(num_cycle2);                                     \
-    num_cycle = num_cycle2 < num_cycle ? 0 /* shouldn't happen */     \
-      : num_cycle2 - num_cycle;                                       \
+    num_cycle =  num_cycle2 - num_cycle;                              \
     if (num_cycle < min_num_cycle)                                    \
       min_num_cycle = num_cycle;                                      \
     if (num_cycle2 - start_num_cycle > TIMP_MAX_WAIT_FOR_MEASURE)     \
       break;                                                          \
   }                                                                   \
-  min_num_cycle < timp_overhead ? 0 : min_num_cycle - timp_overhead; })
-
-/* If the return value of TIMP_MEASURE_AUX() is 0, this probably means
-   that timp_overhead was too large and incorrect; this can occur just
-   after starting the process. In this case, TIMP_OVERHEAD() is called
-   again to recompute timp_overhead and the timing is redone. */
-#define TIMP_MEASURE(CODE)                                            \
-  ({                                                                  \
-    unsigned long long int _m;                                        \
-    while ((_m = TIMP_MEASURE_AUX(CODE)) == 0)                        \
-      TIMP_OVERHEAD();                                                \
-    _m; })
+  min_num_cycle - timp_overhead; })
 
 #define TIMP_OVERHEAD()                                               \
-  (timp_overhead = 0, timp_overhead = TIMP_MEASURE_AUX((void) 0) )
+  (timp_overhead = 0, timp_overhead = TIMP_MEASURE((void) 0) )
 
 #endif /* __TIMP__H__ */
