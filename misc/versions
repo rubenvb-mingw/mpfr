@@ -128,8 +128,8 @@ getvers "FreshPorts (FreeBSD)",
   qr!<b>mpfr</b>.*<br>\n<b> *(\d[^<]+?) *</b>!i;
 
 getvers "NetBSD (pkgsrc)",
-  "http://ftp.netbsd.org/pub/pkgsrc/current/pkgsrc/math/mpfr/README.html",
-  qr!The current source version of the package is\s+"mpfr-([-0-9a-z.]+)"!s;
+  "http://pkgsrc.se/math/mpfr",
+  qr!<b>Package name:</b> *mpfr-([-0-9a-z.]+),!s;
 
 getvers "MacPorts",
   "https://trac.macports.org/browser/trunk/dports/devel/mpfr/Portfile?format=txt",
@@ -186,8 +186,8 @@ getvers "DJGPP",
   qr!>mpfr(\d)(\d)(\d)b\.zip!, '.';
 
 getvers "Cygwin",
-  "http://cygwin.com/packages/x86/mpfr/?C=N;O=D",
-  qr!href="mpfr-([-0-9.]+)"!s;
+  "https://cygwin.com/packages/x86_64/mpfr/?C=N;O=D",
+  qr!href="mpfr-([^"]+?)(?:-src)?"!s;
 
 getvers "MinGW",
   "https://sourceforge.net/projects/mingw/files/MinGW/Base/mpfr/",
@@ -198,4 +198,4 @@ getvers "SAGE",
   "http://www-ftp.lip6.fr/pub/math/sagemath/spkg/upstream/mpfr/index.html",
   qr!=== mpfr-(\S+) !;
 
-# $Id: versions 98909 2017-05-31 13:38:53Z vinc17/zira $
+# $Id: versions 101612 2017-09-07 11:08:35Z vinc17/cventin $
