@@ -890,6 +890,13 @@ CONF:--enable-thread-safe
 INFO:CCV:--version
 CHECK-END
 
+HOST:gcc115.fsffrance.org
+PROC:AArch64 Processor rev 1
+CHECK-BEGIN
+CONF:--enable-assert=full
+INFO:CCV:--version
+CHECK-END
+
 HOST:gcc61.fsffrance.org
 PROC:PA8600
 CHECK-BEGIN
@@ -994,4 +1001,4 @@ CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 101580 2017-09-06 15:02:45Z vinc17/cventin $
+# $Id: mpfrtests.data 101614 2017-09-07 12:18:12Z vinc17/cventin $
