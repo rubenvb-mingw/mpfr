@@ -401,12 +401,12 @@ CONF:CC=gcc-snapshot
 CONF:CFLAGS=$cflags1
 INFO:CCV:--version
 CHECK-END
-CHECK-BEGIN >= 40000
-# Test not needed before MPFR 4.0 (MPFR_GENERIC_ABI is new in MPFR 4.0).
+CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:CC=gcc-snapshot
 CONF:CFLAGS=$cflags1 -DMPFR_GENERIC_ABI
+CONF:mpfr_cv_c_long_double_format=unknown
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN >= 40000
@@ -994,6 +994,9 @@ EVAL:export MAKE=gmake
 # For GMP built with the 64-bit ABI (see MPFR's INSTALL file)...
 EVAL:export OBJECT_MODE=64
 # On AIX 7.2, printf() with a large precision field is broken.
+# https://twitter.com/IBMAIXeSupp/status/906163183727120384 "We've opened
+# IV99725 to address this problem that is not specific to 7.2, but a long
+# time bug that we need to look into and resolve".
 EVAL:unset MPFR_CHECK_LIBC_PRINTF
 CHECK-BEGIN
 CONF:--with-gmp=/opt/cfarm/gmp-latest
@@ -1001,4 +1004,4 @@ CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 101614 2017-09-07 12:18:12Z vinc17/cventin $
+# $Id: mpfrtests.data 102581 2017-10-09 14:49:33Z vinc17/cventin $

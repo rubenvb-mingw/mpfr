@@ -190,6 +190,7 @@ tst()
           echo "$conf"
           dotee "$conf" mpfrtests.cfgout
           ./config.status -V | sed '/with options/q' >> "$out"
+          grep '^mpfr_cv_' config.log >> "$out"
           gmpv1=$(sed -n "s/$gmprx//p" mpfrtests.cfgout)
           if [ -z "$gmpv1" ]; then
             echo "$0: can't get GMP version" >&2
@@ -343,4 +344,4 @@ printf "\n$ed\n" >> "$out"
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 101522 2017-09-04 15:23:58Z vinc17/cventin $
+# $Id: mpfrtests.sh 102576 2017-10-09 13:01:57Z vinc17/cventin $
