@@ -245,6 +245,15 @@ tst()
                     s!.* PASS: *\([0-9]\{1,\}\).* SKIP: *\([0-9]\{1,\}\).* FAIL: *\([0-9]\{1,\}\).*!--> PASS: \1 / SKIP: \2 / FAIL: \3!p
                   }
                 }" mpfrtests.makeout >> "$out"
+        echo "*** Running make check-gmp-symbols ***"
+        if ! grep -q check-gmp-symbols: Makefile; then
+          echo "Feature not present. Nothing to do."
+        elif grep -q "GMP internals = yes" mpfrtests.makeout; then
+          echo "GMP internals have been requested. Test disabled."
+        else
+          dotee "$mj check-gmp-symbols" mpfrtests.makeout
+          echo "Checked that no internal GMP symbols are used." >> "$out"
+        fi
         echo "*** Cleaning up ***"
         if [ -z "$1" ]; then
           rm mpfrtests.makeout
@@ -344,4 +353,4 @@ printf "\n$ed\n" >> "$out"
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 102576 2017-10-09 13:01:57Z vinc17/cventin $
+# $Id: mpfrtests.sh 103987 2017-12-01 12:59:56Z vinc17/cventin $
