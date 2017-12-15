@@ -163,7 +163,7 @@ patch</a> (it <em>may</em> already be installed on your system, e.g. as
 Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11783&amp;view=revision">11783</a>.</li>
 
-<li id="p2">When the assertions have been enabled with the <samp>--enable-assert</samp> configure option, an assertion failure occurs in <code>mpfr_root</code>, which computes <var>x</var><sup>1/<var>k</var></sup> (the <var>k</var>th root of <var>x</var>), for |<var>x</var>|&nbsp;=&nbsp;1 and <var>k</var>&nbsp;&gt;100. The reason is that when |<var>x</var>|&nbsp;=&nbsp;1, the algorithm used for <var>k</var>&nbsp;&gt;100 gets the exponent of zero, while zero does not have an exponent. When these assertions are disabled (default), one can prove that the generated code is actually correct in this specific case. This bug is fixed by the <a href="patch02"><samp>root</samp> patch</a>.<br />
+<li id="p2">When the assertions have been enabled with the <samp>--enable-assert</samp> configure option, an assertion failure occurs in <code>mpfr_root</code>, which computes <var>x</var><sup>1/<var>k</var></sup> (the <var>k</var>th root of <var>x</var>), for |<var>x</var>|&nbsp;=&nbsp;1 and <var>k</var>&nbsp;&gt;&nbsp;100. The reason is that when |<var>x</var>|&nbsp;=&nbsp;1, the algorithm used for <var>k</var>&nbsp;&gt;100 gets the exponent of zero, while zero does not have an exponent. When these assertions are disabled (default), one can prove that the generated code is actually correct in this specific case. This bug is fixed by the <a href="patch02"><samp>root</samp> patch</a>.<br />
 Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11982&amp;view=revision">11982</a>.</li>
 
