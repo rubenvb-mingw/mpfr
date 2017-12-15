@@ -99,7 +99,7 @@ The key fingerprint is:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2017-10-26). The patches are distributed under the same license as
+update: 2017-12-15). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -162,6 +162,10 @@ patch</a> (it <em>may</em> already be installed on your system, e.g. as
 <li id="p1">Functions <code>mpfr_get_ld</code>, <code>mpfr_get_si</code>, <code>mpfr_get_ui</code>, <code>mpfr_get_sj</code>, <code>mpfr_get_uj</code> and <code>mpfr_get_z</code> can behave incorrectly in a very reduced exponent range. These bugs are fixed by the <a href="patch01"><samp>mpfr_get</samp> patch</a>.<br />
 Corresponding changeset in the 3.1 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11783&amp;view=revision">11783</a>.</li>
+
+<li id="p2">When the assertions have been enabled with the <samp>--enable-assert</samp> configure option, an assertion failure occurs in <code>mpfr_root</code>, which computes <var>x</var><sup>1/<var>k</var></sup> (the <var>k</var>th root of <var>x</var>), for |<var>x</var>|&nbsp;=&nbsp;1 and <var>k</var>&nbsp;&gt;100. The reason is that when |<var>x</var>|&nbsp;=&nbsp;1, the algorithm used for <var>k</var>&nbsp;&gt;100 gets the exponent of zero, while zero does not have an exponent. When these assertions are disabled (default), one can prove that the generated code is actually correct in this specific case. This bug is fixed by the <a href="patch02"><samp>root</samp> patch</a>.<br />
+Corresponding changeset in the 3.1 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11982&amp;view=revision">11982</a>.</li>
 
 </ol>
 
