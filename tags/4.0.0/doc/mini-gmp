@@ -1,0 +1,32 @@
+How to compile GNU MPFR with mini-gmp
+=====================================
+
+This was tested with MPFR svn 11903 and GMP 6.1.2 on x86_64 GNU/Linux:
+============================================================================
+Testsuite summary for MPFR 4.0.0-dev
+============================================================================
+# TOTAL: 180
+# PASS:  170
+# SKIP:  10
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+
+1) extract the GMP tarball in say /tmp/gmp-6.1.2
+   go into /tmp/gmp-6.1.2/mini-gmp
+   gcc -O2 -g -fPIC -c mini-gmp.c
+   ar r libgmp.a mini-gmp.o
+
+2) create a GMP install directory in say /tmp
+   mkdir /tmp/include
+   mkdir /tmp/lib
+   cp libgmp.a /tmp/lib
+   cp mini-gmp.h /tmp/include/gmp.h
+
+3) extract the MPFR tarball in say /tmp/mpfr
+   ./configure --with-gmp=/tmp --enable-mini-gmp --disable-shared
+
+Note: to use this version of the MPFR library, you need to define
+the MPFR_USE_MINI_GMP macro before including mpfr.h (alternatively,
+you can modify mpfr.h to define this macro at the beginning).
