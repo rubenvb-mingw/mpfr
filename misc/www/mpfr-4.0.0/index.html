@@ -18,10 +18,203 @@
 
 <div class="logo"><a href="../index.html"><img src="../mpfr100.png" height="40" width="100" alt="[MPFR]" /></a></div>
 
-<h1><acronym>GNU</acronym> <acronym>MPFR</acronym> version 4.0.0</h1>
+<h1><acronym>GNU</acronym> <acronym>MPFR</acronym> version 4.0.0 (released on 25 December 2017)</h1>
 
-<p>On 2017-12-08, <acronym>MPFR</acronym> 4.0.0 is currently under testing.
-It will be released soon.</p>
+<div>[<a href="#download">download</a>]
+[<a href="#doc">documentation</a>]
+[<a href="#bugs">bugs</a>]
+[<a href="#changes">changes</a>]
+[<a href="#platforms">platforms</a>]</div>
+
+<p>The <cite lang="fr" xml:lang="fr">dinde aux marrons</cite> release.</p>
+
+<p><acronym>MPFR</acronym> 4.0.0 requires <acronym>GMP</acronym> 5.0
+or higher.</p>
+
+<p><strong>Warning! Due to the fact that
+<acronym title="Thread Local Storage">TLS</acronym> support is now detected
+automatically, the <acronym>MPFR</acronym> build can be incorrect on some
+platforms</strong> (compiler or system bug). Indeed,
+<a href="http://www.loria.fr/~zimmerma/software/compilerbugs.html">the
+<acronym>TLS</acronym> implementation of some compilers/platforms is buggy</a>,
+and <acronym>MPFR</acronym> cannot detect every problem at configure time.
+Please run <q><samp>make check</samp></q> to see if your build is affected.
+If you get failures, you should try the <samp>--disable-thread-safe</samp>
+configure option to disable <acronym>TLS</acronym> and see if this solves
+these failures. But you should not use an <acronym>MPFR</acronym> library
+with <acronym>TLS</acronym> disabled in a multithreaded program (unless
+you know what you are doing).</p>
+
+<h2 id="download">Download</h2>
+
+<p>The <acronym>MPFR</acronym> 4.0.0 source can be downloaded in the
+following archive formats:</p>
+<ul>
+<li><a href="mpfr-4.0.0.tar.xz">mpfr-4.0.0.tar.xz</a>
+(tar/xz, 1.4 <abbr>MB</abbr>,
+<a href="mpfr-4.0.0.tar.xz.asc" title="PGP signature for mpfr-4.0.0.tar.xz">signature</a>),</li>
+<li><a href="mpfr-4.0.0.tar.bz2">mpfr-4.0.0.tar.bz2</a>
+(tar/bzip2, 1.6 <abbr>MB</abbr>,
+<a href="mpfr-4.0.0.tar.bz2.asc" title="PGP signature for mpfr-4.0.0.tar.bz2">signature</a>),</li>
+<li><a href="mpfr-4.0.0.tar.gz">mpfr-4.0.0.tar.gz</a>
+(tar/gzip, 2.1 <abbr>MB</abbr>,
+<a href="mpfr-4.0.0.tar.gz.asc" title="PGP signature for mpfr-4.0.0.tar.gz">signature</a>),</li>
+<li><a href="mpfr-4.0.0.zip">mpfr-4.0.0.zip</a>
+(zip, 2.5 <abbr>MB</abbr>,
+<a href="mpfr-4.0.0.zip.asc" title="PGP signature for mpfr-4.0.0.zip">signature</a>).</li>
+</ul>
+
+<p>Each tarball is signed by Vincent Lefèvre. This can be verified using the
+<acronym title="Digital Signature Algorithm">DSA</acronym> key <abbr>ID</abbr>
+<samp>980C197698C3739D</samp>; this key can be retrieved with:</p>
+<pre>gpg --recv-keys 980C197698C3739D</pre>
+<p>or by downloading it from
+<a href="https://www.vinc17.net/pgp.html">https://www.vinc17.net/pgp.html</a>.
+The key fingerprint is:</p>
+<pre>07F3 DBBE CC1A 3960 5078  094D 980C 1976 98C3 739D</pre>
+<p>The signatures can be verified with:</p>
+<pre>gpg --verify <em>file.asc</em></pre>
+<p>You should check that the key fingerprint matches.</p>
+
+<p><acronym>MPFR</acronym> is also available via
+<a href="../ports.html">third-party packages and ports</a>.</p>
+
+<h2 id="doc">Documentation</h2>
+
+<ul>
+
+<li>The reference manual:
+[<a href="mpfr.html" title="Reference manual in HTML format">html</a>]
+[<a href="mpfr.dvi.gz" title="Reference manual in DVI format">dvi</a>]
+[<a href="mpfr.ps.gz" title="Reference manual in Postscript format">ps</a>]
+[<a href="mpfr.pdf" title="Reference manual in PDF format">pdf</a>]</li>
+
+<li>The <a href="../faq.html"><acronym>MPFR</acronym>
+<acronym title="Frequently Asked Questions">FAQ</acronym></a>
+(common to all <acronym>MPFR</acronym> versions).</li>
+
+</ul>
+
+<h2 id="bugs">Bugs</h2>
+
+<!-- For BUGS, it's better to point to HEAD, as changes will be noted above. -->
+<p>See the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr/trunk/BUGS?view=markup"><samp>BUGS</samp></a> file.</p>
+
+<h2 id="changes">Changes from versions 3.1.* to version 4.0.0</h2>
+
+<ul>
+
+<li><acronym>MPFR</acronym> now depends on <acronym>GMP</acronym>&nbsp;5.0+ instead of 4.1+.</li>
+
+<li><acronym title="Application Program Interface">API</acronym> change: Applications that call <acronym>GMP</acronym>'s <code>mp_set_memory_functions</code> function to change the allocators must first call the new function <code>mpfr_mp_memory_cleanup</code> in all threads where <acronym>MPFR</acronym> is potentially used; this new function is currently equivalent to <code>mpfr_free_cache</code>. The reason is that the way memory allocation is done by <acronym>MPFR</acronym> has changed (again), so that the current <acronym>GMP</acronym> allocators are used (since for some applications, the old allocators may become invalid). Note: Freeing the caches like this might have a performance impact on some particular applications; if this is an issue, this could be handled for a future <acronym>MPFR</acronym> version.</li>
+
+<li><cite>Mini-gmp</cite> support via the <code>--enable-mini-gmp</code> configure option (experimental).</li>
+
+<li>The minimum precision <code>MPFR_PREC_MIN</code> is now 1, with rounding defined as in the errata of <acronym>IEEE</acronym>&nbsp;754-2008 and in the following <acronym>IEEE</acronym>&nbsp;754 revision (ties rounded away from zero).</li>
+
+<li>Shared caches for multithreaded applications.<br />
+New function <code>mpfr_free_cache2</code>.</li>
+
+<li>Partial support of <code>MPFR_RNDF</code> (faithful rounding).</li>
+
+<li>New functions: <code>mpfr_fpif_export</code> and <code>mpfr_fpif_import</code> to export and import numbers in a floating-point interchange format, independent both on the number of bits per word and on the endianness.</li>
+
+<li>New function <code>mpfr_fmodquo</code> to return the low bits of the quotient corresponding to mpfr_fmod.</li>
+
+<li>New functions <code>mpfr_flags_clear</code>, <code>mpfr_flags_set</code>, <code>mpfr_flags_test</code>, <code>mpfr_flags_save</code> and <code>mpfr_flags_restore</code> to operate on groups of flags.</li>
+
+<li>New functions <code>mpfr_set_float128</code> and <code>mpfr_get_float128</code> to convert from/to the <code>__float128</code> type (requires <code>--enable-float128</code> and compiler support).</li>
+
+<li>New functions <code>mpfr_buildopt_float128_p</code> and <code>mpfr_buildopt_sharedcache_p</code>.</li>
+
+<li>New functions <code>mpfr_rint_roundeven</code> and <code>mpfr_roundeven</code>, completing the other similar round-to-integer functions for rounding to nearest with the even-rounding rule.</li>
+
+<li>New macro <code>mpfr_round_nearest_away</code> to add partial emulation of the rounding to nearest-away (as defined in <acronym>IEEE</acronym>&nbsp;754-2008).</li>
+
+<li>New functions <code>mpfr_nrandom</code> and <code>mpfr_erandom</code> to generate random numbers following normal and exponential distributions respectively.</li>
+
+<li>New functions <code>mpfr_fmma</code> and <code>mpfr_fmms</code> to compute <var>a</var><var>b</var>+<var>c</var><var>d</var> and <var>a</var><var>b</var>&#8722;<var>c</var><var>d</var>.</li>
+
+<li>New function <code>mpfr_rootn_ui</code>, similar to <code>mpfr_root</code>, but agreeing with the rootn function of the <acronym>IEEE</acronym>&nbsp;754-2008 standard.</li>
+
+<li>New functions <code>mpfr_log_ui</code> to compute the logarithm of an integer, <code>mpfr_gamma_inc</code> for the incomplete Gamma function.</li>
+
+<li>New function <code>mpfr_beta</code> for the Beta function (incomplete, experimental).</li>
+
+<li>New function <code>mpfr_get_q</code> to convert a floating-point number into rational.</li>
+
+<li>The <code>mpfr_dump</code> function is now described in the manual; its output format has slightly changed.</li>
+
+<li>The <code>mpfr_eint</code> function now returns the value of the E1/eint1 function for negative argument.</li>
+
+<li>The behavior of the <code>mpfr_set_exp</code> function changed, as it could easily yield undefined behavior in some cases (this modifies both the <acronym title="Application Program Interface">API</acronym> and the <acronym title="Application Binary Interface">ABI</acronym>).</li>
+
+<li>In function <code>mpfr_urandom</code>, the next random state no longer depends on the current exponent range and the rounding mode. The exceptions due to the rounding of the random number are now correctly generated, following the uniform distribution.</li>
+
+<li>Functions <code>mpfr_grandom</code> and <code>mpfr_root</code> are deprecated and will be removed in a future release.</li>
+
+<li>Complete rewrite of function <code>mpfr_sum</code>, which now works in all cases (the old one could take all the memory and/or crash with inputs of different magnitudes in case of huge cancellation or table maker's dilemma). The sign of an exact zero result is now specified, and the return value is now the usual ternary value. Note that the position of <code>const</code> in the <code>mpfr_sum</code> prototype has been fixed (the manual was correct); user code should not be affected.</li>
+
+<li>Old, deprecated macros <code>mpfr_add_one_ulp</code> and <code>mpfr_sub_one_ulp</code> removed. The <samp>mpfr_next*</samp> functions should be used instead.</li>
+
+<li>Internally, improved caching: a minimum of 10% increase of the precision is guaranteed to avoid too many recomputations.</li>
+
+<li>Added internal small-precision <code>mpz_t</code> pool, which aims to avoid the overhead of memory allocation, in particular.<br />
+New function <code>mpfr_free_pool</code>.</li>
+
+<li>Added configure option <code>--enable-assert=none</code> to avoid checking any assertion.</li>
+
+<li>The <code>--enable-decimal-float</code> configure option no longer requires <code>--with-gmp-build</code>, and support for decimal floats is now automatically detected by default (similarly for support for <code>__float128</code>).</li>
+
+<li>Updated tuning parameters.</li>
+
+<li>Better support for Automake 1.13+ (now used to generate the tarball).</li>
+
+<li>Dropped K&amp;R C compatibility.</li>
+
+<li>Improved <acronym>MPFR</acronym> manual.</li>
+
+<li>New <cite>MPFRbench</cite> program (see the <samp>tools/bench</samp> directory).</li>
+
+<li>Major speedup in <code>mpfr_add</code>, <code>mpfr_sub</code>, <code>mpfr_mul</code>, <code>mpfr_div</code> and <code>mpfr_sqrt</code> when all operands have the same precision and this precision is less than twice the number of bits per word, <abbr>e.g.</abbr>, less than 128 on a 64-bit computer.</li>
+
+<li>Speedup by a factor of almost 2 in the double &#8596; mpfr conversions (<code>mpfr_set_d</code> and <code>mpfr_get_d</code>).</li>
+
+<li>Speedup in <code>mpfr_log1p</code> and <code>mpfr_atanh</code> for small arguments.</li>
+
+<li>Speedup in the <code>mpfr_const_euler</code> function (contributed by Fredrik Johansson), in the computation of Bernoulli numbers (used in <code>mpfr_gamma</code>, <code>mpfr_li2</code>, <code>mpfr_digamma</code>, <code>mpfr_lngamma</code> and <code>mpfr_lgamma</code>), in <code>mpfr_div</code>, in <code>mpfr_fma</code> and <code>mpfr_fms</code>.</li>
+
+<li>Test coverage: 96.3% lines of code.</li>
+
+<li>Bug fixes. In particular: a speed improvement when the <code>--enable-assert</code> or <code>--enable-assert=full</code> configure option is used with <acronym>GCC</acronym>; <code>mpfr_get_str</code> now sets the NaN flag on NaN input and the inexact flag when the conversion is inexact. For a full list, see <a href="../mpfr-3.1.6/#fixed">detailed list on the <acronym>MPFR</acronym> 3.1.6 page</a> and the same section for any previous 3.1.x version (follow the links in the <cite>Changes...</cite> sections).</li>
+
+<li>Microsoft Windows: Added support for thread-safe <acronym title="Dynamic Link Library">DLL</acronym> (shared library). Tested with MinGW, <acronym>ICC</acronym> and <acronym>MSVC</acronym>.</li>
+
+<li>Limited <cite>pkg-config</cite> support.</li>
+
+<li>Autotools: Under Linux, make sure that the old dtags (when supported) are used if <var class="env">LD_LIBRARY_PATH</var> is defined; otherwise <q><samp>make check</samp></q> would check an installed, compatible <cite><acronym>MPFR</acronym></cite> library found in <var class="env">LD_LIBRARY_PATH</var> instead of the one that has been built with <q><samp>make</samp></q>.</li>
+
+<li>New: optional <q><samp>make check-gmp-symbols</samp></q>, mainly for binary distributions, to check that <acronym>MPFR</acronym> does not use <acronym>GMP</acronym> internal symbols (experimental).</li>
+
+</ul>
+
+<h2 id="platforms">Platforms Known to Support <cite><acronym>MPFR</acronym></cite></h2>
+
+<p><cite><acronym>MPFR</acronym></cite> 3.1.6 has been successfully
+compiled and checked on the following platforms:</p>
+
+<ul>
+<li><samp>aarch64-unknown-linux-gnu</samp> (<acronym>gcc</acronym> 4.8.4),</li>
+<li><samp>i386-pc-solaris2.10</samp> (<acronym>gcc</acronym> 5.5.0),</li>
+<li><samp>i586-mingw32msvc</samp> (<cite>Wine</cite>, <acronym>gcc</acronym> 7.2),</li>
+<li><samp>mips64el-unknown-linux-gnu</samp> (n32 <acronym title="Application Binary Interface">ABI</acronym>, <acronym>gcc</acronym> 4.9.2),</li>
+<li><samp>powerpc-ibm-aix7.2.0.0</samp> (POWER8, <acronym>gcc</acronym> 6.1.0),</li>
+<li><samp>powerpc64-unknown-linux-gnu</samp> (POWER7, <acronym>gcc</acronym> 4.8.5),</li>
+<li><samp>powerpc64le-unknown-linux-gnu</samp> (POWER8, <acronym>gcc</acronym> 4.8.5),</li>
+<li><samp>sparc-sun-solaris2.9</samp> (<acronym>gcc</acronym> 4.6.4),</li>
+<li><samp>sparc64-unknown-linux-gnu</samp> (<acronym>gcc</acronym> 7.2.0),</li>
+<li><samp>x86_64-pc-linux-gnu</samp> (<acronym>gcc</acronym> 4.7.4, 4.8.5, 4.9.4, 5.5.0, 6.4.0, 7.2.0 and 8.0.0 snapshot, g++ 4.9.4 and 7.2.0, clang 3.4.2, 3.5.2, 3.6.2, 3.7.1, 3.8.1, 3.9.1 and 4.0.1, <acronym>icc</acronym> 15.0.0, and <acronym>tcc</acronym> 0.9.27 prerelease).</li>
+</ul>
 
 <p><a href="../index.html">Back to the <cite><acronym>MPFR</acronym></cite>
 page.</a></p>
