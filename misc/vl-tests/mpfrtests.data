@@ -10,7 +10,11 @@
 # But -static-libasan does not work with Debian's gcc-snapshot
 # (Debian bug 836855), and even with GCC 6, it fails with MPFR
 # (Debian bug 836864).
-
+#
+# MPFR_DISABLE_IEEE_FLOATS was previously named XDEBUG; both should be
+# defined or none of them, in order to get the same kind of tests with
+# old and new MPFR versions.
+#
 # TODO: add -Wint-in-bool-context to recent GCC, once available.
 
 HOST:orge.lip.ens-lyon.fr
@@ -75,8 +79,8 @@ INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN >= 40000
 # MPFR 4.0 is needed for MPFR_PRINTF_MAXLM.
-# Check if XDEBUG code is valid in C90.
-CONF:CFLAGS=$cflags1 -std=c90 -pedantic -Wno-error=overlength-strings -DXDEBUG
+# Check if XDEBUG/MPFR_DISABLE_IEEE_FLOATS code is valid in C90.
+CONF:CFLAGS=$cflags1 -std=c90 -pedantic -Wno-error=overlength-strings -DXDEBUG -DMPFR_DISABLE_IEEE_FLOATS
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN > 30103
@@ -152,7 +156,7 @@ INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:CC=clang-3.4
-CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover -DMPFR_MY_MPZ_INIT=0
+CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover -DMPFR_POOL_NENTRIES=0
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -169,7 +173,7 @@ INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:CC=clang-3.5
-CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover -DMPFR_MY_MPZ_INIT=0
+CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover -DMPFR_POOL_NENTRIES=0
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -186,7 +190,7 @@ INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:CC=clang-3.6
-CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover -DMPFR_MY_MPZ_INIT=0
+CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover -DMPFR_POOL_NENTRIES=0
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -204,7 +208,7 @@ CHECK-END
 #CHECK-END
 #CHECK-BEGIN
 #CONF:CC=clang-3.7
-#CONF:CFLAGS=-O3 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover=undefined -DMPFR_MY_MPZ_INIT=0
+#CONF:CFLAGS=-O3 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover=undefined -DMPFR_POOL_NENTRIES=0
 #INFO:CCV:--version
 #CHECK-END
 CHECK-BEGIN
@@ -222,7 +226,7 @@ CHECK-END
 #CHECK-END
 #CHECK-BEGIN
 #CONF:CC=clang-3.8
-#CONF:CFLAGS=-O3 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover=undefined -DMPFR_MY_MPZ_INIT=0
+#CONF:CFLAGS=-O3 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover=undefined -DMPFR_POOL_NENTRIES=0
 #INFO:CCV:--version
 #CHECK-END
 CHECK-BEGIN
@@ -246,7 +250,7 @@ CHECK-END
 CHECK-BEGIN
 CONF:CC=gcc-snapshot
 # -DMPFR_TEST_DIVBYZERO should be removed in the future.
-CONF:CFLAGS=-O2 -std=gnu99 -DMPFR_TESTS_FPE_DIV -DMPFR_TEST_DIVBYZERO -DMPFR_ERRDIVZERO -DXDEBUG
+CONF:CFLAGS=-O2 -std=gnu99 -DMPFR_TESTS_FPE_DIV -DMPFR_TEST_DIVBYZERO -DMPFR_ERRDIVZERO -DXDEBUG -DMPFR_DISABLE_IEEE_FLOATS
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -419,8 +423,8 @@ INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN >= 40000
 # MPFR 4.0 is needed for MPFR_PRINTF_MAXLM.
-# Check if XDEBUG code is valid in C90.
-CONF:CFLAGS=$cflags1 -std=c90 -pedantic -Wno-error=overlength-strings -DXDEBUG
+# Check if XDEBUG/MPFR_DISABLE_IEEE_FLOATS code is valid in C90.
+CONF:CFLAGS=$cflags1 -std=c90 -pedantic -Wno-error=overlength-strings -DXDEBUG -DMPFR_DISABLE_IEEE_FLOATS
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -471,7 +475,7 @@ INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:CC=clang-3.6
-CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover -DMPFR_MY_MPZ_INIT=0
+CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover -DMPFR_POOL_NENTRIES=0
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -535,7 +539,7 @@ CHECK-END
 CHECK-BEGIN
 CONF:CC=gcc-6
 # -DMPFR_TEST_DIVBYZERO should be removed in the future.
-CONF:CFLAGS=-O2 -std=gnu99 -DMPFR_TESTS_FPE_DIV -DMPFR_TEST_DIVBYZERO -DMPFR_ERRDIVZERO -DXDEBUG
+CONF:CFLAGS=-O2 -std=gnu99 -DMPFR_TESTS_FPE_DIV -DMPFR_TEST_DIVBYZERO -DMPFR_ERRDIVZERO -DXDEBUG -DMPFR_DISABLE_IEEE_FLOATS
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -623,7 +627,7 @@ CHECK-BEGIN
 # GMP has been configured with:
 #   --host=i586-mingw32msvc
 #   --disable-shared
-#   --prefix=/usr/local/gmp-mingw32
+#   --prefix=/usr/local/gmp-mingw32b
 # like above, but without the -D__USE_MINGW_ANSI_STDIO option for gcc.
 # As we cross-compile (use of --host), we need to explicitly disable
 # the printf specifiers that do not work here, as by default, they are
@@ -640,10 +644,14 @@ CHECK-END
 
 HOST:tomate.lip.ens-lyon.fr
 PROC:Quad-Core AMD Opteron 8378
-CHECK-BEGIN
+CHECK-BEGIN < 40000
 CONF:--with-gmp=$HOME/x86_64/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 #CHECK-BEGIN
@@ -670,7 +678,7 @@ INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 # -DMPFR_TEST_DIVBYZERO should be removed in the future.
-CONF:CFLAGS=-O2 -DMPFR_TESTS_FPE_DIV -DMPFR_TEST_DIVBYZERO -DMPFR_ERRDIVZERO -DXDEBUG
+CONF:CFLAGS=-O2 -DMPFR_TESTS_FPE_DIV -DMPFR_TEST_DIVBYZERO -DMPFR_ERRDIVZERO -DXDEBUG -DMPFR_DISABLE_IEEE_FLOATS
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -731,7 +739,7 @@ INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:CC=clang-3.6
-CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover -DMPFR_MY_MPZ_INIT=0
+CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover -DMPFR_POOL_NENTRIES=0
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -884,9 +892,16 @@ CHECK-END
 
 HOST:ypig-arm.vinc17.org
 PROC:ARM926EJ-S rev 5 [qemu]
-CHECK-BEGIN
+CHECK-BEGIN < 40000
+# GMP 4.3.2 from Debian/squeeze is too old for MPFR 4.
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+# Note: GMP 6.1.2 has been built with the --enable-assert configure option.
+CONF:--with-gmp=$HOME/opt/gmp-6.1.2
+CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
@@ -923,6 +938,54 @@ CONF:--with-gmp=$HOME/i386-solaris
 CONF:--disable-dependency-tracking
 CONF:--enable-assert=full
 INFO:CCV:-V
+CHECK-END
+
+# Solaris
+HOST:unstable9x.opencsw.org
+PROC:x86
+CHECK-BEGIN
+CONF:--enable-assert=full
+INFO:CCV:--version
+CHECK-END
+
+# Solaris
+HOST:unstable10x.opencsw.org
+PROC:x86
+CHECK-BEGIN
+CONF:--enable-assert=full
+INFO:CCV:--version
+CHECK-END
+
+# Solaris
+HOST:unstable11x.opencsw.org
+PROC:x86
+CHECK-BEGIN
+CONF:--enable-assert=full
+INFO:CCV:--version
+CHECK-END
+
+# Solaris
+HOST:unstable9s.opencsw.org
+PROC:Sparc
+CHECK-BEGIN
+CONF:--enable-assert=full
+INFO:CCV:--version
+CHECK-END
+
+# Solaris
+HOST:unstable10s.opencsw.org
+PROC:Sparc
+CHECK-BEGIN
+CONF:--enable-assert=full
+INFO:CCV:--version
+CHECK-END
+
+# Solaris
+HOST:unstable11s.opencsw.org
+PROC:Sparc
+CHECK-BEGIN
+CONF:--enable-assert=full
+INFO:CCV:--version
 CHECK-END
 
 # Mac OS X
@@ -1004,4 +1067,4 @@ CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 104079 2017-12-05 08:59:31Z vinc17/zira $
+# $Id: mpfrtests.data 105140 2018-01-17 15:26:18Z vinc17/cventin $
