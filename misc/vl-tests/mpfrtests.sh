@@ -191,6 +191,7 @@ tst()
           dotee "$conf" mpfrtests.cfgout
           ./config.status -V | sed '/with options/q' >> "$out"
           grep '^mpfr_cv_' config.log >> "$out"
+          grep '^DEFS=' config.log >> "$out"
           gmpv1=$(sed -n "s/$gmprx//p" mpfrtests.cfgout)
           if [ -z "$gmpv1" ]; then
             echo "$0: can't get GMP version" >&2
@@ -227,7 +228,14 @@ tst()
         dotee "$mj" mpfrtests.makeout
         rm mpfrtests.makeout
         echo "*** Running make check ***"
-        dotee "$mj check" mpfrtests.makeout
+        make_check="$mj check"
+        if [ "$(uname)" = SunOS ]; then
+          # Workaround to the following libtool bug concerning Solaris:
+          #   https://debbugs.gnu.org/cgi/bugreport.cgi?bug=30222
+          #   https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=888059
+          make_check="LD_LIBRARY_PATH=\$PWD/src/.libs $make_check"
+        fi
+        dotee "$make_check" mpfrtests.makeout
         # Note: We need to remove the possible CR characters, as produced
         # by checks under Wine. But the sed from Solaris does not support
         # \r or even [:cntrl:]; indeed, neither of the following works:
@@ -253,6 +261,13 @@ tst()
         else
           dotee "$mj check-gmp-symbols" mpfrtests.makeout
           echo "Checked that no internal GMP symbols are used." >> "$out"
+        fi
+        echo "*** Running make check-exported-symbols ***"
+        if ! grep -q check-exported-symbols: Makefile; then
+          echo "Feature not present. Nothing to do."
+        else
+          dotee "$mj check-exported-symbols" mpfrtests.makeout
+          echo "Checked that no symbols with a GMP reserved prefix are defined." >> "$out"
         fi
         echo "*** Cleaning up ***"
         if [ -z "$1" ]; then
@@ -353,4 +368,4 @@ printf "\n$ed\n" >> "$out"
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 103987 2017-12-01 12:59:56Z vinc17/cventin $
+# $Id: mpfrtests.sh 105929 2018-02-15 11:43:47Z vinc17/cventin $
