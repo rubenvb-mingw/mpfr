@@ -57,7 +57,12 @@ main (int argc, char *argv[])
       exit(1);
     }
 
+#ifndef __MPIR_VERSION  
   printf ("Using MPFR-%s with GMP-%s\n", mpfr_version, gmp_version);
+#else
+  printf ("Using MPFR-%s with MPIR-%d.%d.%d\n", mpfr_version,
+	  __MPIR_VERSION, __MPIR_VERSION_MINOR, __MPIR_VERSION_PATCHLEVEL);
+#endif  
   n = atoi(argv[1]);
   if (prec_in_bits)
     prec = n;
@@ -69,8 +74,6 @@ main (int argc, char *argv[])
 
   mpfr_set_d(x, 3.0, MPFR_RNDN); mpfr_sqrt(x, x, MPFR_RNDN); mpfr_sub_ui (x, x, 1, MPFR_RNDN);
   mpfr_set_d(y, 5.0, MPFR_RNDN); mpfr_sqrt(y, y, MPFR_RNDN);
-
-  mpfr_log (z, x, MPFR_RNDN);
 
   N=1;  st = cputime();
   do {
