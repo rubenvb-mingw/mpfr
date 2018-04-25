@@ -1,0 +1,44 @@
+zimmerma@gcc67:~/arb-2.13.0$ gcc -I$HOME/include timings-arb.c libarb.a /home/zimmerma/lib/libflint.a /home/zimmerma/lib/libmpfr.a /home/zimmerma/lib/libgmp.a -lm
+
+zimmerma@gcc67:~/arb-2.13.0$ ./a.out 100
+Using ARB-2.13.0 with FLINT-2.5.2, MPFR-4.0.1 and GMP-6.1.2
+[precision is 333 bits]
+x*y        took 0.000066 ms (16777215 eval in 1101 ms)
+x*x        took 0.000058 ms (33554431 eval in 1942 ms)
+x/y        took 0.000134 ms (8388607 eval in 1128 ms)
+sqrt(x)    took 0.000202 ms (8388607 eval in 1698 ms)
+exp(x)     took 0.000756 ms (2097151 eval in 1586 ms)
+log(x)     took 0.000587 ms (2097151 eval in 1232 ms)
+sin(x)     took 0.000727 ms (2097151 eval in 1524 ms)
+cos(x)     took 0.000728 ms (2097151 eval in 1527 ms)
+arccos(x)  took 0.001526 ms (1048575 eval in 1600 ms)
+arctan(x)  took 0.000674 ms (2097151 eval in 1414 ms)
+
+zimmerma@gcc67:~/arb-2.13.0$ ./a.out 1000
+Using ARB-2.13.0 with FLINT-2.5.2, MPFR-4.0.1 and GMP-6.1.2
+[precision is 3322 bits]
+x*y        took 0.001190 ms (1048575 eval in 1248 ms)
+x*x        took 0.000729 ms (2097151 eval in 1529 ms)
+x/y        took 0.001486 ms (1048575 eval in 1558 ms)
+sqrt(x)    took 0.001265 ms (1048575 eval in 1326 ms)
+exp(x)     took 0.041627 ms (32767 eval in 1364 ms)
+log(x)     took 0.043397 ms (32767 eval in 1422 ms)
+sin(x)     took 0.047578 ms (32767 eval in 1559 ms)
+cos(x)     took 0.047578 ms (32767 eval in 1559 ms)
+arccos(x)  took 0.056948 ms (32767 eval in 1866 ms)
+arctan(x)  took 0.048158 ms (32767 eval in 1578 ms)
+
+zimmerma@gcc67:~/arb-2.13.0$ ./a.out 10000
+Using ARB-2.13.0 with FLINT-2.5.2, MPFR-4.0.1 and GMP-6.1.2
+[precision is 33220 bits]
+x*y        took 0.040315 ms (32767 eval in 1321 ms)
+x*x        took 0.025513 ms (65535 eval in 1672 ms)
+x/y        took 0.078130 ms (16383 eval in 1280 ms)
+sqrt(x)    took 0.048616 ms (32767 eval in 1593 ms)
+exp(x)     took 2.240705 ms (511 eval in 1145 ms)
+log(x)     took 2.336595 ms (511 eval in 1194 ms)
+sin(x)     took 2.557730 ms (511 eval in 1307 ms)
+cos(x)     took 2.477495 ms (511 eval in 1266 ms)
+arccos(x)  took 3.851272 ms (511 eval in 1968 ms)
+arctan(x)  took 3.589041 ms (511 eval in 1834 ms)
+
