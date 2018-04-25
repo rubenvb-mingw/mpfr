@@ -54,7 +54,7 @@ main(int argc, char *argv[])
   long_prec = (prec - 1)/BITS_IN_LONG + 3;
   init_pari_version (&major, &minor, &patch);
   printf ("%s\n", PARIVERSION);
-  printf ("Version: %d.%d.%d\n", major, minor, patch);
+  printf ("Version: %lu.%lu.%lu\n", major, minor, patch);
 #ifdef pari_version
   printf ("Library version: %s\n", pari_version ());
 #endif
@@ -164,5 +164,7 @@ main(int argc, char *argv[])
   } while (st2-st<1000);
   printf("arctan(x)  took %f ms (%d eval in %d ms)\n",
          (double)(st2-st)/(N-1),N-1,st2-st);
+
+  z = gsqrt (z, long_prec); /* to avoid a compiler warning */
 
 }
