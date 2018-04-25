@@ -57,7 +57,7 @@
 <td>2.9.4</td>        <!-- PARI -->
 <td>11.0.0</td>        <!-- NTL -->
 <td>1.3.4</td>        <!-- CLN -->
-<td></td>        <!-- ARB -->
+<td>2.13.0</td>        <!-- ARB -->
 <td>1.5.3</td>        <!-- MPFI -->
 </tr>
 <tr align="center">
@@ -86,11 +86,9 @@ The version of GCC is 6.3.0 (Debian 6.3.0-18+deb9u1).
 
 <p>
 <b>GMP</b> was configured with <tt>--disable-shared</tt>.
-<b>MPFR</b> and <b>ARB</b> were configured with
-<tt>--with-gmp-build</tt> and after <tt>make tune</tt>
-(ARB was configured with FLINT 2.4.1, and its timings were obtained on
-<tt>boxen.math.washington.edu</tt>, a machine with the same hardware,
-idem for MPFI).
+<b>MPFR</b> was configured with
+<tt>--with-gmp-build</tt> and after <tt>make tune</tt>;
+ARB was configured with FLINT 2.5.2 and that version of MPFR.
 <b>PARI</b> was built with GMP support.
 <b>NTL</b> was built with native support and GMP as primary long integer package.
 <b>CLN</b> has been built with <b>GMP</b> support.
@@ -127,7 +125,7 @@ The boldface entries are the fastest in each row.
 <td>0.000078</td>  <!-- PARI -->
 <td>0.000110</td> <!-- NTL -->
 <td>0.000076</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td>0.000066</td> <!-- ARB -->
 <td>0.000137</td> <!-- MPFI -->
 </tr>
 <tr align="right">
@@ -142,7 +140,7 @@ The boldface entries are the fastest in each row.
 <td>0.000065</td> <!-- PARI -->
 <td>0.000122</td> <!-- NTL -->
 <td>0.000067</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td>0.000058</td> <!-- ARB -->
 <td>0.000076</td> <!-- MPFI -->
 </tr>
 <!-- sqrt(3)/sqrt(5)-->
@@ -157,7 +155,7 @@ The boldface entries are the fastest in each row.
 <td>0.000233</td> <!-- PARI -->
 <td>0.000225</td> <!-- NTL -->
 <td>0.000201</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td>0.000134</td> <!-- ARB -->
 <td>0.000304</td> <!-- MPFI -->
 </tr>
 <!-- sqrt(x) where x=sqrt(3)-->
@@ -172,7 +170,7 @@ The boldface entries are the fastest in each row.
 <td>0.000370</td> <!-- PARI -->
 <td>0.000522</td> <!-- NTL -->
 <td>0.000262</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td>0.000202</td> <!-- ARB -->
 <td>0.000379</td> <!-- MPFI -->
 </tr>
 <!-- exp(x) where x=sqrt(3)-->
@@ -183,11 +181,11 @@ The boldface entries are the fastest in each row.
 <!-- td></td--> <!-- Magma -->
 <td>0.00423</td> <!-- Sage -->
 <td>na</td>
-<td><b>0.00234</b></td> <!-- MPFR -->
+<td>0.00234</td> <!-- MPFR -->
 <td>0.00790</td>  <!-- PARI -->
 <td>0.0415</td> <!-- NTL -->
 <td>0.00845</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td><b>0.000756</b></td> <!-- ARB -->
 <td>0.00495</td> <!-- MPFI -->
 </tr>
 <!-- log(x) where x=sqrt(3)-->
@@ -198,11 +196,11 @@ The boldface entries are the fastest in each row.
 <!-- td></td--> <!-- Magma -->
 <td>0.00651</td> <!-- Sage -->
 <td>na</td>
-<td><b>0.00433</b></td> <!-- MPFR -->
+<td>0.00433</td> <!-- MPFR -->
 <td>0.0101</td> <!-- PARI -->
 <td>0.254</td> <!-- NTL -->
 <td>0.0111</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td><b>0.000587</b></td> <!-- ARB -->
 <td>0.00996</td> <!-- MPFI -->
 </tr>
 <!-- sin(x) where x=sqrt(3)-->
@@ -213,11 +211,11 @@ The boldface entries are the fastest in each row.
 <!-- td></td--> <!-- Magma -->
 <td>0.00401</td> <!-- Sage -->
 <td>na</td>
-<td><b>0.00252</b></td> <!-- MPFR -->
+<td>0.00252</td> <!-- MPFR -->
 <td>0.00473</td> <!-- PARI -->
 <td>0.0494</td> <!-- NTL -->
 <td>0.0104</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td><b>0.000727</b></td> <!-- ARB -->
 <td>0.00833</td> <!-- MPFI -->
 </tr>
 <!-- cos(x) where x=sqrt(3)-->
@@ -228,11 +226,11 @@ The boldface entries are the fastest in each row.
 <!-- td></td--> <!-- Magma -->
 <td>0.00324</td> <!-- Sage -->
 <td>na</td>
-<td><b>0.00198</b></td> <!-- MPFR -->
+<td>0.00198</td> <!-- MPFR -->
 <td>0.00430</td> <!-- PARI -->
 <td> 0.0429</td> <!-- NTL -->
 <td>0.00910</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td><b>0.000728</b></td> <!-- ARB -->
 <td>0.00694</td> <!-- MPFI -->
 </tr>
 <!-- arccos(x) where x=sqrt(3)-->
@@ -246,8 +244,8 @@ The boldface entries are the fastest in each row.
 <td>0.0160</td> <!-- MPFR -->
 <td>0.0169</td> <!-- PARI -->
 <td>na</td> <!-- NTL -->
-<td><b>0.0138</b></td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td>0.0138</td> <!-- CLN -->
+<td><b>0.00153</b></td> <!-- ARB -->
 <td>0.0397</td> <!-- MPFI -->
 </tr>
 <!-- arctan(x) where x=sqrt(3)-->
@@ -261,8 +259,8 @@ The boldface entries are the fastest in each row.
 <td>0.0136</td> <!-- MPFR -->
 <td>0.0170</td> <!-- PARI -->
 <td>na</td> <!-- NTL -->
-<td><b>0.0123</b></td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td>0.0123</td> <!-- CLN -->
+<td><b>0.000674</b></td> <!-- ARB -->
 <td>0.0330</td> <!-- MPFI -->
 </tr>
 </tbody></table>
@@ -294,7 +292,7 @@ The boldface entries are the fastest in each row.
 <td>0.00257</td> <!-- PARI -->
 <td>0.00240</td> <!-- NTL -->
 <td>0.00167</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td>0.00119</td> <!-- ARB -->
 <td>0.00289</td> <!-- MPFI -->
 </tr>
 <tr align="right">
@@ -309,7 +307,7 @@ The boldface entries are the fastest in each row.
 <td>0.00258</td> <!-- PARI -->
 <td>0.00120</td> <!-- NTL -->
 <td>0.00098</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td>0.00073</td> <!-- ARB -->
 <td>0.00152</td> <!-- MPFI -->
 </tr>
 <!-- sqrt(3)/sqrt(5)-->
@@ -319,12 +317,12 @@ The boldface entries are the fastest in each row.
 <!--td></td--> <!-- Mathematica -->
 <!-- td></td--> <!-- Magma -->
 <td>0.00360</td> <!-- Sage -->
-<td><b>0.00151</b></td> <!-- MPF -->
+<td>0.00151</td> <!-- MPF -->
 <td>0.00203</td> <!-- MPFR -->
 <td>0.00345</td>  <!-- PARI -->
 <td>0.00285</td> <!-- NTL -->
 <td>0.00316</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td><b>0.00149</b></td> <!-- ARB -->
 <td>0.00475</td> <!-- MPFI -->
 </tr>
 <!-- sqrt(x) where x=sqrt(3)-->
@@ -339,7 +337,7 @@ The boldface entries are the fastest in each row.
 <td>0.00211</td> <!-- PARI -->
 <td>0.00295</td> <!-- NTL -->
 <td> 0.00216</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td>0.00127</td> <!-- ARB -->
 <td>0.00288</td> <!-- MPFI -->
 </tr>
 <!-- exp(x) where x=sqrt(3)-->
@@ -350,11 +348,11 @@ The boldface entries are the fastest in each row.
 <!-- td></td--> <!-- Magma -->
 <td>0.152</td> <!-- Sage -->
 <td>na</td>
-<td><b>0.0695</b></td> <!-- MPFR -->
+<td>0.0695</td> <!-- MPFR -->
 <td>0.269</td> <!-- PARI -->
 <td>1.36</td> <!-- NTL -->
 <td>0.146</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td><b>0.0416</b></td> <!-- ARB -->
 <td>0.156</td> <!-- MPFI -->
 </tr>
 <!-- log(x) where x=sqrt(3)-->
@@ -365,11 +363,11 @@ The boldface entries are the fastest in each row.
 <!-- td></td--> <!-- Magma -->
 <td> 0.128</td> <!-- Sage -->
 <td>na</td>
-<td><b>0.0537</b></td> <!-- MPFR -->
+<td>0.0537</td> <!-- MPFR -->
 <td>0.155</td> <!-- PARI -->
 <td>11.6</td> <!-- NTL -->
 <td>0.178</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td><b>0.0434</b></td> <!-- ARB -->
 <td>0.123</td> <!-- MPFI -->
 </tr>
 <!-- sin(x) where x=sqrt(3)-->
@@ -380,11 +378,11 @@ The boldface entries are the fastest in each row.
 <!-- td></td--> <!-- Magma -->
 <td>0.143</td> <!-- Sage -->
 <td>na</td>
-<td><b>0.0650</b></td> <!-- MPFR -->
+<td>0.0650</td> <!-- MPFR -->
 <td>0.214</td> <!-- PARI -->
 <td>1.52</td> <!-- NTL -->
 <td> 0.139</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td><b>0.0476</b></td> <!-- ARB -->
 <td>0.165</td> <!-- MPFI -->
 </tr>
 <!-- cos(x) where x=sqrt(3)-->
@@ -395,11 +393,11 @@ The boldface entries are the fastest in each row.
 <!-- td></td--> <!-- Magma -->
 <td>0.136</td> <!-- Sage -->
 <td>na</td>
-<td><b>0.0618</b></td> <!-- MPFR -->
+<td>0.0618</td> <!-- MPFR -->
 <td>0.194</td> <!-- PARI -->
 <td>1.54</td> <!-- NTL -->
 <td>0.129</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td><b>0.0476</b></td> <!-- ARB -->
 <td>0.159</td> <!-- MPFI -->
 </tr>
 <!-- arccos(x) where x=sqrt(3)-->
@@ -410,11 +408,11 @@ The boldface entries are the fastest in each row.
 <!-- td></td--> <!-- Magma -->
 <td>0.243</td> <!-- Sage -->
 <td>na</td>
-<td><b>0.141</b></td> <!-- MPFR -->
+<td>0.141</td> <!-- MPFR -->
 <td>0.536</td> <!-- PARI -->
 <td>na</td> <!-- NTL -->
 <td>0.219</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td><b>0.0569</b></td> <!-- ARB -->
 <td>0.329</td> <!-- MPFI -->
 </tr>
 <!-- arctan(x) where x=sqrt(3)-->
@@ -425,11 +423,11 @@ The boldface entries are the fastest in each row.
 <!-- td></td--> <!-- Magma -->
 <td>0.231</td> <!-- Sage -->
 <td>na</td>
-<td><b>0.134</b></td> <!-- MPFR -->
+<td>0.134</td> <!-- MPFR -->
 <td>0.448</td> <!-- PARI -->
 <td>na</td> <!-- NTL -->
 <td>0.203</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td><b>0.0482</b></td> <!-- ARB -->
 <td>0.318</td> <!-- MPFI -->
 </tr>
 </tbody></table>
@@ -462,7 +460,7 @@ The boldface entries are the fastest in each row.
 <td>0.0773</td> <!-- PARI -->
 <td> 0.0539</td> <!-- NTL -->
 <td>0.0447</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td><b>0.0403</b></td> <!-- ARB -->
 <td>0.0937</td> <!-- MPFI -->
 </tr>
 <tr align="right">
@@ -477,7 +475,7 @@ The boldface entries are the fastest in each row.
 <td>0.0626</td> <!-- PARI -->
 <td>0.0445</td> <!-- NTL -->
 <td>0.0333</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td>0.0255</td> <!-- ARB -->
 <td>0.0531</td> <!-- MPFI -->
 </tr>
 <!-- sqrt(3)/sqrt(5)-->
@@ -488,11 +486,11 @@ The boldface entries are the fastest in each row.
 <!-- td></td--> <!-- Magma -->
 <td>0.197</td> <!-- Sage -->
 <td>0.0795</td> <!-- MPF -->
-<td><b>0.0802</b></td> <!-- MPFR -->
+<td>0.0802</td> <!-- MPFR -->
 <td>0.233</td> <!-- PARI -->
 <td>0.158</td> <!-- NTL -->
 <td>0.204</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td><b>0.0781</b></td> <!-- ARB -->
 <td>0.186</td> <!-- MPFI -->
 </tr>
 <!-- sqrt(x) where x=sqrt(3)-->
@@ -507,7 +505,7 @@ The boldface entries are the fastest in each row.
 <td>0.127</td> <!-- PARI -->
 <td>0.125</td> <!-- NTL -->
 <td>0.122</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td>0.0486</td> <!-- ARB -->
 <td>0.105</td> <!-- MPFI -->
 </tr>
 <!-- exp(x) where x=sqrt(3)-->
@@ -518,11 +516,11 @@ The boldface entries are the fastest in each row.
 <!-- td></td--> <!-- Magma -->
 <td>8.60</td> <!-- Sage -->
 <td>na</td>
-<td><b>3.60</b></td> <!-- MPFR -->
+<td>3.60</td> <!-- MPFR -->
 <td>7.24</td> <!-- PARI -->
 <td>209</td> <!-- NTL -->
 <td>6.05</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td><b>2.24</b></td> <!-- ARB -->
 <td>7.98</td> <!-- MPFI -->
 </tr>
 <!-- log(x) where x=sqrt(3)-->
@@ -533,11 +531,11 @@ The boldface entries are the fastest in each row.
 <!-- td></td--> <!-- Magma -->
 <td>8.29</td> <!-- Sage -->
 <td>na</td>
-<td><b>2.35</b></td> <!-- MPFR -->
+<td>2.35</td> <!-- MPFR -->
 <td>3.53</td> <!-- PARI -->
 <td>1540</td> <!-- NTL -->
 <td>7.63</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td><b>2.34</b></td> <!-- ARB -->
 <td>5.13</td> <!-- MPFI -->
 </tr>
 <!-- sin(x) where x=sqrt(3)-->
@@ -548,11 +546,11 @@ The boldface entries are the fastest in each row.
 <!-- td></td--> <!-- Magma -->
 <td>19.0</td> <!-- Sage -->
 <td>na</td>
-<td><b>6.19</b></td> <!-- MPFR -->
+<td>6.19</td> <!-- MPFR -->
 <td>9.66</td> <!-- PARI -->
 <td>159</td> <!-- NTL -->
 <td>7.72</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td><b>2.56</b></td> <!-- ARB -->
 <td> 14.1</td> <!-- MPFI -->
 </tr>
 <!-- cos(x) where x=sqrt(3)-->
@@ -563,11 +561,11 @@ The boldface entries are the fastest in each row.
 <!-- td></td--> <!-- Magma -->
 <td>19.1</td> <!-- Sage -->
 <td>na</td>
-<td><b>6.20</b></td> <!-- MPFR -->
+<td>6.20</td> <!-- MPFR -->
 <td>10.8</td> <!-- PARI -->
 <td>369</td> <!-- NTL -->
 <td>7.31</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td><b>2.48</b></td> <!-- ARB -->
 <td>14.5</td> <!-- MPFI -->
 </tr>
 <!-- arccos(x) where x=sqrt(3)-->
@@ -578,11 +576,11 @@ The boldface entries are the fastest in each row.
 <!-- td></td--> <!-- Magma -->
 <td>15.4</td> <!-- Sage -->
 <td>na</td>
-<td><b>6.35</b></td> <!-- MPFR -->
+<td>6.35</td> <!-- MPFR -->
 <td>15.1</td> <!-- PARI -->
 <td>na</td> <!-- NTL -->
 <td>12.4</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td><b>3.85</b></td> <!-- ARB -->
 <td>14.0</td> <!-- MPFI -->
 </tr>
 <!-- arctan(x) where x=sqrt(3)-->
@@ -593,11 +591,11 @@ The boldface entries are the fastest in each row.
 <!-- td></td--> <!-- Magma -->
 <td>13.7</td> <!-- Sage -->
 <td>na</td>
-<td><b>5.77</b></td> <!-- MPFR -->
+<td>5.77</td> <!-- MPFR -->
 <td>16.3</td> <!-- PARI -->
 <td>na</td> <!-- NTL -->
 <td>11.7</td> <!-- CLN -->
-<td></td> <!-- ARB -->
+<td><b>3.59</b></td> <!-- ARB -->
 <td>12.0</td> <!-- MPFI -->
 </tr>
 </tbody></table>
