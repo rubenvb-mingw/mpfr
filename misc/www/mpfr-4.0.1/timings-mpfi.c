@@ -73,8 +73,6 @@ main (int argc, char *argv[])
   mpfi_set_d(x, 3.0); mpfi_sqrt(x, x); mpfi_sub_ui (x, x, 1);
   mpfi_set_d(y, 5.0); mpfi_sqrt(y, y);
 
-  mpfi_log (z, x);
-
   N=1;  st = cputime();
   do {
     for (i=0;i<N;i++) mpfi_mul(z, x, y);

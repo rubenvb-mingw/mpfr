@@ -50,7 +50,6 @@ main(int argc, char *argv[])
 
   x = 3; x = sqrt (x) - 1;
   y = 5; y = sqrt (y);
-  z = log (x);
 
   N=1;  st = cputime();
   do {

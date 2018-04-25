@@ -79,8 +79,6 @@ main (int argc, char *argv[])
   arb_set_ui(y, 5);
   arb_sqrt(y, y, prec);
 
-  arb_log(z, x, prec);
-
   N=1;  st = cputime();
   do {
     for (i=0;i<N;i++) arb_mul(z, x, y, prec);
