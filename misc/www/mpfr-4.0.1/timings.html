@@ -24,7 +24,7 @@
 <tbody><tr align="center">
 <!-- td><a href="http://www.maplesoft.com/">Maple</a></td-->
 <!--td><a href="http://www.wolfram.com/">Mathematica</a></td-->
-<!-- td><a href="http://magma.maths.usyd.edu.au/magma/">Magma</a></td-->
+<td><a href="http://mpir.org">MPIR MPF</a></td>
 <td><a href="http://www.sagemath.org/">Sage</a></td>
 <td><a href="https://gmplib.org/">GMP MPF</a></td>
 <td><a href="http://www.mpfr.org/">MPFR</a></td>
@@ -37,7 +37,7 @@
 <tr align="center">
 <!--td>commercial</td--> <!-- Maple -->
 <!--td>commercial</td--> <!-- Mathematica -->
-<!-- td>commercial</td-->
+<td>free (LGPL)</td> <!-- MPIR -->
 <td>free (GPL) </td>
 <td>free (LGPL)</td>
 <td>free (LGPL)</td>
@@ -50,20 +50,20 @@
 <tr align="center">
 <!--td>12.00 </td--> <!-- Maple -->
 <!--td>6.0.1</td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>3.0.0</td>        <!-- MPIR -->
 <td>8.1</td>          <!-- Sage -->
 <td>6.1.2</td>        <!-- GMP MPF -->
 <td>4.0.1</td>        <!-- MPFR -->
 <td>2.9.4</td>        <!-- PARI -->
-<td>11.0.0</td>        <!-- NTL -->
+<td>11.0.0</td>       <!-- NTL -->
 <td>1.3.4</td>        <!-- CLN -->
-<td>2.13.0</td>        <!-- ARB -->
+<td>2.13.0</td>       <!-- ARB -->
 <td>1.5.3</td>        <!-- MPFI -->
 </tr>
 <tr align="center">
 <!--td>interactive</td--> <!-- Maple -->
 <!--td>interactive</td--> <!-- Mathematica -->
-<!-- td>interactive</td-->
+<td>library</td> <!-- MPIR -->
 <td>interactive</td>
 <td>library</td>
 <td>library</td>
@@ -94,6 +94,9 @@ ARB was configured with FLINT 2.5.2 and that version of MPFR.
 and not the interactive GP program).
 <b>NTL</b> was built with native support and GMP as primary long integer package.
 <b>CLN</b> has been built with <b>GMP</b> support.
+<b>MPIR</b> was configured with <tt>--enable-gmpcompat</tt>, and the
+default <tt>gmp-mparam.h</tt> file was replaced by the values obtained by
+<tt>make tune</tt>.
 </p>
 
 <p>An entry "na" means a function not available in the corresponding software tool.
@@ -105,7 +108,7 @@ The boldface entries are the fastest in each row.
 <td align="center">100 digits</td>
 <!-- td align="left">Maple</td-->
 <!--td align="left">Mathematica</td-->
-<!-- td align="left">Magma</td-->
+<td align="left">MPIR</td>
 <td align="left">Sage</td>
 <td align="left">MPF</td>
 <td align="left">MPFR</td>
@@ -120,7 +123,7 @@ The boldface entries are the fastest in each row.
 <td align="center">mult</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td>--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>0.000073</td> <!-- MPIR -->
 <td>0.000351</td> <!-- Sage -->
 <td><b>0.000043</b></td> <!-- GMP MPF -->
 <td>0.000046</td> <!-- MPFR -->
@@ -135,9 +138,9 @@ The boldface entries are the fastest in each row.
 <td align="center">sqr</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td><b>0.000031</b></td> <!-- MPIR -->
 <td>0.000320</td> <!-- Sage -->
-<td><b>0.000032</b></td> <!-- GMP MPF -->
+<td>0.000032</td> <!-- GMP MPF -->
 <td>0.000033</td> <!-- MPFR -->
 <td>0.000036</td> <!-- PARI -->
 <td>0.000092</td> <!-- NTL -->
@@ -150,7 +153,7 @@ The boldface entries are the fastest in each row.
 <td align="center">div</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td>--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>0.000139</td> <!-- MPIR -->
 <td>0.000390</td> <!-- Sage -->
 <td><b>0.000119</b></td> <!-- GMP MPF -->
 <td>0.000120</td> <!-- MPFR -->
@@ -165,7 +168,7 @@ The boldface entries are the fastest in each row.
 <td align="center">sqrt</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>0.000236</td> <!-- MPIR -->
 <td>0.000626</td> <!-- Sage -->
 <td><b>0.000172</b></td> <!-- GMP MPF -->
 <td>0.000174</td> <!-- MPFR -->
@@ -180,9 +183,9 @@ The boldface entries are the fastest in each row.
 <td align="center">exp</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>na</td> <!-- MPIR -->
 <td>0.00423</td> <!-- Sage -->
-<td>na</td>
+<td>na</td> <!-- MPF -->
 <td>0.00234</td> <!-- MPFR -->
 <td>0.00440</td>  <!-- PARI -->
 <td>0.0256</td> <!-- NTL -->
@@ -195,9 +198,9 @@ The boldface entries are the fastest in each row.
 <td align="center">log</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>na</td> <!-- MPIR -->
 <td>0.00651</td> <!-- Sage -->
-<td>na</td>
+<td>na</td> <!-- MPF -->
 <td>0.00433</td> <!-- MPFR -->
 <td>0.00638</td> <!-- PARI -->
 <td>0.143</td> <!-- NTL -->
@@ -210,9 +213,9 @@ The boldface entries are the fastest in each row.
 <td align="center">sin</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>na</td> <!-- MPIR -->
 <td>0.00401</td> <!-- Sage -->
-<td>na</td>
+<td>na</td> <!-- MPF -->
 <td>0.00252</td> <!-- MPFR -->
 <td>0.00388</td> <!-- PARI -->
 <td>0.0270</td> <!-- NTL -->
@@ -225,9 +228,9 @@ The boldface entries are the fastest in each row.
 <td align="center">cos</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>na</td> <!-- MPIR -->
 <td>0.00324</td> <!-- Sage -->
-<td>na</td>
+<td>na</td> <!-- MPF -->
 <td>0.00198</td> <!-- MPFR -->
 <td>0.00347</td> <!-- PARI -->
 <td>0.0287</td> <!-- NTL -->
@@ -240,9 +243,9 @@ The boldface entries are the fastest in each row.
 <td align="center">acos</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>na</td> <!-- MPIR -->
 <td>0.0234</td> <!-- Sage -->
-<td>na</td>
+<td>na</td> <!-- MPF -->
 <td>0.0160</td> <!-- MPFR -->
 <td>0.0114</td> <!-- PARI -->
 <td>na</td> <!-- NTL -->
@@ -255,9 +258,9 @@ The boldface entries are the fastest in each row.
 <td align="center">atan</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>na</td> <!-- MPIR -->
 <td>0.0197</td> <!-- Sage -->
-<td>na</td>
+<td>na</td> <!-- MPF -->
 <td>0.0136</td> <!-- MPFR -->
 <td>0.0108</td> <!-- PARI -->
 <td>na</td> <!-- NTL -->
@@ -272,7 +275,7 @@ The boldface entries are the fastest in each row.
 <td align="center">1000 digits</td>
 <!--td align="left">Maple</td-->
 <!--td align="left">Mathematica</td-->
-<!-- td align="left">Magma</td-->
+<td align="left">MPIR</td>
 <td align="left">Sage</td>
 <td align="left">MPF</td>
 <td align="left">MPFR</td>
@@ -287,7 +290,7 @@ The boldface entries are the fastest in each row.
 <td align="center">mult</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>0.00314</td> <!-- MPIR -->
 <td>0.00302</td> <!-- Sage -->
 <td>0.00150</td>         <!-- MPF -->
 <td><b>0.00117</b></td> <!-- MPFR -->
@@ -302,7 +305,7 @@ The boldface entries are the fastest in each row.
 <td align="center">sqr</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>0.00100</td> <!-- MPIR -->
 <td>0.00154</td> <!-- Sage -->
 <td>0.00086</td> <!-- MPF -->
 <td><b>0.00068</b></td> <!-- MPFR -->
@@ -317,7 +320,7 @@ The boldface entries are the fastest in each row.
 <td align="center">div</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>0.00428</td> <!-- MPIR -->
 <td>0.00360</td> <!-- Sage -->
 <td>0.00151</td> <!-- MPF -->
 <td>0.00203</td> <!-- MPFR -->
@@ -332,7 +335,7 @@ The boldface entries are the fastest in each row.
 <td align="center">sqrt</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>0.00258</td> <!-- MPIR -->
 <td>0.00314</td> <!-- Sage -->
 <td>0.00125</td> <!-- MPF -->
 <td><b>0.00124</b></td> <!-- MPFR -->
@@ -347,9 +350,9 @@ The boldface entries are the fastest in each row.
 <td align="center">exp</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>na</td> <!-- MPIR -->
 <td>0.152</td> <!-- Sage -->
-<td>na</td>
+<td>na</td> <!-- MPF -->
 <td>0.0695</td> <!-- MPFR -->
 <td>0.147</td> <!-- PARI -->
 <td>0.875</td> <!-- NTL -->
@@ -362,9 +365,9 @@ The boldface entries are the fastest in each row.
 <td align="center">log</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>na</td> <!-- MPIR -->
 <td> 0.128</td> <!-- Sage -->
-<td>na</td>
+<td>na</td> <!-- MPF -->
 <td>0.0537</td> <!-- MPFR -->
 <td>0.0815</td> <!-- PARI -->
 <td>7.05</td> <!-- NTL -->
@@ -377,9 +380,9 @@ The boldface entries are the fastest in each row.
 <td align="center">sin</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>na</td> <!-- MPIR -->
 <td>0.143</td> <!-- Sage -->
-<td>na</td>
+<td>na</td> <!-- MPF -->
 <td>0.0650</td> <!-- MPFR -->
 <td>0.127</td> <!-- PARI -->
 <td>0.952</td> <!-- NTL -->
@@ -392,9 +395,9 @@ The boldface entries are the fastest in each row.
 <td align="center">cos</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>na</td> <!-- MPIR -->
 <td>0.136</td> <!-- Sage -->
-<td>na</td>
+<td>na</td> <!-- MPF -->
 <td>0.0618</td> <!-- MPFR -->
 <td>0.123</td> <!-- PARI -->
 <td>0.993</td> <!-- NTL -->
@@ -407,9 +410,9 @@ The boldface entries are the fastest in each row.
 <td align="center">acos</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>na</td> <!-- MPIR -->
 <td>0.243</td> <!-- Sage -->
-<td>na</td>
+<td>na</td> <!-- MPF -->
 <td>0.141</td> <!-- MPFR -->
 <td>0.317</td> <!-- PARI -->
 <td>na</td> <!-- NTL -->
@@ -422,9 +425,9 @@ The boldface entries are the fastest in each row.
 <td align="center">atan</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>na</td> <!-- MPIR -->
 <td>0.231</td> <!-- Sage -->
-<td>na</td>
+<td>na</td> <!-- MPF -->
 <td>0.134</td> <!-- MPFR -->
 <td>0.312</td> <!-- PARI -->
 <td>na</td> <!-- NTL -->
@@ -439,7 +442,7 @@ The boldface entries are the fastest in each row.
 <td align="center">10000 digits</td>
 <!--td align="left">Maple</td-->
 <!--td align="left">Mathematica</td-->
-<!-- td align="left">Magma</td-->
+<td align="left">MPIR</td>
 <td align="left">Sage</td>
 <td align="left">MPF</td>
 <td align="left">MPFR</td>
@@ -455,7 +458,7 @@ The boldface entries are the fastest in each row.
 <td align="center">mult</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>0.140</td> <!-- MPIR -->
 <td>0.121</td> <!-- Sage -->
 <td>0.0450</td>         <!-- MPF -->
 <td><b>0.0403</b></td> <!-- MPFR -->
@@ -470,7 +473,7 @@ The boldface entries are the fastest in each row.
 <td align="center">sqr</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>0.0523</td> <!-- MPIR -->
 <td>0.0620</td> <!-- Sage -->
 <td>0.0327</td>         <!-- MPF -->
 <td><b>0.0253</b></td> <!-- MPFR -->
@@ -485,7 +488,7 @@ The boldface entries are the fastest in each row.
 <td align="center">div</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>0.276</td> <!-- MPIR -->
 <td>0.197</td> <!-- Sage -->
 <td>0.0795</td> <!-- MPF -->
 <td>0.0802</td> <!-- MPFR -->
@@ -500,7 +503,7 @@ The boldface entries are the fastest in each row.
 <td align="center">sqrt</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>0.143</td> <!-- MPIR -->
 <td>0.170</td> <!-- Sage -->
 <td>0.0485</td> <!-- MPF -->
 <td><b>0.0484</b></td> <!-- MPFR -->
@@ -515,9 +518,9 @@ The boldface entries are the fastest in each row.
 <td align="center">exp</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>na</td> <!-- MPIR -->
 <td>8.60</td> <!-- Sage -->
-<td>na</td>
+<td>na</td> <!-- MPF -->
 <td>3.60</td> <!-- MPFR -->
 <td>4.84</td> <!-- PARI -->
 <td>136</td> <!-- NTL -->
@@ -530,9 +533,9 @@ The boldface entries are the fastest in each row.
 <td align="center">log</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>na</td> <!-- MPIR -->
 <td>8.29</td> <!-- Sage -->
-<td>na</td>
+<td>na</td> <!-- MPF -->
 <td>2.35</td> <!-- MPFR -->
 <td>3.20</td> <!-- PARI -->
 <td>1456</td> <!-- NTL -->
@@ -545,9 +548,9 @@ The boldface entries are the fastest in each row.
 <td align="center">sin</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>na</td> <!-- MPIR -->
 <td>19.0</td> <!-- Sage -->
-<td>na</td>
+<td>na</td> <!-- MPF -->
 <td>6.19</td> <!-- MPFR -->
 <td>8.99</td> <!-- PARI -->
 <td>149</td> <!-- NTL -->
@@ -560,9 +563,9 @@ The boldface entries are the fastest in each row.
 <td align="center">cos</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>na</td> <!-- MPIR -->
 <td>19.1</td> <!-- Sage -->
-<td>na</td>
+<td>na</td> <!-- MPF -->
 <td>6.20</td> <!-- MPFR -->
 <td>8.87</td> <!-- PARI -->
 <td>352</td> <!-- NTL -->
@@ -575,9 +578,9 @@ The boldface entries are the fastest in each row.
 <td align="center">acos</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>na</td> <!-- MPIR -->
 <td>15.4</td> <!-- Sage -->
-<td>na</td>
+<td>na</td> <!-- MPF -->
 <td>6.35</td> <!-- MPFR -->
 <td>13.5</td> <!-- PARI -->
 <td>na</td> <!-- NTL -->
@@ -590,9 +593,9 @@ The boldface entries are the fastest in each row.
 <td align="center">atan</td>
 <!--td></td--> <!-- Maple -->
 <!--td></td--> <!-- Mathematica -->
-<!-- td></td--> <!-- Magma -->
+<td>na</td> <!-- MPIR -->
 <td>13.7</td> <!-- Sage -->
-<td>na</td>
+<td>na</td> <!-- MPF -->
 <td>5.77</td> <!-- MPFR -->
 <td>13.4</td> <!-- PARI -->
 <td>na</td> <!-- NTL -->
@@ -605,9 +608,8 @@ The boldface entries are the fastest in each row.
 <p>The source file of these tests is available for
 <!--a href="timings.mpl">Maple,</a-->
 <!--a href="timings.mma">Mathematica,</a-->
-<!-- a href="timings.magma">Magma,</a-->
 <a href="timings.sage">Sage</a>,
-<a href="timings-mpf.c">MPF</a>,
+<a href="timings-mpf.c">GMP MPF and MPIR MPF</a>,
 <a href="timings-mpfr.c">MPFR</a>,
 <a href="timings-pari.c">Pari</a>,
 <a href="timings-ntl.c">NTL</a>,
