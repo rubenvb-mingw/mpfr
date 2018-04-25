@@ -1,0 +1,40 @@
+zimmerma@gcc67:~/cln-1.3.4$ g++ -Iinclude -g -O2 -Wl,-rpath -Wl,/home/zimmerma/lib timings-cln.cc  -L/home/zimmerma/lib src/.libs/libcln.a /home/zimmerma/lib/libgmp.a
+
+zimmerma@gcc67:~/cln-1.3.4$ ./a.out 100
+Prec=338
+x*y        took 0.000076 ms (16777215 eval in 1275 ms)
+x*x        took 0.000067 ms (16777215 eval in 1120 ms)
+x/y        took 0.000201 ms (8388607 eval in 1683 ms)
+sqrt(x)    took 0.000262 ms (4194303 eval in 1101 ms)
+exp(x)     took 0.008446 ms (131071 eval in 1107 ms)
+log(x)     took 0.011093 ms (131071 eval in 1454 ms)
+sin(x)     took 0.010422 ms (131071 eval in 1366 ms)
+cos(x)     took 0.009102 ms (131071 eval in 1193 ms)
+arccos(x)  took 0.013771 ms (131071 eval in 1805 ms)
+arctan(x)  took 0.012329 ms (131071 eval in 1616 ms)
+
+zimmerma@gcc67:~/cln-1.3.4$ ./a.out 1000
+Prec=3329
+x*y        took 0.001666 ms (1048575 eval in 1747 ms)
+x*x        took 0.000983 ms (1048575 eval in 1031 ms)
+x/y        took 0.003162 ms (524287 eval in 1658 ms)
+sqrt(x)    took 0.002157 ms (524287 eval in 1131 ms)
+exp(x)     took 0.146136 ms (8191 eval in 1197 ms)
+log(x)     took 0.178000 ms (8191 eval in 1458 ms)
+sin(x)     took 0.138689 ms (8191 eval in 1136 ms)
+cos(x)     took 0.128922 ms (8191 eval in 1056 ms)
+arccos(x)  took 0.219387 ms (8191 eval in 1797 ms)
+arctan(x)  took 0.203272 ms (8191 eval in 1665 ms)
+
+zimmerma@gcc67:~/cln-1.3.4$ ./a.out 10000
+Prec=33226
+x*y        took 0.044740 ms (32767 eval in 1466 ms)
+x*x        took 0.033265 ms (32767 eval in 1090 ms)
+x/y        took 0.204004 ms (8191 eval in 1671 ms)
+sqrt(x)    took 0.122207 ms (8191 eval in 1001 ms)
+exp(x)     took 6.054902 ms (255 eval in 1544 ms)
+log(x)     took 7.627451 ms (255 eval in 1945 ms)
+sin(x)     took 7.721569 ms (255 eval in 1969 ms)
+cos(x)     took 7.309804 ms (255 eval in 1864 ms)
+arccos(x)  took 12.433071 ms (127 eval in 1579 ms)
+arctan(x)  took 11.724409 ms (127 eval in 1489 ms)

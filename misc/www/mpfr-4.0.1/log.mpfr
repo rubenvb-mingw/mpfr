@@ -1,0 +1,41 @@
+zimmerma@gcc67:~/mpfr-4.0.1/tests$ ./timings-mpfr 100
+Using MPFR-4.0.1 with GMP-6.1.2
+[precision is 333 bits]
+x*y        took 0.000046 ms (33554431 eval in 1552 ms)
+x*x        took 0.000033 ms (33554431 eval in 1121 ms)
+x/y        took 0.000120 ms (8388607 eval in 1008 ms)
+sqrt(x)    took 0.000174 ms (8388607 eval in 1456 ms)
+exp(x)     took 0.002344 ms (524287 eval in 1229 ms)
+log(x)     took 0.004326 ms (262143 eval in 1134 ms)
+sin(x)     took 0.002516 ms (524287 eval in 1319 ms)
+cos(x)     took 0.001982 ms (524287 eval in 1039 ms)
+arccos(x)  took 0.016007 ms (65535 eval in 1049 ms)
+arctan(x)  took 0.013558 ms (131071 eval in 1777 ms)
+
+zimmerma@gcc67:~/mpfr-4.0.1/tests$ ./timings-mpfr 1000
+Using MPFR-4.0.1 with GMP-6.1.2
+[precision is 3322 bits]
+x*y        took 0.001174 ms (1048575 eval in 1231 ms)
+x*x        took 0.000679 ms (2097151 eval in 1425 ms)
+x/y        took 0.002033 ms (524287 eval in 1066 ms)
+sqrt(x)    took 0.001242 ms (1048575 eval in 1302 ms)
+exp(x)     took 0.069523 ms (16383 eval in 1139 ms)
+log(x)     took 0.053682 ms (32767 eval in 1759 ms)
+sin(x)     took 0.065006 ms (16383 eval in 1065 ms)
+cos(x)     took 0.061832 ms (16383 eval in 1013 ms)
+arccos(x)  took 0.140642 ms (8191 eval in 1152 ms)
+arctan(x)  took 0.134416 ms (8191 eval in 1101 ms)
+
+zimmerma@gcc67:~/mpfr-4.0.1/tests$ ./timings-mpfr 10000
+Using MPFR-4.0.1 with GMP-6.1.2
+[precision is 33220 bits]
+x*y        took 0.040345 ms (32767 eval in 1322 ms)
+x*x        took 0.025345 ms (65535 eval in 1661 ms)
+x/y        took 0.080205 ms (16383 eval in 1314 ms)
+sqrt(x)    took 0.048433 ms (32767 eval in 1587 ms)
+exp(x)     took 3.596869 ms (511 eval in 1838 ms)
+log(x)     took 2.350294 ms (511 eval in 1201 ms)
+sin(x)     took 6.188235 ms (255 eval in 1578 ms)
+cos(x)     took 6.196078 ms (255 eval in 1580 ms)
+arccos(x)  took 6.352941 ms (255 eval in 1620 ms)
+arctan(x)  took 5.772549 ms (255 eval in 1472 ms)

@@ -1,0 +1,44 @@
+zimmerma@gcc67:~/pari-2.9.4$ ./a.out 100
+GP/PARI CALCULATOR Version 2.9.4 (released)
+Version: 2.9.4
+Prec=333 LongPrec=8
+x*y        took 0.000078 ms (16777215 eval in 1317 ms)
+x^2        took 0.000065 ms (16777215 eval in 1098 ms)
+x/y        took 0.000233 ms (8388607 eval in 1952 ms)
+sqrt(x)    took 0.000370 ms (4194303 eval in 1551 ms)
+exp(x)     took 0.007896 ms (131071 eval in 1035 ms)
+log(x)     took 0.010124 ms (131071 eval in 1327 ms)
+sin(x)     took 0.004730 ms (262143 eval in 1240 ms)
+cos(x)     took 0.004303 ms (524287 eval in 2256 ms)
+arccos(x)  took 0.016861 ms (65535 eval in 1105 ms)
+arctan(x)  took 0.016968 ms (65535 eval in 1112 ms)
+
+zimmerma@gcc67:~/pari-2.9.4$ ./a.out 1000
+GP/PARI CALCULATOR Version 2.9.4 (released)
+Version: 2.9.4
+Prec=3322 LongPrec=54
+x*y        took 0.002571 ms (524287 eval in 1348 ms)
+x^2        took 0.002581 ms (524287 eval in 1353 ms)
+x/y        took 0.003448 ms (524287 eval in 1808 ms)
+sqrt(x)    took 0.002110 ms (1048575 eval in 2213 ms)
+exp(x)     took 0.269076 ms (8191 eval in 2204 ms)
+log(x)     took 0.154560 ms (8191 eval in 1266 ms)
+sin(x)     took 0.214137 ms (8191 eval in 1754 ms)
+cos(x)     took 0.194360 ms (8191 eval in 1592 ms)
+arccos(x)  took 0.536395 ms (2047 eval in 1098 ms)
+arctan(x)  took 0.448352 ms (4095 eval in 1836 ms)
+
+zimmerma@gcc67:~/pari-2.9.4$ ./a.out 10000
+GP/PARI CALCULATOR Version 2.9.4 (released)
+Version: 2.9.4
+Prec=33220 LongPrec=522
+x*y        took 0.077336 ms (16383 eval in 1267 ms)
+x^2        took 0.062563 ms (32767 eval in 2050 ms)
+x/y        took 0.233305 ms (8191 eval in 1911 ms)
+sqrt(x)    took 0.127213 ms (8191 eval in 1042 ms)
+exp(x)     took 7.239216 ms (255 eval in 1846 ms)
+log(x)     took 3.532290 ms (511 eval in 1805 ms)
+sin(x)     took 9.661417 ms (127 eval in 1227 ms)
+cos(x)     took 10.834646 ms (127 eval in 1376 ms)
+arccos(x)  took 15.094488 ms (127 eval in 1917 ms)
+arctan(x)  took 16.317460 ms (63 eval in 1028 ms)

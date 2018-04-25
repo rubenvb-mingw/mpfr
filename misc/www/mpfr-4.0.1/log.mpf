@@ -1,0 +1,20 @@
+zimmerma@gcc67:~/mpfr-4.0.1/tests$ ./timings-mpf 100
+prec=333
+x*y        took 0.000043 ms (33554431 eval in 1455 ms)
+x*x        took 0.000032 ms (33554431 eval in 1082 ms)
+x/y        took 0.000119 ms (16777215 eval in 1995 ms)
+sqrt(x)    took 0.000172 ms (8388607 eval in 1439 ms)
+
+zimmerma@gcc67:~/mpfr-4.0.1/tests$ ./timings-mpf 1000
+prec=3322
+x*y        took 0.001500 ms (1048575 eval in 1573 ms)
+x*x        took 0.000864 ms (2097151 eval in 1811 ms)
+x/y        took 0.001509 ms (1048575 eval in 1582 ms)
+sqrt(x)    took 0.001246 ms (1048575 eval in 1307 ms)
+
+zimmerma@gcc67:~/mpfr-4.0.1/tests$ ./timings-mpf 10000
+prec=33220
+x*y        took 0.044954 ms (32767 eval in 1473 ms)
+x*x        took 0.032716 ms (32767 eval in 1072 ms)
+x/y        took 0.079534 ms (16383 eval in 1303 ms)
+sqrt(x)    took 0.048494 ms (32767 eval in 1589 ms)

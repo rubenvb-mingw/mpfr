@@ -1,0 +1,41 @@
+zimmerma@gcc67:~/mpfi-1.5.3/tests$ ./tadd 100
+Using MPFI-1.5.3 with MPFR-4.0.1 and GMP-6.1.2
+[precision is 333 bits]
+x*y        took 0.000137 ms (8388607 eval in 1149 ms)
+x*x        took 0.000076 ms (16777215 eval in 1271 ms)
+x/y        took 0.000304 ms (4194303 eval in 1273 ms)
+sqrt(x)    took 0.000379 ms (4194303 eval in 1588 ms)
+exp(x)     took 0.004951 ms (262143 eval in 1298 ms)
+log(x)     took 0.009956 ms (131071 eval in 1305 ms)
+sin(x)     took 0.008331 ms (131071 eval in 1092 ms)
+cos(x)     took 0.006943 ms (262143 eval in 1820 ms)
+arccos(x)  took 0.039705 ms (32767 eval in 1301 ms)
+arctan(x)  took 0.032991 ms (32767 eval in 1081 ms)
+
+zimmerma@gcc67:~/mpfi-1.5.3/tests$ ./tadd 1000
+Using MPFI-1.5.3 with MPFR-4.0.1 and GMP-6.1.2
+[precision is 3322 bits]
+x*y        took 0.002890 ms (524287 eval in 1515 ms)
+x*x        took 0.001520 ms (1048575 eval in 1594 ms)
+x/y        took 0.004746 ms (262143 eval in 1244 ms)
+sqrt(x)    took 0.002884 ms (524287 eval in 1512 ms)
+exp(x)     took 0.156391 ms (8191 eval in 1281 ms)
+log(x)     took 0.123428 ms (8191 eval in 1011 ms)
+sin(x)     took 0.164693 ms (8191 eval in 1349 ms)
+cos(x)     took 0.158955 ms (8191 eval in 1302 ms)
+arccos(x)  took 0.328938 ms (4095 eval in 1347 ms)
+arctan(x)  took 0.318193 ms (4095 eval in 1303 ms)
+
+zimmerma@gcc67:~/mpfi-1.5.3/tests$ ./tadd 10000
+Using MPFI-1.5.3 with MPFR-4.0.1 and GMP-6.1.2
+[precision is 33220 bits]
+x*y        took 0.093695 ms (16383 eval in 1535 ms)
+x*x        took 0.053102 ms (32767 eval in 1740 ms)
+x/y        took 0.185570 ms (8191 eval in 1520 ms)
+sqrt(x)    took 0.105109 ms (16383 eval in 1722 ms)
+exp(x)     took 7.984252 ms (127 eval in 1014 ms)
+log(x)     took 5.125490 ms (255 eval in 1307 ms)
+sin(x)     took 14.062992 ms (127 eval in 1786 ms)
+cos(x)     took 14.519685 ms (127 eval in 1844 ms)
+arccos(x)  took 13.968504 ms (127 eval in 1774 ms)
+arctan(x)  took 12.000000 ms (127 eval in 1524 ms)
