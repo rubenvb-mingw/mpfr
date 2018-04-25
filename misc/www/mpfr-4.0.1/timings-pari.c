@@ -165,6 +165,6 @@ main(int argc, char *argv[])
   printf("arctan(x)  took %f ms (%d eval in %d ms)\n",
          (double)(st2-st)/(N-1),N-1,st2-st);
 
-  z = gsqrt (z, long_prec); /* to avoid a compiler warning */
+  (void) z; /* to avoid a compiler warning */
 
 }
