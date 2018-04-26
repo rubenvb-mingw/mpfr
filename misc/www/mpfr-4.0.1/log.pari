@@ -45,3 +45,55 @@ sin(x)     took 8.992126 ms (127 eval in 1142 ms)
 cos(x)     took 8.874016 ms (127 eval in 1127 ms)
 arccos(x)  took 13.496063 ms (127 eval in 1714 ms)
 arctan(x)  took 13.393701 ms (127 eval in 1701 ms)
+
+##############################################################################
+
+With git version 911f0eed5 (new threshold SQRR_SQRI_LIMIT):
+
+zimmerma@gcc67:~/pari$ export LD_LIBRARY_PATH=/home/zimmerma/pari/Olinux-x86_64:/home/zimmerma/lib:
+
+zimmerma@gcc67:~/pari$ ./a.out 100
+GP/PARI CALCULATOR Version 2.9.4 (released)
+Version: 2.9.4
+Prec=333 LongPrec=8
+x*y        took 0.000043 ms (33554431 eval in 1448 ms)
+x^2        took 0.000036 ms (33554431 eval in 1211 ms)
+x/y        took 0.000151 ms (8388607 eval in 1267 ms)
+sqrt(x)    took 0.000196 ms (8388607 eval in 1641 ms)
+exp(x)     took 0.004509 ms (262143 eval in 1182 ms)
+log(x)     took 0.006306 ms (262143 eval in 1653 ms)
+sin(x)     took 0.004002 ms (262143 eval in 1049 ms)
+cos(x)     took 0.003603 ms (524287 eval in 1889 ms)
+arccos(x)  took 0.011749 ms (131071 eval in 1540 ms)
+arctan(x)  took 0.011017 ms (131071 eval in 1444 ms)
+
+zimmerma@gcc67:~/pari$ ./a.out 1000
+GP/PARI CALCULATOR Version 2.9.4 (released)
+Version: 2.9.4
+Prec=3322 LongPrec=54
+x*y        took 0.001738 ms (1048575 eval in 1822 ms)
+x^2        took 0.000908 ms (2097151 eval in 1905 ms)
+x/y        took 0.002495 ms (524287 eval in 1308 ms)
+sqrt(x)    took 0.001823 ms (1048575 eval in 1912 ms)
+exp(x)     took 0.139177 ms (8191 eval in 1140 ms)
+log(x)     took 0.083928 ms (16383 eval in 1375 ms)
+sin(x)     took 0.127213 ms (8191 eval in 1042 ms)
+cos(x)     took 0.122696 ms (8191 eval in 1005 ms)
+arccos(x)  took 0.289133 ms (4095 eval in 1184 ms)
+arctan(x)  took 0.285958 ms (4095 eval in 1171 ms)
+
+zimmerma@gcc67:~/pari$ ./a.out 10000
+GP/PARI CALCULATOR Version 2.9.4 (released)
+Version: 2.9.4
+Prec=33220 LongPrec=522
+x*y        took 0.045595 ms (32767 eval in 1494 ms)
+x^2        took 0.033692 ms (32767 eval in 1104 ms)
+x/y        took 0.104987 ms (16383 eval in 1720 ms)
+sqrt(x)    took 0.068730 ms (16383 eval in 1126 ms)
+exp(x)     took 5.019608 ms (255 eval in 1280 ms)
+log(x)     took 3.320939 ms (511 eval in 1697 ms)
+sin(x)     took 9.307087 ms (127 eval in 1182 ms)
+cos(x)     took 9.188976 ms (127 eval in 1167 ms)
+arccos(x)  took 14.023622 ms (127 eval in 1781 ms)
+arctan(x)  took 13.913386 ms (127 eval in 1767 ms)
+
