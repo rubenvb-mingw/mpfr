@@ -1,0 +1,60 @@
+diff -Naurd mpfr-4.0.1-a/PATCHES mpfr-4.0.1-b/PATCHES
+--- mpfr-4.0.1-a/PATCHES	2018-04-27 12:54:17.862594948 +0000
++++ mpfr-4.0.1-b/PATCHES	2018-04-27 12:54:17.894594642 +0000
+@@ -0,0 +1 @@
++io-null-stream
+diff -Naurd mpfr-4.0.1-a/VERSION mpfr-4.0.1-b/VERSION
+--- mpfr-4.0.1-a/VERSION	2018-04-27 12:52:13.911782747 +0000
++++ mpfr-4.0.1-b/VERSION	2018-04-27 12:54:17.894594642 +0000
+@@ -1 +1 @@
+-4.0.1-p5
++4.0.1-p6
+diff -Naurd mpfr-4.0.1-a/src/inp_str.c mpfr-4.0.1-b/src/inp_str.c
+--- mpfr-4.0.1-a/src/inp_str.c	2018-01-09 12:30:58.000000000 +0000
++++ mpfr-4.0.1-b/src/inp_str.c	2018-04-27 12:54:17.882594757 +0000
+@@ -37,9 +37,6 @@
+   int retval;
+   size_t nread;
+ 
+-  if (stream == NULL)
+-    stream = stdin;
+-
+   alloc_size = 100;
+   str = (unsigned char *) mpfr_allocate_func (alloc_size);
+   str_size = 0;
+diff -Naurd mpfr-4.0.1-a/src/mpfr.h mpfr-4.0.1-b/src/mpfr.h
+--- mpfr-4.0.1-a/src/mpfr.h	2018-04-27 12:52:13.907782785 +0000
++++ mpfr-4.0.1-b/src/mpfr.h	2018-04-27 12:54:17.894594642 +0000
+@@ -27,7 +27,7 @@
+ #define MPFR_VERSION_MAJOR 4
+ #define MPFR_VERSION_MINOR 0
+ #define MPFR_VERSION_PATCHLEVEL 1
+-#define MPFR_VERSION_STRING "4.0.1-p5"
++#define MPFR_VERSION_STRING "4.0.1-p6"
+ 
+ /* User macros:
+    MPFR_USE_FILE:        Define it to make MPFR define functions dealing
+diff -Naurd mpfr-4.0.1-a/src/out_str.c mpfr-4.0.1-b/src/out_str.c
+--- mpfr-4.0.1-a/src/out_str.c	2018-01-09 12:30:58.000000000 +0000
++++ mpfr-4.0.1-b/src/out_str.c	2018-04-27 12:54:17.882594757 +0000
+@@ -43,10 +43,6 @@
+ 
+   MPFR_ASSERTN (base >= 2 && base <= 62);
+ 
+-  /* when stream=NULL, output to stdout */
+-  if (stream == NULL)
+-    stream = stdout;
+-
+   if (MPFR_UNLIKELY (MPFR_IS_SINGULAR (op)))
+     {
+       if (MPFR_IS_NAN (op))
+diff -Naurd mpfr-4.0.1-a/src/version.c mpfr-4.0.1-b/src/version.c
+--- mpfr-4.0.1-a/src/version.c	2018-04-27 12:52:13.911782747 +0000
++++ mpfr-4.0.1-b/src/version.c	2018-04-27 12:54:17.894594642 +0000
+@@ -25,5 +25,5 @@
+ const char *
+ mpfr_get_version (void)
+ {
+-  return "4.0.1-p5";
++  return "4.0.1-p6";
+ }

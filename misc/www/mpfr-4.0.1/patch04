@@ -1,0 +1,251 @@
+diff -Naurd mpfr-4.0.1-a/PATCHES mpfr-4.0.1-b/PATCHES
+--- mpfr-4.0.1-a/PATCHES	2018-04-27 12:50:10.592974822 +0000
++++ mpfr-4.0.1-b/PATCHES	2018-04-27 12:50:10.624974512 +0000
+@@ -0,0 +1 @@
++get_str
+diff -Naurd mpfr-4.0.1-a/VERSION mpfr-4.0.1-b/VERSION
+--- mpfr-4.0.1-a/VERSION	2018-04-27 12:47:54.226308446 +0000
++++ mpfr-4.0.1-b/VERSION	2018-04-27 12:50:10.624974512 +0000
+@@ -1 +1 @@
+-4.0.1-p3
++4.0.1-p4
+diff -Naurd mpfr-4.0.1-a/doc/mpfr.info mpfr-4.0.1-b/doc/mpfr.info
+--- mpfr-4.0.1-a/doc/mpfr.info	2018-02-07 12:58:03.000000000 +0000
++++ mpfr-4.0.1-b/doc/mpfr.info	2018-04-27 12:50:17.128911341 +0000
+@@ -1321,10 +1321,9 @@
+           size_t N, mpfr_t OP, mpfr_rnd_t RND)
+      Convert OP to a string of digits in base B, with rounding in the
+      direction RND, where N is either zero (see below) or the number of
+-     significant digits output in the string; in the latter case, N must
+-     be greater or equal to 2.  The base may vary from 2 to 62;
+-     otherwise the function does nothing and immediately returns a null
+-     pointer.
++     significant digits output in the string.  The base may vary from 2
++     to 62; otherwise the function does nothing and immediately returns
++     a null pointer.
+ 
+      If the input is NaN, then the returned string is ‘@NaN@’ and the
+      NaN flag is set.  If the input is +Inf (resp. −Inf), then the
+@@ -4471,21 +4470,21 @@
+ * mpfr_expm1:                            Special Functions.   (line  40)
+ * mpfr_fac_ui:                           Special Functions.   (line 136)
+ * mpfr_fits_intmax_p:                    Conversion Functions.
+-                                                              (line 168)
++                                                              (line 167)
+ * mpfr_fits_sint_p:                      Conversion Functions.
+-                                                              (line 164)
++                                                              (line 163)
+ * mpfr_fits_slong_p:                     Conversion Functions.
+-                                                              (line 162)
++                                                              (line 161)
+ * mpfr_fits_sshort_p:                    Conversion Functions.
+-                                                              (line 166)
++                                                              (line 165)
+ * mpfr_fits_uintmax_p:                   Conversion Functions.
+-                                                              (line 167)
++                                                              (line 166)
+ * mpfr_fits_uint_p:                      Conversion Functions.
+-                                                              (line 163)
++                                                              (line 162)
+ * mpfr_fits_ulong_p:                     Conversion Functions.
+-                                                              (line 161)
++                                                              (line 160)
+ * mpfr_fits_ushort_p:                    Conversion Functions.
+-                                                              (line 165)
++                                                              (line 164)
+ * mpfr_flags_clear:                      Exception Related Functions.
+                                                               (line 190)
+ * mpfr_flags_restore:                    Exception Related Functions.
+@@ -4520,7 +4519,7 @@
+ * mpfr_free_cache2:                      Special Functions.   (line 295)
+ * mpfr_free_pool:                        Special Functions.   (line 309)
+ * mpfr_free_str:                         Conversion Functions.
+-                                                              (line 156)
++                                                              (line 155)
+ * mpfr_frexp:                            Conversion Functions.
+                                                               (line  49)
+ * mpfr_gamma:                            Special Functions.   (line 155)
+@@ -4928,30 +4927,30 @@
+ Node: Assignment Functions47553
+ Node: Combined Initialization and Assignment Functions57499
+ Node: Conversion Functions58800
+-Node: Basic Arithmetic Functions69381
+-Node: Comparison Functions80277
+-Node: Special Functions83765
+-Node: Input and Output Functions101974
+-Node: Formatted Output Functions106751
+-Node: Integer and Remainder Related Functions116956
+-Node: Rounding-Related Functions124484
+-Node: Miscellaneous Functions131001
+-Node: Exception Related Functions141493
+-Node: Compatibility with MPF151733
+-Node: Custom Interface154679
+-Node: Internals159310
+-Node: API Compatibility160854
+-Node: Type and Macro Changes162802
+-Node: Added Functions165985
+-Node: Changed Functions170499
+-Node: Removed Functions177095
+-Node: Other Changes177825
+-Node: MPFR and the IEEE 754 Standard179526
+-Node: Contributors182143
+-Node: References185200
+-Node: GNU Free Documentation License187084
+-Node: Concept Index209677
+-Node: Function and Type Index216049
++Node: Basic Arithmetic Functions69323
++Node: Comparison Functions80219
++Node: Special Functions83707
++Node: Input and Output Functions101916
++Node: Formatted Output Functions106693
++Node: Integer and Remainder Related Functions116898
++Node: Rounding-Related Functions124426
++Node: Miscellaneous Functions130943
++Node: Exception Related Functions141435
++Node: Compatibility with MPF151675
++Node: Custom Interface154621
++Node: Internals159252
++Node: API Compatibility160796
++Node: Type and Macro Changes162744
++Node: Added Functions165927
++Node: Changed Functions170441
++Node: Removed Functions177037
++Node: Other Changes177767
++Node: MPFR and the IEEE 754 Standard179468
++Node: Contributors182085
++Node: References185142
++Node: GNU Free Documentation License187026
++Node: Concept Index209619
++Node: Function and Type Index215991
+ 
+ End Tag Table
+ 
+diff -Naurd mpfr-4.0.1-a/doc/mpfr.texi mpfr-4.0.1-b/doc/mpfr.texi
+--- mpfr-4.0.1-a/doc/mpfr.texi	2018-02-07 12:50:31.000000000 +0000
++++ mpfr-4.0.1-b/doc/mpfr.texi	2018-04-27 12:50:10.612974628 +0000
+@@ -1655,8 +1655,8 @@
+ @deftypefun {char *} mpfr_get_str (char *@var{str}, mpfr_exp_t *@var{expptr}, int @var{b}, size_t @var{n}, mpfr_t @var{op}, mpfr_rnd_t @var{rnd})
+ Convert @var{op} to a string of digits in base @var{b}, with rounding in
+ the direction @var{rnd}, where @var{n} is either zero (see below) or the
+-number of significant digits output in the string; in the latter case,
+-@var{n} must be greater or equal to 2. The base may vary from 2 to 62;
++number of significant digits output in the string.
++The base may vary from 2 to 62;
+ otherwise the function does nothing and immediately returns a null pointer.
+ 
+ If the input is NaN, then the returned string is @samp{@@NaN@@} and the
+@@ -1699,8 +1699,7 @@
+ but in some very rare cases, it might be @math{m+1}
+ (the smallest case for bases up to 62 is when @var{p} equals 186564318007
+ for bases 7 and 49).
+-@c In the source src/get_str.c, this is due to the approximate mpfr_ceil_mul,
+-@c but also m = 1 is changed to 2.
++@c In the source src/get_str.c, this is due to the approximate mpfr_ceil_mul.
+ 
+ If @var{str} is a null pointer, space for the significand is allocated using
+ the allocation function (@pxref{Memory Handling}) and a pointer to the string
+diff -Naurd mpfr-4.0.1-a/src/get_str.c mpfr-4.0.1-b/src/get_str.c
+--- mpfr-4.0.1-a/src/get_str.c	2018-01-09 12:30:58.000000000 +0000
++++ mpfr-4.0.1-b/src/get_str.c	2018-04-27 12:50:10.612974628 +0000
+@@ -2325,15 +2325,12 @@
+       */
+       m = 1 +
+         mpfr_ceil_mul (IS_POW2(b) ? MPFR_PREC(x) - 1 : MPFR_PREC(x), b, 1);
+-      if (m < 2)
+-        m = 2;
+     }
+ 
+   MPFR_LOG_MSG (("m=%zu\n", m));
+ 
+-  /* The code below for non-power-of-two bases works for m=1;
+-     this is important for the internal use of mpfr_get_str. */
+-  MPFR_ASSERTN (m >= 2 || (!IS_POW2(b) && m >= 1));
++  /* The code below works for m=1, both for power-of-two and non-power-of-two
++     bases; this is important for the internal use of mpfr_get_str. */
+ 
+   /* x is a floating-point number */
+ 
+@@ -2376,6 +2373,8 @@
+ 
+       /* the first digit will contain only r bits */
+       prec = (m - 1) * pow2 + r; /* total number of bits */
++      /* if m=1 then 1 <= prec <= pow2, and since prec=1 is now valid in MPFR,
++         the power-of-two code also works for m=1 */
+       n = MPFR_PREC2LIMBS (prec);
+ 
+       MPFR_TMP_MARK (marker);
+diff -Naurd mpfr-4.0.1-a/src/mpfr.h mpfr-4.0.1-b/src/mpfr.h
+--- mpfr-4.0.1-a/src/mpfr.h	2018-04-27 12:47:54.226308446 +0000
++++ mpfr-4.0.1-b/src/mpfr.h	2018-04-27 12:50:10.620974551 +0000
+@@ -27,7 +27,7 @@
+ #define MPFR_VERSION_MAJOR 4
+ #define MPFR_VERSION_MINOR 0
+ #define MPFR_VERSION_PATCHLEVEL 1
+-#define MPFR_VERSION_STRING "4.0.1-p3"
++#define MPFR_VERSION_STRING "4.0.1-p4"
+ 
+ /* User macros:
+    MPFR_USE_FILE:        Define it to make MPFR define functions dealing
+diff -Naurd mpfr-4.0.1-a/src/version.c mpfr-4.0.1-b/src/version.c
+--- mpfr-4.0.1-a/src/version.c	2018-04-27 12:47:54.226308446 +0000
++++ mpfr-4.0.1-b/src/version.c	2018-04-27 12:50:10.624974512 +0000
+@@ -25,5 +25,5 @@
+ const char *
+ mpfr_get_version (void)
+ {
+-  return "4.0.1-p3";
++  return "4.0.1-p4";
+ }
+diff -Naurd mpfr-4.0.1-a/tests/tget_str.c mpfr-4.0.1-b/tests/tget_str.c
+--- mpfr-4.0.1-a/tests/tget_str.c	2018-01-09 12:30:58.000000000 +0000
++++ mpfr-4.0.1-b/tests/tget_str.c	2018-04-27 12:50:10.612974628 +0000
+@@ -1267,6 +1267,41 @@
+ 
+ #define ITER 1000
+ 
++static void
++coverage (void)
++{
++  mpfr_t x;
++  char s[42];
++  mpfr_exp_t e;
++  int b = 3;
++  size_t m = 40;
++
++  mpfr_init2 (x, 128);
++
++  /* exercise corner case in mpfr_get_str_aux: exact case (e < 0), where r
++     rounds to a power of 2, and f is a multiple of GMP_NUMB_BITS */
++  mpfr_set_ui_2exp (x, 1, 64, MPFR_RNDU);
++  mpfr_nextbelow (x);
++  /* x = 2^64 - 2^(-64) */
++  mpfr_get_str (s, &e, b, m, x, MPFR_RNDU);
++  /* s is the base-3 string for 6148914691236517206 (in base 10) */
++  MPFR_ASSERTN(strcmp (s, "1111222002212212010121102012021021021200") == 0);
++  MPFR_ASSERTN(e == 41);
++
++  /* exercise corner case in mpfr_get_str: input is m=0, then it is changed
++     to m=1 */
++  mpfr_set_prec (x, 1);
++  mpfr_set_ui (x, 1, MPFR_RNDN);
++  mpfr_get_str (s, &e, 2, 0, x, MPFR_RNDN);
++  MPFR_ASSERTN(strcmp (s, "1") == 0);
++  MPFR_ASSERTN(e == 1);
++  mpfr_get_str (s, &e, 2, 1, x, MPFR_RNDN);
++  MPFR_ASSERTN(strcmp (s, "1") == 0);
++  MPFR_ASSERTN(e == 1);
++
++  mpfr_clear (x);
++}
++
+ int
+ main (int argc, char *argv[])
+ {
+@@ -1281,6 +1316,7 @@
+ 
+   tests_start_mpfr ();
+ 
++  coverage ();
+   check_small ();
+ 
+   check_special (2, 2);

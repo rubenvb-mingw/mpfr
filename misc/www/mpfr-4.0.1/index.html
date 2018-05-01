@@ -98,6 +98,95 @@ The key fingerprint is:</p>
 
 <h2 id="bugs">Bugs</h2>
 
+<p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
+update: 2018-05-01). The patches are distributed under the same license as
+this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
+Lesser General Public License (<acronym>GNU</acronym> Lesser
+<acronym>GPL</acronym>), version 3 or later.</p>
+
+<p>The following instructions are for Linux and may be similar for
+other operating systems. You can apply the patches in several ways:</p>
+
+<ul>
+
+<li>Apply the <a href="allpatches">cumulative patch</a>
+(<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr/misc/www/mpfr-4.0.1/allpatches?view=co">version on Gforge via https</a>)
+on the 4.0.1 release or a partially patched version with the command
+<pre>patch -N -Z -p1 &lt; <var>path_to_patches_file</var></pre>
+from the source directory. The <samp>-N</samp> option allows the
+<samp>patch</samp> command to ignore patches already applied. The
+<samp>-Z</samp> option sets the modification time of the patched files
+from time stamps given in the patch file, thus avoiding the need of some
+development utilities (such as <cite>autoconf</cite>); this may generate
+a <q>Not setting time</q> warning for the <samp>PATCHES</samp> file, but
+you can safely ignore it. Under Microsoft Windows, in addition to the
+above options, you may need the <samp>--binary</samp> option (this depends
+whether the end-of-lines have been converted when you downloaded the patch
+file). Also note that the <samp>--dry-run</samp> option does not work if
+the cumulative patch has some file listed several times.</li>
+
+<li>Or apply the individual patches below.</li>
+
+<li>Or checkout the 4.0 branch from the Subversion repository,
+<abbr>e.g.</abbr> with the command
+<pre>svn co https://scm.gforge.inria.fr/anonscm/svn/mpfr/branches/4.0 mpfr-4.0</pre>
+In this case, as said on the <a href="../gforge.html">Gforge page</a>,
+you should read the
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr/tags/4.0.1/doc/README.dev?view=markup"><samp>README.dev</samp></a>
+file for details on how to build <acronym>MPFR</acronym>.
+Also note that the branch may contain additional minor fixes.</li>
+
+</ul>
+
+<p>With the first two ways, the <samp>PATCHES</samp> file is modified,
+so that one can know what patches have been applied, using the new
+<samp>mpfr_get_patches</samp> function. Moreover a suffix is added to
+the version string, but note that for practical reasons, not all the
+files where the version appears are patched; thus one can also track
+applied patches with the <code>MPFR_VERSION_STRING</code> macro (header)
+and the <code>mpfr_get_version</code> function (library). However, if
+some patches are not applied or if patches are applied in a different
+order, then the patch command will fail to update some chunks, so that
+the suffix is not always reliable for patches.</p>
+
+<p>Note: These patches are in unified diff format and some vendors'
+<samp>patch</samp> commands cannot deal with them; in this case, please
+use <a href="http://savannah.gnu.org/projects/patch/"><acronym>GNU</acronym>
+patch</a> (it <em>may</em> already be installed on your system, e.g. as
+<samp>/usr/local/bin/patch</samp> or <samp>gpatch</samp>).</p>
+
+<p id="fixed">Fixed bugs, with patches:</p>
+
+<ol>
+
+<li id="p1">A subtraction of two numbers of the same sign or addition of two numbers of different signs can be rounded incorrectly (and the ternary value can be incorrect) when one of the two inputs is reused as the output (destination) and all these <acronym>MPFR</acronym> numbers have exactly <code>GMP_NUMB_BITS</code> bits (typically, 32 bits on 32-bit machines, 64 bits on 64-bit machines). This bug, which was introduced in <cite><acronym>MPFR</acronym></cite> 4.0.0, is fixed by the <a href="patch01"><samp>sub1sp1n-reuse</samp> patch</a>, which also provides testcases.<br />
+Corresponding changesets in the 4.0 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12288&amp;view=revision">12288</a> (<samp>tsub.c</samp> and <samp>tsub1sp.c</samp> only),
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12576&amp;view=revision">12576</a>.</li>
+
+<li id="p2">The <code>mpfr_fma</code> and <code>mpfr_fms</code> functions can behave incorrectly in case of internal overflow or underflow. This bug is fixed by the <a href="patch02"><samp>fma</samp> patch</a> (with a complete rewrite of these cases), which also provides testcases.<br />
+Corresponding changeset in the 4.0 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12624&amp;view=revision">12624</a>.</li>
+
+<li id="p3">The result of the <code>mpfr_sqr</code> function can be rounded incorrectly in a rare case near underflow when the destination has exactly <code>GMP_NUMB_BITS</code> bits (typically, 32 bits on 32-bit machines, 64 bits on 64-bit machines) and the input has at most <code>GMP_NUMB_BITS</code> bits. This bug, which was introduced in <cite><acronym>MPFR</acronym></cite> 4.0.0, is fixed by the <a href="patch03"><samp>sqr_1n-underflow</samp> patch</a>, which also provides testcases.<br />
+Corresponding changeset in the 4.0 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12629&amp;view=revision">12629</a>.</li>
+
+<li id="p4">The behavior and documentation of the <code>mpfr_get_str</code> function are inconsistent concerning the minimum precision (this is related to the change of the minimum precision from 2 to 1 in <cite><acronym>MPFR</acronym></cite> 4.0.0). The <a href="patch04"><samp>get_str</samp> patch</a> fixes this issue in the following way: the value 1 can now be provided for <var>n</var> (4th argument of <code>mpfr_get_str</code>); if <var>n</var> = 0, then the number of significant digits in the output string can now be 1, as already implied by the documentation (but the code was increasing it to 2). This patch fixes both the code and the manual, and provides testcases.<br />
+Corresponding changeset in the 4.0 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12642&amp;view=revision">12642</a>.</li>
+
+<li id="p5">The <code>mpfr_cmp_q</code> function can behave incorrectly when the rational (<code>mpq_t</code>) number has a null denominator. This bug is fixed by the <a href="patch05"><samp>cmp_q-special</samp> patch</a>, which also provides testcases.<br />
+Corresponding changesets in the 4.0 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12664&amp;view=revision">12664</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12679&amp;view=revision">12679</a>.</li>
+
+<li id="p6">The <code>mpfr_inp_str</code> and <code>mpfr_out_str</code> functions might behave incorrectly when the stream is a null pointer: the stream is replaced by <code>stdin</code> and <code>stdout</code>, respectively. This behavior is useless, not documented (thus incorrect in case a null pointer would have a special meaning), and not consistent with other input/output functions. This is fixed by the <a href="patch06"><samp>io-null-stream</samp> patch</a> (no testcases are provided since in general, a null pointer is invalid for input/output).<br />
+Corresponding changeset in the 4.0 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12680&amp;view=revision">12680</a>.</li>
+
+</ol>
+
 <!-- For BUGS, it's better to point to HEAD, as changes will be noted above. -->
 <p>See the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr/trunk/BUGS?view=markup"><samp>BUGS</samp></a> file.</p>
 
