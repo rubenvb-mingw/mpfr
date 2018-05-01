@@ -159,7 +159,7 @@ patch</a> (it <em>may</em> already be installed on your system, e.g. as
 
 <ol>
 
-<li id="p1">A subtraction of two numbers of the same sign or addition of two numbers of different signs can be rounded incorrectly (and the ternary value can be incorrect) when one of the two inputs is reused as the output (destination) and all these <acronym>MPFR</acronym> numbers have exactly <code>GMP_NUMB_BITS</code> bits (typically, 32 bits on 32-bit machines, 64 bits on 64-bit machines). This bug, which was introduced in <cite><acronym>MPFR</acronym></cite> 4.0.0, is fixed by the <a href="patch01"><samp>sub1sp1n-reuse</samp> patch</a>, which also provides testcases.<br />
+<li id="p1">A subtraction of two numbers of the same sign or addition of two numbers of different signs can be rounded incorrectly (and the ternary value can be incorrect) when one of the two inputs is reused as the output (destination) and all these <acronym>MPFR</acronym> numbers have exactly <code>GMP_NUMB_BITS</code> bits of precision (typically, 32 bits on 32-bit machines, 64 bits on 64-bit machines). This bug, which was introduced in <cite><acronym>MPFR</acronym></cite> 4.0.0, is fixed by the <a href="patch01"><samp>sub1sp1n-reuse</samp> patch</a>, which also provides testcases.<br />
 Corresponding changesets in the 4.0 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12288&amp;view=revision">12288</a> (<samp>tsub.c</samp> and <samp>tsub1sp.c</samp> only),
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12576&amp;view=revision">12576</a>.</li>
@@ -168,7 +168,7 @@ Corresponding changesets in the 4.0 branch:
 Corresponding changeset in the 4.0 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12624&amp;view=revision">12624</a>.</li>
 
-<li id="p3">The result of the <code>mpfr_sqr</code> function can be rounded incorrectly in a rare case near underflow when the destination has exactly <code>GMP_NUMB_BITS</code> bits (typically, 32 bits on 32-bit machines, 64 bits on 64-bit machines) and the input has at most <code>GMP_NUMB_BITS</code> bits. This bug, which was introduced in <cite><acronym>MPFR</acronym></cite> 4.0.0, is fixed by the <a href="patch03"><samp>sqr_1n-underflow</samp> patch</a>, which also provides testcases.<br />
+<li id="p3">The result of the <code>mpfr_sqr</code> function can be rounded incorrectly in a rare case near underflow when the destination has exactly <code>GMP_NUMB_BITS</code> bits of precision (typically, 32 bits on 32-bit machines, 64 bits on 64-bit machines) and the input has at most <code>GMP_NUMB_BITS</code> bits. This bug, which was introduced in <cite><acronym>MPFR</acronym></cite> 4.0.0, is fixed by the <a href="patch03"><samp>sqr_1n-underflow</samp> patch</a>, which also provides testcases.<br />
 Corresponding changeset in the 4.0 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12629&amp;view=revision">12629</a>.</li>
 
