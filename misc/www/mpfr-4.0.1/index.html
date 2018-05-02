@@ -159,7 +159,7 @@ patch</a> (it <em>may</em> already be installed on your system, e.g. as
 
 <ol>
 
-<li id="p1">A subtraction of two numbers of the same sign or addition of two numbers of different signs can be rounded incorrectly (and the ternary value can be incorrect) when one of the two inputs is reused as the output (destination) and all these <acronym>MPFR</acronym> numbers have exactly <code>GMP_NUMB_BITS</code> bits of precision (typically, 32 bits on 32-bit machines, 64 bits on 64-bit machines). This bug, which was introduced in <cite><acronym>MPFR</acronym></cite> 4.0.0, is fixed by the <a href="patch01"><samp>sub1sp1n-reuse</samp> patch</a>, which also provides testcases.<br />
+<li id="p1">A subtraction of two numbers of the same sign or addition of two numbers of different signs can be rounded incorrectly (and the ternary value can be incorrect) when one of the two inputs is reused as the output (destination) and all these <acronym>MPFR</acronym> numbers have exactly <code>GMP_NUMB_BITS</code> bits of precision (typically, 32 bits on 32-bit machines, 64 bits on 64-bit machines). Other functions doing such a subtraction might be affected as a consequence, but <a href="https://sympa.inria.fr/sympa/arc/mpfr/2018-05/msg00003.html">no failures are known yet</a>. This bug, which was introduced in <cite><acronym>MPFR</acronym></cite> 4.0.0, is fixed by the <a href="patch01"><samp>sub1sp1n-reuse</samp> patch</a>, which also provides testcases.<br />
 Corresponding changesets in the 4.0 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12288&amp;view=revision">12288</a> (<samp>tsub.c</samp> and <samp>tsub1sp.c</samp> only),
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12576&amp;view=revision">12576</a>.</li>
