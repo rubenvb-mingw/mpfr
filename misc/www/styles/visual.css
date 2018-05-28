@@ -48,6 +48,8 @@ li > p, dd > p
   margin-left: 2em;
 }
 
+.highlight { background: #dddddd }
+
 .nowrap { white-space: nowrap }
 
 /*
