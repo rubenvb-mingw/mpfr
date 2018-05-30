@@ -45,7 +45,7 @@ first have to agree to donate your contribution to the
 the license used by <cite><acronym>MPFR</acronym></cite>, to agree to assign
 the copyright of your code to the
 <acronym title="Free Software Foundation">FSF</acronym>
-(<a href="http://www.gnu.org/licenses/why-assign.html">this page</a>
+(<a href="https://www.gnu.org/licenses/why-assign.html">this page</a>
 explains why). In addition, if it applies, your employer has to agree to
 disclaim rights on your contribution.</li>
 
@@ -59,20 +59,19 @@ representation... If possible, give references to the literature.</li>
 Then you have to perform an error analysis of your algorithm (both the
 mathematical error, <abbr>i.e.</abbr>, when neglecting terms of a Taylor
 series, and the roundoff error). See for example the
-<a href="http://www.mpfr.org/algo.html"><samp>algorithms.tex</samp></a>
-document (<a href="http://mpfr.org/algorithms.pdf"><acronym>PDF</acronym>
-version</a>), which contains numerous examples of such algorithms and error
-analyses. In some cases, you will need different algorithms depending on the
-output precision and/or on the input range. Please write this description in
-LaTeX, so that it can easily be included in the <samp>algorithms.tex</samp>
-document.</li>
+<a href="algo.html"><samp>algorithms.tex</samp></a> document
+(<a href="algorithms.pdf"><acronym>PDF</acronym> version</a>), which
+contains numerous examples of such algorithms and error analyses. In some
+cases, you will need different algorithms depending on the output precision
+and/or on the input range. Please write this description in LaTeX, so that
+it can easily be included in the <samp>algorithms.tex</samp> document.</li>
 
 <li>Implement in C the algorithm(s) described in the previous step.
 You have to follow the following guidelines:
    <ul>
    <li>conform to the <acronym>ISO</acronym> C89 and C99 standards;</li>
    <li>conform to the
-       <a href="http://www.gnu.org/prep/standards/"><acronym>GNU</acronym>
+       <a href="https://www.gnu.org/prep/standards/"><acronym>GNU</acronym>
        Coding Standards</a>;</li>
    <li>do not use machine floating-point types (<code>float</code>,
        <code>double</code>, <abbr>etc.</abbr>);</li>
