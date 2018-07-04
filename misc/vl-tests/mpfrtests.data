@@ -48,6 +48,7 @@ CHECK-END
 
 HOST:ypig.lip.ens-lyon.fr
 PROC:Intel Xeon E5520
+EVAL:export MPFR_CHECK_LOCALES=1
 EVAL:unset CPATH C_INCLUDE_PATH LIBRARY_PATH LD_LIBRARY_PATH LD_RUN_PATH LD_PRELOAD
 EVAL:cflags1="-O2 -Wall -Wold-style-declaration -Wold-style-definition -Wmissing-parameter-type -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wno-error=unused-function -Werror"
 EVAL:cflags2="$cflags1 -Wcast-function-type -Wcast-align=strict"
@@ -382,6 +383,7 @@ CHECK-END
 
 HOST:cventin.lip.ens-lyon.fr
 PROC:Intel Xeon E5-2609 v3
+EVAL:export MPFR_CHECK_LOCALES=1
 EVAL:unset CPATH C_INCLUDE_PATH LIBRARY_PATH LD_LIBRARY_PATH LD_RUN_PATH LD_PRELOAD
 EVAL:cflags1="-O2 -Wall -Wold-style-declaration -Wold-style-definition -Wmissing-parameter-type -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wno-error=unused-function -Werror"
 EVAL:cflags2="$cflags1 -Wcast-function-type -Wcast-align=strict"
@@ -673,6 +675,7 @@ CHECK-END
 
 HOST:xvii.vinc17.org
 PROC:Intel Core2 Duo P8600
+EVAL:export MPFR_CHECK_LOCALES=1
 EVAL:unset CPATH C_INCLUDE_PATH LIBRARY_PATH LD_LIBRARY_PATH LD_RUN_PATH
 CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-4.3.1-debug
@@ -697,6 +700,7 @@ CHECK-END
 
 HOST:zira.vinc17.org
 PROC:Intel Core i7-4810MQ
+EVAL:export MPFR_CHECK_LOCALES=1
 EVAL:unset CPATH C_INCLUDE_PATH LIBRARY_PATH LD_LIBRARY_PATH LD_RUN_PATH
 EVAL:cflags1="-O2 -Wall -Wold-style-declaration -Wold-style-definition -Wmissing-parameter-type -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wno-error=unused-function -Werror"
 EVAL:cflags2="$cflags1 -Wcast-function-type -Wcast-align=strict"
@@ -1073,4 +1077,4 @@ CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 108033 2018-05-02 15:24:37Z vinc17/cventin $
+# $Id: mpfrtests.data 109738 2018-07-04 09:25:48Z vinc17/cventin $
