@@ -99,7 +99,7 @@ The key fingerprint is:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2018-05-01). The patches are distributed under the same license as
+update: 2018-07-10). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -184,6 +184,21 @@ Corresponding changesets in the 4.0 branch:
 <li id="p6">The <code>mpfr_inp_str</code> and <code>mpfr_out_str</code> functions might behave incorrectly when the stream is a null pointer: the stream is replaced by <code>stdin</code> and <code>stdout</code>, respectively. This behavior is useless, not documented (thus incorrect in case a null pointer would have a special meaning), and not consistent with other input/output functions. This is fixed by the <a href="patch06"><samp>io-null-stream</samp> patch</a> (no testcases are provided since in general, a null pointer is invalid for input/output).<br />
 Corresponding changeset in the 4.0 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12680&amp;view=revision">12680</a>.</li>
+
+<li id="p7">Compiling <samp>tests/tstckintc.c</samp> with the <samp>-Wcast-align=strict</samp> option from <acronym>GCC</acronym> 8.1 yields some false warnings about casts to <code>long *</code> (the code ensures alignment to <code>long</code>, which <acronym>GCC</acronym> is not able to take into account). These warnings are avoided by the <a href="patch07"><samp>tstckintc-casts</samp> patch</a>, which still allows checks of other alignment requirements (not handled by the <samp>tstckintc.c</samp> code), as explained in a comment in the patch.<br />
+Corresponding changeset in the 4.0 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12785&amp;view=revision">12785</a>.</li>
+
+<li id="p8">The ternary value returned by <code>mpfr_set_decimal64</code> is always 0. This bug is fixed by the <a href="patch08"><samp>set_d64-ternary</samp> patch</a>, which also provides testcases.<br />
+Corresponding changesets in the 4.0 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12786&amp;view=revision">12786</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12793&amp;view=revision">12793</a>.</li>
+
+<li id="p9">The internal function <code>buffer_sandwich</code> used by the formatted output functions (<samp>mpfr_*printf</samp>) to handle the <samp>'</samp> flag in locales where the thousands separator is not empty has several bugs. The main one, which could have visible consequences in practice: In some specific cases (that is, when the integer part is rounded to 10 or 100), the generated string can be incorrect and since it is shorter than expected, an incorrect buffer size can be provided to the <q>free</q> function of the current <cite><acronym>GMP</acronym></cite> memory allocator. By default, this size is ignored, but it may matter if the memory allocators have been changed with the <code>mp_set_memory_functions</code> <cite><acronym>GMP</acronym></cite> function, in which case a possible consequence could be memory corruption. These bugs are fixed by the <a href="patch09"><samp>buffer_sandwich</samp> patch</a>, which also provides testcases.<br />
+Corresponding changesets in the 4.0 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12872&amp;view=revision">12872</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12904&amp;view=revision">12904</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12909&amp;view=revision">12909</a>.</li>
 
 </ol>
 

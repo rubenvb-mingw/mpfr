@@ -1,0 +1,104 @@
+diff -Naurd mpfr-4.0.1-a/PATCHES mpfr-4.0.1-b/PATCHES
+--- mpfr-4.0.1-a/PATCHES	2018-07-10 15:29:07.937776370 +0000
++++ mpfr-4.0.1-b/PATCHES	2018-07-10 15:29:08.017776303 +0000
+@@ -0,0 +1 @@
++tstckintc-casts
+diff -Naurd mpfr-4.0.1-a/VERSION mpfr-4.0.1-b/VERSION
+--- mpfr-4.0.1-a/VERSION	2018-04-27 12:54:17.894594642 +0000
++++ mpfr-4.0.1-b/VERSION	2018-07-10 15:29:08.017776303 +0000
+@@ -1 +1 @@
+-4.0.1-p6
++4.0.1-p7
+diff -Naurd mpfr-4.0.1-a/src/mpfr.h mpfr-4.0.1-b/src/mpfr.h
+--- mpfr-4.0.1-a/src/mpfr.h	2018-04-27 12:54:17.894594642 +0000
++++ mpfr-4.0.1-b/src/mpfr.h	2018-07-10 15:29:08.013776307 +0000
+@@ -27,7 +27,7 @@
+ #define MPFR_VERSION_MAJOR 4
+ #define MPFR_VERSION_MINOR 0
+ #define MPFR_VERSION_PATCHLEVEL 1
+-#define MPFR_VERSION_STRING "4.0.1-p6"
++#define MPFR_VERSION_STRING "4.0.1-p7"
+ 
+ /* User macros:
+    MPFR_USE_FILE:        Define it to make MPFR define functions dealing
+diff -Naurd mpfr-4.0.1-a/src/version.c mpfr-4.0.1-b/src/version.c
+--- mpfr-4.0.1-a/src/version.c	2018-04-27 12:54:17.894594642 +0000
++++ mpfr-4.0.1-b/src/version.c	2018-07-10 15:29:08.017776303 +0000
+@@ -25,5 +25,5 @@
+ const char *
+ mpfr_get_version (void)
+ {
+-  return "4.0.1-p6";
++  return "4.0.1-p7";
+ }
+diff -Naurd mpfr-4.0.1-a/tests/tstckintc.c mpfr-4.0.1-b/tests/tstckintc.c
+--- mpfr-4.0.1-a/tests/tstckintc.c	2018-01-09 12:30:58.000000000 +0000
++++ mpfr-4.0.1-b/tests/tstckintc.c	2018-07-10 15:29:07.989776327 +0000
+@@ -32,6 +32,22 @@
+ 
+ #define ALIGNED(s) (((s) + sizeof (long) - 1) / sizeof (long) * sizeof (long))
+ 
++/* This code ensures alignment to "long". However, this might not be
++   sufficient on some platforms. GCC's -Wcast-align=strict option can
++   be useful, but this needs successive casts to help GCC, e.g.
++
++   newx = (mpfr_ptr) (long *) (void *) old_stack;
++
++   successively casts old_stack (of type char *) to
++   - void *: avoid a false positive for the following cast to long *
++     (as the code takes care of alignment to "long");
++   - long *: this corresponds to the alignment checked by MPFR; coming
++     from void *, it will not trigger a warning (even if incorrect);
++   - mpfr_ptr: -Wcast-align=strict will emit a warning if mpfr_ptr has
++     an alignment requirement stronger than long *. In such a case,
++     the code will have to be fixed.
++*/
++
+ static void *
+ new_st (size_t s)
+ {
+@@ -94,12 +110,14 @@
+   void *mantissa       = mpfr_custom_get_significand (x);
+   size_t size_mantissa = mpfr_custom_get_size (mpfr_get_prec (x));
+   mpfr_ptr newx;
++  long *newx2;
+ 
+   memmove (old_stack, x, sizeof (mpfr_t));
+   memmove (old_stack + ALIGNED (sizeof (mpfr_t)), mantissa, size_mantissa);
+-  newx = (mpfr_ptr) old_stack;
+-  mpfr_custom_move (newx, old_stack + ALIGNED (sizeof (mpfr_t)));
+-  stack = old_stack + ALIGNED (sizeof (mpfr_t)) + ALIGNED (size_mantissa);
++  newx = (mpfr_ptr) (long *) (void *) old_stack;
++  newx2 = (long *) (void *) (old_stack + ALIGNED (sizeof (mpfr_t)));
++  mpfr_custom_move (newx, newx2);
++  stack = (char *) newx2 + ALIGNED (size_mantissa);
+   return newx;
+ }
+ 
+@@ -113,7 +131,7 @@
+ 
+   memmove (old_stack, x, sizeof (mpfr_t));
+   memmove (old_stack + ALIGNED (sizeof (mpfr_t)), mantissa, size_mantissa);
+-  newx = (mpfr_ptr) old_stack;
++  newx = (mpfr_ptr) (long *) (void *) old_stack;
+   (mpfr_custom_move) (newx, old_stack + ALIGNED (sizeof (mpfr_t)));
+   stack = old_stack + ALIGNED (sizeof (mpfr_t)) + ALIGNED (size_mantissa);
+   return newx;
+@@ -127,7 +145,7 @@
+   mpfr_ptr x, y;
+ 
+   reset_stack ();
+-  org = (long *) stack;
++  org = (long *) (void *) stack;
+ 
+   x = new_mpfr (p);
+   y = new_mpfr (p);
+@@ -277,7 +295,7 @@
+   long *a, *b, *c;
+ 
+   reset_stack ();
+-  org = (long *) stack;
++  org = (long *) (void *) stack;
+ 
+   a = dummy_set_si (42);
+   b = dummy_set_si (17);
