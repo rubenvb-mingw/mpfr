@@ -1036,10 +1036,40 @@ CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
+# FreeBSD
+HOST:fbsd-cfarm.housegordon.com
+PROC:Intel Xeon R5330
+CHECK-BEGIN
+CONF:--with-gmp=$HOME/gmp-debug
+CONF:--enable-assert=full
+INFO:CCV:--version
+# For tarballs that do not have the following check-exported-symbols fix...
+# A patch will not be published since end users do not normally use this.
+EVAL:perl -pi -e 's/^\\s*\\K(grep.*)(?=`)/{ $1 || true ; }/' src/Makefile
+CHECK-END
+
 # NetBSD
 HOST:gcc70.fsffrance.org
 PROC:Intel Xeon 3.2E Irwindale
 CHECK-BEGIN
+CONF:--with-gmp=$HOME/gmp-debug
+CONF:--enable-assert=full
+INFO:CCV:--version
+CHECK-END
+
+# NetBSD
+HOST:nbsd-cfarm.housegordon.com
+PROC:Intel Xeon R5330
+CHECK-BEGIN <= 40001
+# For MPFR up to 4.0.1, explicitly disable float128 support as it does not
+# work (link failure) and this is not detected. Later MPFR versions will
+# detect this failure (see MPFR trunk r12915 and 4.0 branch r12916).
+CONF:--with-gmp=$HOME/gmp-debug
+CONF:--enable-assert=full
+CONF:--disable-float128
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN > 40001
 CONF:--with-gmp=$HOME/gmp-debug
 CONF:--enable-assert=full
 INFO:CCV:--version
@@ -1056,6 +1086,15 @@ CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=$HOME/gmp-debug
 CONF:--enable-gmp-internals
+INFO:CCV:--version
+CHECK-END
+
+# OpenBSD
+HOST:obsd-cfarm.housegordon.com
+PROC:Intel Xeon R5330
+CHECK-BEGIN
+CONF:--with-gmp=$HOME/gmp-debug
+CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
@@ -1077,4 +1116,4 @@ CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 109738 2018-07-04 09:25:48Z vinc17/cventin $
+# $Id: mpfrtests.data 109974 2018-07-12 14:40:31Z vinc17/cventin $
