@@ -210,8 +210,27 @@ Corresponding changeset in the 4.0 branch:
 
 </ol>
 
+<p>Bugs fixed in the 4.0 branch for the future <acronym>MPFR</acronym> 4.0.2 release:</p>
+
+<ul>
+
+<li>The <samp>make check-exported-symbols</samp> command (optional, not run by default) fails if the default <samp>.SHELLFLAGS</samp> value is <samp>-ec</samp> (POSIX) instead of <samp>-c</samp> (default with <cite><acronym>GNU</acronym> Make</cite>).<br />
+Corresponding changeset in the 4.0 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12914&amp;view=revision">12914</a>.</li>
+
+<li>In the autodetection of <code>__float128</code> support at configure time, <acronym>MPFR</acronym> may detect <code>__float128</code> as working (supported by the compiler), while a failure occurs at link time, such as <a href="https://mail-index.netbsd.org/pkgsrc-users/2018/02/02/msg026220.html">under NetBSD</a>. The test has now been improved so that one does not need an explicit <samp>--disable-float128</samp> configure option in such a case.<br />
+Corresponding changesets in the 4.0 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12916&amp;view=revision">12916</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12923&amp;view=revision">12923</a>.</li>
+
+<li>When the shared cache is enabled with the <samp>--enable-shared-cache</samp> configure option, C11 thread support detection and use is incorrect. In practice, this means that <cite>pthread</cite> is always used as a fallback. This has now been fixed, allowing C11 threads, with other minor improvements.<br />
+Corresponding changeset in the 4.0 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12938&amp;view=revision">12938</a>.</li>
+
+</ul>
+
 <!-- For BUGS, it's better to point to HEAD, as changes will be noted above. -->
-<p>See the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr/trunk/BUGS?view=markup"><samp>BUGS</samp></a> file.</p>
+<p>See also the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr/trunk/BUGS?view=markup"><samp>BUGS</samp></a> file.</p>
 
 <h2 id="changes">Changes from version 4.0.0 to version 4.0.1</h2>
 
