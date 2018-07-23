@@ -1,0 +1,50 @@
+diff -Naurd mpfr-4.0.1-a/PATCHES mpfr-4.0.1-b/PATCHES
+--- mpfr-4.0.1-a/PATCHES	2018-07-23 08:30:20.241198970 +0000
++++ mpfr-4.0.1-b/PATCHES	2018-07-23 08:30:20.269198598 +0000
+@@ -0,0 +1 @@
++tconst_pi
+diff -Naurd mpfr-4.0.1-a/VERSION mpfr-4.0.1-b/VERSION
+--- mpfr-4.0.1-a/VERSION	2018-07-10 15:46:13.676796949 +0000
++++ mpfr-4.0.1-b/VERSION	2018-07-23 08:30:20.269198598 +0000
+@@ -1 +1 @@
+-4.0.1-p9
++4.0.1-p10
+diff -Naurd mpfr-4.0.1-a/src/mpfr.h mpfr-4.0.1-b/src/mpfr.h
+--- mpfr-4.0.1-a/src/mpfr.h	2018-07-10 15:46:13.672796954 +0000
++++ mpfr-4.0.1-b/src/mpfr.h	2018-07-23 08:30:20.269198598 +0000
+@@ -27,7 +27,7 @@
+ #define MPFR_VERSION_MAJOR 4
+ #define MPFR_VERSION_MINOR 0
+ #define MPFR_VERSION_PATCHLEVEL 1
+-#define MPFR_VERSION_STRING "4.0.1-p9"
++#define MPFR_VERSION_STRING "4.0.1-p10"
+ 
+ /* User macros:
+    MPFR_USE_FILE:        Define it to make MPFR define functions dealing
+diff -Naurd mpfr-4.0.1-a/src/version.c mpfr-4.0.1-b/src/version.c
+--- mpfr-4.0.1-a/src/version.c	2018-07-10 15:46:13.672796954 +0000
++++ mpfr-4.0.1-b/src/version.c	2018-07-23 08:30:20.269198598 +0000
+@@ -25,5 +25,5 @@
+ const char *
+ mpfr_get_version (void)
+ {
+-  return "4.0.1-p9";
++  return "4.0.1-p10";
+ }
+diff -Naurd mpfr-4.0.1-a/tests/tconst_pi.c mpfr-4.0.1-b/tests/tconst_pi.c
+--- mpfr-4.0.1-a/tests/tconst_pi.c	2018-01-09 12:30:58.000000000 +0000
++++ mpfr-4.0.1-b/tests/tconst_pi.c	2018-07-23 08:30:20.261198705 +0000
+@@ -81,9 +81,11 @@
+ 
+ # define RUN_PTHREAD_TEST()                                             \
+   (MPFR_ASSERTN(mpfr_buildopt_sharedcache_p() == 1), run_pthread_test())
++
+ #else
+-# define RUN_PTHREAD_TEST() \
+-  (MPFR_ASSERTN(mpfr_buildopt_sharedcache_p() == 0))
++
++# define RUN_PTHREAD_TEST() ((void) 0)
++
+ #endif
+ 
+ /* tconst_pi [prec] [rnd] [0 = no print] */

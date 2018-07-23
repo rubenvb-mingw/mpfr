@@ -200,6 +200,14 @@ Corresponding changesets in the 4.0 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12904&amp;view=revision">12904</a>,
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12909&amp;view=revision">12909</a>.</li>
 
+<li id="p10">When the shared cache is enabled and C11 threads are used (which will probably not happen due to another bug), the <samp>tconst_pi</samp> test will fail due to an incorrect assertion. This bug is fixed by the <a href="patch10"><samp>tconst_pi</samp> patch</a>.<br />
+Corresponding changeset in the 4.0 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12936&amp;view=revision">12936</a>.</li>
+
+<li id="p11">The <code>mpfr_erf</code> and <code>mpfr_erfc</code> functions can yield an assertion failure due to the fact that the error bound is computed with the <code>double</code> type and can overflow. This bug is fixed by the <a href="patch11"><samp>erf</samp> patch</a>, which also provides testcases.<br />
+Corresponding changeset in the 4.0 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12950&amp;view=revision">12950</a>.</li>
+
 </ol>
 
 <!-- For BUGS, it's better to point to HEAD, as changes will be noted above. -->

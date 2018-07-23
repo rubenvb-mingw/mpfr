@@ -1,0 +1,134 @@
+diff -Naurd mpfr-4.0.1-a/PATCHES mpfr-4.0.1-b/PATCHES
+--- mpfr-4.0.1-a/PATCHES	2018-07-23 08:39:40.951246327 +0000
++++ mpfr-4.0.1-b/PATCHES	2018-07-23 08:39:40.983246047 +0000
+@@ -0,0 +1 @@
++erf
+diff -Naurd mpfr-4.0.1-a/VERSION mpfr-4.0.1-b/VERSION
+--- mpfr-4.0.1-a/VERSION	2018-07-23 08:30:20.269198598 +0000
++++ mpfr-4.0.1-b/VERSION	2018-07-23 08:39:40.983246047 +0000
+@@ -1 +1 @@
+-4.0.1-p10
++4.0.1-p11
+diff -Naurd mpfr-4.0.1-a/src/erf.c mpfr-4.0.1-b/src/erf.c
+--- mpfr-4.0.1-a/src/erf.c	2018-01-09 12:30:58.000000000 +0000
++++ mpfr-4.0.1-b/src/erf.c	2018-07-23 08:39:40.971246153 +0000
+@@ -186,10 +186,8 @@
+ {
+   mpfr_prec_t n, m;
+   mpfr_exp_t nuk, sigmak;
+-  double tauk;
+   mpfr_t y, s, t, u;
+   unsigned int k;
+-  int log2tauk;
+   int inex;
+   MPFR_GROUP_DECL (group);
+   MPFR_ZIV_DECL (loop);
+@@ -204,10 +202,14 @@
+   MPFR_ZIV_INIT (loop, m);
+   for (;;)
+     {
++      mpfr_t tauk;
++      mpfr_exp_t log2tauk;
++
+       mpfr_mul (y, x, x, MPFR_RNDU); /* err <= 1 ulp */
+       mpfr_set_ui (s, 1, MPFR_RNDN);
+       mpfr_set_ui (t, 1, MPFR_RNDN);
+-      tauk = 0.0;
++      mpfr_init2 (tauk, 53);
++      mpfr_set_ui (tauk, 0, MPFR_RNDU);
+ 
+       for (k = 1; ; k++)
+         {
+@@ -222,12 +224,13 @@
+           sigmak -= MPFR_GET_EXP(s);
+           nuk = MPFR_GET_EXP(u) - MPFR_GET_EXP(s);
+ 
+-          if ((nuk < - (mpfr_exp_t) m) && ((double) k >= xf2))
++          if ((nuk < - (mpfr_exp_t) m) && (k >= xf2))
+             break;
+ 
+           /* tauk <- 1/2 + tauk * 2^sigmak + (1+8k)*2^nuk */
+-          tauk = 0.5 + mul_2exp (tauk, sigmak)
+-            + mul_2exp (1.0 + 8.0 * (double) k, nuk);
++          mpfr_mul_2si (tauk, tauk, sigmak, MPFR_RNDU);
++          mpfr_add_d (tauk, tauk, 0.5 + mul_2exp (1.0 + 8.0 * (double) k, nuk),
++                      MPFR_RNDU);
+         }
+ 
+       mpfr_mul (s, x, s, MPFR_RNDU);
+@@ -236,8 +239,14 @@
+       mpfr_const_pi (t, MPFR_RNDZ);
+       mpfr_sqrt (t, t, MPFR_RNDZ);
+       mpfr_div (s, s, t, MPFR_RNDN);
+-      tauk = 4.0 * tauk + 11.0; /* final ulp-error on s */
+-      log2tauk = __gmpfr_ceil_log2 (tauk);
++      /* tauk = 4 * tauk + 11: final ulp-error on s */
++      mpfr_mul_2ui (tauk, tauk, 2, MPFR_RNDU);
++      mpfr_add_ui (tauk, tauk, 11, MPFR_RNDU);
++      /* In practice, one should not get an infinity, as it would require
++         a huge precision and a lot of time, but just in case... */
++      MPFR_ASSERTN (!MPFR_IS_INF (tauk));
++      log2tauk = MPFR_GET_EXP (tauk);
++      mpfr_clear (tauk);
+ 
+       if (MPFR_LIKELY (MPFR_CAN_ROUND (s, m - log2tauk, n, rnd_mode)))
+         break;
+diff -Naurd mpfr-4.0.1-a/src/mpfr.h mpfr-4.0.1-b/src/mpfr.h
+--- mpfr-4.0.1-a/src/mpfr.h	2018-07-23 08:30:20.269198598 +0000
++++ mpfr-4.0.1-b/src/mpfr.h	2018-07-23 08:39:40.983246047 +0000
+@@ -27,7 +27,7 @@
+ #define MPFR_VERSION_MAJOR 4
+ #define MPFR_VERSION_MINOR 0
+ #define MPFR_VERSION_PATCHLEVEL 1
+-#define MPFR_VERSION_STRING "4.0.1-p10"
++#define MPFR_VERSION_STRING "4.0.1-p11"
+ 
+ /* User macros:
+    MPFR_USE_FILE:        Define it to make MPFR define functions dealing
+diff -Naurd mpfr-4.0.1-a/src/version.c mpfr-4.0.1-b/src/version.c
+--- mpfr-4.0.1-a/src/version.c	2018-07-23 08:30:20.269198598 +0000
++++ mpfr-4.0.1-b/src/version.c	2018-07-23 08:39:40.983246047 +0000
+@@ -25,5 +25,5 @@
+ const char *
+ mpfr_get_version (void)
+ {
+-  return "4.0.1-p10";
++  return "4.0.1-p11";
+ }
+diff -Naurd mpfr-4.0.1-a/tests/terf.c mpfr-4.0.1-b/tests/terf.c
+--- mpfr-4.0.1-a/tests/terf.c	2018-01-09 12:30:58.000000000 +0000
++++ mpfr-4.0.1-b/tests/terf.c	2018-07-23 08:39:40.971246153 +0000
+@@ -638,6 +638,20 @@
+   mpfr_set_emax (emax);
+ }
+ 
++/* Similar to a bug reported by Naoki Shibata:
++   https://sympa.inria.fr/sympa/arc/mpfr/2018-07/msg00028.html
++*/
++static void
++bug20180723 (void)
++{
++  mpfr_t x;
++
++  mpfr_init2 (x, 256);
++  mpfr_set_ui (x, 28, MPFR_RNDN);
++  mpfr_erfc (x, x, MPFR_RNDN);
++  mpfr_clear (x);
++}
++
+ int
+ main (int argc, char *argv[])
+ {
+@@ -648,9 +662,10 @@
+   large_arg ();
+   test_erfc ();
+   reduced_expo_range ();
++  bug20180723 ();
+ 
+-  test_generic_erf (MPFR_PREC_MIN, 100, 15);
+-  test_generic_erfc (MPFR_PREC_MIN, 100, 15);
++  test_generic_erf (MPFR_PREC_MIN, 300, 150);
++  test_generic_erfc (MPFR_PREC_MIN, 300, 150);
+ 
+   data_check ("data/erf",  mpfr_erf,  "mpfr_erf");
+   data_check ("data/erfc", mpfr_erfc, "mpfr_erfc");
