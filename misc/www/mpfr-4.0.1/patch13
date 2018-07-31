@@ -1,0 +1,103 @@
+diff -Naurd mpfr-4.0.1-a/PATCHES mpfr-4.0.1-b/PATCHES
+--- mpfr-4.0.1-a/PATCHES	2018-07-31 11:26:25.226690969 +0000
++++ mpfr-4.0.1-b/PATCHES	2018-07-31 11:26:25.262690428 +0000
+@@ -0,0 +1 @@
++vasprintf-p-length-modifier
+diff -Naurd mpfr-4.0.1-a/VERSION mpfr-4.0.1-b/VERSION
+--- mpfr-4.0.1-a/VERSION	2018-07-31 11:21:08.887430085 +0000
++++ mpfr-4.0.1-b/VERSION	2018-07-31 11:26:25.262690428 +0000
+@@ -1 +1 @@
+-4.0.1-p12
++4.0.1-p13
+diff -Naurd mpfr-4.0.1-a/src/mpfr.h mpfr-4.0.1-b/src/mpfr.h
+--- mpfr-4.0.1-a/src/mpfr.h	2018-07-31 11:21:08.887430085 +0000
++++ mpfr-4.0.1-b/src/mpfr.h	2018-07-31 11:26:25.262690428 +0000
+@@ -27,7 +27,7 @@
+ #define MPFR_VERSION_MAJOR 4
+ #define MPFR_VERSION_MINOR 0
+ #define MPFR_VERSION_PATCHLEVEL 1
+-#define MPFR_VERSION_STRING "4.0.1-p12"
++#define MPFR_VERSION_STRING "4.0.1-p13"
+ 
+ /* User macros:
+    MPFR_USE_FILE:        Define it to make MPFR define functions dealing
+diff -Naurd mpfr-4.0.1-a/src/vasprintf.c mpfr-4.0.1-b/src/vasprintf.c
+--- mpfr-4.0.1-a/src/vasprintf.c	2018-07-31 11:21:08.771431816 +0000
++++ mpfr-4.0.1-b/src/vasprintf.c	2018-07-31 11:26:25.246690670 +0000
+@@ -259,6 +259,8 @@
+     }
+ }
+ 
++/* Note: additional flags should be added to the MPFR_PREC_ARG code
++   for gmp_asprintf (when supported). */
+ static const char *
+ parse_flags (const char *format, struct printf_spec *specinfo)
+ {
+@@ -2220,7 +2222,7 @@
+         /* output mpfr_prec_t variable */
+         {
+           char *s;
+-          char format[MPFR_PREC_FORMAT_SIZE + 6]; /* see examples below */
++          char format[MPFR_PREC_FORMAT_SIZE + 12]; /* e.g. "%0#+ -'*.*ld\0" */
+           size_t length;
+           mpfr_prec_t prec;
+ 
+@@ -2232,14 +2234,14 @@
+           start = fmt;
+ 
+           /* construct format string, like "%*.*hd" "%*.*d" or "%*.*ld" */
+-          format[0] = '%';
+-          format[1] = '*';
+-          format[2] = '.';
+-          format[3] = '*';
+-          format[4] = '\0';
+-          strcat (format, MPFR_PREC_FORMAT_TYPE);
+-          format[4 + MPFR_PREC_FORMAT_SIZE] = spec.spec;
+-          format[5 + MPFR_PREC_FORMAT_SIZE] = '\0';
++          sprintf (format, "%%%s%s%s%s%s%s*.*" MPFR_PREC_FORMAT_TYPE "%c",
++                   spec.pad == '0' ? "0" : "",
++                   spec.alt ? "#" : "",
++                   spec.showsign ? "+" : "",
++                   spec.space ? " " : "",
++                   spec.left ? "-" : "",
++                   spec.group ? "'" : "",
++                   spec.spec);
+           length = gmp_asprintf (&s, format, spec.width, spec.prec, prec);
+           MPFR_ASSERTN (length >= 0);  /* guaranteed by GMP 6 */
+           buffer_cat (&buf, s, length);
+diff -Naurd mpfr-4.0.1-a/src/version.c mpfr-4.0.1-b/src/version.c
+--- mpfr-4.0.1-a/src/version.c	2018-07-31 11:21:08.887430085 +0000
++++ mpfr-4.0.1-b/src/version.c	2018-07-31 11:26:25.262690428 +0000
+@@ -25,5 +25,5 @@
+ const char *
+ mpfr_get_version (void)
+ {
+-  return "4.0.1-p12";
++  return "4.0.1-p13";
+ }
+diff -Naurd mpfr-4.0.1-a/tests/tsprintf.c mpfr-4.0.1-b/tests/tsprintf.c
+--- mpfr-4.0.1-a/tests/tsprintf.c	2018-07-10 15:46:13.648796978 +0000
++++ mpfr-4.0.1-b/tests/tsprintf.c	2018-07-31 11:26:25.250690608 +0000
+@@ -232,6 +232,22 @@
+   /* specifier 'P' for precision */
+   check_vsprintf ("128", "%Pu", p);
+   check_vsprintf ("00128", "%.5Pu", p);
++  check_vsprintf ("  128", "%5Pu", p);
++  check_vsprintf ("000128", "%06Pu", p);
++  check_vsprintf ("128    :", "%-7Pu:", p);
++  check_vsprintf ("000128:", "%-2.6Pd:", p);
++  check_vsprintf ("  000128:", "%8.6Pd:", p);
++  check_vsprintf ("000128  :", "%-8.6Pd:", p);
++  check_vsprintf ("+128:", "%+d:", p);
++  check_vsprintf (" 128:", "% d:", p);
++  check_vsprintf ("80:", "% x:", p);
++  check_vsprintf ("0x80:", "% #x:", p);
++  check_vsprintf ("0x80:", "%0#+ -x:", p);
++  check_vsprintf ("0200:", "%0#+ -o:", p);
++  check_vsprintf ("+0000128 :", "%0+ *.*Pd:", -9, 7, p);
++  check_vsprintf ("+12345   :", "%0+ -*.*Pd:", -9, -3, (mpfr_prec_t) 12345);
++  /* Do not add a test like "%05.1Pd" as MS Windows is buggy: when
++     a precision is given, the '0' flag must be ignored. */
+ 
+   /* special numbers */
+   mpfr_set_inf (x, 1);

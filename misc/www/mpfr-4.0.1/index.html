@@ -99,7 +99,7 @@ The key fingerprint is:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2018-07-23). The patches are distributed under the same license as
+update: 2018-07-31). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -207,6 +207,15 @@ Corresponding changeset in the 4.0 branch:
 <li id="p11">The <code>mpfr_erf</code> and <code>mpfr_erfc</code> functions can yield an assertion failure due to the fact that the error bound is computed with the <code>double</code> type and can overflow. This bug is fixed by the <a href="patch11"><samp>erf</samp> patch</a>, which also provides testcases.<br />
 Corresponding changeset in the 4.0 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12950&amp;view=revision">12950</a>.</li>
+
+<li id="p12">The formatted output functions (<samp>mpfr_*printf</samp>) can yield undefined behavior in case of error: store to null pointer, free of bad pointer, and <samp>&lt;stdarg.h&gt;</samp> related undefined behavior. These bugs are fixed by the <a href="patch12"><samp>vasprintf-error-ub</samp> patch</a>. Testcases are provided in the trunk; they are not included here due to other bugs in overflow handling in the 4.0 branch.<br />
+Corresponding changesets in the 4.0 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12965&amp;view=revision">12965</a>,
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12966&amp;view=revision">12966</a>.</li>
+
+<li id="p13">The formatted output functions (<samp>mpfr_*printf</samp>) ignore the flags for the <samp>P</samp> length modifier (<code>mpfr_prec_t</code> argument); this includes the sign of the field width when the value is provided in argument (by using an asterisk <samp>*</samp> in the format string). This bug is fixed by the <a href="patch13"><samp>vasprintf-p-length-modifier</samp> patch</a>, which also provides testcases.<br />
+Corresponding changeset in the 4.0 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12967&amp;view=revision">12967</a> (with parts related to autotools files and a corresponding testcase removed).</li>
 
 </ol>
 

@@ -1,0 +1,147 @@
+diff -Naurd mpfr-4.0.1-a/PATCHES mpfr-4.0.1-b/PATCHES
+--- mpfr-4.0.1-a/PATCHES	2018-07-31 11:21:08.747432173 +0000
++++ mpfr-4.0.1-b/PATCHES	2018-07-31 11:21:08.887430085 +0000
+@@ -0,0 +1 @@
++vasprintf-error-ub
+diff -Naurd mpfr-4.0.1-a/VERSION mpfr-4.0.1-b/VERSION
+--- mpfr-4.0.1-a/VERSION	2018-07-23 08:39:40.983246047 +0000
++++ mpfr-4.0.1-b/VERSION	2018-07-31 11:21:08.887430085 +0000
+@@ -1 +1 @@
+-4.0.1-p11
++4.0.1-p12
+diff -Naurd mpfr-4.0.1-a/src/mpfr.h mpfr-4.0.1-b/src/mpfr.h
+--- mpfr-4.0.1-a/src/mpfr.h	2018-07-23 08:39:40.983246047 +0000
++++ mpfr-4.0.1-b/src/mpfr.h	2018-07-31 11:21:08.887430085 +0000
+@@ -27,7 +27,7 @@
+ #define MPFR_VERSION_MAJOR 4
+ #define MPFR_VERSION_MINOR 0
+ #define MPFR_VERSION_PATCHLEVEL 1
+-#define MPFR_VERSION_STRING "4.0.1-p11"
++#define MPFR_VERSION_STRING "4.0.1-p12"
+ 
+ /* User macros:
+    MPFR_USE_FILE:        Define it to make MPFR define functions dealing
+diff -Naurd mpfr-4.0.1-a/src/vasprintf.c mpfr-4.0.1-b/src/vasprintf.c
+--- mpfr-4.0.1-a/src/vasprintf.c	2018-07-10 15:46:13.648796978 +0000
++++ mpfr-4.0.1-b/src/vasprintf.c	2018-07-31 11:21:08.771431816 +0000
+@@ -33,11 +33,22 @@
+    So, for the time being, we return a negative value and set the erange
+    flag, and set errno to EOVERFLOW in POSIX system. */
+ 
+-/* Note: Due to limitations from the C standard and GMP, if
+-   size_t < unsigned int (which is allowed by the C standard but unlikely
+-   to occur on any platform), the behavior is undefined for output that
+-   would reach SIZE_MAX = (size_t) -1 (if the result cannot be delivered,
+-   there should be an assertion failure, but this could not be tested). */
++/* Notes about limitations on some platforms:
++
++   Due to limitations from the C standard and GMP, if size_t < unsigned int
++   (which is allowed by the C standard but unlikely to occur on any
++   platform), the behavior is undefined for output that would reach
++   SIZE_MAX = (size_t) -1 (if the result cannot be delivered, there should
++   be an assertion failure, but this could not be tested).
++
++   The stdarg(3) Linux man page says:
++      On some systems, va_end contains a closing '}' matching a '{' in
++      va_start, so that both macros must occur in the same function,
++      and in a way that allows this.
++   However, the only requirement from ISO C is that both macros must be
++   invoked in the same function (MPFR uses va_copy instead of va_start,
++   but the requirement is the same). Here, MPFR just follows ISO C.
++*/
+ 
+ #ifdef HAVE_CONFIG_H
+ # include "config.h"
+@@ -2273,44 +2284,42 @@
+ 
+   va_end (ap2);
+ 
+-  if (buf.len > INT_MAX)  /* overflow */
+-    buf.len = -1;
++  if (buf.len == -1 || buf.len > INT_MAX)  /* overflow */
++    goto overflow;
+ 
+-  if (buf.len != -1)
+-    {
+-      nbchar = buf.len;
+-      MPFR_ASSERTD (nbchar >= 0);
++  nbchar = buf.len;
++  MPFR_ASSERTD (nbchar >= 0);
+ 
+-      if (ptr != NULL)  /* implement mpfr_vasprintf */
++  if (ptr != NULL)  /* implement mpfr_vasprintf */
++    {
++      MPFR_ASSERTD (nbchar == strlen (buf.start));
++      *ptr = (char *) mpfr_reallocate_func (buf.start, buf.size, nbchar + 1);
++    }
++  else if (size != 0)  /* implement mpfr_vsnprintf */
++    {
++      if (nbchar < size)
+         {
+-          MPFR_ASSERTD (nbchar == strlen (buf.start));
+-          *ptr = (char *)
+-            mpfr_reallocate_func (buf.start, buf.size, nbchar + 1);
++          strncpy (Buf, buf.start, nbchar);
++          Buf[nbchar] = '\0';
+         }
+-      else if (size > 0)  /* implement mpfr_vsnprintf */
++      else
+         {
+-          if (nbchar < size)
+-            {
+-              strncpy (Buf, buf.start, nbchar);
+-              Buf[nbchar] = '\0';
+-            }
+-          else
+-            {
+-              strncpy (Buf, buf.start, size - 1);
+-              Buf[size-1] = '\0';
+-            }
+-          mpfr_free_func (buf.start, buf.size);
++          strncpy (Buf, buf.start, size - 1);
++          Buf[size-1] = '\0';
+         }
+-
+-      MPFR_SAVE_EXPO_FREE (expo);
+-      return nbchar; /* return the number of characters that would have
+-                        been written had 'size' been sufficiently large,
+-                        not counting the terminating null character */
++      mpfr_free_func (buf.start, buf.size);
+     }
+ 
++  MPFR_SAVE_EXPO_FREE (expo);
++  return nbchar; /* return the number of characters that would have
++                    been written had 'size' been sufficiently large,
++                    not counting the terminating null character */
++
+  error:
++  va_end (ap2);
+   if (buf.len == -1)  /* overflow */
+     {
++    overflow:
+       MPFR_LOG_MSG (("Overflow\n", 0));
+       MPFR_SAVE_EXPO_UPDATE_FLAGS (expo, MPFR_FLAGS_ERANGE);
+ #ifdef EOVERFLOW
+@@ -2320,8 +2329,10 @@
+     }
+ 
+   MPFR_SAVE_EXPO_FREE (expo);
+-  *ptr = NULL;
+-  mpfr_free_func (buf.start, buf.size);
++  if (ptr != NULL)  /* implement mpfr_vasprintf */
++    *ptr = NULL;
++  if (ptr != NULL || size != 0)
++    mpfr_free_func (buf.start, buf.size);
+ 
+   return -1;
+ }
+diff -Naurd mpfr-4.0.1-a/src/version.c mpfr-4.0.1-b/src/version.c
+--- mpfr-4.0.1-a/src/version.c	2018-07-23 08:39:40.983246047 +0000
++++ mpfr-4.0.1-b/src/version.c	2018-07-31 11:21:08.887430085 +0000
+@@ -25,5 +25,5 @@
+ const char *
+ mpfr_get_version (void)
+ {
+-  return "4.0.1-p11";
++  return "4.0.1-p12";
+ }
