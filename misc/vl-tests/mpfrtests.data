@@ -522,7 +522,7 @@ CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:CC=clang-4.0
-CONF:CFLAGS=-O2 -D_MPFR_PREC_FORMAT=2
+CONF:CFLAGS=-O2 -D_MPFR_PREC_FORMAT=2 -Werror -Wno-error=tautological-constant-out-of-range-compare -Wno-error=string-plus-int
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -1149,4 +1149,4 @@ CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 111847 2018-09-28 12:41:43Z vinc17/cventin $
+# $Id: mpfrtests.data 113515 2018-11-27 11:48:27Z vinc17/cventin $
