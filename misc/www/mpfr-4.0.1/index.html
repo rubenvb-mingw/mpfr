@@ -99,7 +99,7 @@ The key fingerprint is:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2018-07-31). The patches are distributed under the same license as
+update: 2018-12-31). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -216,6 +216,10 @@ Corresponding changesets in the 4.0 branch:
 <li id="p13">The formatted output functions (<samp>mpfr_*printf</samp>) ignore the flags for the <samp>P</samp> length modifier (<code>mpfr_prec_t</code> argument); this includes the sign of the field width when the value is provided in argument (by using an asterisk <samp>*</samp> in the format string). This bug is fixed by the <a href="patch13"><samp>vasprintf-p-length-modifier</samp> patch</a>, which also provides testcases.<br />
 Corresponding changeset in the 4.0 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=12967&amp;view=revision">12967</a> (with parts related to autotools files and a corresponding testcase removed).</li>
+
+<li id="p14">The internal function <code>mpfr_set_1_2</code> can round in the wrong direction in case of double rounding. This bug can affect only the functions <code>mpfr_fmma</code> and <code>mpfr_fmms</code> in rounding to nearest (<code>MPFR_RNDN</code>), and only when their <code>mpfr_t</code> arguments all have a same precision <var>p</var> &#8805; <code>GMP_NUMB_BITS</code> (the number of bits per limb): under these conditions, if <var>a</var><var>b</var>±<var></var>c<var>d</var> rounded to 2<var>p</var> bits is the middle of two consecutive <var>p</var>-bit numbers (<abbr>i.e.</abbr>, it is representable on <var>p</var>+1 bits but not on <var>p</var> bits), then these functions <code>mpfr_fmma</code> and <code>mpfr_fmms</code> can round in the wrong direction. This bug is fixed by the <a href="patch14"><samp>set_1_2</samp> patch</a>, which also provides testcases (it also simplifies the generic algorithm, avoiding non-portable code).<br />
+Corresponding changeset in the 4.0 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=13357&amp;view=revision">13357</a>.</li>
 
 </ol>
 

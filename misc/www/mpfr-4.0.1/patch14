@@ -1,0 +1,286 @@
+diff -Naurd mpfr-4.0.1-a/PATCHES mpfr-4.0.1-b/PATCHES
+--- mpfr-4.0.1-a/PATCHES	2018-12-31 11:18:05.589387869 +0000
++++ mpfr-4.0.1-b/PATCHES	2018-12-31 11:18:05.621387341 +0000
+@@ -0,0 +1 @@
++set_1_2
+diff -Naurd mpfr-4.0.1-a/VERSION mpfr-4.0.1-b/VERSION
+--- mpfr-4.0.1-a/VERSION	2018-07-31 11:26:25.262690428 +0000
++++ mpfr-4.0.1-b/VERSION	2018-12-31 11:18:05.621387341 +0000
+@@ -1 +1 @@
+-4.0.1-p13
++4.0.1-p14
+diff -Naurd mpfr-4.0.1-a/src/mpfr.h mpfr-4.0.1-b/src/mpfr.h
+--- mpfr-4.0.1-a/src/mpfr.h	2018-07-31 11:26:25.262690428 +0000
++++ mpfr-4.0.1-b/src/mpfr.h	2018-12-31 11:18:05.617387407 +0000
+@@ -27,7 +27,7 @@
+ #define MPFR_VERSION_MAJOR 4
+ #define MPFR_VERSION_MINOR 0
+ #define MPFR_VERSION_PATCHLEVEL 1
+-#define MPFR_VERSION_STRING "4.0.1-p13"
++#define MPFR_VERSION_STRING "4.0.1-p14"
+ 
+ /* User macros:
+    MPFR_USE_FILE:        Define it to make MPFR define functions dealing
+diff -Naurd mpfr-4.0.1-a/src/set.c mpfr-4.0.1-b/src/set.c
+--- mpfr-4.0.1-a/src/set.c	2018-01-09 12:30:58.000000000 +0000
++++ mpfr-4.0.1-b/src/set.c	2018-12-31 11:18:05.609387539 +0000
+@@ -80,15 +80,20 @@
+   return mpfr_set4 (a, b, rnd_mode, MPFR_SIGN_POS);
+ }
+ 
+-/* Round (u, inex) into s with rounding mode rnd, where inex is the ternary
+-   value associated to u with the *same* rounding mode.
++/* Round (u, inex) into s with rounding mode rnd_mode, where inex is
++   the ternary value associated with u, which has been obtained using
++   the *same* rounding mode rnd_mode.
+    Assumes PREC(u) = 2*PREC(s).
+-   The main algorithm is the following:
+-   rnd=RNDZ: inex2 = mpfr_set (s, u, rnd_mode); return inex2 | inex;
+-             (a negative value, if any, is preserved in inex2 | inex)
+-   rnd=RNDA: idem
+-   rnd=RNDN: inex2 = mpfr_set (s, u, rnd_mode);
+-             if (inex2) return inex2; else return inex; */
++   The generic algorithm is the following:
++   1. inex2 = mpfr_set (s, u, rnd_mode);
++   2. if (inex2 != 0) return inex2; else return inex;
++      except in the double-rounding case: in MPFR_RNDN, when u is in the
++      middle of two consecutive PREC(s)-bit numbers, if inex and inex2
++      are both > 0 (resp. both < 0), we correct s to nextbelow(s) (resp.
++      nextabove(s)), and return the opposite of inex.
++   Note: this function can be called with rnd_mode == MPFR_RNDF, in
++   which case, the rounding direction and the returned ternary value
++   are unspecified. */
+ int
+ mpfr_set_1_2 (mpfr_ptr s, mpfr_srcptr u, mpfr_rnd_t rnd_mode, int inex)
+ {
+@@ -106,9 +111,9 @@
+       return inex;
+     }
+ 
+-  MPFR_ASSERTD(MPFR_PREC(u) == 2 * MPFR_PREC(s));
++  MPFR_ASSERTD(MPFR_PREC(u) == 2 * p);
+ 
+-  if (MPFR_PREC(s) < GMP_NUMB_BITS)
++  if (p < GMP_NUMB_BITS)
+     {
+       mask = MPFR_LIMB_MASK(sh);
+ 
+@@ -194,6 +199,19 @@
+ 
+   /* general case PREC(s) >= GMP_NUMB_BITS */
+   inex2 = mpfr_set (s, u, rnd_mode);
+-  return (rnd_mode != MPFR_RNDN) ? inex | inex2
+-    : (inex2) ? inex2 : inex;
++  /* Check the double-rounding case, i.e. with u = middle of two
++     consecutive PREC(s)-bit numbers, which is equivalent to u being
++     exactly representable on PREC(s) + 1 bits but not on PREC(s) bits.
++     Moreover, since PREC(u) = 2*PREC(s), u and s cannot be identical
++     (as pointers), thus u was not changed. */
++  if (rnd_mode == MPFR_RNDN && inex * inex2 > 0 &&
++      mpfr_min_prec (u) == p + 1)
++    {
++      if (inex > 0)
++        mpfr_nextbelow (s);
++      else
++        mpfr_nextabove (s);
++      return -inex;
++    }
++  return inex2 != 0 ? inex2 : inex;
+ }
+diff -Naurd mpfr-4.0.1-a/src/version.c mpfr-4.0.1-b/src/version.c
+--- mpfr-4.0.1-a/src/version.c	2018-07-31 11:26:25.262690428 +0000
++++ mpfr-4.0.1-b/src/version.c	2018-12-31 11:18:05.621387341 +0000
+@@ -25,5 +25,5 @@
+ const char *
+ mpfr_get_version (void)
+ {
+-  return "4.0.1-p13";
++  return "4.0.1-p14";
+ }
+diff -Naurd mpfr-4.0.1-a/tests/tfmma.c mpfr-4.0.1-b/tests/tfmma.c
+--- mpfr-4.0.1-a/tests/tfmma.c	2018-01-09 12:30:58.000000000 +0000
++++ mpfr-4.0.1-b/tests/tfmma.c	2018-12-31 11:18:05.609387539 +0000
+@@ -469,6 +469,69 @@
+   mpfr_clears (x, y, z, (mpfr_ptr) 0);
+ }
+ 
++/* Test double-rounding cases in mpfr_set_1_2, which is called when
++   all the precisions are the same. With set.c before r13347, this
++   triggers errors for neg=0. */
++static void
++double_rounding (void)
++{
++  int p;
++
++  for (p = 4; p < 4 * GMP_NUMB_BITS; p++)
++    {
++      mpfr_t a, b, c, d, z1, z2;
++      int neg;
++
++      mpfr_inits2 (p, a, b, c, d, z1, z2, (mpfr_ptr) 0);
++      /* Choose a, b, c, d such that a*b = 2^p and c*d = 1 + epsilon */
++      mpfr_set_ui (a, 2, MPFR_RNDN);
++      mpfr_set_ui_2exp (b, 1, p - 1, MPFR_RNDN);
++      mpfr_set_ui (c, 1, MPFR_RNDN);
++      mpfr_nextabove (c);
++      /* c = 1 + ulp(1) = 1 + 2 * ulp(1/2) */
++
++      for (neg = 0; neg <= 1; neg++)
++        {
++          int inex1, inex2;
++
++          /* Set d = 1 - (1 + neg) * ulp(1/2), thus
++           * c*d = 1 + (1 - neg) * ulp(1/2) - 2 * (1 + neg) * ulp(1/2)^2,
++           * so that a*b + c*d rounds to 2^p + 1 and epsilon has the
++           * same sign as (-1)^neg.
++           */
++          mpfr_set_ui (d, 1, MPFR_RNDN);
++          mpfr_nextbelow (d);
++          mpfr_set_ui_2exp (z1, 1, p, MPFR_RNDN);
++          if (neg)
++            {
++              mpfr_nextbelow (d);
++              inex1 = -1;
++            }
++          else
++            {
++              mpfr_nextabove (z1);
++              inex1 = 1;
++            }
++
++          inex2 = mpfr_fmma (z2, a, b, c, d, MPFR_RNDN);
++          if (!(mpfr_equal_p (z1, z2) && SAME_SIGN (inex1, inex2)))
++            {
++              printf ("Error in double_rounding for precision %d, neg=%d\n",
++                      p, neg);
++              printf ("Expected ");
++              mpfr_dump (z1);
++              printf ("with inex = %d\n", inex1);
++              printf ("Got      ");
++              mpfr_dump (z2);
++              printf ("with inex = %d\n", inex2);
++              exit (1);
++            }
++        }
++
++      mpfr_clears (a, b, c, d, z1, z2, (mpfr_ptr) 0);
++    }
++}
++
+ int
+ main (int argc, char *argv[])
+ {
+@@ -480,6 +543,7 @@
+   overflow_tests ();
+   half_plus_half ();
+   bug20170405 ();
++  double_rounding ();
+ 
+   tests_end_mpfr ();
+   return 0;
+diff -Naurd mpfr-4.0.1-a/tests/tset.c mpfr-4.0.1-b/tests/tset.c
+--- mpfr-4.0.1-a/tests/tset.c	2018-01-09 12:30:58.000000000 +0000
++++ mpfr-4.0.1-b/tests/tset.c	2018-12-31 11:18:05.609387539 +0000
+@@ -256,6 +256,93 @@
+   mpfr_clear (y);
+ }
+ 
++static void
++test_set_1_2 (void)
++{
++  mpfr_t u, v, zz, z;
++  int inex;
++
++  /* (8,16)-bit test */
++  mpfr_inits2 (16, u, v, zz, (mpfr_ptr) 0);
++  mpfr_init2 (z, 8);
++  mpfr_set_str_binary (u, "0.1100001100011010E-1");
++  mpfr_set_str_binary (v, "0.1100010101110010E0");
++  /* u + v = 1.0010011011111111 */
++  inex = mpfr_add (zz, u, v, MPFR_RNDN);
++  MPFR_ASSERTN(inex > 0);
++  mpfr_set_str_binary (u, "1.001001110000000");
++  MPFR_ASSERTN(mpfr_equal_p (zz, u));
++  inex = mpfr_set_1_2 (z, zz, MPFR_RNDN, inex);
++  /* we should have z = 1.0010011 and inex < 0 */
++  MPFR_ASSERTN(inex < 0);
++  mpfr_set_str_binary (u, "1.0010011");
++  MPFR_ASSERTN(mpfr_equal_p (z, u));
++  mpfr_clears (u, v, zz, z, (mpfr_ptr) 0);
++
++  /* (16,32)-bit test:
++   * take for v a random 32-bit number in [1/2,1), here 2859611790/2^32
++   * take for z a random 16-bit number in [1,2), less than 2*v,
++   with last bit 0, here we take z = 40900/2^15
++   * take u = z-v-1/2^16-1/2^32 */
++  mpfr_inits2 (32, u, v, zz, (mpfr_ptr) 0);
++  mpfr_init2 (z, 16);
++  mpfr_set_str_binary (u, "0.10010101000101001100100101110001");
++  mpfr_set_str_binary (v, "0.10101010011100100011011010001110");
++  /* u + v = 1.00111111100001101111111111111111 */
++  inex = mpfr_add (zz, u, v, MPFR_RNDN);
++  MPFR_ASSERTN(inex > 0);
++  mpfr_set_str_binary (u, "1.0011111110000111");
++  MPFR_ASSERTN(mpfr_equal_p (zz, u));
++  inex = mpfr_set_1_2 (z, zz, MPFR_RNDN, inex);
++  /* we should have z = 1.001111111000011 and inex < 0 */
++  MPFR_ASSERTN(inex < 0);
++  mpfr_set_str_binary (u, "1.001111111000011");
++  MPFR_ASSERTN(mpfr_equal_p (z, u));
++  mpfr_clears (u, v, zz, z, (mpfr_ptr) 0);
++
++  /* (32,64)-bit test:
++   * take for v a random 64-bit number in [1/2,1),
++     here v = 13687985014345662879/2^64
++   * take for z a random 32-bit number in [1,2), less than 2*v,
++     with last bit 0, here we take z = 2871078774/2^31
++   * take u = z-v-1/2^32-1/2^64 */
++  mpfr_inits2 (64, u, v, zz, (mpfr_ptr) 0);
++  mpfr_init2 (z, 32);
++  mpfr_set_str_binary (u, "0.10011000010011001110000100010001110010010000111001111110011");
++  mpfr_set_str_binary (v, "0.1011110111110101011111011101100100110110111100011000000110011111");
++  /* u + v = 1.0101011001000010010111101110101011111111111111111111111111111111 */
++  inex = mpfr_add (zz, u, v, MPFR_RNDN);
++  MPFR_ASSERTN(inex > 0);
++  mpfr_set_str_binary (u, "1.01010110010000100101111011101011");
++  MPFR_ASSERTN(mpfr_equal_p (zz, u));
++  inex = mpfr_set_1_2 (z, zz, MPFR_RNDN, inex);
++  /* we should have z = 1.0101011001000010010111101110101 and inex < 0 */
++  MPFR_ASSERTN(inex < 0);
++  mpfr_set_str_binary (u, "1.0101011001000010010111101110101");
++  MPFR_ASSERTN(mpfr_equal_p (z, u));
++  mpfr_clears (u, v, zz, z, (mpfr_ptr) 0);
++
++  /* (64,128)-bit test:
++   * take for v a random 128-bit number in [1/2,1),
++     here v = 322263811942091240216761391118876232409/2^128
++   * take for z a random 64-bit number in [1,2), less than 2*v,
++     with last bit 0, here we take z = 16440347967874738276/2^63
++   * take u = z-v-1/2^64-1/2^128 */
++  mpfr_inits2 (128, u, v, zz, (mpfr_ptr) 0);
++  mpfr_init2 (z, 64);
++  mpfr_set_str_binary (u, "0.1101010111011101111100100001011111111000010011011001000101111010110101101101011011100110101001010001101011011110101101010010011");
++  mpfr_set_str_binary (v, "0.11110010011100011100000010100110100010011010110010111111010011000010100100101001000110010101101011100101001000010100101011011001");
++  inex = mpfr_add (zz, u, v, MPFR_RNDN);
++  MPFR_ASSERTN(inex > 0);
++  mpfr_set_str_binary (u, "1.1100100001001111101100101011111010000001111110100101000011000111");
++  MPFR_ASSERTN(mpfr_equal_p (zz, u));
++  inex = mpfr_set_1_2 (z, zz, MPFR_RNDN, inex);
++  MPFR_ASSERTN(inex < 0);
++  mpfr_set_str_binary (u, "1.1100100001001111101100101011111010000001111110100101000011000110");
++  MPFR_ASSERTN(mpfr_equal_p (z, u));
++  mpfr_clears (u, v, zz, z, (mpfr_ptr) 0);
++}
++
+ #define TEST_FUNCTION mpfr_set
+ #include "tgeneric.c"
+ 
+@@ -268,6 +355,8 @@
+ 
+   tests_start_mpfr ();
+ 
++  test_set_1_2 ();
++
+   /* Default : no error */
+   error = 0;
+ 
