@@ -18,19 +18,100 @@
 
 <div class="logo"><a href="../index.html"><img src="../mpfr100.png" height="40" width="100" alt="[MPFR]" /></a></div>
 
-<h1><acronym>GNU</acronym> <acronym>MPFR</acronym> version 4.0.2</h1>
+<h1><acronym>GNU</acronym> <acronym>MPFR</acronym> version 4.0.2 (released on 31 January 2019)</h1>
 
-<p>On 2019-01-08, <acronym>GNU</acronym> <acronym>MPFR</acronym> 4.0.2 is
-currently under testing. It will be released soon.</p>
+<div>[<a href="#download">download</a>]
+[<a href="#doc">documentation</a>]
+[<a href="#bugs">bugs</a>]
+[<a href="#changes">changes</a>]
+[<a href="#platforms">platforms</a>]</div>
 
-<p><a href="../index.html">Back to the <cite><acronym>MPFR</acronym></cite>
-page.</a></p>
+<p>The <cite lang="fr" xml:lang="fr">dinde aux marrons</cite> release.</p>
+
+<p><acronym>MPFR</acronym> 4.0.2 requires <acronym>GMP</acronym> 5.0 or higher.</p>
+
+<p><strong>Warning! Due to the fact that <acronym title="Thread Local Storage">TLS</acronym> support is now detected automatically, the <acronym>MPFR</acronym> build can be incorrect on some platforms</strong> (compiler or system bug). Indeed, <a href="https://members.loria.fr/PZimmermann/software/compilerbugs.html">the <acronym>TLS</acronym> implementation of some compilers/platforms is buggy</a>, and <acronym>MPFR</acronym> cannot detect every problem at configure time. Please run <q><samp>make check</samp></q> to see if your build is affected. If you get failures, you should try the <samp>--disable-thread-safe</samp> configure option to disable <acronym>TLS</acronym> and see if this solves these failures. But you should not use an <acronym>MPFR</acronym> library with <acronym>TLS</acronym> disabled in a multithreaded program (unless you know what you are doing).</p>
+
+<h2 id="download">Download</h2>
+
+<p>The <acronym>MPFR</acronym> 4.0.2 source can be downloaded in the following archive formats:</p>
+<ul>
+<li><a href="mpfr-4.0.2.tar.xz">mpfr-4.0.2.tar.xz</a> (tar/xz, 1.4 <abbr>MB</abbr>, <a href="mpfr-4.0.2.tar.xz.asc" title="PGP signature for mpfr-4.0.2.tar.xz">signature</a>),</li>
+<li><a href="mpfr-4.0.2.tar.bz2">mpfr-4.0.2.tar.bz2</a> (tar/bzip2, 1.6 <abbr>MB</abbr>, <a href="mpfr-4.0.2.tar.bz2.asc" title="PGP signature for mpfr-4.0.2.tar.bz2">signature</a>),</li>
+<li><a href="mpfr-4.0.2.tar.gz">mpfr-4.0.2.tar.gz</a> (tar/gzip, 2.2 <abbr>MB</abbr>, <a href="mpfr-4.0.2.tar.gz.asc" title="PGP signature for mpfr-4.0.2.tar.gz">signature</a>),</li>
+<li><a href="mpfr-4.0.2.zip">mpfr-4.0.2.zip</a> (zip, 2.6 <abbr>MB</abbr>, <a href="mpfr-4.0.2.zip.asc" title="PGP signature for mpfr-4.0.2.zip">signature</a>).</li>
+</ul>
+
+<p>Each tarball is signed by Vincent Lefèvre. This can be verified using the <acronym title="Digital Signature Algorithm">DSA</acronym> key <abbr>ID</abbr> <samp>980C197698C3739D</samp>; this key can be retrieved with:</p>
+<pre>gpg --recv-keys 980C197698C3739D</pre>
+<p>or by downloading it from <a href="https://www.vinc17.net/pgp.html">https://www.vinc17.net/pgp.html</a>. The key fingerprint is:</p>
+<pre>07F3 DBBE CC1A 3960 5078  094D 980C 1976 98C3 739D</pre>
+<p>The signatures can be verified with:</p>
+<pre>gpg --verify <em>file.asc</em></pre>
+<p>You should check that the key fingerprint matches.</p>
+
+<p><acronym>MPFR</acronym> is also available via <a href="../ports.html">third-party packages and ports</a>.</p>
+
+<h2 id="doc">Documentation</h2>
+
+<ul>
+
+<li>The reference manual:
+[<a href="mpfr.html" title="Reference manual in HTML format">html</a>]
+[<a href="mpfr.dvi.gz" title="Reference manual in DVI format">dvi</a>]
+[<a href="mpfr.ps.gz" title="Reference manual in Postscript format">ps</a>]
+[<a href="mpfr.pdf" title="Reference manual in PDF format">pdf</a>]</li>
+
+<li>The <a href="../faq.html"><acronym>MPFR</acronym> <acronym title="Frequently Asked Questions">FAQ</acronym></a> (common to all <acronym>MPFR</acronym> versions).</li>
+
+</ul>
+
+<h2 id="bugs">Bugs</h2>
+
+<!-- For BUGS, it's better to point to HEAD, as changes will be noted above. -->
+<p>See the <a href="https://gforge.inria.fr/tracker/?group_id=136">tracker</a> and the <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr/trunk/BUGS?view=markup"><samp>BUGS</samp></a> file.</p>
+
+<h2 id="changes">Changes from version 4.0.1 to version 4.0.2</h2>
+
+<ul>
+
+<li>Corrected minimal <cite><acronym>GMP</acronym></cite> version in the <samp>INSTALL</samp> file and the <cite><acronym>MPFR</acronym></cite> manual.</li>
+
+<li>Option <samp>-pedantic</samp> is now always removed from <samp>__GMP_CFLAGS</samp> (see <samp>INSTALL</samp>).</li>
+
+<li>Shared caches: cleanup; really detect lock failures (abort in this case).</li>
+
+<li>Improved <cite><acronym>MPFR</acronym></cite> manual. In particular, corrected/completed the <samp>mpfr_get_str</samp> description in order to follow the historical behavior and <cite><acronym>GMP</acronym></cite>'s <samp>mpf_get_str</samp> function.</li>
+
+<li>Bug fixes (see <samp>ChangeLog</samp> file).</li>
+
+</ul>
+
+<h2 id="platforms">Platforms Known to Support <cite><acronym>MPFR</acronym></cite></h2>
+
+<p><cite><acronym>MPFR</acronym></cite> 4.0.2 has been successfully
+compiled and checked on the following platforms:</p>
+
+<ul>
+<li><samp>aarch64-unknown-linux-gnu</samp> (<acronym>gcc</acronym> 4.8.4),</li>
+<li><samp>amd64-unknown-openbsd6.2</samp> (OpenBSD 6.2, <acronym>gcc</acronym> 4.2.1),</li>
+<li><samp>i386-pc-solaris2.10</samp> (<acronym>gcc</acronym> 5.5.0),</li>
+<li><samp>i586-mingw32msvc</samp> (<cite>Wine</cite>, <acronym>gcc</acronym> 7.3),</li>
+<li><samp>powerpc-ibm-aix7.2.0.0</samp> (POWER8, <acronym>gcc</acronym> 7.2.0),</li>
+<li><samp>powerpc64-unknown-linux-gnu</samp> (POWER7, <acronym>gcc</acronym> 4.8.5),</li>
+<li><samp>powerpc64le-unknown-linux-gnu</samp> (POWER8, <acronym>gcc</acronym> 4.8.5; POWER9, <acronym>gcc</acronym> 8.2.1),</li>
+<li><samp>sparc-sun-solaris2.9</samp> (<acronym>gcc</acronym> 4.6.4),</li>
+<li><samp>sparc64-unknown-linux-gnu</samp> (<acronym>gcc</acronym> 8.2.0),</li>
+<li><samp>x86_64-pc-linux-gnu</samp> (<acronym>gcc</acronym> 4.7.4, 4.8.5, 4.9.4, 5.5.0, 6.3.0, 6.5.0, 8.2.0 and 9.0.0 snapshot, g++ 4.9.4 and 8.2.0, clang 3.4.2, 3.5.2, 3.6.2, 3.7.1, 3.8.1, 3.9.1 and 4.0.1, <acronym>icc</acronym> 15.0.0, and <acronym>tcc</acronym> 0.9.27),</li>
+<li><samp>x86_64-unknown-freebsd11.1</samp> (FreeBSD 11.1-RELEASE-p7, clang 4.0.0),</li>
+<li><samp>x86_64-unknown-netbsd7.1</samp> (NetBSD 7.1, <acronym>gcc</acronym> 4.8.5).</li>
+</ul>
+
+<p><a href="../index.html">Back to the <cite><acronym>MPFR</acronym></cite> page.</a></p>
 
 <hr />
 
-<div class="footer"><a href="http://validator.w3.org/check/referer"><img
-  src="http://www.w3.org/Icons/valid-xhtml10"
-  alt="Valid XHTML 1.0!" height="31" width="88" /></a></div>
+<div class="footer"><a href="http://validator.w3.org/check/referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></div>
 
 </body>
 
