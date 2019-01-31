@@ -78,11 +78,13 @@ esac
 # Note: the "|| true" is for NetBSD's buggy sh.
 unset tmpdir || true
 
-# Under Solaris, "grep" does not have a -q option.
-grepq()
-{
-  grep "$@" > /dev/null
-}
+# We need a grep that supports the -E and -q options (POSIX).
+# Under Solaris, we can use ggrep from /opt/csw/bin, which is in the path.
+# In case things still do not work, see AC_PROG_EGREP from Autoconf.
+grep=grep
+case $(uname) in
+  SunOS) $grep -E -q . /dev/null 2> /dev/null || grep=ggrep ;;
+esac
 
 # We need something that should work in all POSIX shells...
 dotee()
@@ -153,7 +155,7 @@ tst()
         # NOTE: The environment will be restored before the next test.
         v=${line#ENV:}
         var=${v%%=*}
-        val=$(env | grep "^$var=" || true)
+        val=$(env | $grep "^$var=" || true)
         if [ -z "$val" ]; then
           env="$env unset $var;"
         else
@@ -202,8 +204,8 @@ tst()
           echo "$conf"
           dotee "$conf" mpfrtests.cfgout
           ./config.status -V | sed '/with options/q' >> "$out"
-          grep '^mpfr_cv_' config.log >> "$out"
-          grep '^\(CC\|CFLAGS\|DEFS\)=' config.log >> "$out"
+          $grep '^mpfr_cv_' config.log >> "$out"
+          $grep -E '^(CC|CFLAGS|DEFS)=' config.log >> "$out"
           gmpv1=$(sed -n "s/$gmprx//p" mpfrtests.cfgout)
           if [ -z "$gmpv1" ]; then
             echo "$0: can't get GMP version" >&2
@@ -253,7 +255,7 @@ tst()
         # MinGW/Wine. Bug report:
         #   https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=914822
         # Detect this now and exit with an error message when this occurs.
-        if ! grepq '^\[tversion] MPFR [1-9]' mpfrtests.makeout; then
+        if ! $grep -q '^\[tversion] MPFR [1-9]' mpfrtests.makeout; then
           echo "$0: missing first tversion line" >&2
           exit 1
         fi
@@ -275,16 +277,16 @@ tst()
                   }
                 }" mpfrtests.makeout >> "$out"
         echo "*** Running make check-gmp-symbols ***"
-        if ! grepq check-gmp-symbols: Makefile; then
+        if ! $grep -q check-gmp-symbols: Makefile; then
           echo "Feature not present. Nothing to do."
-        elif grepq "GMP internals = yes" mpfrtests.makeout; then
+        elif $grep -q "GMP internals = yes" mpfrtests.makeout; then
           echo "GMP internals have been requested. Test disabled."
         else
           dotee "$mj check-gmp-symbols" mpfrtests.makeout
           echo "Checked that no internal GMP symbols are used." >> "$out"
         fi
         echo "*** Running make check-exported-symbols ***"
-        if ! grepq check-exported-symbols: Makefile; then
+        if ! $grep -q check-exported-symbols: Makefile; then
           echo "Feature not present. Nothing to do."
         else
           dotee "$mj check-exported-symbols" mpfrtests.makeout
@@ -389,4 +391,4 @@ printf "\n$ed\n" >> "$out"
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 115367 2019-01-30 11:11:27Z vinc17/zira $
+# $Id: mpfrtests.sh 115410 2019-01-31 14:25:36Z vinc17/cventin $
