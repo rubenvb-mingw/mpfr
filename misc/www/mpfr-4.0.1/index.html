@@ -99,7 +99,7 @@ The key fingerprint is:</p>
 <h2 id="bugs">Bugs</h2>
 
 <p>The bugs <a href="#fixed">listed below</a> have been fixed (latest
-update: 2018-12-31). The patches are distributed under the same license as
+update: 2019-01-31). The patches are distributed under the same license as
 this version of <acronym>MPFR</acronym>, that is, the <acronym>GNU</acronym>
 Lesser General Public License (<acronym>GNU</acronym> Lesser
 <acronym>GPL</acronym>), version 3 or later.</p>
@@ -220,6 +220,10 @@ Corresponding changeset in the 4.0 branch:
 <li id="p14">The internal function <code>mpfr_set_1_2</code> can round in the wrong direction in case of double rounding. This bug can affect only the functions <code>mpfr_fmma</code> and <code>mpfr_fmms</code> in rounding to nearest (<code>MPFR_RNDN</code>), and only when their <code>mpfr_t</code> arguments all have a same precision <var>p</var> &#8805; <code>GMP_NUMB_BITS</code> (the number of bits per limb): under these conditions, if <var>a</var><var>b</var>±<var></var>c<var>d</var> rounded to 2<var>p</var> bits is the middle of two consecutive <var>p</var>-bit numbers (<abbr>i.e.</abbr>, it is representable on <var>p</var>+1 bits but not on <var>p</var> bits), then these functions <code>mpfr_fmma</code> and <code>mpfr_fmms</code> can round in the wrong direction. This bug is fixed by the <a href="patch14"><samp>set_1_2</samp> patch</a>, which also provides testcases (it also simplifies the generic algorithm, avoiding non-portable code).<br />
 Corresponding changeset in the 4.0 branch:
 <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=13357&amp;view=revision">13357</a>.</li>
+
+<li id="p15">The <code>mpfr_strtofr</code> function has various issues. In particular, the error analysis with associated code was incorrect (due to the bad correction <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=8384&amp;view=revision">r8384</a> of a past bug, later really fixed in <a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=11056&amp;view=revision">r11056</a>). The <a href="patch15"><samp>strtofr</samp> patch</a>, which also provides testcases, attempts to fix these issues. But the code has not been fully checked yet.<br />
+Corresponding changeset in the 4.0 branch:
+<a href="https://gforge.inria.fr/scm/viewvc.php/mpfr?revision=13366&amp;view=revision">13366</a>.</li>
 
 </ol>
 
