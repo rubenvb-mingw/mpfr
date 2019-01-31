@@ -239,6 +239,5 @@ int main (void)
   printf ("sizeof(mpfr_ptr) = %d\n", (int) sizeof(mpfr_ptr));
   failure_test ();
 
-  mpfr_free_cache ();
   return 0;
 }

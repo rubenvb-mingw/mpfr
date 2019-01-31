@@ -1,56 +1,32 @@
 How to compile GNU MPFR with mini-gmp
 =====================================
 
-To build and test MPFR against mini-gmp:
-
-  ./configure --with-mini-gmp=DIR [other configure options]
-  make
-  make check
-
-"make" will build mini-gmp with the same compiler as for MPFR.
-
-For "make check", tests that use features not supported by mini-gmp
-(mpq_t, mpf_t, and the gmp_*printf functions) are skipped.
-
-Note: To use this version of the MPFR library, you need to define
-the MPFR_USE_MINI_GMP macro before including mpfr.h (alternatively,
-you can modify mpfr.h to define this macro at the beginning). But
-this will currently not be usable since mini-gmp.h does not declare
-gmp_randstate_t (you need to modify either mini-gmp.h or mpfr.h).
-
-Remark: the random functions provided by MPFR configured with mini-gmp
-use the lrand48() function, thus one should avoid this configuration if one
-needs some really serious random functions.
-
-This was tested with MPFR svn r13226 and GMP 6.1.2 on x86_64 GNU/Linux:
+This was tested with MPFR svn 11903 and GMP 6.1.2 on x86_64 GNU/Linux:
 ============================================================================
-Testsuite summary for MPFR 4.1.0-dev
+Testsuite summary for MPFR 4.0.0-dev
 ============================================================================
-# TOTAL: 183
-# PASS:  173
+# TOTAL: 180
+# PASS:  170
 # SKIP:  10
 # XFAIL: 0
 # FAIL:  0
 # XPASS: 0
 # ERROR: 0
-============================================================================
 
-How to use mini-gmp with reduced limb size
-==========================================
+1) extract the GMP tarball in say /tmp/gmp-6.1.2
+   go into /tmp/gmp-6.1.2/mini-gmp
+   gcc -O2 -g -fPIC -c mini-gmp.c
+   ar r libgmp.a mini-gmp.o
 
-Following the idea of Micro-GMP [1], the GMP developers have adapted mini-gmp
-so that it can be used with a reduced limb size.
+2) create a GMP install directory in say /tmp
+   mkdir /tmp/include
+   mkdir /tmp/lib
+   cp libgmp.a /tmp/lib
+   cp mini-gmp.h /tmp/include/gmp.h
 
-For that, you have to take a GMP snapshot from December 09, 2018, or later
-(see https://gmplib.org/download/snapshot/).
+3) extract the MPFR tarball in say /tmp/mpfr
+   ./configure --with-gmp=/tmp --enable-mini-gmp --disable-shared
 
-Then replace the "typedef unsigned long mp_limb_t;" line of mini-gmp.h
-to have for example:
-
-  #include <stdint.h>
-  typedef uint8_t mp_limb_t;
-  #define __GMP_SHORT_LIMB
-
-Then you can configure MPFR with that version of mini-gmp, as indicated above.
-
-[1] https://members.loria.fr/PZimmermann/talks/microgmp.pdf
+Note: to use this version of the MPFR library, you need to define
+the MPFR_USE_MINI_GMP macro before including mpfr.h (alternatively,
+you can modify mpfr.h to define this macro at the beginning).

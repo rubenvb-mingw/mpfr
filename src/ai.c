@@ -106,9 +106,6 @@ mpfr_ai1 (mpfr_ptr y, mpfr_srcptr x, mpfr_rnd_t rnd)
       return mpfr_check_range (y, r, rnd);
     }
 
-  /* now x is not zero */
-  MPFR_ASSERTD(!MPFR_IS_ZERO(x));
-
   /* FIXME: underflow for large values of |x| ? */
 
 
@@ -136,56 +133,43 @@ mpfr_ai1 (mpfr_ptr y, mpfr_srcptr x, mpfr_rnd_t rnd)
   mpfr_init2 (tmp2_sp, MPFR_SMALL_PRECISION);
   mpfr_abs (tmp_sp, x, MPFR_RNDU);
   mpfr_pow_ui (tmp_sp, tmp_sp, 3, MPFR_RNDU);
-  mpfr_sqrt (tmp_sp, tmp_sp, MPFR_RNDU); /* tmp_sp ~ |x|^(3/2) */
+  mpfr_sqrt (tmp_sp, tmp_sp, MPFR_RNDU); /* tmp_sp ~ x^3/2 */
 
   /* 0.96179669392597567 >~ 2/3 * log2(e). See algorithms.tex */
   mpfr_set_str (tmp2_sp, "0.96179669392597567", 10, MPFR_RNDU);
   mpfr_mul (tmp2_sp, tmp_sp, tmp2_sp, MPFR_RNDU);
 
   /* cond represents the number of lost bits in the evaluation of the sum */
-  if (MPFR_GET_EXP (x) <= 0)
+  if ( (MPFR_IS_ZERO (x)) || (MPFR_GET_EXP (x) <= 0) )
     cond = 0;
   else
-    {
-      MPFR_BLOCK_DECL (flags);
-
-      MPFR_BLOCK (flags, cond = mpfr_get_ui (tmp2_sp, MPFR_RNDU));
-      MPFR_ASSERTN (! MPFR_ERANGEFLAG (flags));
-      cond -= (MPFR_GET_EXP (x) - 1) / 4 + 1;
-    }
+    cond = mpfr_get_ui (tmp2_sp, MPFR_RNDU) - (MPFR_GET_EXP (x)-1)/4 - 1;
 
   /* The variable assumed_exponent is used to store the maximal assumed */
   /* exponent of Ai(x). More precisely, we assume that |Ai(x)| will be  */
   /* greater than 2^{-assumed_exponent}.                                */
-  if (MPFR_IS_POS (x))
-    {
-      if (MPFR_GET_EXP (x) <= 0)
-        assumed_exponent = 3;
-      else
-        {
-          unsigned long int t;
-          MPFR_BLOCK_DECL (flags);
-
-          MPFR_BLOCK (flags, t = mpfr_get_ui (tmp2_sp, MPFR_RNDU));
-          MPFR_ASSERTN (! MPFR_ERANGEFLAG (flags));
-          assumed_exponent = t + 2 + (MPFR_GET_EXP (x) / 4 + 1);
-          MPFR_ASSERTN (assumed_exponent > t);
-        }
-    }
-  /* We do not know Ai (x) yet */
-  /* We cover the case when EXP (Ai (x))>=-10 */
+  if (MPFR_IS_ZERO (x))
+    assumed_exponent = 2;
   else
-    assumed_exponent = 10;
+    {
+      if (MPFR_IS_POS (x))
+        {
+          if (MPFR_GET_EXP (x) <= 0)
+            assumed_exponent = 3;
+          else
+            assumed_exponent = (2 + (MPFR_GET_EXP (x)/4 + 1)
+                                + mpfr_get_ui (tmp2_sp, MPFR_RNDU));
+        }
+      /* We do not know Ai (x) yet */
+      /* We cover the case when EXP (Ai (x))>=-10 */
+      else
+        assumed_exponent = 10;
+    }
 
   {
-    unsigned long int t, u;
-
-    t = assumed_exponent + cond;
-    MPFR_ASSERTN (t >= cond);
-    u = MPFR_INT_CEIL_LOG2 (prec) + 5;
-    t += u;
-    MPFR_ASSERTN (t >= u);
-    wprec = MPFR_ADD_PREC (prec, t);
+    mpfr_prec_t incr =
+      MPFR_INT_CEIL_LOG2 (prec) + 5 + cond + assumed_exponent;
+    wprec = MPFR_ADD_PREC (prec, incr);
   }
 
   mpfr_init (ti);
@@ -260,13 +244,15 @@ mpfr_ai1 (mpfr_ptr y, mpfr_srcptr x, mpfr_rnd_t rnd)
       MPFR_LOG_MSG (("Roundoff error: %Pu\n", err));
       MPFR_LOG_MSG (("Approxim error: %Pu\n", wprec-prec-1));
 
-      if (wprec < err + 1)
-        correct_bits = 0;
-      else if (wprec < err + prec +1)
-        correct_bits =  wprec - err - 1; /* since wprec > err + 1,
-                                            correct_bits > 0 */
+      if (wprec < err+1)
+        correct_bits=0;
       else
-        correct_bits = prec;
+        {
+          if (wprec < err+prec+1)
+            correct_bits =  wprec - err - 1;
+          else
+            correct_bits = prec;
+        }
 
       if (MPFR_LIKELY (MPFR_CAN_ROUND (s, correct_bits, MPFR_PREC (y), rnd)))
         break;
@@ -276,24 +262,26 @@ mpfr_ai1 (mpfr_ptr y, mpfr_srcptr x, mpfr_rnd_t rnd)
           assumed_exponent *= 2;
           MPFR_LOG_MSG (("Not a single bit correct (assumed_exponent=%lu)\n",
                          assumed_exponent));
-          wprec = prec + 5 + MPFR_INT_CEIL_LOG2 (prec) + cond +
-            assumed_exponent;
-        }
-      else if (correct_bits < prec)
-        { /* The precision was badly chosen */
-          MPFR_LOG_MSG (("Bad assumption on the exponent of Ai(x)"
-                         " (E=%" MPFR_EXP_FSPEC "d)\n",
-                         (mpfr_eexp_t) MPFR_GET_EXP (s)));
-          wprec = prec + err + 1;
+          wprec = prec + 5 + MPFR_INT_CEIL_LOG2 (k) + cond + assumed_exponent;
         }
       else
-        { /* We are really in a bad case of the TMD */
-          MPFR_ZIV_NEXT (loop, prec);
+        {
+          if (correct_bits < prec)
+            { /* The precision was badly chosen */
+              MPFR_LOG_MSG (("Bad assumption on the exponent of Ai(x)"
+                             " (E=%" MPFR_EXP_FSPEC "d)\n",
+                             (mpfr_eexp_t) MPFR_GET_EXP (s)));
+              wprec = prec + err + 1;
+            }
+          else
+            { /* We are really in a bad case of the TMD */
+              MPFR_ZIV_NEXT (loop, prec);
 
-          /* We update wprec */
-          /* We assume that K will not be multiplied by more than 4 */
-          wprec = prec + (MPFR_INT_CEIL_LOG2 (k) + 2) + 5 + cond
-            - MPFR_GET_EXP (s);
+              /* We update wprec */
+              /* We assume that K will not be multiplied by more than 4 */
+              wprec = prec + (MPFR_INT_CEIL_LOG2 (k)+2) + 5 + cond
+                - MPFR_GET_EXP (s);
+            }
         }
 
     } /* End of ZIV loop */
@@ -317,7 +305,7 @@ mpfr_ai1 (mpfr_ptr y, mpfr_srcptr x, mpfr_rnd_t rnd)
 
 
 /* Airy function Ai evaluated by Smith algorithm.
-   Assume that x is a finite non-zero number. */
+   Assume that x is a finite number. */
 static int
 mpfr_ai2 (mpfr_ptr y, mpfr_srcptr x, mpfr_rnd_t rnd)
 {
@@ -350,6 +338,7 @@ mpfr_ai2 (mpfr_ptr y, mpfr_srcptr x, mpfr_rnd_t rnd)
 
   /* FIXME: underflow for large values of |x| */
 
+
   /* Set initial precision */
   /* See the analysis for the naive evaluation */
 
@@ -361,57 +350,40 @@ mpfr_ai2 (mpfr_ptr y, mpfr_srcptr x, mpfr_rnd_t rnd)
   mpfr_init2 (tmp2_sp, MPFR_SMALL_PRECISION);
   mpfr_abs (tmp_sp, x, MPFR_RNDU);
   mpfr_pow_ui (tmp_sp, tmp_sp, 3, MPFR_RNDU);
-  mpfr_sqrt (tmp_sp, tmp_sp, MPFR_RNDU); /* tmp_sp ~ |x|^(3/2) */
+  mpfr_sqrt (tmp_sp, tmp_sp, MPFR_RNDU); /* tmp_sp ~ x^3/2 */
 
   /* 0.96179669392597567 >~ 2/3 * log2(e). See algorithms.tex */
   mpfr_set_str (tmp2_sp, "0.96179669392597567", 10, MPFR_RNDU);
   mpfr_mul (tmp2_sp, tmp_sp, tmp2_sp, MPFR_RNDU);
 
   /* cond represents the number of lost bits in the evaluation of the sum */
-  if (MPFR_GET_EXP (x) <= 0)
+  if ( (MPFR_IS_ZERO (x)) || (MPFR_GET_EXP (x) <= 0) )
     cond = 0;
   else
-    {
-      MPFR_BLOCK_DECL (flags);
-
-      MPFR_BLOCK (flags, cond = mpfr_get_ui (tmp2_sp, MPFR_RNDU));
-      MPFR_ASSERTN (! MPFR_ERANGEFLAG (flags));
-      cond -= (MPFR_GET_EXP (x) - 1) / 4 + 1;
-    }
+    cond = mpfr_get_ui (tmp2_sp, MPFR_RNDU) - (MPFR_GET_EXP (x) - 1)/4 - 1;
 
   /* This variable is used to store the maximal assumed exponent of       */
-  /* Ai(x). More precisely, we assume that |Ai(x)| will be greater than   */
-  /* 2^{-assumed_exponent}.                                               */
-  if (MPFR_IS_POS (x))
-    {
-      if (MPFR_GET_EXP (x) <= 0)
-        assumed_exponent = 3;
-      else
-        {
-          unsigned long int t;
-          MPFR_BLOCK_DECL (flags);
-
-          MPFR_BLOCK (flags, t = mpfr_get_ui (tmp2_sp, MPFR_RNDU));
-          MPFR_ASSERTN (! MPFR_ERANGEFLAG (flags));
-          assumed_exponent = t + 2 + (MPFR_GET_EXP (x) / 4 + 1);
-          MPFR_ASSERTN (assumed_exponent > t);
-        }
-    }
-  /* We do not know Ai(x) yet */
-  /* We cover the case when EXP(Ai(x))>=-10 */
+  /* Ai (x). More precisely, we assume that |Ai (x)| will be greater than */
+  /* 2^{-assumedExp}.                                                     */
+  if (MPFR_IS_ZERO (x))
+    assumed_exponent = 2;
   else
-    assumed_exponent = 10;
+    {
+      if (MPFR_IS_POS (x))
+        {
+          if (MPFR_GET_EXP (x) <= 0)
+            assumed_exponent = 3;
+          else
+            assumed_exponent = (2 + (MPFR_GET_EXP (x)/4 + 1)
+                                + mpfr_get_ui (tmp2_sp, MPFR_RNDU));
+        }
+      /* We do not know Ai (x) yet */
+      /* We cover the case when EXP (Ai (x))>=-10 */
+      else
+        assumed_exponent = 10;
+    }
 
-  {
-    unsigned long int t, u;
-
-    t = assumed_exponent + cond;
-    MPFR_ASSERTN (t >= cond);
-    u = MPFR_INT_CEIL_LOG2 (prec) + 6;
-    t += u;
-    MPFR_ASSERTN (t >= u);
-    wprec = MPFR_ADD_PREC (prec, t);
-  }
+  wprec = prec + MPFR_INT_CEIL_LOG2 (prec) + 6 + cond + assumed_exponent;
 
   /* We assume that the truncation rank will be ~ prec */
   L = __gmpfr_isqrt (prec);
@@ -657,7 +629,6 @@ mpfr_ai (mpfr_ptr y, mpfr_srcptr x, mpfr_rnd_t rnd)
         }
       else if (MPFR_IS_INF (x))
         return mpfr_set_ui (y, 0, rnd);
-      /* the cases x = +0 or -0 will be treated below */
     }
 
   /* The exponent range must be large enough for the computation of temp1. */
@@ -684,7 +655,5 @@ mpfr_ai (mpfr_ptr y, mpfr_srcptr x, mpfr_rnd_t rnd)
 
   MPFR_SAVE_EXPO_FREE (expo); /* Ignore all previous exceptions. */
 
-  /* we use ai2 if |x|*AI_THRESHOLD1/3 + PREC(y)*AI_THRESHOLD2 > AI_SCALE,
-     which means x cannot be zero in mpfr_ai2 */
   return use_ai2 ? mpfr_ai2 (y, x, rnd) : mpfr_ai1 (y, x, rnd);
 }

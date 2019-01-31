@@ -79,7 +79,7 @@ main (void)
    * http://nadeausoftware.com/articles/2012/10/c_c_tip_how_detect_compiler_name_and_version_using_compiler_predefined_macros
    *
    * For ICC, do not check the __ICC macro as it is obsolete and not always
-   * defined (in particular, on MS Windows).
+   * defined.
    */
 #define COMP "[tversion] Compiler: "
 #ifdef __INTEL_COMPILER
@@ -126,9 +126,6 @@ main (void)
           MAKE_STR(__GNUC_MINOR__)
 #else
           "undef"
-#endif
-#if defined(__STRICT_ANSI__)
-          ", __STRICT_ANSI__"
 #endif
           );
 #endif
@@ -441,15 +438,7 @@ main (void)
 #endif
           );
 
-  (puts) ("[tversion] Enable formally proven code: "
-#if defined(MPFR_WANT_PROVEN_CODE)
-          "yes"
-#else
-          "no"
-#endif
-          );
-
-  /************************* Run-time information **************************/
+  /************************** Runtime information **************************/
 
   if (locale != NULL)
     printf ("[tversion] Locale: %s\n", locale);

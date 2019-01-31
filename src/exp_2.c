@@ -21,7 +21,7 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 https://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
-#define MPFR_NEED_LONGLONG_H  /* MPFR_INT_CEIL_LOG2 */
+#define MPFR_NEED_LONGLONG_H /* for count_leading_zeros */
 #include "mpfr-impl.h"
 
 static unsigned long
@@ -108,10 +108,7 @@ mpfr_exp_2 (mpfr_ptr y, mpfr_srcptr x, mpfr_rnd_t rnd_mode)
     {
       mp_limb_t r_limb[(sizeof (long) -1) / sizeof(mp_limb_t) + 1];
       /* Note: we use precision sizeof (long) * CHAR_BIT - 1 here since it is
-         more efficient that full limb precision.
-         The value of n will depend on whether MPFR_LONG_WITHIN_LIMB is
-         defined or not. For instance, for r = 0.111E0, one gets n = 0
-         in the former case and n = 1 in the latter case. */
+         more efficient that full limb precision. */
       MPFR_TMP_INIT1(r_limb, r, sizeof (long) * CHAR_BIT - 1);
       mpfr_div (r, x, __gmpfr_const_log2_RNDD, MPFR_RNDN);
 #ifdef MPFR_LONG_WITHIN_LIMB
@@ -119,6 +116,7 @@ mpfr_exp_2 (mpfr_ptr y, mpfr_srcptr x, mpfr_rnd_t rnd_mode)
       {
         mp_limb_t a;
         mpfr_exp_t exp;
+        MPFR_STAT_STATIC_ASSERT (MPFR_LIMB_MAX >= ULONG_MAX);
         /* Read the long directly (faster than using mpfr_get_si
            since it fits, it is not singular, it can't be zero
            and there is no conversion to do) */
@@ -146,7 +144,9 @@ mpfr_exp_2 (mpfr_ptr y, mpfr_srcptr x, mpfr_rnd_t rnd_mode)
     error_r = 0;
   else
     {
-      error_r = mpfr_nbits_ulong (SAFE_ABS (unsigned long, n) + 1);
+      count_leading_zeros (error_r,
+                           (mp_limb_t) SAFE_ABS (unsigned long, n) + 1);
+      error_r = GMP_NUMB_BITS - error_r;
       /* we have |x| <= 2^error_r * log(2) */
     }
 

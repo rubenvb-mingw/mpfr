@@ -298,10 +298,10 @@ check_random (void)
       /* the normal decimal64 range contains [2^(-1272), 2^1278] */
       mpfr_mul_2si (x, x, (i % 2550) - 1272, MPFR_RNDN);
       if (mpfr_get_exp (x) <= -1272)
-        mpfr_mul_2ui (x, x, -1271 - mpfr_get_exp (x), MPFR_RNDN);
+        mpfr_mul_2exp (x, x, -1271 - mpfr_get_exp (x), MPFR_RNDN);
       d = mpfr_get_decimal64 (x, MPFR_RNDN);
       mpfr_set_decimal64 (y, d, MPFR_RNDN);
-      if (! mpfr_equal_p (x, y))
+      if (mpfr_cmp (x, y) != 0)
         {
           printf ("Error:\n");
           printf ("x="); mpfr_dump (x);
@@ -479,86 +479,19 @@ powers_of_10 (void)
   mpfr_clears (x1, x2, (mpfr_ptr) 0);
 }
 
-static void
-coverage (void)
-{
-  /* The code below assumes BID. */
-#ifndef DPD_FORMAT
-  union mpfr_ieee_double_extract x;
-  union ieee_double_decimal64 y;
-
-  /* test for non-canonical encoding */
-  y.d64 = 9999999999999999.0dd;
-  x.d = y.d;
-  /* if BID, we have sig=0, exp=1735, manh=231154, manl=1874919423 */
-  if (x.s.sig == 0 && x.s.exp == 1735 && x.s.manh == 231154 &&
-      x.s.manl == 1874919423)
-    {
-      mpfr_t z;
-      mpfr_init2 (z, 54); /* 54 bits ensure z is exact, since 10^16 < 2^54 */
-      x.s.manl += 1; /* then the significand equals 10^16 */
-      y.d = x.d;
-      mpfr_set_decimal64 (z, y.d64, MPFR_RNDN);
-      MPFR_ASSERTN(mpfr_zero_p (z) && mpfr_signbit (z) == 0);
-      mpfr_clear (z);
-    }
-#endif
-}
-
-/* generate random sequences of 8 bytes and interpret them as _Decimal64 */
-static void
-check_random_bytes (void)
-{
-  union {
-    _Decimal64 d;
-    unsigned char c[8];
-  } x;
-  int i;
-  mpfr_t y;
-  _Decimal64 e;
-
-  mpfr_init2 (y, 55); /* 55 = 1 + ceil(16*log(10)/log(2)), thus ensures
-                         that if a decimal64 number is converted to a 55-bit
-                         value and back, we should get the same value */
-  for (i = 0; i < 100000; i++)
-    {
-      int j;
-      for (j = 0; j < 8; j++)
-        x.c[j] = randlimb () & 255;
-      mpfr_set_decimal64 (y, x.d, MPFR_RNDN);
-      e = mpfr_get_decimal64 (y, MPFR_RNDN);
-      if (!mpfr_nan_p (y))
-        if (x.d != e)
-          {
-            printf ("check_random_bytes failed\n");
-            printf ("x.d="); print_decimal64 (x.d);
-            printf ("y="); mpfr_dump (y);
-            printf ("e  ="); print_decimal64 (e);
-            exit (1);
-          }
-    }
-  mpfr_clear (y);
-}
-
 int
-main (int argc, char *argv[])
+main (void)
 {
-  int verbose = argc > 1;
-
   tests_start_mpfr ();
   mpfr_test_init ();
 
-  if (verbose)
+#ifdef MPFR_DEBUG
 #ifdef DPD_FORMAT
-    printf ("Using DPD format\n");
+  printf ("Using DPD format\n");
 #else
   printf ("Using BID format\n");
 #endif
-
-#if !defined(MPFR_ERRDIVZERO)
-  check_random_bytes ();
 #endif
-  coverage ();
   check_misc ();
   check_random ();
   check_native ();

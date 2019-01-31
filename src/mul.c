@@ -117,7 +117,6 @@ mpfr_mul3 (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
   /* now tmp[0]..tmp[k-1] contains the product of both mantissa,
      with tmp[k-1]>=2^(GMP_NUMB_BITS-2) */
   b1 >>= GMP_NUMB_BITS - 1; /* msb from the product */
-  MPFR_ASSERTD (b1 == 0 || b1 == 1);
 
   /* if the mantissas of b and c are uniformly distributed in ]1/2, 1],
      then their product is in ]1/4, 1/2] with probability 2*ln(2)-1 ~ 0.386
@@ -128,7 +127,6 @@ mpfr_mul3 (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
   cc = mpfr_round_raw (MPFR_MANT (a), tmp, bq + cq,
                        MPFR_IS_NEG_SIGN(sign_product),
                        MPFR_PREC (a), rnd_mode, &inexact);
-  MPFR_ASSERTD (cc == 0 || cc == 1);
 
   /* cc = 1 ==> result is a power of two */
   if (MPFR_UNLIKELY(cc))
@@ -137,11 +135,7 @@ mpfr_mul3 (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
   MPFR_TMP_FREE(marker);
 
   {
-    /* We need to cast b1 to a signed integer type in order to use
-       signed integer arithmetic only, as the expression can involve
-       negative integers. Let's recall that both b1 and cc are 0 or 1,
-       and since cc is an int, let's choose int for this part. */
-    mpfr_exp_t ax2 = ax + ((int) b1 - 1 + cc);
+    mpfr_exp_t ax2 = ax + (mpfr_exp_t) (b1 - 1 + cc);
     if (MPFR_UNLIKELY( ax2 > __gmpfr_emax))
       return mpfr_overflow (a, rnd_mode, sign_product);
     if (MPFR_UNLIKELY( ax2 < __gmpfr_emin))
@@ -192,17 +186,14 @@ mpfr_mul (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
       fprintf (stderr, "mpfr_mul return different values for %s\n"
                "Prec_a = %" MPFR_EXP_FSPEC "d, "
                "Prec_b = %" MPFR_EXP_FSPEC "d, "
-               "Prec_c = %" MPFR_EXP_FSPEC "d\n",
+               "Prec_c = %" MPFR_EXP_FSPEC "d\nb = ",
                mpfr_print_rnd_mode (rnd_mode),
                (mpfr_eexp_t) MPFR_PREC (a),
                (mpfr_eexp_t) MPFR_PREC (b),
                (mpfr_eexp_t) MPFR_PREC (c));
-      /* Note: We output tb and tc instead of b and c, in case a = b or c
-         (this is why tb and tc have been created in the first place). */
-      fprintf (stderr, "b = ");
-      mpfr_fdump (stderr, tb);
+      mpfr_fdump (stderr, b);
       fprintf (stderr, "c = ");
-      mpfr_fdump (stderr, tc);
+      mpfr_fdump (stderr, c);
       fprintf (stderr, "OldMul: ");
       mpfr_fdump (stderr, ta);
       fprintf (stderr, "NewMul: ");
@@ -225,20 +216,6 @@ mpfr_mul (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
 /* Multiply 2 mpfr_t */
 
 #if !defined(MPFR_GENERIC_ABI)
-
-/* Disabled for now since the mul_1_extracted.c is not formally proven yet.
-   Once it is proven, replace MPFR_WANT_PROVEN_CODExxx by MPFR_WANT_PROVEN_CODE. */
-#if defined(MPFR_WANT_PROVEN_CODExxx) && GMP_NUMB_BITS == 64 && \
-  UINT_MAX == 0xffffffff && MPFR_PREC_BITS == 64 && \
-  _MPFR_PREC_FORMAT == 3 && _MPFR_EXP_FORMAT == _MPFR_PREC_FORMAT
-
-/* The code assumes that mp_limb_t has 64 bits exactly, unsigned int
-   has 32 bits exactly, mpfr_prec_t and mpfr_exp_t are of type long,
-   which has 64 bits exactly. */
-
-#include "mul_1_extracted.c"
-
-#else
 
 /* Special code for prec(a) < GMP_NUMB_BITS and
    prec(b), prec(c) <= GMP_NUMB_BITS.
@@ -289,7 +266,7 @@ mpfr_mul_1 (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode,
      a >= 0.111...111[1]*2^(emin-1), there is no underflow. */
   if (MPFR_UNLIKELY(ax < __gmpfr_emin))
     {
-      if (ax == __gmpfr_emin - 1 && ap[0] == MPFR_LIMB(~mask) &&
+      if (ax == __gmpfr_emin - 1 && ap[0] == ~mask &&
           ((rnd_mode == MPFR_RNDN && rb) ||
            (MPFR_IS_LIKE_RNDA(rnd_mode, MPFR_IS_NEG (a)) && (rb | sb))))
         goto rounding; /* no underflow */
@@ -341,8 +318,6 @@ mpfr_mul_1 (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode,
       MPFR_RET(MPFR_SIGN(a));
     }
 }
-
-#endif /* MPFR_WANT_PROVEN_CODE */
 
 /* Special code for prec(a) = GMP_NUMB_BITS and
    prec(b), prec(c) <= GMP_NUMB_BITS. */
@@ -514,7 +489,7 @@ mpfr_mul_2 (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode,
     {
       if (ax == __gmpfr_emin - 1 &&
           ap[1] == MPFR_LIMB_MAX &&
-          ap[0] == MPFR_LIMB(~mask) &&
+          ap[0] == ~mask &&
           ((rnd_mode == MPFR_RNDN && rb) ||
            (MPFR_IS_LIKE_RNDA(rnd_mode, MPFR_IS_NEG (a)) && (rb | sb))))
         goto rounding; /* no underflow */
@@ -650,7 +625,7 @@ mpfr_mul_3 (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode,
       if (ax == __gmpfr_emin - 1 &&
           ap[2] == MPFR_LIMB_MAX &&
           ap[1] == MPFR_LIMB_MAX &&
-          ap[0] == MPFR_LIMB(~mask) &&
+          ap[0] == ~mask &&
           ((rnd_mode == MPFR_RNDN && rb) ||
            (MPFR_IS_LIKE_RNDA(rnd_mode, MPFR_IS_NEG (a)) && (rb | sb))))
         goto rounding; /* no underflow */
@@ -876,7 +851,7 @@ mpfr_mul (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
       if (MPFR_UNLIKELY (b1 == 0))
         mpn_lshift (tmp, tmp, tn, 1); /* tn <= k, so no stack corruption */
     }
-  else /* bn >= cn and bn >= 3 */
+  else
     /* Mulders' mulhigh. This code can also be used via mpfr_sqr,
        hence the tests b != c. */
     if (MPFR_UNLIKELY (cn > (threshold = b != c ?
@@ -932,9 +907,7 @@ mpfr_mul (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
               }
             else
               /* Call mpfr_mul instead of mpfr_sqr as the precision
-                 is probably still high enough. It is thus better to call
-                 mpfr_mul again, but it should not give an infinite loop
-                 if we call mpfr_sqr. */
+                 is probably still high enough. */
               return mpfr_mul (a, b_tmp, b_tmp, rnd_mode);
           }
 
@@ -971,27 +944,9 @@ mpfr_mul (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
               }
             if (b != c)
               {
-#if GMP_NUMB_BITS <= 32
                 if (cn > n)
-                  cp --; /* This can only happen on a 32-bit computer,
-                            and is very unlikely to happen.
-                            Indeed, since n = MIN (an + 1, cn), with
-                            an = MPFR_LIMB_SIZE(a), we can have cn > n
-                            only when n = an + 1 < cn.
-                            We are in the case aq > p - 5, with
-                            aq = PREC(a) = an*W - sh, with W = GMP_NUMB_BITS
-                            and 0 <= sh < W, and p = n*W - ceil(log2(n+2)),
-                            thus an*W - sh > n*W - ceil(log2(n+2)) - 5.
-                            Thus n < an + (ceil(log2(n+2)) + 5 - sh)/W.
-                            To get n = an + 1, we need
-                            ceil(log2(n+2)) + 5 - sh > W, thus since sh>=0
-                            we need ceil(log2(n+2)) + 5 > W.
-                            With W=32 this can only happen for n>=2^27-1,
-                            thus for a precision of 2^32-64 for a,
-                            and with W=64 for n>=2^59-1, which would give
-                            a precision >= 2^64. */
+                  cp --; /* FIXME: Could this happen? */
                 else
-#endif
                   {
                     cp = MPFR_TMP_LIMBS_ALLOC (n + 1);
                     cp[0] = 0;
@@ -1065,8 +1020,7 @@ mpfr_mul (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
           mpn_lshift (tmp, tmp, tn, 1); /* tn <= k, so no stack corruption */
       }
 
-  /* b1 is 0 or 1 (most significant bit from the raw product) */
-  ax2 = ax + ((int) b1 - 1);
+  ax2 = ax + (mpfr_exp_t) (b1 - 1);
   MPFR_RNDRAW (inexact, a, tmp, bq + cq, rnd_mode, sign, ax2++);
   MPFR_TMP_FREE (marker);
   MPFR_EXP (a) = ax2; /* Can't use MPFR_SET_EXP: Expo may be out of range */

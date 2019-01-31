@@ -138,8 +138,6 @@ mpfr_gamma (mpfr_ptr gamma, mpfr_srcptr x, mpfr_rnd_t rnd_mode)
         {
           if (MPFR_IS_NEG (x))
             {
-              /* gamma(x) has a pole at negative integers, thus even if it goes to zero
-                 for other values, we return NaN */
               MPFR_SET_NAN (gamma);
               MPFR_RET_NAN;
             }

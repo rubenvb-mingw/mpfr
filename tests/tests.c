@@ -154,6 +154,7 @@ test_version (void)
        (sprintf (buffer, "%d.%d", __GNU_MP_VERSION, __GNU_MP_VERSION_MINOR),
         strcmp (buffer, gmp_version) != 0)))
     err = 1;
+#endif
 
   /* In some cases, it may be acceptable to have different versions for
      the header and the library, in particular when shared libraries are
@@ -183,7 +184,6 @@ test_version (void)
               " with MPFR.\nIf some other tests fail, please solve that"
               " problem first.\n");
     }
-#endif
 
   /* VL: I get the following error on an OpenSUSE machine, and changing
      the value of shlibpath_overrides_runpath in the libtool file from
@@ -191,6 +191,7 @@ test_version (void)
   version = mpfr_get_version ();
   if (strcmp (MPFR_VERSION_STRING, version) == 0)
     {
+      char buffer[16];
       int i;
 
       sprintf (buffer, "%d.%d.%d", MPFR_VERSION_MAJOR, MPFR_VERSION_MINOR,
@@ -410,13 +411,7 @@ tests_rand_start (void)
 #ifdef HAVE_GETTIMEOFDAY
           struct timeval  tv;
           gettimeofday (&tv, NULL);
-          /* Note: If time_t is a "floating type" (as allowed by ISO C99),
-             the cast below can yield undefined behavior. But this would
-             be uncommon (gettimeofday() is specified by POSIX only and
-             POSIX requires time_t to be an integer type) and this line
-             is not executed by default. So, this should be OK. Moreover,
-             gettimeofday() is marked obsolescent by POSIX.1-2008. */
-          seed = 1000000 * (unsigned long) tv.tv_sec + tv.tv_usec;
+          seed = tv.tv_sec + tv.tv_usec;
 #else
           time_t  tv;
           time (&tv);
@@ -591,30 +586,6 @@ ld_trace (const char *name, long double ld)
       printf ("%02X", (int) u.b[i]);
     }
   printf ("] %.20Lg\n", ld);
-}
-
-void
-n_trace (const char *name, mp_limb_t *p, mp_size_t n)
-{
-  unsigned char *buf;
-  size_t bufsize;
-  mp_size_t i, m;
-
-  if (name != NULL && name[0] != '\0')
-    printf ("%s=", name);
-
-  /* similar to gmp_printf ("%NX\n",...), which is not available
-     with mini-gmp */
-  bufsize = 2 + ((mpfr_prec_t) n * GMP_NUMB_BITS - 1) / 4;
-  buf = (unsigned char *) tests_allocate (bufsize);
-  m = mpn_get_str (buf, 16, p, n);
-  i = 0;
-  while (i < m - 1 && buf[i] == 0)
-    i++;  /* skip leading zeros (keeping at least one digit) */
-  while (i < m)
-    putchar ("0123456789ABCDEF"[buf[i++]]);
-  putchar ('\n');
-  tests_free (buf, bufsize);
 }
 
 /* Open a file in the SRCDIR directory, i.e. the "tests" source directory,

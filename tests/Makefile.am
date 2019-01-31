@@ -11,17 +11,7 @@
 
 AUTOMAKE_OPTIONS = 1.6 gnu
 
-output_info = { \
-  if [ -d $(top_srcdir)/.svn ]; then \
-    output=`svnversion $(top_srcdir) 2> /dev/null`; \
-    if [ -n "$$output" ]; then \
-      echo "[svnversion] $$output"; \
-    fi; \
-  fi; \
-  grep -v '^\(PASS\|FAIL\) ' tversion.log 2> /dev/null || true; \
-}
-
-TESTS_NO_TVERSION = tabort_prec_max tassert tabort_defalloc1		\
+check_PROGRAMS = tversion tabort_prec_max tassert tabort_defalloc1	\
      tabort_defalloc2 talloc tinternals tinits tisqrt tsgn tcheck	\
      tisnan texceptions tset_exp tset mpf_compat mpfr_compat reuse	\
      tabs tacos tacosh tadd tadd1sp tadd_d tadd_ui tagm tai		\
@@ -29,41 +19,40 @@ TESTS_NO_TVERSION = tabort_prec_max tassert tabort_defalloc1		\
      tcan_round tcbrt tcmp tcmp2 tcmp_d tcmp_ld tcmp_ui tcmpabs		\
      tcomparisons tconst_catalan tconst_euler tconst_log2 tconst_pi	\
      tcopysign tcos tcosh tcot tcoth tcsc tcsch td_div td_sub tdigamma	\
-     tdim tdiv tdiv_d tdiv_ui tdot teint teq terandom terandom_chisq    \
-     terf texp texp10 texp2 texpm1 tfactorial tfits tfma tfmma tfmod    \
-     tfms tfpif tfprintf tfrac tfrexp tgamma tgamma_inc tget_d          \
-     tget_d_2exp tget_f tget_flt tget_ld_2exp tget_q tget_set_d64       \
-     tget_set_d128 tget_sj tget_str tget_z tgmpop tgrandom thyperbolic  \
-     thypot tinp_str							\
+     tdim tdiv tdiv_d tdiv_ui teint teq terandom terandom_chisq terf	\
+     texp texp10 texp2 texpm1 tfactorial tfits tfma tfmma tfmod tfms	\
+     tfpif tfprintf tfrac tfrexp tgamma tgamma_inc tget_d tget_d_2exp	\
+     tget_f tget_flt tget_ld_2exp tget_q tget_set_d64 tget_sj		\
+     tget_str tget_z tgmpop tgrandom thyperbolic thypot tinp_str	\
      tj0 tj1 tjn tl2b tlgamma tli2 tlngamma tlog tlog10 tlog1p tlog2	\
      tlog_ui tmin_prec tminmax tmodf tmul tmul_2exp tmul_d tmul_ui	\
      tnext tnrandom tnrandom_chisq tout_str toutimpl tpow tpow3		\
-     tpow_all tpow_z tprec_round tprintf trandom trandom_deviate	\
-     trec_sqrt tremquo trint trndna troot trootn_ui tsec tsech		\
+     tpow_all tpow_z tprintf trandom trandom_deviate trec_sqrt		\
+     tremquo trint trndna troot trootn_ui tround_prec tsec tsech	\
      tset_d tset_f tset_float128 tset_ld tset_q tset_si tset_sj		\
      tset_str tset_z tset_z_exp tsi_op tsin tsin_cos tsinh tsinh_cosh	\
      tsprintf tsqr tsqrt tsqrt_ui tstckintc tstdint tstrtofr		\
      tsub tsub1sp tsub_d tsub_ui tsubnormal tsum tswap ttan ttanh	\
-     ttotal_order ttrunc tui_div tui_pow tui_sub turandom tvalist	\
-     ty0 ty1 tyn tzeta tzeta_ui
-
-check_PROGRAMS = tversion $(TESTS_NO_TVERSION)
-
-LOGS_NO_TVERSION = $(TESTS_NO_TVERSION:%=%.log)
+     ttrunc tui_div tui_pow tui_sub turandom tvalist ty0 ty1 tyn	\
+     tzeta tzeta_ui
 
 # Before Automake 1.13, we ran tversion at the beginning and at the end
 # of the tests, and output from tversion appeared at the same place as
 # the tests results (make output). With Automake 1.13+, the tests are
 # parallelized by default and their output is sent to log files instead
 # of the make output, so that the user could no longer see information
-# from tversion. To mimic the old behavior, we now run tversion at the
-# beginning and output the contents. Also output the contents after the
-# tests, but when a test fails, they will not be shown.
-tversion_special: tversion.log
-	@$(output_info)
-$(LOGS_NO_TVERSION): tversion_special
+# from tversion. To mimic the old behavior, we now output the contents
+# of the tversion log file if this file exists (i.e. if the Makefile
+# has been generated with Automake 1.13+); but this is done only when
+# no tests fail.
 check:
-	@$(output_info)
+	@if [ -d $(top_srcdir)/.svn ]; then \
+	  output=`svnversion $(top_srcdir) 2> /dev/null`; \
+	  if [ -n "$$output" ]; then \
+	    echo "[svnversion] $$output"; \
+	  fi; \
+	fi
+	@grep -v '^PASS ' tversion.log 2> /dev/null || true
 
 AM_CPPFLAGS = -DSRCDIR='"$(srcdir)"'
 
@@ -131,5 +120,3 @@ TESTS_ENVIRONMENT = env DISPLAY='' MPFR_QUIET=1 $(VALGRIND)
 #   http://debbugs.gnu.org/cgi/bugreport.cgi?bug=18662
 #
 AM_LDFLAGS = -no-install -L$(top_builddir)/src/.libs
-
-.PHONY: tversion_special

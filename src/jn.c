@@ -245,7 +245,7 @@ mpfr_jn (mpfr_ptr res, long n, mpfr_srcptr z, mpfr_rnd_t r)
       MPFR_GROUP_REPREC_3 (g, prec, y, s, t);
       MPFR_BLOCK (flags, {
       mpfr_pow_ui (t, z, absn, MPFR_RNDN); /* z^|n| */
-      mpfr_sqr (y, z, MPFR_RNDN);          /* z^2 */
+      mpfr_mul (y, z, z, MPFR_RNDN);       /* z^2 */
       MPFR_CLEAR_ERANGEFLAG ();
       zz = mpfr_get_ui (y, MPFR_RNDU);
       /* FIXME: The error analysis is incorrect in case of range error. */
@@ -315,7 +315,7 @@ mpfr_jn (mpfr_ptr res, long n, mpfr_srcptr z, mpfr_rnd_t r)
          most probably there is a cancellation in the series, thus we add
          err - k0 bits to prec */
       if (err > k0)
-        MPFR_INC_PREC (prec, err - k0);
+        prec = MPFR_ADD_PREC (prec, err - k0);
       MPFR_ZIV_NEXT (loop, prec);
     }
   MPFR_ZIV_FREE (loop);

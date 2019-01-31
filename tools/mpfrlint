@@ -104,10 +104,7 @@ fi
 
 # Note: In the source, ignore everything related to mini-gmp.
 srctests=({src,tests}/**/*.[ch]~*mini-gmp.*)
-
-# Among C files, ignore extracted files (proven code).
-c_src=(src/*.c~src/*_extracted.c)
-c_srctests=($c_src tests/*.c)
+#srctests=(`find src tests -name '*.[ch]' ! -name '*mini-gmp.*'`)
 
 # Detect the definition of reserved macro names.
 #
@@ -141,11 +138,6 @@ err-if-output -t "" perl -ne '
       and next;
     print "Forbidden macro in mpfr.h line $.: $m\n" }' src/mpfr.h
 
-# Test before other ones about preprocessing directives.
-err-if-output \
-  --msg="Do not put spaces before a preprocessing directive" \
-  -t "space+#" grep -E '^ +# *(define|include|if|el|endif)' $srctests
-
 err-if-output -t "math.h" grep '^# *include *<math\.h>' src/*.c
 
 flaglist="underflow|overflow|divby0|nanflag|inexflag|erangeflag"
@@ -176,6 +168,16 @@ err-if-output --msg="Use GMP_NUMB_BITS instead." \
 
 grep GMP_RND $srctests | err-if-output -t "GMP_RND*" grep -v '#define GMP_RND'
 
+# Note: GMP internals should not be used. There are some exceptions,
+# normally used only if WANT_GMP_INTERNALS is defined (this should be
+# checked manually).
+grep '__gmp[nz]_' $srctests | \
+  grep -v __gmpn_rootrem | \
+  grep -v __gmpn_sbpi1_divappr_q | \
+  grep -v __gmpn_invert_limb | \
+  grep -v __gmpn_rsblsh_n | \
+  err-if-output "GMP internals" cat
+
 # __MPFR_DECLSPEC (based on the __MPFR_WITHIN_MPFR status) must be used
 # instead of __GMP_DECLSPEC (based on the __GMP_WITHIN_GMP status, always
 # undefined in MPFR); in particular, the __GMP_DECLSPEC occurrences from
@@ -186,32 +188,12 @@ grep GMP_RND $srctests | err-if-output -t "GMP_RND*" grep -v '#define GMP_RND'
 err-if-output --msg="Use __MPFR_DECLSPEC instead." -t "__GMP_DECLSPEC" \
   grep --exclude=src/mpfr.h __GMP_DECLSPEC $srctests
 
-# Use mpfr_div_2ui/mpfr_mul_2ui instead of mpfr_div_2exp/mpfr_mul_2exp.
-grep 'mpfr_\(div\|mul\)_2exp' {src,tests}/*.{c,h} |\
-  grep -v '^src/\(\(div\|mul\)_2exp\.c:\|mpf2mpfr\.h:#define mpf_\)' | \
-  grep -v '^src/mpfr\.h:\(__MPFR_DECLSPEC\|#define mpfr_..._2exp\)' | \
-  grep -v '^tests/\(reuse\|taway\)\.c: *test2ui (mpfr_..._2exp,' | \
-  err-if-output --msg="Use mpfr_div_2ui and mpfr_mul_2ui instead." \
-    "mpfr_div_2exp and mpfr_mul_2exp" cat
-
-# Note: GMP internals must not be used unless WANT_GMP_INTERNALS is defined.
-# The check below attempts to handle that, but this is a heuristic (it might
-# fail in case of nested #if's, but this is currently OK).
-for file in $srctests
-do
-  perl -e 'undef $/; $_ = <>;
-           s:/\*.*?\*/::sg;
-           s:# *(el)?if.*WANT_GMP_INTERNALS(.|\n)*?# *(else|endif)::g;
-           print' $file |
-    err-if-output -t "GMP internals in $file" grep '__gmp[nz]_'
-done
-
 err-if-output --msg="Use mpfr_limb_ptr and mpfr_limb_srcptr instead." \
   -t "mp_ptr and mp_srcptr" grep -E 'mp_(src)?ptr' $srctests
 
 # Do not use __mpfr_struct structure members in .c files.
 err-if-output -t "__mpfr_struct members" \
-  grep -E '[^0-9a-z_]_mpfr_(prec|sign|exp|d)' $c_srctests
+  grep -E '[^0-9a-z_]_mpfr_(prec|sign|exp|d)' {src,tests}/*.c
 
 # Detect some uses of "x != x" and "x == x". If this occurs in source code,
 # x is probably a native FP number (otherwise the test is useless), but in
@@ -332,20 +314,12 @@ grep -E 'mpfr_set_(inf|zero) *\([^,]*, *[-+]?([02-9]|1[^)])' $srctests | \
 
 # In general, one needs to include mpfr-impl.h (note that some platforms
 # such as MS Windows use a config.h, which is included by mpfr-impl.h).
-for file in $c_src
+for file in src/*.c
 do
   [[ "$file" == src/(jyn_asympt|mini-gmp|round_raw_generic).c ]] || \
     grep -q '^# *include *"\(mpfr-impl\|fits.*\|gen_inverse\|random_deviate\)\.h"' $file || \
     { echo "Missing '#include \"mpfr-impl.h\"' in $file?" && err=1 }
 done
-
-# Detect mpfr_mul with identical 2nd and 3rd arguments, which can be
-# replaced by mpfr_sqr. We exclude mul.c and sqr.c (which implement
-# these functions) because such a mpfr_mul can be used on purpose.
-err-if-output --msg='Use mpfr_sqr instead of mpfr_mul.' "mul/sqr" perl -ne \
-  '/__MPFR_DECLSPEC/ or ($u,$v) = /mpfr_mul *\([^,]*,([^,]*),([^,]*),/ and
-     do { $u =~ tr/ //d; $v =~ tr/ //d; $u eq $v and print "$ARGV: $_" }' \
-  src/*.[ch]~src/(mul|sqr).c
 
 # Re-seeding mpfr_rands in the tests is bad practice, as it would affect
 # later tests, defeating the purpose of GMP_CHECK_RANDOMIZE.
@@ -363,12 +337,7 @@ err-if-output \
     '^ *# *include *"mpfr-impl.h"' tests/*.{c,h}
 
 # Check that the usual test programs call tests_start_mpfr and tests_end_mpfr.
-if grep -q TESTS_NO_TVERSION tests/Makefile.am; then
-  tprgvar=TESTS_NO_TVERSION
-else
-  tprgvar=check_PROGRAMS
-fi
-tprg=($(sed -n "/^$tprgvar"'/,/[^\\]$/ {
+tprg=($(sed -n '/^check_PROGRAMS/,/[^\\]$/ {
   s/.*=//
   s/\\//
   p
@@ -396,11 +365,6 @@ do
     err-if-output -t "unprotected mpfr_printf-like function call in $file" \
       grep "mpfr_[a-z]*printf"
 done
-
-# gmp_printf with just %N can be avoided by using n_trace (see r13327).
-grep 'gmp_printf *(' tests/*.c | \
-  err-if-output --msg='gmp_printf is not available in mini-gmp' \
-                -t "gmp_printf" grep -Ev '/\*.*gmp_printf|%Z'
 
 grep __gmp_ tests/*.c | \
   err-if-output -t "__gmp_" grep -v '^tests/tabort_defalloc'

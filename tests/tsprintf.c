@@ -30,7 +30,6 @@ https://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 #include <stdarg.h>
 
 #include <float.h>
-#include <errno.h>
 
 #ifdef HAVE_LOCALE_H
 #include <locale.h>
@@ -1406,9 +1405,6 @@ bug21056 (void)
    in ISO C, but this conflicts with POSIX:
      https://sourceware.org/bugzilla/show_bug.cgi?id=14771#c2
      http://austingroupbugs.net/view.php?id=761
-     http://austingroupbugs.net/view.php?id=1219
-     https://gcc.gnu.org/bugzilla/show_bug.cgi?id=87096
-   Fixed in r11429.
 */
 static void
 snprintf_size (void)
@@ -1469,68 +1465,6 @@ percent_n (void)
 
   if (err)
     exit (1);
-}
-
-struct clo
-{
-  char *fmt;
-  int width, r, e;
-};
-
-static void
-check_length_overflow (void)
-{
-  mpfr_t x;
-  int i, r, e;
-  struct clo t[] = {
-    { "%Rg", 0, 1, 0 },
-    { "%*Rg", 1, 1, 0 },
-    { "%*Rg", -1, 1, 0 },
-    { "%5Rg", 0, 5, 0 },
-    { "%*Rg", 5, 5, 0 },
-    { "%*Rg", -5, 5, 0 },
-#if INT_MAX == 2147483647
-    { "%2147483647Rg", 0, 2147483647, 0 },
-    { "%2147483647Rg ", 0, -1, 1 },
-    { "%2147483648Rg", 0, -1, 1 },
-    { "%18446744073709551616Rg", 0, -1, 1 },
-    { "%*Rg", 2147483647, 2147483647, 0 },
-    { "%*Rg", -2147483647, 2147483647, 0 },
-# if INT_MIN < -INT_MAX
-    { "%*Rg", INT_MIN, -1, 1 },
-# endif
-#endif
-  };
-
-  mpfr_init2 (x, MPFR_PREC_MIN);
-  mpfr_set_ui (x, 0, MPFR_RNDN);
-
-  for (i = 0; i < numberof (t); i++)
-    {
-      errno = 0;
-      r = t[i].width == 0 ?
-        mpfr_snprintf (NULL, 0, t[i].fmt, x) :
-        mpfr_snprintf (NULL, 0, t[i].fmt, t[i].width, x);
-      e = errno;
-      if ((t[i].r < 0 ? r >= 0 : r != t[i].r)
-#ifdef EOVERFLOW
-          || (t[i].e && e != EOVERFLOW)
-#endif
-          )
-        {
-          printf ("Error in check_length_overflow for i=%d (%s %d)\n",
-                  i, t[i].fmt, t[i].width);
-          printf ("Expected r=%d, got r=%d\n", t[i].r, r);
-#ifdef EOVERFLOW
-          if (t[i].e && e != EOVERFLOW)
-            printf ("Expected errno=EOVERFLOW=%d, got errno=%d\n",
-                    EOVERFLOW, e);
-#endif
-          exit (1);
-        }
-    }
-
-  mpfr_clear (x);
 }
 
 #if defined(HAVE_LOCALE_H) && defined(HAVE_SETLOCALE)
@@ -1687,7 +1621,6 @@ main (int argc, char **argv)
   snprintf_size ();
   percent_n ();
   mixed ();
-  check_length_overflow ();
   test_locale ();
 
   if (getenv ("MPFR_CHECK_LIBC_PRINTF"))

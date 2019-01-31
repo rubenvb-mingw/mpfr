@@ -85,7 +85,7 @@ For patches from MPFR developers, e.g. for MPFR 3.1.0:
      tools/update-version 3 1 0 p<n> -
    where <n> is the patch number.
 8. In mpfr-3.1.0-b, update PATCHES file: echo >> PATCHES <patch_name>
-9. Make the patch: TZ=UTC0 diff -Naurd mpfr-3.1.0-a mpfr-3.1.0-b
+9. Make the patch: TZ=UTC diff -Naurd mpfr-3.1.0-a mpfr-3.1.0-b
 
 The tools/build-patch script can be used to ease the process.
 
@@ -196,8 +196,8 @@ To make a release (for the MPFR team):
      directory.
      [*] https://lvc.github.io/abi-compliance-checker/
 
-  4) Update the ChangeLog file with "TZ=UTC0 svn log -rHEAD:0 -v" in
-     UTF-8 locales, e.g. "LC_ALL=en_US.UTF8 TZ=UTC0 svn log -rHEAD:0 -v".
+  4) Update the ChangeLog file with "TZ=UTC svn log -rHEAD:0 -v" in
+     UTF-8 locales, e.g. "LC_ALL=en_US.UTF8 TZ=UTC svn log -rHEAD:0 -v".
      Make sure that all the pending commits have been done.
 
   5) Do a "svn export" of the branch to make sure to start from a clean
@@ -244,8 +244,6 @@ To make a release (for the MPFR team):
      Check the generic code, e.g. with -DMPFR_GENERIC_ABI in $CFLAGS
      (useful because most tests are written for low precision) and with
      mpfr_cv_c_long_double_format=unknown (as a variable assignment).
-     Check with -DMPFR_GROUP_STATIC_SIZE=0 to detect memory leaks that would
-     occur in medium precision or more if a MPFR_GROUP_CLEAR were forgotten.
 
      Check that make and make check pass with a C++ compiler, for example:
      ./configure CC=g++ (MPFR 2.3.2 did not).
@@ -292,7 +290,7 @@ To make a release (for the MPFR team):
      *after* the -fsanitize=undefined one.
 
      GCC 4.9 also supports "-fsanitize=undefined", but it just gives
-     diagnostic messages at run time, not a failure; GCC 5 supports
+     diagnostic messages at runtime, not a failure; GCC 5 supports
      -fno-sanitize-recover like clang.
 
      Test with GCC's AddressSanitizer (-fsanitize=address). One needs to
@@ -316,8 +314,8 @@ To make a release (for the MPFR team):
        * a patched autoconf:
      https://lists.gnu.org/archive/html/autoconf-patches/2014-01/msg00003.html
 
-     Check that there are no abnormal regressions in the timings (both for
-     100, 1000, 10000 digits, https://www.mpfr.org/mpfr-current/timings.html,
+     Check that there are no abnormal regressions in the timings (both
+     for 100, 1000, 10000 digits, http://mpfr.org/mpfr-current/timings.html,
      and for small precision, using the mbench program, see mpfr/mbench).
 
      Test the library interface compatibility by running the test suite
@@ -464,7 +462,7 @@ Format of long double.
                         Define to build conversion functions from/to
                         decimal floats.
 + MPFR_WANT_FLOAT128:   Define to build conversion functions from/to
-                        binary128 floats (_Float128 or __float128).
+                        __float128.
 
 + MPFR_ALLOCA_MAX:      Maximum size for the use of alloca by temporary
                         allocations (default: 16384).
@@ -494,9 +492,6 @@ Format of long double.
                         code. This is useful because most tests are written
                         for low precision, meaning that without this macro,
                         the generic code would not sufficiently be tested.
-
-+ MPFR_WANT_PROVEN_CODE:
-                        Define to enable formally proven code.
 
 List of macros used for checking MPFR:
 
@@ -528,13 +523,10 @@ List of macros used for checking MPFR:
                         too, and MPFR_ERRDIVZERO should be defined as well
                         to avoid spurious traps (see above).
 + MPFR_TESTS_TIMEOUT:   Define to enable timeout in the tests. Its value
-                        specifies the default timeout (in seconds), or 0
-                        for no timeout by default. When defined, this
-                        value can be overridden at run time (e.g., with
-                        "make check" or when executing an individual test)
-                        with the MPFR_TESTS_TIMEOUT environment variable.
-+ MPFR_TESTS_ABORT:     Define to replace exit(1) by abort(), thus with a
-                        core dump.
+                        contains the default timeout (in seconds), or 0
+                        for no timeout by default, and can be overridden
+                        at "make check" time with the MPFR_TESTS_TIMEOUT
+                        environment variable.
 + MPFR_COV_CHECK:       Define to enable value coverage checking (must not
                         be used in production). This macro is for the MPFR
                         developers, in order to improve the test suite.
@@ -589,25 +581,11 @@ included first, because these header files already have the above code.
 ===========================================================================
 
 The GNU Coding standards can be read at:
-  https://www.gnu.org/prep/standards/
-
+  https://www.gnu.org/prep/standards_toc.html
 ISO C Names and corresponding headers:
   http://www.schweikhardt.net/identifiers.html
-
-The C language:
-  http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf (C99)
-  http://www.open-std.org/jtc1/sc22/wg14/www/C99RationaleV5.10.pdf
-  http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf (C11 draft)
-  http://home.datacomm.ch/t_wolf/tw/c/c9x_changes.html
-
-About undefined behavior:
-  https://blog.regehr.org/archives/213
-  https://blog.regehr.org/archives/226
-  https://blog.regehr.org/archives/232
-  http://blog.llvm.org/2011/05/what-every-c-programmer-should-know.html
-
-Type punning, strict aliasing, and optimization:
-  https://blog.regehr.org/archives/959
+Language C:
+  http://www.vmunix.com/~gabor/c/draft.html
 
 To allow MPFR to be built on some buggy compiler, try to follow
 theses rules:
@@ -677,8 +655,6 @@ compiler.
 
    =====================================================================
 
-About type conversions:
-
 To do type punning (i.e. store a value of some type and reinterpret
 it as another type), use a union. This is valid in ISO C99 and above
 (in C99, see 6.5#7 and Note 82 of 6.5.2.3#3 for the clarification),
@@ -691,33 +667,6 @@ Some references:
 * https://en.wikipedia.org/wiki/Type_punning#Use_of_union
 * https://stackoverflow.com/questions/346622/opinions-on-type-punning-in-c
   "Opinions on type-punning in C++?"
-
-Do not do conversions between function pointers and other kinds of
-pointers (including to void *). This yields undefined behavior and
-may not work in practice. Example:
-
-  https://stackoverflow.com/questions/5579835/c-function-pointer-casting-to-void-pointer
-
-Adding a level of indirection is OK, as suggested there, and on:
-
-  https://stackoverflow.com/questions/36645660/why-cant-i-cast-a-function-pointer-to-void
-
-   =====================================================================
-
-For floating-point constants, do not use the non-standard and useless
-suffix "D". It seems to mean "double" for GCC[*], but for instance,
-ICC 15 regards 1.0D as 0 (though ICC claims compatibility with GCC)
-and for tcc 0.9.27, this is an error. The standard suffixes from TS 18661-2
-are:
-
-	f l F L df dd dl DF DD DL
-
-Moreover, avoid native floating-point if possible. Be careful that GCC
-does not conform to the C standard by default. References:
-  https://gcc.gnu.org/bugzilla/show_bug.cgi?id=323
-  https://gcc.gnu.org/bugzilla/show_bug.cgi?id=85957
-
-[*] https://stackoverflow.com/questions/4331200/what-do-f-and-d-mean-at-the-end-of-numeric-literals
 
 ===========================================================================
 
@@ -1132,61 +1081,39 @@ incorrect value in case of a bug in MPFR.
 
 Avoid mixing signed and unsigned integer types, as this can lead signed
 types to be automatically converted into unsigned types (usual arithmetic
-conversions). If such a signed type contains a negative value, the result
-may be incorrect on some platforms. With MPFR 2.x, this problem could
+conversions). If such a signed type contains a negative value, the
+result will probably be incorrect. With MPFR 2.x, this problem could
 arise with mpfr_exp_t, which is signed, and mpfr_prec_t (mp_prec_t),
 which was unsigned (it is now signed), meaning that in general, a cast
-of a mpfr_prec_t to a mpfr_exp_t was needed.
+of a mpfr_prec_t into a mpfr_exp_t was needed.
 
 Note that such bugs are difficult to detect because they may depend on
-the platform (e.g., on LP64, 32-bit unsigned int + 64-bit long will give
-a signed type, but on ILP32, 32-bit int + 32-bit unsigned long will give
-an unsigned type, which may not be what is expected), but also on the
-input values. So, do not rely on tests very much. However, if a test
-works on 32 bits but fails on 64 bits in the extended exponent range
-(or conversely), the cause may be related to the integer types (e.g. a
-signness problem or an integer overflow due to different type sizes).
-
-For instance, in MPFR, such issues were fixed in r1992 and r5588.
-
-An example that will fail with 32-bit int and long:
-
-    long long umd(void)
-    {
-      long a = 1;
-      unsigned int b = 2;
-      return a - b;
-    }
+the platform (e.g., on LP64, 32-bit unsigned int + 64-bit long is OK,
+but on ILP32, 32-bit int + 32-bit unsigned long is incorrect), but also
+on the input values. So, do not rely on tests very much. However, if
+a test works on 32 bits but fails on 64 bits in the extended exponent
+range (or conversely), the cause may be related to the integer types
+(e.g. a signness problem or an integer overflow due to different type
+sizes).
 
 When creating a new variable that will always contain nonnegative values,
 it is generally better to define it as a signed type if it may be used in
 an arithmetic expression. The exceptions are when the value is seen as an
-array of bits (e.g. for limbs) and to temporarily avoid integer overflow.
+array of bits (e.g. for limbs) and to locally avoid integer overflow.
 
 ===========================================================================
 
-To use the features related to intmax_t, "mpfr-intmax.h" must be included
-before "mpfr-impl.h", to express the need for the largest integer types.
-Then, these features can be used only if _MPFR_H_HAVE_INTMAX_T is defined.
-In such a case, do not use the macros UINTMAX_MAX, INTMAX_MAX and INTMAX_MIN
-directly (because they might make the compilation fail due to bugs in the
-build environment), but the MPFR versions: MPFR_UINTMAX_MAX, MPFR_INTMAX_MAX
-and MPFR_INTMAX_MIN. Whether _MPFR_H_HAVE_INTMAX_T is defined or not, these
-macros and the types mpfr_intmax_t / mpfr_uintmax_t are always defined, and
-they correspond to the latest integer types available (e.g. intmax_t, else
-long long, else long).
-
-It can be assumed that any signed (resp. unsigned) integer type can be
-represented in mpfr_intmax_t (resp. mpfr_uintmax_t).
-
-The corresponding length specifier is MPFR_INTMAX_FSPEC.
+You can use the features related to intmax_t only if _MPFR_H_HAVE_INTMAX_T
+is defined. In such a case, do not use the macros UINTMAX_MAX, INTMAX_MAX
+and INTMAX_MIN directly (because they may make the compilation fail), but
+the MPFR versions: MPFR_UINTMAX_MAX, MPFR_INTMAX_MAX and MPFR_INTMAX_MIN.
 
 ===========================================================================
 
 Use mpfr_prec_t and mpfr_rnd_t instead of the old types mp_prec_t and
 mp_rnd_t. Similarly, use mpfr_exp_t instead of GMP's mp_exp_t type
 (unless you really want mp_exp_t, e.g. for conversions with mpf; but
-you must not assume that mpfr_exp_t and mp_exp_t are identical).
+you should not assume that mpfr_exp_t and mp_exp_t are identical).
 
 ===========================================================================
 
@@ -1199,11 +1126,15 @@ in the MPFR source depends on the context.
    is that the macros do not evaluate to a lvalue).
 
 2. If the exponent range has been extended, you can use the constants
-   MPFR_EMIN_MIN and MPFR_EMAX_MAX instead. This will be faster if TLS
+   MPFR_EXT_EMIN and MPFR_EXT_EMAX instead. This will be faster if TLS
    is enabled. It also avoids a bug on some Linux/Sparc machines with
    some GCC versions and TLS, but this shouldn't be the primary concern,
    as this might be the other way round on some other machines. This is
    the most common context.
+   Note: If you really want to specify the current minimum or maximum
+   exponent, do not use MPFR_EMIN_MIN or MPFR_EMAX_MAX, even though
+   they have the same value. This may prevent some form of testing in
+   the future.
 
 3. If you want the minimum and maximum possible exponent values supported
    by MPFR, use MPFR_EMIN_MIN and MPFR_EMAX_MAX respectively.
@@ -1215,18 +1146,12 @@ in the MPFR source depends on the context.
 
 More on exponent handling:
 
-* The mpfr_exp_t type has at least 32 bits since it must contain the
-  default exponent range.
-
-* The range of valid exponents is defined so that if a and b are two
-  valid exponents (i.e. between MPFR_EMIN_MIN and MPFR_EMAX_MAX), then
-  ± a ± b ± 1 fits in a mpfr_exp_t.
-
 * The unsigned type corresponding to mpfr_exp_t is mpfr_uexp_t. It may be
   useful if the considered values are nonnegative and don't necessarily
-  fit in mpfr_exp_t. To convert a nonnegative mpfr_exp_t to mpfr_uexp_t,
-  you should use the MPFR_UEXP macro, which is defined as:
-    #define MPFR_UEXP(X) (MPFR_ASSERTD ((X) >= 0), (mpfr_uexp_t) (X))
+  fit in mpfr_exp_t. To convert a mpfr_exp_t to mpfr_uexp_t, you should
+  use the MPFR_UEXP macro, as in debug mode, it checks that the value is
+  nonnegative (in future MPFR versions, MPFR_UEXP could tell the compiler
+  that the value is nonnegative, possibly allowing more optimization).
 
 * If a mpfr_exp_t appears in arithmetic expressions together with ISO C90
   types int and/or long, computations must be done with the largest type,
@@ -1279,39 +1204,6 @@ whether they work with ICC. The following paper can give useful information:
 To detect compilers, see
 
   https://sourceforge.net/p/predef/wiki/Compilers/
-
-===========================================================================
-
-For configure tests, use AC_LINK_IFELSE rather than AC_COMPILE_IFELSE,
-which is broken by design. The reason is that some errors just produce
-a warning (which is not a bug from the compiler: in ISO C terminology,
-this corresponds to a diagnostic, and the compilation is allowed to
-succeed), and this is unfixable in a portable way.
-
-===========================================================================
-
-Shell portability
------------------
-
-Shell commands (in /bin/sh scripts, in Makefile and autotools related
-files...) need to be valid in POSIX shells, but also in Bourne shells
-(for instance, /bin/sh under Solaris is a Bourne shell).
-
-In particular:
-
-* Do not use $(...) but `...` (backticks).
-
-* Be careful that quote nesting with backticks such as "`cmd "$foo"`"
-  is not portable:
-
-    https://unix.stackexchange.com/q/387246/74516
-    ("quotes inside backticks inside quotes in ksh")
-
-  But the external quotes are not needed when assigning to a variable:
-
-    out=`cmd "$foo"`
-
-  Otherwise one can write "`cmd \"$foo\"`".
 
 ===========================================================================
 
@@ -1682,9 +1574,3 @@ and if everything is OK (no error messages), commit both files.
 
 Update the FAQ.html file with update-faq in the doc directory of the
 MPFR trunk and supported branches.
-
-===========================================================================
-
-Spelling:
-  * Some suggestions: https://gcc.gnu.org/codingconventions.html#Spelling
-  * Check with "codespell" (done by mpfrlint).

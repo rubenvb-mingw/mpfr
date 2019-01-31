@@ -671,12 +671,8 @@ mpfr_sub1 (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
             rnd_mode = MPFR_RNDZ;
           return mpfr_underflow (a, rnd_mode, MPFR_SIGN(a));
         }
-      /* We cannot have overflow here, except for UBFs. Indeed:
-         exp_a = exp_b - cancel + add_exp <= emax - 1 + 1 <= emax.
-         For UBFs, we can have exp_b > emax. */
-      if (exp_a > __gmpfr_emax)
+      if (MPFR_UNLIKELY (exp_a > __gmpfr_emax))
         {
-          MPFR_ASSERTD(exp_b > __gmpfr_emax);
           return mpfr_overflow (a, rnd_mode, MPFR_SIGN (a));
         }
     }
@@ -691,13 +687,12 @@ mpfr_sub1 (mpfr_ptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_rnd_t rnd_mode)
          a subtraction below to avoid a potential integer overflow in
          the case exp_b == MPFR_EXP_MAX. */
       if (MPFR_UNLIKELY (exp_b > __gmpfr_emax - add_exp))
-        return mpfr_overflow (a, rnd_mode, MPFR_SIGN (a));
+        {
+          return mpfr_overflow (a, rnd_mode, MPFR_SIGN (a));
+        }
       exp_a = exp_b + add_exp;
-      /* Warning: an underflow can happen for UBFs, for example when
-         mpfr_add is called from mpfr_fmma or mpfr_fmms. */
       if (MPFR_UNLIKELY (exp_a < __gmpfr_emin))
         goto underflow;
-      MPFR_ASSERTD (exp_a >= __gmpfr_emin);
     }
   MPFR_SET_EXP (a, exp_a);
   /* check that result is msb-normalized */

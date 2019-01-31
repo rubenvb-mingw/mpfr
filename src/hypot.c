@@ -29,8 +29,7 @@ https://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 int
 mpfr_hypot (mpfr_ptr z, mpfr_srcptr x, mpfr_srcptr y, mpfr_rnd_t rnd_mode)
 {
-  int inexact;
-  unsigned int exact;  /* Warning: 0 will mean "exact" */
+  int inexact, exact;
   mpfr_t t, te, ti; /* auxiliary variables */
   mpfr_prec_t N, Nz; /* size variables */
   mpfr_prec_t Nt;   /* precision of the intermediary variable */
@@ -70,8 +69,6 @@ mpfr_hypot (mpfr_ptr z, mpfr_srcptr x, mpfr_srcptr y, mpfr_rnd_t rnd_mode)
         return mpfr_abs (z, x, rnd_mode);
     }
 
-  /* TODO: It may be sufficient to just compare the exponents.
-     The error analysis would need to be updated. */
   if (mpfr_cmpabs (x, y) < 0)
     {
       mpfr_srcptr u;
@@ -158,14 +155,19 @@ mpfr_hypot (mpfr_ptr z, mpfr_srcptr x, mpfr_srcptr y, mpfr_rnd_t rnd_mode)
      round toward zero. Using a larger sh wouldn't guarantee an absence
      of overflow. Note that the scaling of y can underflow only when the
      target precision is huge, otherwise the case would already have been
-     handled by the diff_exp > threshold code; but this case is avoided
-     thanks to a FMA (this problem is transferred to the FMA code). */
+     handled by the diff_exp > threshold code.
+     FIXME: Friedland in "Algorithm 312: Absolute Value and Square Root of a
+     Complex Number" (Communications of the ACM, 1967) avoids overflow by
+     computing |x|*sqrt(1+(y/x)^2) if |x| >= |y|, and |y|*sqrt(1+(x/y)^2)
+     otherwise.
+     [VL] This trick (which is a scaling by a non-power of 2, thus doesn't
+     really bring new behavior w.r.t. overflow/underflow exceptions) may be
+     useful for hardware floating-point formats because a whole power-of-2
+     scaling code is likely to take more time than the additional division,
+     but in the context of multiple-precision, I doubt that it is a good
+     idea. Ideally scaling by a power of 2 could be done in a constant time,
+     e.g. with MPFR_ALIAS; but one needs to be very careful... */
   sh = (mpfr_get_emax () - 1) / 2 - Ex;
-
-  /* TODO: The general case could be improved by first avoiding the
-     scaling and using 2 mpfr_sqr, a mpfr_add and a mpfr_sqrt, possibly
-     with faithful rounding. Use scaling and the code below only in case
-     of overflow or underflow. */
 
   MPFR_ZIV_INIT (loop, Nt);
   for (;;)

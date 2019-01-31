@@ -54,10 +54,6 @@ https://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
  * may change in the future without notice.
  */
 
-#if !(flag == 0 || flag == 1)
-#error "flag must be 0 or 1"
-#endif
-
 int
 mpfr_round_raw_generic(
 #if flag == 0
@@ -76,21 +72,20 @@ mpfr_round_raw_generic(
 #if flag == 0
   int carry;
 #endif
+#if use_inexp == 0
+  int *inexp;
+#endif
 
-#if use_inexp != 0
-  MPFR_ASSERTD (inexp != ((int*) 0));
-#endif
-  MPFR_ASSERTD (neg == 0 || neg == 1);
-#if flag == 1
-  /* rnd_mode = RNDF is only possible for flag = 0. */
-  MPFR_ASSERTD (rnd_mode != MPFR_RNDF);
-#endif
+  if (use_inexp)
+    MPFR_ASSERTD(inexp != ((int*) 0));
+  MPFR_ASSERTD(neg == 0 || neg == 1);
 
   if (rnd_mode == MPFR_RNDF)
     {
-#if use_inexp != 0
-      *inexp = 0;  /* make sure it has a valid value */
-#endif
+      if (use_inexp)
+        *inexp = 0;  /* make sure it has a valid value */
+      if (flag)
+        return 0;
       rnd_mode = MPFR_RNDZ;  /* faster */
       new_use_inexp = 0;
     }
@@ -113,9 +108,8 @@ mpfr_round_raw_generic(
         nw++;
       MPFR_ASSERTD(nw >= 1);
       MPFR_ASSERTD(nw >= xsize);
-#if use_inexp != 0
-      *inexp = 0;
-#endif
+      if (use_inexp)
+        *inexp = 0;
 #if flag == 0
       mpn_copyd (yp + (nw - xsize), xp, xsize);
       MPN_ZERO(yp, nw - xsize);
@@ -160,9 +154,8 @@ mpfr_round_raw_generic(
               sb = xp[xsize - nw] & (himask ^ (himask << 1));
               if (sb == 0)
                 {
-#if use_inexp != 0
-                  *inexp = 2 * MPFR_EVEN_INEX * neg - MPFR_EVEN_INEX;
-#endif
+                  if (use_inexp)
+                    *inexp = 2*MPFR_EVEN_INEX*neg-MPFR_EVEN_INEX;
                   /* ((neg!=0)^(sb!=0)) ? MPFR_EVEN_INEX : -MPFR_EVEN_INEX */
                   /* since neg = 0 or 1 and sb = 0 */
 #if flag == 0
@@ -175,9 +168,8 @@ mpfr_round_raw_generic(
                 {
                 away_addone_ulp:
                   /* sb != 0 && rnd_mode == MPFR_RNDN */
-#if use_inexp != 0
-                  *inexp = MPFR_EVEN_INEX - 2 * MPFR_EVEN_INEX * neg;
-#endif
+                  if (use_inexp)
+                    *inexp = MPFR_EVEN_INEX-2*MPFR_EVEN_INEX*neg;
                   /* ((neg!=0)^(sb!=0)) ? MPFR_EVEN_INEX : -MPFR_EVEN_INEX */
                   /* since neg = 0 or 1 and sb != 0 */
                   goto rnd_RNDN_add_one_ulp;
@@ -185,9 +177,8 @@ mpfr_round_raw_generic(
             }
           else /* sb != 0 && rnd_mode == MPFR_RNDN */
             {
-#if use_inexp != 0
-              *inexp = 1 - 2 * neg; /* neg == 0 ? 1 : -1 */
-#endif
+              if (use_inexp)
+                *inexp = 1-2*neg; /* neg == 0 ? 1 : -1 */
             rnd_RNDN_add_one_ulp:
 #if flag == 1
               return 1; /* sb != 0 && rnd_mode != MPFR_RNDZ */
@@ -206,13 +197,12 @@ mpfr_round_raw_generic(
         {
           /* rnd_mode == MPFR_RNDZ */
         rnd_RNDZ:
-          while (MPFR_UNLIKELY (sb == 0) && k > 0)
+          while (MPFR_UNLIKELY(sb == 0) && k > 0)
             sb = xp[--k];
-#if use_inexp != 0
-          /* rnd_mode == MPFR_RNDZ and neg = 0 or 1 */
-          /* ((neg != 0) ^ (rnd_mode != MPFR_RNDZ)) ? 1 : -1 */
-          *inexp = MPFR_UNLIKELY (sb == 0) ? 0 : 2 * neg - 1;
-#endif
+          if (use_inexp)
+            /* rnd_mode == MPFR_RNDZ and neg = 0 or 1 */
+            /* ((neg != 0) ^ (rnd_mode != MPFR_RNDZ)) ? 1 : -1 */
+            *inexp = MPFR_UNLIKELY(sb == 0) ? 0 : (2*neg-1);
 #if flag == 0
           mpn_copyi (yp, xp + xsize - nw, nw);
           yp[0] &= himask;
@@ -222,15 +212,14 @@ mpfr_round_raw_generic(
       else
         {
           /* Rounding away from zero */
-          while (MPFR_UNLIKELY (sb == 0) && k > 0)
+          while (MPFR_UNLIKELY(sb == 0) && k > 0)
             sb = xp[--k];
-          if (MPFR_UNLIKELY (sb == 0))
+          if (MPFR_UNLIKELY(sb == 0))
             {
               /* sb = 0 && rnd_mode != MPFR_RNDZ */
-#if use_inexp != 0
-              /* ((neg != 0) ^ (rnd_mode != MPFR_RNDZ)) ? 1 : -1 */
-              *inexp = 0;
-#endif
+              if (use_inexp)
+                /* ((neg != 0) ^ (rnd_mode != MPFR_RNDZ)) ? 1 : -1 */
+                *inexp = 0;
 #if flag == 0
               mpn_copyi (yp, xp + xsize - nw, nw);
               yp[0] &= himask;
@@ -240,15 +229,14 @@ mpfr_round_raw_generic(
           else
             {
               /* sb != 0 && rnd_mode != MPFR_RNDZ */
-#if use_inexp != 0
-              *inexp = 1 - 2 * neg; /* neg == 0 ? 1 : -1 */
-#endif
+              if (use_inexp)
+                *inexp = 1-2*neg; /* neg == 0 ? 1 : -1 */
 #if flag == 1
               return 1;
 #else
               carry = mpn_add_1(yp, xp + xsize - nw, nw,
                                 rw ? MPFR_LIMB_ONE << (GMP_NUMB_BITS - rw)
-                                : MPFR_LIMB_ONE);
+                                : 1);
               yp[0] &= himask;
               return carry;
 #endif

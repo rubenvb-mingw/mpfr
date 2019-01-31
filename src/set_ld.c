@@ -62,25 +62,11 @@ mpfr_set_ld (mpfr_ptr r, long double d, mpfr_rnd_t rnd_mode)
 
 #elif defined(HAVE_LDOUBLE_IEEE_EXT_LITTLE)
 
-#if GMP_NUMB_BITS >= 64
-# define MPFR_LIMBS_PER_LONG_DOUBLE 1
-#elif GMP_NUMB_BITS == 32
-# define MPFR_LIMBS_PER_LONG_DOUBLE 2
-#elif GMP_NUMB_BITS == 16
-# define MPFR_LIMBS_PER_LONG_DOUBLE 4
-#elif GMP_NUMB_BITS == 8
-# define MPFR_LIMBS_PER_LONG_DOUBLE 8
-#else
-#error "GMP_NUMB_BITS is assumed to be 8, 16, 32 or >= 64"
-#endif
-/* The hypothetical GMP_NUMB_BITS == 16 is not supported. It will trigger
-   an error below. */
-
 /* IEEE Extended Little Endian Code */
 int
 mpfr_set_ld (mpfr_ptr r, long double d, mpfr_rnd_t rnd_mode)
 {
-  int inexact, k, cnt;
+  int inexact, i, k, cnt;
   mpfr_t tmp;
   mp_limb_t tmpmant[MPFR_LIMBS_PER_LONG_DOUBLE];
   mpfr_long_double_t x;
@@ -134,48 +120,25 @@ mpfr_set_ld (mpfr_ptr r, long double d, mpfr_rnd_t rnd_mode)
       x.ld = -x.ld;
     }
 
-  /* Extract and normalize the significand */
-#if MPFR_LIMBS_PER_LONG_DOUBLE == 1
+  /* Extract mantissa */
+#if GMP_NUMB_BITS >= 64
   tmpmant[0] = ((mp_limb_t) x.s.manh << 32) | ((mp_limb_t) x.s.manl);
-  count_leading_zeros (cnt, tmpmant[0]);
-  tmpmant[0] <<= cnt;
-  k = 0; /* number of limbs shifted */
-#else /* MPFR_LIMBS_PER_LONG_DOUBLE >= 2 */
-#if MPFR_LIMBS_PER_LONG_DOUBLE == 2
+#else
   tmpmant[0] = (mp_limb_t) x.s.manl;
   tmpmant[1] = (mp_limb_t) x.s.manh;
-#elif MPFR_LIMBS_PER_LONG_DOUBLE == 4
-  tmpmant[0] = (mp_limb_t) x.s.manl;
-  tmpmant[1] = (mp_limb_t) (x.s.manl >> 16);
-  tmpmant[2] = (mp_limb_t) x.s.manh;
-  tmpmant[3] = (mp_limb_t) (x.s.manh >> 16);
-#elif MPFR_LIMBS_PER_LONG_DOUBLE == 8
-  tmpmant[0] = (mp_limb_t) x.s.manl;
-  tmpmant[1] = (mp_limb_t) (x.s.manl >> 8);
-  tmpmant[2] = (mp_limb_t) (x.s.manl >> 16);
-  tmpmant[3] = (mp_limb_t) (x.s.manl >> 24);
-  tmpmant[4] = (mp_limb_t) x.s.manh;
-  tmpmant[5] = (mp_limb_t) (x.s.manh >> 8);
-  tmpmant[6] = (mp_limb_t) (x.s.manh >> 16);
-  tmpmant[7] = (mp_limb_t) (x.s.manh >> 24);
-#else
-#error "MPFR_LIMBS_PER_LONG_DOUBLE should be 1, 2, 4 or 8"
-#endif /* MPFR_LIMBS_PER_LONG_DOUBLE >= 2 */
-  {
-    int i = MPFR_LIMBS_PER_LONG_DOUBLE;
-    MPN_NORMALIZE_NOT_ZERO (tmpmant, i);
-    k = MPFR_LIMBS_PER_LONG_DOUBLE - i;
-    count_leading_zeros (cnt, tmpmant[i - 1]);
-    if (cnt != 0)
-      mpn_lshift (tmpmant + k, tmpmant, i, cnt);
-    else if (k != 0)
-      /* since we copy {tmpmant, i} into {tmpmant + k, i}, we should work
-         decreasingly, thus call mpn_copyd */
-      mpn_copyd (tmpmant + k, tmpmant, i);
-    if (k != 0)
-      MPN_ZERO (tmpmant, k);
-  }
-#endif /* MPFR_LIMBS_PER_LONG_DOUBLE == 1 */
+#endif
+
+  /* Normalize mantissa */
+  i = MPFR_LIMBS_PER_LONG_DOUBLE;
+  MPN_NORMALIZE_NOT_ZERO (tmpmant, i);
+  k = MPFR_LIMBS_PER_LONG_DOUBLE - i;
+  count_leading_zeros (cnt, tmpmant[i - 1]);
+  if (MPFR_UNLIKELY (cnt != 0))
+    mpn_lshift (tmpmant + k, tmpmant, i, cnt);
+  else if (MPFR_UNLIKELY (k != 0))
+    MPN_COPY (tmpmant + k, tmpmant, i);
+  if (MPFR_UNLIKELY (k != 0))
+    MPN_ZERO (tmpmant, k);
 
   /* Set exponent */
   exp = (mpfr_exp_t) ((x.s.exph << 8) + x.s.expl);  /* 15-bit unsigned int */
@@ -200,7 +163,7 @@ int
 mpfr_set_ld (mpfr_ptr r, long double d, mpfr_rnd_t rnd_mode)
 {
   mpfr_t t, u;
-  int inexact;
+  int inexact, shift_exp;
   double h, l;
   MPFR_SAVE_EXPO_DECL (expo);
 

@@ -119,18 +119,11 @@ decimal64_to_string (char *s, _Decimal64 d)
   char *t;
   unsigned int Gh; /* most 5 significant bits from combination field */
   int exp; /* exponent */
+  mp_limb_t rp[2];
+  mp_size_t rn = 2;
   unsigned int i;
 #ifdef DPD_FORMAT
   unsigned int d0, d1, d2, d3, d4, d5;
-#else
-#if GMP_NUMB_BITS >= 64
-  mp_limb_t rp[2];
-#else
-  unsigned long rp[2]; /* rp[0] and rp[1] should contain at least 32 bits */
-#endif
-#define NLIMBS (64 / GMP_NUMB_BITS)
-  mp_limb_t sp[NLIMBS];
-  mp_size_t sn;
 #endif
 
   /* now convert BID or DPD to string */
@@ -154,23 +147,16 @@ decimal64_to_string (char *s, _Decimal64 d)
   if (x.s.sig)
     *t++ = '-';
 
-  /* both the decimal64 DPD and BID encodings consist of:
-   * a sign bit of 1 bit
-   * a combination field of 13=5+8 bits
-   * a trailing significand field of 50 bits
-   */
 #ifdef DPD_FORMAT
-  /* the most significant 5 bits of the combination field give the first digit
-     of the significand, and leading bits of the biased exponent (0, 1, 2). */
   if (Gh < 24)
     {
       exp = (x.s.exp >> 1) & 768;
-      d0 = Gh & 7; /* first digit is in 0..7 */
+      d0 = Gh & 7;
     }
   else
     {
       exp = (x.s.exp & 384) << 1;
-      d0 = 8 | (Gh & 1); /* first digit is 8 or 9 */
+      d0 = 8 | (Gh & 1);
     }
   exp |= (x.s.exp & 63) << 2;
   exp |= x.s.manh >> 18;
@@ -186,8 +172,6 @@ decimal64_to_string (char *s, _Decimal64 d)
       t[i] = '0';
   t += 16;
 #else /* BID */
-  /* IEEE 754-2008 specifies that if the decoded significand exceeds the
-     maximum, i.e. here if it is >= 10^16, then the value is zero. */
   if (Gh < 24)
     {
       /* the biased exponent E is formed from G[0] to G[9] and the
@@ -207,51 +191,26 @@ decimal64_to_string (char *s, _Decimal64 d)
       rp[1] &= 524287; /* 2^19-1: cancel G[11] */
       rp[1] |= 2097152; /* add 2^21 */
     }
-  /* now convert {rp, 2} to {sp, NLIMBS} */
-#if GMP_NUMB_BITS >= 64
-  sp[0] = MPFR_LIMB(rp[0]) | MPFR_LIMB_LSHIFT(rp[1],32);
-#elif GMP_NUMB_BITS == 32
-  sp[0] = rp[0];
-  sp[1] = rp[1];
-#elif GMP_NUMB_BITS == 16
-  sp[0] = MPFR_LIMB(rp[0]);
-  sp[1] = MPFR_LIMB(rp[0] >> 16);
-  sp[2] = MPFR_LIMB(rp[1]);
-  sp[3] = MPFR_LIMB(rp[1] >> 16);
-#elif GMP_NUMB_BITS == 8
-  sp[0] = MPFR_LIMB(rp[0]);
-  sp[1] = MPFR_LIMB(rp[0] >> 8);
-  sp[2] = MPFR_LIMB(rp[0] >> 16);
-  sp[3] = MPFR_LIMB(rp[0] >> 24);
-  sp[4] = MPFR_LIMB(rp[1]);
-  sp[5] = MPFR_LIMB(rp[1] >> 8);
-  sp[6] = MPFR_LIMB(rp[1] >> 16);
-  sp[7] = MPFR_LIMB(rp[1] >> 24);
-#else
-#error "GMP_NUMB_BITS should be 8, 16, 32, or >= 64"
+#if GMP_NUMB_BITS >= 54
+  rp[0] |= rp[1] << 32;
+  rn = 1;
 #endif
-  sn = NLIMBS;
-  while (sn > 0 && sp[sn - 1] == 0)
-    sn --;
-  if (sn == 0)
+  while (rn > 0 && rp[rn - 1] == 0)
+    rn --;
+  if (rn == 0)
     {
-    zero:
       *t = 0;
       i = 1;
     }
   else
     {
-      i = mpn_get_str ((unsigned char*) t, 10, sp, sn);
-      if (i > 16) /* non-canonical encoding: return zero */
-        goto zero;
+      i = mpn_get_str ((unsigned char*)t, 10, rp, rn);
     }
-  /* convert the values from mpn_get_str (0, 1, ..., 9) to digits: */
   while (i-- > 0)
     *t++ += '0';
 #endif /* DPD or BID */
 
-  exp -= 398; /* unbiased exponent: -398 = emin - (p-1) where
-                 emin = 1-emax = 1-384 = -383 and p=16 */
+  exp -= 398; /* unbiased exponent */
   sprintf (t, "E%d", exp);
 }
 #else
@@ -455,8 +414,6 @@ decimal64_to_string (char *s, _Decimal64 d)
 }
 #endif /* _MPFR_IEEE_FLOATS */
 
-/* the IEEE754-2008 decimal64 format has 16 digits, with emax=384,
-   emin=1-emax=-383 */
 int
 mpfr_set_decimal64 (mpfr_ptr r, _Decimal64 d, mpfr_rnd_t rnd_mode)
 {
@@ -468,7 +425,6 @@ mpfr_set_decimal64 (mpfr_ptr r, _Decimal64 d, mpfr_rnd_t rnd_mode)
                       1 character for terminating \0. */
 
   decimal64_to_string (s, d);
-  MPFR_LOG_MSG (("string: %s\n", s));
   return mpfr_strtofr (r, s, NULL, 10, rnd_mode);
 }
 

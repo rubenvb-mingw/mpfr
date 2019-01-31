@@ -24,13 +24,12 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = mpfr.pc
 
 nobase_dist_doc_DATA = AUTHORS BUGS COPYING COPYING.LESSER NEWS TODO \
-  examples/ReadMe examples/can_round.c examples/divworst.c \
-  examples/rndo-add.c examples/sample.c examples/threads.c \
-  examples/version.c
+  examples/ReadMe examples/divworst.c examples/rndo-add.c examples/sample.c \
+  examples/version.c examples/can_round.c
 
-EXTRA_DIST = PATCHES VERSION doc/README.dev doc/check-typography doc/mini-gmp \
-  tools/check_mparam.c tools/ck-clz_tab tools/ck-copyright-notice \
-  tools/ck-mparam tools/ck-news tools/ck-version-info tools/get_patches.sh \
+EXTRA_DIST = PATCHES VERSION doc/README.dev doc/check-typography \
+  tools/ck-clz_tab tools/ck-copyright-notice tools/ck-news \
+  tools/ck-version-info tools/get_patches.sh \
   $(DATAFILES)
 
 bench:
@@ -42,15 +41,11 @@ bench:
 #   up-to-date. Note: this is a heuristic, to detect some mistakes.
 # * Check that copyright notices exist and appear to be correct.
 # * Check the NEWS file.
-# * Check the __clz_tab sizes.
-# * Check the mparam.h files.
-# * Check typography in mpfr.texi (Texinfo rules).
 dist-hook:
 	cd $(srcdir) && tools/ck-version-info
 	cd $(srcdir) && tools/ck-copyright-notice
 	cd $(srcdir) && tools/ck-news
 	cd $(srcdir) && tools/ck-clz_tab
-	cd $(srcdir) && tools/ck-mparam
 	cd $(srcdir)/doc && ./check-typography
 
 # Check that MPFR does not use GMP internal symbols. Of course, do not run

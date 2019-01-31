@@ -93,6 +93,5 @@ int main (int argc, char *argv[])
       }
 
   mpfr_clears (VARS, (mpfr_ptr) 0);
-  mpfr_free_cache ();
   return 0;
 }

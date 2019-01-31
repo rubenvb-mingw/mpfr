@@ -37,12 +37,6 @@ https://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 
 #include "mpfr-impl.h"
 
-#ifdef MPFR_TESTS_ABORT
-# undef exit
-# define exit(C) ((C) != 1 ? (exit)(C) : \
-                  (fflush (stdout), fflush (stderr), abort ()))
-#endif
-
 #define STRINGIZE(S) #S
 #define MAKE_STR(S) STRINGIZE(S)
 
@@ -79,6 +73,17 @@ extern "C" {
 #define SAME_VAL(X,Y)                                                   \
   ((MPFR_IS_NAN (X) && MPFR_IS_NAN (Y)) ||                              \
    (mpfr_equal_p ((X), (Y)) && MPFR_INT_SIGN (X) == MPFR_INT_SIGN (Y)))
+
+/* The MAX, MIN and ABS macros may already be defined if gmp-impl.h has
+   been included. They have the same semantics as in gmp-impl.h, but the
+   expressions may be slightly different. So, it's better to undefine
+   them first, as required by the ISO C standard. */
+#undef MAX
+#undef MIN
+#undef ABS
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#define ABS(x) (((x)>0) ? (x) : -(x))
 
 /* In the tests, mpfr_sgn was sometimes used incorrectly, for instance:
  *
@@ -125,7 +130,6 @@ double Ulp (double);
 int Isnan (double);
 void d_trace (const char *, double);
 void ld_trace (const char *, long double);
-void n_trace (const char *, mp_limb_t *, mp_size_t);
 
 FILE *src_fopen (const char *, const char *);
 void set_emin (mpfr_exp_t);

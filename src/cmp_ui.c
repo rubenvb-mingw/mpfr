@@ -52,7 +52,6 @@ mpfr_cmp_ui_2exp (mpfr_srcptr b, unsigned long int i, mpfr_exp_t f)
   else if (MPFR_UNLIKELY(i == 0))
     return 1;
   else /* b > 0, i > 0 */
-#ifdef MPFR_LONG_WITHIN_LIMB
     {
       mpfr_exp_t e;
       int k;
@@ -92,22 +91,6 @@ mpfr_cmp_ui_2exp (mpfr_srcptr b, unsigned long int i, mpfr_exp_t f)
           return 1;
       return 0;
     }
-#else
-  {
-      mpfr_t uu;
-      int ret;
-      MPFR_SAVE_EXPO_DECL (expo);
-
-      mpfr_init2 (uu, sizeof (unsigned long) * CHAR_BIT);
-      /* Warning: i*2^f might be outside the current exponent range! */
-      MPFR_SAVE_EXPO_MARK (expo);
-      mpfr_set_ui_2exp (uu, i, f, MPFR_RNDZ);
-      MPFR_SAVE_EXPO_FREE (expo);
-      ret = mpfr_cmp (b, uu);
-      mpfr_clear (uu);
-      return ret;
-  }
-#endif /* MPFR_LONG_WITHIN_LIMB */
 }
 
 #undef mpfr_cmp_ui

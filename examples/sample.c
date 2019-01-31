@@ -52,6 +52,5 @@ int main (void)
   mpfr_clear (s);
   mpfr_clear (t);
   mpfr_clear (u);
-  mpfr_free_cache ();
   return 0;
 }

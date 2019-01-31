@@ -64,15 +64,11 @@ extern "C" {
 # error "MPFR doesn't support nonzero values of GMP_NAIL_BITS"
 #endif
 
-#if (GMP_NUMB_BITS<8) || (GMP_NUMB_BITS & (GMP_NUMB_BITS - 1))
-# error "GMP_NUMB_BITS must be a power of 2, and >= 8"
+#if (GMP_NUMB_BITS<32) || (GMP_NUMB_BITS & (GMP_NUMB_BITS - 1))
+# error "GMP_NUMB_BITS must be a power of 2, and >= 32"
 #endif
 
-#if GMP_NUMB_BITS == 8
-# define MPFR_LOG2_GMP_NUMB_BITS 3
-#elif GMP_NUMB_BITS == 16
-# define MPFR_LOG2_GMP_NUMB_BITS 4
-#elif GMP_NUMB_BITS == 32
+#if GMP_NUMB_BITS == 32
 # define MPFR_LOG2_GMP_NUMB_BITS 5
 #elif GMP_NUMB_BITS == 64
 # define MPFR_LOG2_GMP_NUMB_BITS 6
@@ -134,9 +130,7 @@ void *alloca (size_t);
 #define MP_SIZE_T_MIN      LONG_MIN
 #endif
 
-/* MP_LIMB macros.
-   Note: GMP now also has the MPN_FILL macro, and GMP's MPN_ZERO(dst,n) is
-   defined as "if (n) MPN_FILL(dst, n, 0);". */
+/* MP_LIMB macros */
 #define MPN_ZERO(dst, n) memset((dst), 0, (n)*MPFR_BYTES_PER_MP_LIMB)
 #define MPN_COPY(dst,src,n) \
   do                                                                  \
@@ -182,10 +176,6 @@ void *alloca (size_t);
   ((dst) >= (src) || ! MPN_OVERLAP_P (dst, dsize, src, ssize))
 #define MPN_SAME_OR_DECR_P(dst, src, size)      \
   MPN_SAME_OR_DECR2_P(dst, size, src, size)
-
-#ifndef MUL_FFT_THRESHOLD
-#define MUL_FFT_THRESHOLD 8448
-#endif
 
 /* If mul_basecase or mpn_sqr_basecase are not exported, used mpn_mul instead */
 #ifndef mpn_mul_basecase
@@ -308,12 +298,6 @@ __MPFR_DECLSPEC mp_limb_t __gmpn_invert_limb (mp_limb_t);
 #endif
 #endif
 
-#if defined(WANT_GMP_INTERNALS) && defined(HAVE___GMPN_RSBLSH1_N)
-#ifndef __gmpn_rsblsh1_n
-__MPFR_DECLSPEC mp_limb_t __gmpn_rsblsh1_n (mp_limb_t*, mp_limb_t*, mp_limb_t*, mp_size_t);
-#endif
-#endif
-
 /* Temp memory allocate */
 struct tmp_marker
 {
@@ -350,84 +334,6 @@ __MPFR_DECLSPEC void mpfr_tmp_free (struct tmp_marker *);
  ****** to other versions of GMP. Add missing     *****
  ****** interfaces.                               *****
  ******************************************************/
-
-#ifndef MPFR_LONG_WITHIN_LIMB
-
-/* the following routines assume that an unsigned long has at least twice the
-   size of an mp_limb_t */
-
-#define umul_ppmm(ph, pl, m0, m1)                                       \
-  do {                                                                  \
-    unsigned long _p = (unsigned long) (m0) * (unsigned long) (m1);     \
-    (ph) = (mp_limb_t) (_p >> GMP_NUMB_BITS);                           \
-    (pl) = (mp_limb_t) (_p & MPFR_LIMB_MAX);                            \
-  } while (0)
-
-#define add_ssaaaa(sh, sl, ah, al, bh, bl)                              \
-  do {                                                                  \
-    unsigned long _a = ((unsigned long) (ah) << GMP_NUMB_BITS) + (al);  \
-    unsigned long _b = ((unsigned long) (bh) << GMP_NUMB_BITS) + (bl);  \
-    unsigned long _s = _a + _b;                                         \
-    (sh) = (mp_limb_t) (_s >> GMP_NUMB_BITS);                           \
-    (sl) = (mp_limb_t) (_s & MPFR_LIMB_MAX);                            \
-  } while (0)
-
-#define sub_ddmmss(sh, sl, ah, al, bh, bl)                              \
-  do {                                                                  \
-    unsigned long _a = ((unsigned long) (ah) << GMP_NUMB_BITS) + (al);  \
-    unsigned long _b = ((unsigned long) (bh) << GMP_NUMB_BITS) + (bl);  \
-    unsigned long _s = _a - _b;                                         \
-    (sh) = (mp_limb_t) (_s >> GMP_NUMB_BITS);                           \
-    (sl) = (mp_limb_t) (_s & MPFR_LIMB_MAX);                            \
-  } while (0)
-
-#define count_leading_zeros(count,x)                                    \
-  do {                                                                  \
-    int _c = 0;                                                         \
-    mp_limb_t _x = (mp_limb_t) (x);                                     \
-    while (GMP_NUMB_BITS > 16 && (_x >> (GMP_NUMB_BITS - 16)) == 0)     \
-      {                                                                 \
-        _c += 16;                                                       \
-        _x = (mp_limb_t) (_x << 16);                                    \
-      }                                                                 \
-    if (GMP_NUMB_BITS > 8 && (_x >> (GMP_NUMB_BITS - 8)) == 0)          \
-      {                                                                 \
-        _c += 8;                                                        \
-        _x = (mp_limb_t) (_x << 8);                                     \
-      }                                                                 \
-    if (GMP_NUMB_BITS > 4 && (_x >> (GMP_NUMB_BITS - 4)) == 0)          \
-      {                                                                 \
-        _c += 4;                                                        \
-        _x = (mp_limb_t) (_x << 4);                                     \
-      }                                                                 \
-    if (GMP_NUMB_BITS > 2 && (_x >> (GMP_NUMB_BITS - 2)) == 0)          \
-      {                                                                 \
-        _c += 2;                                                        \
-        _x = (mp_limb_t) (_x << 2);                                     \
-      }                                                                 \
-    if ((_x & MPFR_LIMB_HIGHBIT) == 0)                                  \
-      _c ++;                                                            \
-    (count) = _c;                                                       \
-  } while (0)
-
-#define invert_limb(invxl,xl)                                           \
-  do {                                                                  \
-    unsigned long _num;                                                 \
-    MPFR_ASSERTD ((xl) != 0);                                           \
-    _num = (unsigned long) (mp_limb_t) ~(xl);                           \
-    _num = (_num << GMP_NUMB_BITS) | MPFR_LIMB_MAX;                     \
-    (invxl) = _num / (xl);                                              \
-  } while (0)
-
-#define udiv_qrnnd(q, r, n1, n0, d)                                     \
-  do {                                                                  \
-    unsigned long _num;                                                 \
-    _num = ((unsigned long) (n1) << GMP_NUMB_BITS) | (n0);              \
-    (q) = _num / (d);                                                   \
-    (r) = _num % (d);                                                   \
-  } while (0)
-
-#endif
 
 /* If mpn_sqr is not defined, use mpn_mul_n instead
    (mpn_sqr was called mpn_sqr_n (internal) in older versions of GMP). */
@@ -493,10 +399,7 @@ __MPFR_DECLSPEC void mpfr_tmp_free (struct tmp_marker *);
   } while (0)
 #endif
 
-/* invert_pi1 macro adapted from GMP 5, this computes in (dinv).inv32
-   the value of floor((beta^3 - 1)/(d1*beta+d0)) - beta,
-   cf "Improved Division by Invariant Integers" by Niels Möller and
-   Torbjörn Granlund */
+/* invert_pi1 macro adapted from GMP 5 */
 typedef struct {mp_limb_t inv32;} mpfr_pi1_t;
 #ifndef invert_pi1
 #define invert_pi1(dinv, d1, d0)                                        \

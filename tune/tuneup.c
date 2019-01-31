@@ -478,21 +478,20 @@ tune_simple_func (mpfr_prec_t *threshold,
                   mpfr_prec_t pstart)
 {
   double measure[THRESHOLD_FINAL_WINDOW+1];
-  double d = -1.0;
+  double d;
   mpfr_prec_t pstep;
   int i, numpos, numneg, try;
   mpfr_prec_t pmin, pmax, p;
 
   /* first look for a lower bound within 10% */
   pmin = p = pstart;
-  for (i = 0; i < 10 && d < 0.0; i++)
-    d = domeasure (threshold, func, pmin);
+  d = domeasure (threshold, func, pmin);
   if (d < 0.0)
     {
       if (verbose)
-        printf ("Oops: even for precision %lu, algo 2 seems to be faster!\n",
+        printf ("Oops: even for %lu, algo 2 seems to be faster!\n",
                 (unsigned long) pmin);
-      *threshold = pmin;
+      *threshold = MPFR_PREC_MIN;
       return;
     }
   if (d >= 1.00)
@@ -849,8 +848,7 @@ tune_sqr_mulders_upto (mp_size_t n)
   return kbest;
 }
 
-/* Tune mpfr_divhigh_n for size n.
-   Ensure divhigh_ktab[n] < n for n > 0. */
+/* Tune mpfr_divhigh_n for size n */
 static mp_size_t
 tune_div_mulders_upto (mp_size_t n)
 {
@@ -859,12 +857,8 @@ tune_div_mulders_upto (mp_size_t n)
   double t, tbest;
   MPFR_TMP_DECL (marker);
 
-  /* we require n > 2 in mpfr_divhigh */
-  if (n <= 2)
-    {
-      divhigh_ktab[n] = 0;
-      return 0;
-    }
+  if (n == 0)
+    return 0;
 
   MPFR_TMP_MARK (marker);
   s.align_xp = s.align_yp = s.align_wp = s.align_wp2 = 64;
@@ -874,15 +868,27 @@ tune_div_mulders_upto (mp_size_t n)
   mpn_random (s.xp, n);
   mpn_random (s.yp, n);
 
-  /* Check k == 0, i.e., mpfr_divhigh_n_basecase */
-  kbest = 0;
+  /* Check k == n, i.e., mpn_divrem */
+  divhigh_ktab[n] = n;
+  kbest = n;
   tbest = mpfr_speed_measure (speed_mpfr_divhigh, &s, "mpfr_divhigh");
+
+  /* Check k == 0, i.e., mpfr_divhigh_n_basecase */
+#if defined(WANT_GMP_INTERNALS) && defined(HAVE___GMPN_SBPI1_DIVAPPR_Q)
+  if (n > 2) /* mpn_sbpi1_divappr_q requires dn > 2 */
+#endif
+    {
+      divhigh_ktab[n] = 0;
+      t = mpfr_speed_measure (speed_mpfr_divhigh, &s, "mpfr_divhigh");
+      if (t * TOLERANCE < tbest)
+        kbest = 0, tbest = t;
+    }
 
   /* Check Mulders */
   step = 1 + n / (2 * MAX_STEPS);
-  /* we should have (n+3)/2 <= k < n-1, which translates into
-     (n+4)/2 <= k < n-1 in C */
-  for (k = (n + 4) / 2 ; k < n - 1; k += step)
+  /* we should have (n+3)/2 <= k < n, which translates into
+     (n+4)/2 <= k < n in C */
+  for (k = (n + 4) / 2 ; k < n ; k += step)
     {
       divhigh_ktab[n] = k;
       t = mpfr_speed_measure (speed_mpfr_divhigh, &s, "mpfr_divhigh");
@@ -890,7 +896,6 @@ tune_div_mulders_upto (mp_size_t n)
         kbest = k, tbest = t;
     }
 
-  MPFR_ASSERTN(kbest < n);
   divhigh_ktab[n] = kbest;
 
   MPFR_TMP_FREE (marker);
