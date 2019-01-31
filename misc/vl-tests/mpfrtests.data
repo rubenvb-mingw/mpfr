@@ -62,7 +62,7 @@ HOST:ypig.lip.ens-lyon.fr
 PROC:Intel Xeon E5520
 EVAL:export MPFR_CHECK_LOCALES=1
 EVAL:unset CPATH C_INCLUDE_PATH LIBRARY_PATH LD_LIBRARY_PATH LD_RUN_PATH LD_PRELOAD
-EVAL:cflags1="-O2 -Wall -Wold-style-declaration -Wold-style-definition -Wmissing-parameter-type -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wno-error=unused-function -Werror"
+EVAL:cflags1="-O2 -Wall -Wold-style-declaration -Wold-style-definition -Wmissing-parameter-type -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wc++-compat -Wno-error=unused-function -Werror"
 EVAL:cflags2="$cflags1 -Wcast-function-type -Wcast-align=strict"
 # cflags2 can only be used with GCC 8 and later.
 EVAL:cflagsc90="-std=c90 -pedantic -Wno-error=overlength-strings -Wno-error=format"
@@ -398,7 +398,7 @@ HOST:cventin.lip.ens-lyon.fr
 PROC:Intel Xeon E5-2609 v3
 EVAL:export MPFR_CHECK_LOCALES=1
 EVAL:unset CPATH C_INCLUDE_PATH LIBRARY_PATH LD_LIBRARY_PATH LD_RUN_PATH LD_PRELOAD
-EVAL:cflags1="-O2 -Wall -Wold-style-declaration -Wold-style-definition -Wmissing-parameter-type -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wno-error=unused-function -Werror"
+EVAL:cflags1="-O2 -Wall -Wold-style-declaration -Wold-style-definition -Wmissing-parameter-type -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wc++-compat -Wno-error=unused-function -Werror"
 EVAL:cflags2="$cflags1 -Wcast-function-type -Wcast-align=strict"
 # cflags2 can only be used with GCC 8 and later.
 EVAL:cflagsc90="-std=c90 -pedantic -Wno-error=overlength-strings -Wno-error=format"
@@ -431,6 +431,16 @@ CONF:--enable-assert=full
 CONF:CC=gcc-snapshot
 CONF:CFLAGS=$cflags2 -DMPFR_GENERIC_ABI
 CONF:mpfr_cv_c_long_double_format=unknown
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-shared-cache
+CONF:CC=gcc-8
+# Disable the -Wmissing-field-initializers error, because there is
+# currently no good way to avoid it (see FIXME in mpfr-impl.h).
+CONF:CFLAGS=$cflags2 -Wno-error=missing-field-initializers
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN >= 40000
@@ -622,6 +632,15 @@ INFO:CCV:--version
 INFO:$GMPDIR/config.status -V | sed -n 's/^ *with options/GMP configure options:/p'
 CHECK-END
 CHECK-BEGIN
+ENV:GMPDIR=$HOME/software/gmp-6.1.1-64
+CONF:--with-gmp-build=$GMPDIR
+CONF:--enable-assert=full
+CONF:--enable-decimal-float
+CONF:CC=gcc-snapshot
+INFO:CCV:--version
+INFO:$GMPDIR/config.status -V | sed -n 's/^ *with options/GMP configure options:/p'
+CHECK-END
+CHECK-BEGIN
 CONF:--prefix=$HOME/notgcc
 CONF:--with-gmp=$HOME/wd
 CONF:--disable-shared
@@ -735,7 +754,7 @@ HOST:zira.vinc17.org
 PROC:Intel Core i7-4810MQ
 EVAL:export MPFR_CHECK_LOCALES=1
 EVAL:unset CPATH C_INCLUDE_PATH LIBRARY_PATH LD_LIBRARY_PATH LD_RUN_PATH
-EVAL:cflags1="-O2 -Wall -Wold-style-declaration -Wold-style-definition -Wmissing-parameter-type -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wno-error=unused-function -Werror"
+EVAL:cflags1="-O2 -Wall -Wold-style-declaration -Wold-style-definition -Wmissing-parameter-type -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wc++-compat -Wno-error=unused-function -Werror"
 EVAL:cflags2="$cflags1 -Wcast-function-type -Wcast-align=strict"
 # cflags2 can only be used with GCC 8 and later.
 CHECK-BEGIN
@@ -750,6 +769,16 @@ CONF:--enable-decimal-float
 CONF:--enable-float128
 CONF:CC=gcc-snapshot
 CONF:CFLAGS=$cflags2 -DMPFR_COV_CHECK -DMPFR_GROUP_STATIC_SIZE=0
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-shared-cache
+CONF:CC=gcc-snapshot
+# Disable the -Wmissing-field-initializers error, because there is
+# currently no good way to avoid it (see FIXME in mpfr-impl.h).
+CONF:CFLAGS=$cflags2 -Wno-error=missing-field-initializers
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -853,6 +882,17 @@ HOST:gcc112.fsffrance.org
 PROC:IBM POWER8
 CHECK-BEGIN
 CONF:--enable-assert=full
+INFO:CCV:--version
+CHECK-END
+
+HOST:gcc135.fsffrance.org
+PROC:IBM POWER9
+CHECK-BEGIN
+ENV:PATH=/opt/at12.0/bin:$PATH
+CONF:--with-gmp=$HOME/opt/gmp-6.1.2
+CONF:--enable-assert=full
+CONF:CC=gcc
+CONF:CFLAGS=-O3 -mcpu=power9
 INFO:CCV:--version
 CHECK-END
 
@@ -1149,4 +1189,4 @@ CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 113515 2018-11-27 11:48:27Z vinc17/cventin $
+# $Id: mpfrtests.data 115289 2019-01-28 00:25:21Z vinc17/zira $

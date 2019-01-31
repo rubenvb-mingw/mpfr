@@ -2,7 +2,7 @@
 
 # Test of MPFR tarballs with various options.
 #
-# Written in 2011-2017 by Vincent Lefevre <vincent@vinc17.net>.
+# Written in 2011-2019 by Vincent Lefevre <vincent@vinc17.net>.
 # This script is free software; you can copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
 #
@@ -77,6 +77,12 @@ esac
 
 # Note: the "|| true" is for NetBSD's buggy sh.
 unset tmpdir || true
+
+# Under Solaris, "grep" does not have a -q option.
+grepq()
+{
+  grep "$@" > /dev/null
+}
 
 # We need something that should work in all POSIX shells...
 dotee()
@@ -178,6 +184,12 @@ tst()
       CONF:*)
         [ -n "$check" ]
         [ -n "$conf" ]
+        # TODO: Comment out the following workaround once it is no longer
+        # needed.
+        if [ "$line" = "CONF:CC=gcc-snapshot" ]; then
+          # Workaround for GCC bug 86554 / 87276.
+          line="$line -fno-code-hoisting"
+        fi
         # Quote each configure parameter with double quotes, thus allowing
         # expansion of environment variables (possibly set with "ENV:").
         conf="$conf \"${line#CONF:}\""
@@ -191,7 +203,7 @@ tst()
           dotee "$conf" mpfrtests.cfgout
           ./config.status -V | sed '/with options/q' >> "$out"
           grep '^mpfr_cv_' config.log >> "$out"
-          grep '^DEFS=' config.log >> "$out"
+          grep '^\(CC\|CFLAGS\|DEFS\)=' config.log >> "$out"
           gmpv1=$(sed -n "s/$gmprx//p" mpfrtests.cfgout)
           if [ -z "$gmpv1" ]; then
             echo "$0: can't get GMP version" >&2
@@ -236,6 +248,15 @@ tst()
           make_check="LD_LIBRARY_PATH=\$PWD/src/.libs $make_check"
         fi
         dotee "$make_check" mpfrtests.makeout
+        # For tests with MinGW/Wine, the first tversion line is sometimes
+        # missing while the tversion test did not fail, which is a bug in
+        # MinGW/Wine. Bug report:
+        #   https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=914822
+        # Detect this now and exit with an error message when this occurs.
+        if ! grepq '^\[tversion] MPFR [1-9]' mpfrtests.makeout; then
+          echo "$0: missing first tversion line" >&2
+          exit 1
+        fi
         # Note: We need to remove the possible CR characters, as produced
         # by checks under Wine. But the sed from Solaris does not support
         # \r or even [:cntrl:]; indeed, neither of the following works:
@@ -254,16 +275,16 @@ tst()
                   }
                 }" mpfrtests.makeout >> "$out"
         echo "*** Running make check-gmp-symbols ***"
-        if ! grep -q check-gmp-symbols: Makefile; then
+        if ! grepq check-gmp-symbols: Makefile; then
           echo "Feature not present. Nothing to do."
-        elif grep -q "GMP internals = yes" mpfrtests.makeout; then
+        elif grepq "GMP internals = yes" mpfrtests.makeout; then
           echo "GMP internals have been requested. Test disabled."
         else
           dotee "$mj check-gmp-symbols" mpfrtests.makeout
           echo "Checked that no internal GMP symbols are used." >> "$out"
         fi
         echo "*** Running make check-exported-symbols ***"
-        if ! grep -q check-exported-symbols: Makefile; then
+        if ! grepq check-exported-symbols: Makefile; then
           echo "Feature not present. Nothing to do."
         else
           dotee "$mj check-exported-symbols" mpfrtests.makeout
@@ -368,4 +389,4 @@ printf "\n$ed\n" >> "$out"
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 105929 2018-02-15 11:43:47Z vinc17/cventin $
+# $Id: mpfrtests.sh 115367 2019-01-30 11:11:27Z vinc17/zira $
