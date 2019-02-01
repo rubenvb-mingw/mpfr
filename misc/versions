@@ -69,22 +69,22 @@ getvers "GNU FTP",
 
 getvers "Wikipedia (en)",
   "https://en.wikipedia.org/wiki/GNU_MPFR",
-  qr!Stable release</a>\s*</th>\s*<td[^>]*>\s*<div[^>]*>\s*([0-9.]+) /!;
+  qr!Stable release</a>\s*</th>\s*<td[^>]*>\s*<div[^>]*>\s*([0-9.]+)\s!;
 
 getvers "Wikipedia (fr)",
   "https://fr.wikipedia.org/wiki/GNU_MPFR",
-  qr!re version</a></th>\s*<td><span[^>]*>\s*([0-9.]+) !s;
+  qr!re version</a>\s*</th>\s*<td>\s*<span[^>]*>\s*([0-9.]+)(?:\s|&#32;)!s;
 # Note: The version is obtained from <https://www.wikidata.org/wiki/Q1881759>.
 # To update it, add the new version to the "software version" statement with
 # "preferred" rank and lower the rank of the previous version to "normal".
 
 getvers "Free Software Directory",
-  "http://directory.fsf.org/project/MPFR/",
+  "https://directory.fsf.org/wiki/Mpfr",
   qr!version ([0-9.]{5,})\s!;
 
-# Kept for the moment, but this project will be stopped in Q3 2015.
+# 2018-04-12 news: The PLUME project will become the FENIX service.
 getvers "PLUME",
-  "http://www.projet-plume.org/fr/fiche/mpfr",
+  "https://www.projet-plume.org/fr/fiche/mpfr",
   qr!<li>Version \&eacute;valu\&eacute;e : ([0-9.]+)</li>!;
 
 getvers "Linux From Scratch",
@@ -124,9 +124,10 @@ getvers "openSUSE Factory (x86_64)",
   "http://download.opensuse.org/tumbleweed/repo/oss/x86_64/",
   qr!"mpfr-devel-([-0-9.]+)\.x86_64\.rpm"!s;
 
-getvers "SourceArchive.com",
-  "http://mpfr4.sourcearchive.com/",
-  qr!.*<td[^>]*>([0-9][-0-9.]+)</td>!;
+# The website no longer works as of early June 2018.
+#getvers "SourceArchive.com",
+#  "http://mpfr4.sourcearchive.com/",
+#  qr!.*<td[^>]*>([0-9][-0-9.]+)</td>!;
 
 getvers "FreshPorts (FreeBSD)",
   "http://www.freshports.org/math/mpfr",
@@ -137,11 +138,12 @@ getvers "NetBSD (pkgsrc)",
   qr!<b>Package name:</b> *mpfr-([-0-9a-z.]+),!s;
 
 getvers "MacPorts",
-  "https://trac.macports.org/browser/trunk/dports/devel/mpfr/Portfile?format=txt",
-  sub
-    { my ($v) = $file =~ qr!^\s*set base_version\s+(\S+)\n!m;
-      $file =~ qr!^\s*set patch_level\s+(\d+)\n!m and $v .= "-p$1";
-      $v; };
+  "https://raw.githubusercontent.com/macports/macports-ports/master/devel/mpfr/Portfile",
+  qr!set\s+base_version\s+(\S+)\n!;
+#  sub
+#    { my ($v) = $file =~ qr!^\s*set base_version\s+(\S+)\n!m;
+#      $file =~ qr!^\s*set patch_level\s+(\d+)\n!m and $v .= "-p$1";
+#      $v; };
 
 #getvers "Fink",
 #  "http://fink.cvs.sourceforge.net/viewvc/fink/dists/10.7/stable/main/finkinfo/libs/libmpfr4.info",
@@ -201,6 +203,6 @@ getvers "MinGW",
 
 getvers "SAGE",
   "http://www-ftp.lip6.fr/pub/math/sagemath/spkg/upstream/mpfr/index.html",
-  qr!=== mpfr-(\S+) !;
+  qr!>mpfr-(\S+)\.tar!;
 
-# $Id: versions 108823 2018-05-30 17:55:54Z vinc17/zira $
+# $Id: versions 115429 2019-02-01 00:41:11Z vinc17/zira $
