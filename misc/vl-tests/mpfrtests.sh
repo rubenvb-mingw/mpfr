@@ -186,12 +186,13 @@ tst()
       CONF:*)
         [ -n "$check" ]
         [ -n "$conf" ]
-        # TODO: Comment out the following workaround once it is no longer
-        # needed.
-        if [ "$line" = "CONF:CC=gcc-snapshot" ]; then
-          # Workaround for GCC bug 86554 / 87276.
-          line="$line -fno-code-hoisting"
-        fi
+        #
+        # The following workaround was for GCC bug 86554 / 87276, which
+        # has now been fixed.
+        #if [ "$line" = "CONF:CC=gcc-snapshot" ]; then
+        #  line="$line -fno-code-hoisting"
+        #fi
+        #
         # Quote each configure parameter with double quotes, thus allowing
         # expansion of environment variables (possibly set with "ENV:").
         conf="$conf \"${line#CONF:}\""
@@ -391,4 +392,4 @@ printf "\n$ed\n" >> "$out"
 printf "OK, output in %s\n" "$out"
 exit 0
 
-# $Id: mpfrtests.sh 115410 2019-01-31 14:25:36Z vinc17/cventin $
+# $Id: mpfrtests.sh 116759 2019-03-26 12:22:03Z vinc17/cventin $
