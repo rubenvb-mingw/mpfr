@@ -231,20 +231,36 @@ CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:--enable-thread-safe
-CONF:CC=clang-3.8
+CONF:CC=clang-6.0
 INFO:CCV:--version
 CHECK-END
-# *** See Debian bug 796211 ***
-#CHECK-BEGIN
-#CONF:CC=clang-3.8
-#CONF:CFLAGS=-Oz -fsanitize=undefined -fno-sanitize-recover=undefined
-#INFO:CCV:--version
-#CHECK-END
-#CHECK-BEGIN
-#CONF:CC=clang-3.8
-#CONF:CFLAGS=-O3 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover=undefined -DMPFR_POOL_NENTRIES=0
-#INFO:CCV:--version
-#CHECK-END
+CHECK-BEGIN
+CONF:CC=clang-6.0
+CONF:CFLAGS=-Oz -fsanitize=undefined -fno-sanitize-recover=undefined
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:CC=clang-6.0
+CONF:CFLAGS=-O3 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover=undefined -DMPFR_POOL_NENTRIES=0
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--with-gmp=/usr/local/gmp-debug
+CONF:--enable-assert=full
+CONF:--enable-thread-safe
+CONF:CC=clang-7
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:CC=clang-7
+CONF:CFLAGS=-Oz -fsanitize=undefined -fno-sanitize-recover=undefined
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:CC=clang-7
+CONF:CFLAGS=-O3 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover=undefined -DMPFR_POOL_NENTRIES=0
+INFO:CCV:--version
+CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
@@ -518,20 +534,7 @@ CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
-CONF:--enable-thread-safe
-CONF:CC=clang-3.8
-INFO:CCV:--version
-CHECK-END
-CHECK-BEGIN
-CONF:--with-gmp=/usr/local/gmp-debug
-CONF:--enable-assert=full
-CONF:CC=clang-3.9
-INFO:CCV:--version
-CHECK-END
-CHECK-BEGIN
-CONF:--with-gmp=/usr/local/gmp-debug
-CONF:--enable-assert=full
-CONF:CC=clang-4.0
+CONF:CC=clang-6.0
 CONF:CFLAGS=-O2 -D_MPFR_PREC_FORMAT=2 -Werror -Wno-error=tautological-constant-out-of-range-compare -Wno-error=string-plus-int
 INFO:CCV:--version
 CHECK-END
@@ -817,14 +820,14 @@ CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
-CONF:CC=clang-3.9
+CONF:CC=clang-7
 CONF:CFLAGS=-O2 -D_MPFR_PREC_FORMAT=2
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
-CONF:CC=clang-4.0
+CONF:CC=clang-7
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -1189,4 +1192,4 @@ CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 115289 2019-01-28 00:25:21Z vinc17/zira $
+# $Id: mpfrtests.data 116799 2019-03-27 12:26:28Z vinc17/ypig $
