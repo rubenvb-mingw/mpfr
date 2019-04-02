@@ -27,7 +27,11 @@
 #
 # Note: -std=c99 is obsolete and intentionally buggy; use -std=c11 instead.
 #
-# TODO: add -Wint-in-bool-context to recent GCC, once available.
+# Clang's memory sanitizer is currently not used since it requires
+# fully instrumented libraries (including libc). See:
+#   * https://clang.llvm.org/docs/MemorySanitizer.html#handling-external-code
+#   * https://stackoverflow.com/a/47261999/3782797
+#     (answer to "Memory/Address Sanitizer vs Valgrind")
 
 HOST:orge.lip.ens-lyon.fr
 PROC:Intel Xeon E5310 [32 bits]
@@ -554,7 +558,7 @@ CHECK-BEGIN
 CONF:--with-gmp=/usr/local/gmp-debug
 CONF:--enable-assert=full
 CONF:CC=clang-8
-CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover -DMPFR_POOL_NENTRIES=0
+CONF:CFLAGS=-O2 -fsanitize=undefined -fno-sanitize=float-cast-overflow,float-divide-by-zero -fno-sanitize-recover=undefined -DMPFR_POOL_NENTRIES=0
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -578,6 +582,19 @@ CONF:--enable-thread-safe
 CONF:--enable-float128
 CONF:CC=gcc-snapshot
 CONF:CFLAGS=-m32 -O3 -march=native -fsanitize=address
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--enable-assert=full
+CONF:CC=gcc-snapshot
+CONF:CFLAGS=$cflags1 $cflagsc90 -m32
+INFO:CCV:--version
+CHECK-END
+CHECK-BEGIN
+CONF:--enable-assert=full
+CONF:CC=gcc-snapshot
+# Make intmax_t > long available with a failing printf length modifier "j".
+CONF:CFLAGS=$cflags1 $cflagsc90 -m32 -Werror=format
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -1192,4 +1209,4 @@ CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 116799 2019-03-27 12:26:28Z vinc17/ypig $
+# $Id: mpfrtests.data 116867 2019-03-29 13:59:35Z vinc17/cventin $
