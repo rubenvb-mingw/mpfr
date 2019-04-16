@@ -32,6 +32,8 @@
 #   * https://clang.llvm.org/docs/MemorySanitizer.html#handling-external-code
 #   * https://stackoverflow.com/a/47261999/3782797
 #     (answer to "Memory/Address Sanitizer vs Valgrind")
+# Anyway, it doesn't seem to have more benefits than valgrind:
+#   https://gcc.gnu.org/ml/gcc-help/2019-04/msg00006.html
 
 HOST:orge.lip.ens-lyon.fr
 PROC:Intel Xeon E5310 [32 bits]
@@ -68,6 +70,7 @@ EVAL:export MPFR_CHECK_LOCALES=1
 EVAL:unset CPATH C_INCLUDE_PATH LIBRARY_PATH LD_LIBRARY_PATH LD_RUN_PATH LD_PRELOAD
 EVAL:cflags1="-O2 -Wall -Wold-style-declaration -Wold-style-definition -Wmissing-parameter-type -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wc++-compat -Wno-error=unused-function -Werror"
 EVAL:cflags2="$cflags1 -Wcast-function-type -Wcast-align=strict"
+EVAL:[ $versnum -lt 40100 ] || cflags2="$cflags2 -Wimplicit-fallthrough"
 # cflags2 can only be used with GCC 8 and later.
 EVAL:cflagsc90="-std=c90 -pedantic -Wno-error=overlength-strings -Wno-error=format"
 CHECK-BEGIN >= 40000
@@ -420,6 +423,7 @@ EVAL:export MPFR_CHECK_LOCALES=1
 EVAL:unset CPATH C_INCLUDE_PATH LIBRARY_PATH LD_LIBRARY_PATH LD_RUN_PATH LD_PRELOAD
 EVAL:cflags1="-O2 -Wall -Wold-style-declaration -Wold-style-definition -Wmissing-parameter-type -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wc++-compat -Wno-error=unused-function -Werror"
 EVAL:cflags2="$cflags1 -Wcast-function-type -Wcast-align=strict"
+EVAL:[ $versnum -lt 40100 ] || cflags2="$cflags2 -Wimplicit-fallthrough"
 # cflags2 can only be used with GCC 8 and later.
 EVAL:cflagsc90="-std=c90 -pedantic -Wno-error=overlength-strings -Wno-error=format"
 CHECK-BEGIN
@@ -776,6 +780,7 @@ EVAL:export MPFR_CHECK_LOCALES=1
 EVAL:unset CPATH C_INCLUDE_PATH LIBRARY_PATH LD_LIBRARY_PATH LD_RUN_PATH
 EVAL:cflags1="-O2 -Wall -Wold-style-declaration -Wold-style-definition -Wmissing-parameter-type -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wc++-compat -Wno-error=unused-function -Werror"
 EVAL:cflags2="$cflags1 -Wcast-function-type -Wcast-align=strict"
+EVAL:[ $versnum -lt 40100 ] || cflags2="$cflags2 -Wimplicit-fallthrough"
 # cflags2 can only be used with GCC 8 and later.
 CHECK-BEGIN
 INFO:CCV:--version
@@ -1209,4 +1214,4 @@ CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 116867 2019-03-29 13:59:35Z vinc17/cventin $
+# $Id: mpfrtests.data 117301 2019-04-16 10:39:19Z vinc17/cventin $
