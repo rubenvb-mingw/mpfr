@@ -1,15 +1,14 @@
 # Note: When -fsanitize=address is used with GCC, LD_PRELOAD needs to be
-# unset, otherwise the configure script fails with:
+# unset or -static-libasan to be used, otherwise the configure script fails
+# with:
 #   checking whether we are cross compiling... configure: error: in ...
 #   configure: error: cannot run C compiled programs.
 #   If you meant to cross compile, use `--host'.
 #   See `config.log' for more details
 # because ASan runtime does not come first in initial library list.
-# Ideally, in case LD_PRELOAD would be needed, -static-libasan could
-# be used to avoid the above error instead of unsetting LD_PRELOAD.
-# But -static-libasan does not work with Debian's gcc-snapshot
-# (Debian bug 836855), and even with GCC 6, it fails with MPFR
-# (Debian bug 836864).
+# Now that -static-libasan works again, this solution is better because
+# LD_PRELOAD might contain needed libraries. Moreover, optimizations
+# should not be enabled, otherwise they can make some errors disappear.
 #
 # MPFR_DISABLE_IEEE_FLOATS was previously named XDEBUG; both should be
 # defined or none of them, in order to get the same kind of tests with
@@ -278,7 +277,7 @@ INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN >= 40000
 CONF:CC=gcc-5
-CONF:CFLAGS=-Wall -O3 -march=native -fsanitize=address
+CONF:CFLAGS=-Wall -O0 -march=native -fsanitize=address
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -585,7 +584,7 @@ CONF:--enable-assert=full
 CONF:--enable-thread-safe
 CONF:--enable-float128
 CONF:CC=gcc-snapshot
-CONF:CFLAGS=-m32 -O3 -march=native -fsanitize=address
+CONF:CFLAGS=-m32 -O0 -march=native -fsanitize=address
 INFO:CCV:--version
 CHECK-END
 CHECK-BEGIN
@@ -1214,4 +1213,4 @@ CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 117301 2019-04-16 10:39:19Z vinc17/cventin $
+# $Id: mpfrtests.data 117681 2019-04-30 15:39:15Z vinc17/zira $
