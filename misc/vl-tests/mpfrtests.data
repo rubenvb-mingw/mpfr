@@ -6,9 +6,12 @@
 #   If you meant to cross compile, use `--host'.
 #   See `config.log' for more details
 # because ASan runtime does not come first in initial library list.
-# Now that -static-libasan works again, this solution is better because
-# LD_PRELOAD might contain needed libraries. Moreover, optimizations
-# should not be enabled, otherwise they can make some errors disappear.
+# However, -static-libasan cannot be used with MPFR as one gets an error
+# "Your application is linked against incompatible ASan runtimes."; ldd
+# shows that a dynamic libasan is still used, e.g.
+#   libasan.so.5 => /usr/lib/x86_64-linux-gnu/libasan.so.5
+# Moreover, optimizations should not be enabled, otherwise they can make
+# some errors disappear.
 #
 # MPFR_DISABLE_IEEE_FLOATS was previously named XDEBUG; both should be
 # defined or none of them, in order to get the same kind of tests with
@@ -1213,4 +1216,4 @@ CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 117681 2019-04-30 15:39:15Z vinc17/zira $
+# $Id: mpfrtests.data 117685 2019-04-30 16:51:44Z vinc17/zira $
