@@ -1,17 +1,34 @@
-# Note: When -fsanitize=address is used with GCC, LD_PRELOAD needs to be
-# unset or -static-libasan to be used, otherwise the configure script fails
+# Notes about GCC's address sanitizer.
+#
+# When -fsanitize=address is used with GCC, LD_PRELOAD needs to be unset
+# or -static-libasan to be used, otherwise the configure script fails
 # with:
+#
 #   checking whether we are cross compiling... configure: error: in ...
 #   configure: error: cannot run C compiled programs.
 #   If you meant to cross compile, use `--host'.
 #   See `config.log' for more details
+#
 # because ASan runtime does not come first in initial library list.
-# However, -static-libasan cannot be used with MPFR as one gets an error
-# "Your application is linked against incompatible ASan runtimes."; ldd
-# shows that a dynamic libasan is still used, e.g.
+#
+# However, unless --disable-shared is used, the -static-libasan solution
+# does not work as this flag is currently stripped by libtool, so that a
+# dynamic libasan is still used, as shown by ldd on test programs, e.g.
+#
 #   libasan.so.5 => /usr/lib/x86_64-linux-gnu/libasan.so.5
+#
+# This can give the following error:
+#
+#   Your application is linked against incompatible ASan runtimes.
+#
+# Debian bug report:
+#
+#   https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=928254
+#
 # Moreover, optimizations should not be enabled, otherwise they can make
 # some errors disappear.
+#
+# (End of the notes about the address sanitizer.)
 #
 # MPFR_DISABLE_IEEE_FLOATS was previously named XDEBUG; both should be
 # defined or none of them, in order to get the same kind of tests with
@@ -1216,4 +1233,4 @@ CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 117685 2019-04-30 16:51:44Z vinc17/zira $
+# $Id: mpfrtests.data 117743 2019-05-02 13:09:18Z vinc17/cventin $
