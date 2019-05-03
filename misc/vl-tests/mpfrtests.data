@@ -21,9 +21,10 @@
 #
 #   Your application is linked against incompatible ASan runtimes.
 #
-# Debian bug report:
+# Debian bug report and message with a patch for Debian:
 #
 #   https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=928254
+#   https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=928254#55
 #
 # Moreover, optimizations should not be enabled, otherwise they can make
 # some errors disappear.
@@ -1233,4 +1234,4 @@ CONF:--enable-assert=full
 INFO:CCV:--version
 CHECK-END
 
-# $Id: mpfrtests.data 117743 2019-05-02 13:09:18Z vinc17/cventin $
+# $Id: mpfrtests.data 117777 2019-05-03 13:44:19Z vinc17/cventin $
